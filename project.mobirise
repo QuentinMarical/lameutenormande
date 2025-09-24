@@ -1998,7 +1998,7 @@
         },
         {
           "_params": {
-            "HTMLCode": "<iframe src=\"https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&title=La%20Meute%20Normande&type=1&language=fr&timezone=Europe%2FParis&showTitle=1&showTimezone=0&startingDayOfWeek=1&timeFormat=1&view=month&showDetail=0&theme=1&showAttendee=0&showSwitchingViews=0&expandAllday=0&eventColorType=light&showAllEvents=1\" title=\"Calendrier des énènements\"width=800 height=600 frameBorder=\"0\" scrolling=\"no\"></iframe>",
+            "HTMLCode": "<iframe src=\"https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&title=La%20Meute%20Normande&type=1&language=fr&timezone=Europe%2FParis&showTitle=1&showTimezone=0&startingDayOfWeek=1&timeFormat=1&view=month&showDetail=0&theme=1&showAttendee=0&showSwitchingViews=0&expandAllday=0&eventColorType=light&showAllEvents=1\" title=\"Calendrier des énènements\"width=800 height=700 frameBorder=\"0\" scrolling=\"no\"></iframe>",
             "hideOnPublish": false,
             "paddingTop": "0",
             "paddingBottom": "0",
@@ -2011,7 +2011,7 @@
             "overlayColor": "#222",
             "overlayOpacity": 0.5
           },
-          "HTMLCode": "<iframe src=\"https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&title=La%20Meute%20Normande&type=1&language=fr&timezone=Europe%2FParis&showTitle=1&showTimezone=0&startingDayOfWeek=1&timeFormat=1&view=month&showDetail=0&theme=1&showAttendee=0&showSwitchingViews=0&expandAllday=0&eventColorType=light&showAllEvents=1\" title=\"Calendrier des énènements\"width=800 height=600 frameBorder=\"0\" scrolling=\"no\"></iframe>",
+          "HTMLCode": "<iframe src=\"https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&title=La%20Meute%20Normande&type=1&language=fr&timezone=Europe%2FParis&showTitle=1&showTimezone=0&startingDayOfWeek=1&timeFormat=1&view=month&showDetail=0&theme=1&showAttendee=0&showSwitchingViews=0&expandAllday=0&eventColorType=light&showAllEvents=1\" title=\"Calendrier des énènements\"width=800 height=700 frameBorder=\"0\" scrolling=\"no\"></iframe>",
           "alias": "witsec-custom-html",
           "_tags": [
             "Extension"
