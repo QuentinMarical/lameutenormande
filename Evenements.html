@@ -24,7 +24,7 @@
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap&display=swap"></noscript>
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=H2xHuw"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=H2xHuw" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=f4t28R"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=f4t28R" type="text/css">
 
   
   
@@ -55,7 +55,7 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-						<a class="nav-link link text-white text-primary display-2" href="page1.html">Événements</a>
+						<a class="nav-link link text-white text-primary display-2" href="Evenements.html">Événements</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link link text-white display-2" href="https://mobiri.se" aria-expanded="false">Photos</a>
@@ -79,28 +79,42 @@
 	</nav>
 </section>
 
-<section class="mbr-section mbr-section--no-padding" id="witsec-custom-html-block-9" custom-code="true" data-rv-view="12">
+<section class="mbr-section mbr-section--no-padding" id="witsec-custom-html-block-9" custom-code="true" data-rv-view="22">
  
  <div class="witsec-custom-html-container elements-content" style="padding-top: 0rem; padding-bottom: 0rem;">
-    <div class="mbr-section__container block" style="width: 100%;"><div class="w-100" style="background:#111; min-height:107px;"></div>
+    <div class="mbr-section__container block" style="width: 100%;"><!-- Bandeau supérieur -->
+<div class="w-100" style="background:#000; height:107px;"></div>
 
-<div class="container-fluid p-0" style="background:#111;">
-  <div class="embed-responsive embed-responsive-16by9" style="width:100%;">
-    <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg&amp;ehbc=2E312F&amp;noprof=1" width="640" height="600"></iframe>
+<!-- Styles locaux pour les cadres -->
+<style>
+  .module-wrap { border:1px solid #6c757d; border-radius:.5rem; background:transparent; }
+  .module-title { color:#fff; margin:0 0 .75rem 0; padding:.25rem .75rem; }
+  #calendar, #mapEmbed { height:60vh; min-height:420px; }
+</style>
+
+<section class="container-fluid p-0" style="background:#000;">
+  <div class="row no-gutters align-items-stretch">
+    <!-- Carte (embed conservé) -->
+    <div class="col-12 col-lg-6 p-3 d-flex">
+      <div class="w-100 module-wrap overflow-hidden">
+        <h5 class="module-title">Carte des événements</h5>
+        <iframe id="mapEmbed" class="w-100 rounded-lg d-block" src="https://www.google.com/maps/d/u/0/embed?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg&amp;ehbc=2E312F" style="border:0; background:#000;" allowfullscreen="" loading="lazy" title="Carte My Maps"></iframe>
+      </div>
+    </div>
+
+    <!-- Calendrier (FullCalendar sans iframe) -->
+    <div class="col-12 col-lg-6 p-3 d-flex">
+      <div class="w-100 module-wrap">
+        <h5 class="module-title">Calendrier</h5>
+        <div id="calendar"></div>
+      </div>
+    </div>
   </div>
-</div>
-</div>
- </div>
-
 </section>
-
-<section class="mbr-section mbr-section--no-padding" id="witsec-custom-html-block-j" custom-code="true" data-rv-view="13">
- 
- <div class="witsec-custom-html-container elements-content" style="padding-top: 0rem; padding-bottom: 0rem;">
-    <div class="mbr-section__container block" style="width: 100%;"><iframe src="https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&amp;title=La%20Meute%20Normande&amp;type=1&amp;language=fr&amp;timezone=Europe%2FParis&amp;showTitle=1&amp;showTimezone=0&amp;startingDayOfWeek=1&amp;timeFormat=1&amp;view=month&amp;showDetail=0&amp;theme=1&amp;showAttendee=0&amp;showSwitchingViews=0&amp;expandAllday=0&amp;eventColorType=light&amp;showAllEvents=1" title="Calendrier des énènements" width="800" height="700" frameborder="0" scrolling="no"></iframe></div>
+</div>
  </div>
 
-</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com"> Website Builder Software</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section class="display-7" style="padding: 0;align-items: center;justify-content: center;flex-wrap: wrap;    align-content: center;display: flex;position: relative;height: 4rem;"><a href="https://mobiri.se/" style="flex: 1 1;height: 4rem;position: absolute;width: 100%;z-index: 1;"><img alt="" style="height: 4rem;" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="></a><p style="margin: 0;text-align: center;" class="display-7">&#8204;</p><a style="z-index:1" href="https://mobirise.com/offline-website-builder.html">Offline Website Builder</a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
   <input name="animation" type="hidden">
