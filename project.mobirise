@@ -19,7 +19,7 @@
     "resourcesUrl": "https://r.mobirisesite.com/1741320/",
     "path": "@PROJECT_PATH@",
     "name": "La Meute Normande",
-    "currentPage": "index.html",
+    "currentPage": "Événements.html",
     "ai": {
       "prompt": "Site pour un groupe de furry, pas une association, plutot comme un groupe d'ami, basé en haute normandie, qui participent a des conventions et des événements, voir pour faire une page pour les évènements passé, une autre pour les photos de groupe, et un formulaire de contact pour soit poser une question, soit pour vouloir faire partie de la bande\r\n",
       "imageSearchQuery": "furry art"
@@ -1217,10 +1217,11 @@
         }
       ]
     },
-    "Evenements.html": {
+    "Événements.html": {
       "settings": {
-        "title": "Évènements",
-        "order": "2"
+        "title": "Événements",
+        "order": "2",
+        "meta_descr": ""
       },
       "components": [
         {
