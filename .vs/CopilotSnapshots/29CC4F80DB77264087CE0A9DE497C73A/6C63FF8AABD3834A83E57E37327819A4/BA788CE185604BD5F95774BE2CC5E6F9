@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <!-- Site made with Mobirise Website Builder v6.0.6, https://mobirise.com -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="assets/images/macaron-128x128.png" type="image/x-icon">
+  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="Découvrez tous les événements auxquels participe La Meute Normande. Consultez notre carte et notre calendrier des événements furry en Normandie.">
+  <meta name="keywords" content="événements furry, conventions, normandie, calendrier, carte événements">
+  <meta name="author" content="La Meute Normande">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Événements - La Meute Normande">
+  <meta property="og:description" content="Découvrez tous nos événements passés et à venir">
+  
+  <title>Événements - La Meute Normande</title>
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/animatecss/animate.css">
+  <link rel="stylesheet" href="assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="assets/theme/css/style.css">
+  <link href="assets/fonts/style.css" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe" type="text/css">
+  <link rel="stylesheet" href="assets/css/custom-optimizations.css">
+  <link rel="stylesheet" href="assets/css/events-calendar.css">
+  
+  <!-- FullCalendar CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
+</head>
+<body>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="skip-to-content">Aller au contenu principal</a>
+  
+  <section data-bs-version="5.1" class="menu menu2 cid-uUdZRAoUyl" once="menu" id="menu02-3">
+	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="index.html" aria-label="Accueil La Meute Normande">
+						<img src="assets/images/logo-206x86.png" alt="Logo La Meute Normande" style="height: 3.3rem;">
+					</a>
+				</span>
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+					<li class="nav-item">
+						<a class="nav-link link text-white text-primary display-2" href="Événements.html" aria-current="page">Événements</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-white display-2" href="index.html#photos">Photos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-white display-2" href="index.html#contact">Contact</a>
+					</li>
+				</ul>
+				<div class="icons-menu">
+					<a class="iconfont-wrapper" href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer" aria-label="Rejoignez-nous sur Telegram">
+						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
+					</a>
+					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" aria-label="Suivez-nous sur Instagram">
+						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+</section>
+
+<main id="main-content">
+<section class="events-calendar-section" id="events-calendar-section">
+  <div class="events-calendar-container">
+    <!-- Fond parallax -->
+    <div class="events-calendar-overlay" aria-hidden="true"></div>
+    <img class="events-calendar-background jarallax-img" src="assets/images/img-2829-2000x1000.jpg" alt="Fond d'événements La Meute Normande" loading="lazy">
+
+    <div class="events-calendar-content">
+      <div class="events-calendar-row">
+        <!-- Carte Google Maps (iframe - pas besoin de clé API) -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📍</span> Carte des événements
+            </h2>
+            <div class="events-calendar-body">
+              <iframe 
+                id="google-map"
+                src="https://www.google.com/maps/d/u/0/embed?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg&ehbc=3A3A3c&noprof=1&hl=fr"
+                style="width: 100%; height: 100%; border: none;"
+                allowfullscreen
+                loading="lazy"
+                title="Carte des événements La Meute Normande">
+              </iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendrier FullCalendar -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📅</span> Calendrier des événements
+            </h2>
+            <div class="events-calendar-body">
+              <div id="fullcalendar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Scripts -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/parallax/jarallax.js"></script>
+<script src="assets/theme/js/script.js"></script>
+<script src="assets/js/mobile-menu-fix.js"></script>
+<script src="assets/js/init.js"></script>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<!-- Script calendrier simplifié -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl = document.getElementById('fullcalendar');
+  
+  if (!calendarEl) {
+    console.error('Element #fullcalendar non trouvé');
+    return;
+  }
+
+  // Charger les événements
+  fetch('assets/data/events.json')
+    .then(response => {
+      if (!response.ok) throw new Error('Erreur chargement events.json');
+      return response.json();
+    })
+    .then(eventsData => {
+      console.log('Événements chargés:', eventsData);
+      
+      // Créer le calendrier
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,dayGridWeek,listMonth'
+        },
+        buttonText: {
+          today: "Aujourd'hui",
+          month: 'Mois',
+          week: 'Semaine',
+          list: 'Liste'
+        },
+        events: eventsData.map(evt => ({
+          id: evt.id,
+          title: evt.title,
+          start: evt.start,
+          end: evt.end,
+          backgroundColor: evt.color,
+          borderColor: evt.color,
+          extendedProps: {
+            location: evt.location,
+            description: evt.description,
+            type: evt.type
+          }
+        })),
+        eventClick: function(info) {
+          const event = info.event;
+          const location = event.extendedProps.location;
+          
+          alert(
+            event.title + '\n\n' +
+            (location ? '📍 ' + location.name + '\n' : '') +
+            (event.extendedProps.description || '')
+          );
+        },
+        height: '100%',
+        aspectRatio: 1.5,
+        eventDisplay: 'block',
+        displayEventTime: false,
+        weekNumbers: false,
+        navLinks: true,
+        editable: false,
+        dayMaxEvents: 3,
+        moreLinkText: 'plus'
+      });
+
+      calendar.render();
+      console.log('Calendrier initialisé avec', eventsData.length, 'événements');
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+      calendarEl.innerHTML = '<div style="padding: 2rem; color: #fff; text-align: center;">Erreur de chargement des événements</div>';
+    });
+});
+</script>
+
+</body>
+</html>

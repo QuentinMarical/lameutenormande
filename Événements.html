@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html  lang="fr">
+<html lang="fr">
 <head>
-  <!-- Site made with Mobirise Website Builder v6.0.6, https://mobirise.com -->
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
   <link rel="shortcut icon" href="assets/images/macaron-128x128.png" type="image/x-icon">
-  <meta name="description" content="">
+  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="Découvrez tous les événements auxquels participe La Meute Normande. Consultez notre carte et notre calendrier des événements furry en Normandie.">
+  <meta name="keywords" content="événements furry, conventions, normandie, calendrier, carte événements">
+  <meta name="author" content="La Meute Normande">
   
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Événements - La Meute Normande">
+  <meta property="og:description" content="Découvrez tous nos événements passés et à venir">
   
-  <title>Événements</title>
+  <title>Événements - La Meute Normande</title>
   <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
@@ -20,30 +26,411 @@
   <link rel="stylesheet" href="assets/socicon/css/styles.css">
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link href="assets/fonts/style.css" rel="stylesheet">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap"></noscript>
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe" type="text/css">
-
+  <link rel="stylesheet" href="assets/css/custom-optimizations.css">
+  <link rel="stylesheet" href="assets/css/events-calendar.css">
   
+  <!-- FullCalendar CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
   
+  <!-- Leaflet CSS pour la carte interactive -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   
+  <!-- Styles pour la popup personnalisée -->
+  <style>
+    .event-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-in;
+    }
+    
+    .event-modal-content {
+      position: relative;
+      background: linear-gradient(135deg, rgba(67, 188, 205, 0.95) 0%, rgba(102, 46, 155, 0.95) 100%);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 1.5rem;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: slideDown 0.3s ease-out;
+      overflow: hidden;
+    }
+    
+    .event-modal-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .event-modal-title {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .event-modal-emoji {
+      font-size: 2.5rem;
+    }
+    
+    .event-modal-body {
+      padding: 2rem;
+      color: #fff;
+    }
+    
+    .event-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 0.75rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .event-info-icon {
+      font-size: 1.5rem;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .event-info-content {
+      flex: 1;
+    }
+    
+    .event-info-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    
+    .event-info-text {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    
+    .event-info-text a {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.5);
+      text-decoration-thickness: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .event-info-text a:hover {
+      text-decoration-color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    .event-description {
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    
+    .event-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    
+    /* Boutons d'itinéraire */
+    .event-navigation-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .event-nav-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.875rem 1.25rem;
+      border: none;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Google Maps - Vert foncé avec texte blanc */
+    .event-nav-btn.google-maps {
+      background: #3C7E40;
+      color: #fff;
+    }
+    
+    .event-nav-btn.google-maps:hover {
+      background: #2d5f30;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(60, 126, 64, 0.4);
+      color: #fff;
+      text-decoration: none;
+    }
+    
+    /* Waze - Bleu clair avec texte noir */
+    .event-nav-btn.waze {
+      background: #33CCFF;
+      color: #000;
+    }
+    
+    .event-nav-btn.waze:hover {
+      background: #00b8e6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(51, 204, 255, 0.4);
+      color: #000;
+      text-decoration: none;
+    }
+    
+    /* Apple Plans - Noir avec texte blanc */
+    .event-nav-btn.apple-plans {
+      background: #000;
+      color: #fff;
+    }
+    
+    .event-nav-btn.apple-plans:hover {
+      background: #1a1a1a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      color: #fff;
+      text-decoration: none;
+    }
+    
+    .event-nav-btn:active {
+      transform: translateY(0);
+    }
+    
+    .event-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      line-height: 1;
+      padding: 0;
+    }
+    
+    .event-modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg) scale(1.1);
+    }
+    
+    /* Styles pour la carte Leaflet */
+    #interactive-map {
+      width: 100%;
+      height: 100%;
+      border-radius: 0.75rem;
+    }
+    
+    .leaflet-popup-content-wrapper {
+      border-radius: 0.75rem;
+      padding: 0;
+    }
+    
+    .leaflet-popup-content {
+      margin: 0;
+      min-width: 200px;
+    }
+    
+    .map-popup {
+      padding: 1rem;
+    }
+    
+    .map-popup-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    
+    .map-popup-date {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    
+    .map-popup-location {
+      font-size: 0.85rem;
+      color: #888;
+    }
+    
+    .map-popup-btn {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.75rem;
+      background: #43BCCD;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .map-popup-btn:hover {
+      background: #3AA5B5;
+    }
+    
+    .map-popup-btn.furry {
+      background: #43BCCD;
+    }
+    
+    .map-popup-btn.other {
+      background: #DDA600;
+    }
+    
+    .map-legend {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      z-index: 1000;
+      font-size: 0.85rem;
+    }
+    
+    .map-legend-title {
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .map-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .map-legend-marker {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    
+    .map-legend-marker.furry {
+      background: #43BCCD;
+    }
+    
+    .map-legend-marker.other {
+      background: #DDA600;
+    }
+    
+    .map-legend-marker.past {
+      background: #999;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .event-modal-content {
+        margin: 10% auto;
+        width: 95%;
+      }
+      
+      .event-modal-header {
+        padding: 1.5rem 1.5rem 1rem;
+      }
+      
+      .event-modal-title {
+        font-size: 1.4rem;
+      }
+      
+      .event-modal-body {
+        padding: 1.5rem;
+      }
+      
+      .event-info-row {
+        padding: 0.75rem;
+      }
+      
+      .event-navigation-buttons {
+        flex-direction: column;
+      }
+      
+      .event-nav-btn {
+        min-width: 100%;
+      }
+      
+      .map-legend {
+        bottom: 10px;
+        right: 10px;
+        font-size: 0.75rem;
+        padding: 0.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="skip-to-content">Aller au contenu principal</a>
   
   <section data-bs-version="5.1" class="menu menu2 cid-uUdZRAoUyl" once="menu" id="menu02-3">
-	
-
 	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
 		<div class="container">
 			<div class="navbar-brand">
 				<span class="navbar-logo">
-					<a href="index.html">
-						<img src="assets/images/logo-206x86.png" alt="OwO" style="height: 3.3rem;">
+					<a href="index.html" aria-label="Accueil La Meute Normande">
+						<img src="assets/images/logo-206x86.png" alt="Logo La Meute Normande" style="height: 3.3rem;">
 					</a>
 				</span>
-				
 			</div>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 				<div class="hamburger">
@@ -54,92 +441,113 @@
 				</div>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-						<a class="nav-link link text-white text-primary display-2" href="Événements.html">événements</a>
+				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+					<li class="nav-item">
+						<a class="nav-link link text-white text-primary display-2" href="Événements.html" aria-current="page">Événements</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link link text-white display-2" href="https://mobiri.se" aria-expanded="false">photos</a>
+						<a class="nav-link link text-white display-2" href="index.html#photos">Photos</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link link text-white display-2" href="https://mobiri.se">contact</a>
-					</li></ul>
+						<a class="nav-link link text-white display-2" href="index.html#contact">Contact</a>
+					</li>
+				</ul>
 				<div class="icons-menu">
-					<a class="iconfont-wrapper" href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank">
+					<a class="iconfont-wrapper" href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer" aria-label="Rejoignez-nous sur Telegram">
 						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
 					</a>
-					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" target="_blank">
+					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" aria-label="Suivez-nous sur Instagram">
 						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
 					</a>
-					
-					
 				</div>
-				
 			</div>
 		</div>
 	</nav>
 </section>
 
-<section class="mbr-section mbr-section--no-padding" id="witsec-custom-html-block-p" custom-code="true" data-rv-view="12">
- 
- <div class="witsec-custom-html-container elements-content" style="padding-top: 0rem; padding-bottom: 0rem;">
-    <div class="mbr-section__container block" style="width: 100%;"><section class="jmc-section jarallax" data-jarallax="" data-type="scroll" data-speed="0.45" data-img-position="50% 40%" data-top-pad="112" data-cal-top="29" style="position:relative; z-index:0; background-image:none; color:#fff; height:100dvh; overflow:hidden;">
-  <style>
-    :root { --cal-top-crop: 29px; --top-pad: 112px; }
-    .jarallax{ position:relative; z-index:0; border-radius:0 !important; }
-    .jarallax > .jarallax-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 40%; z-index:-1; border-radius:0 !important; }
-    .jmc-overlay{ position:absolute; inset:0; background:#000; opacity:.45; pointer-events:none; }
-    .jmc-container{ position:relative; z-index:1; width:100%; max-width:1400px; margin:0 auto; padding:0 12px; height:100%; display:flex; flex-direction:column; }
-    .jmc-top-padding{ flex:0 0 var(--top-pad); height:var(--top-pad); }
-    .jmc-row{ flex:1 1 auto; min-height:0; display:flex; flex-wrap:wrap; align-items:stretch; }
-    .jmc-col{ width:100%; padding:12px; display:flex; } @media (min-width: 992px){ .jmc-col{ width:50%; } }
-    .jmc-module{ width:100%; display:flex; flex-direction:column; border:1px solid #6c757d; border-radius:.5rem; overflow:hidden; background:rgba(0,0,0,.2); }
-    .jmc-title{ margin:0; padding:.5rem .75rem; color:#fff; font-size:1rem; font-weight:600; }
-    .jmc-pane{ flex:1 1 auto; height:auto; min-height:0; width:100%; display:block; border:0; background:#000; }
-    .jmc-cal-viewport{ flex:1 1 auto; height:auto; min-height:0; overflow:hidden; background:transparent; }
-    .jmc-cal-viewport object{ height:calc(100% + var(--cal-top-crop)); width:100%; min-height:0; display:block; border:0; background:transparent; transform:translateY(calc(-1 * var(--cal-top-crop))); }
-  </style>
+<main id="main-content">
+<section class="events-calendar-section" id="events-calendar-section">
+  <div class="events-calendar-container">
+    <!-- Fond parallax -->
+    <div class="events-calendar-overlay" aria-hidden="true"></div>
+    <img class="events-calendar-background jarallax-img" src="assets/images/img-2829-2000x1000.jpg" alt="Fond d'événements La Meute Normande" loading="lazy">
 
-  <!-- Fond parallax (même image que l'accueil) -->
-  <div class="jmc-overlay" aria-hidden="true"></div>
-  <img class="jarallax-img" src="assets/images/img-2829-2000x1000.jpg" alt="Fond" loading="lazy">
-
-  <div class="jmc-container">
-    <div class="jmc-top-padding" aria-hidden="true"></div>
-    <div class="jmc-row">
-      <div class="jmc-col">
-        <div class="jmc-module">
-          <h5 class="jmc-title">Carte des événements</h5>
-          <iframe class="jmc-pane" title="Carte My Maps" allowfullscreen="" loading="lazy" src="https://www.google.com/maps/d/u/0/embed?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg&amp;ehbc=3A3A3c&amp;noprof=1&amp;hl=fr"></iframe>
+    <div class="events-calendar-content">
+      <div class="events-calendar-row">
+        <!-- Carte interactive Leaflet -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📍</span> Carte des événements
+            </h2>
+            <div class="events-calendar-body">
+              <div id="interactive-map"></div>
+              <div class="map-legend">
+                <div class="map-legend-title">Légende</div>
+                <div class="map-legend-item">
+                  <div class="map-legend-marker furry"></div>
+                  <span>Événement Furry</span>
+                </div>
+                <div class="map-legend-item">
+                  <div class="map-legend-marker other"></div>
+                  <span>Autre événement</span>
+                </div>
+                <div class="map-legend-item">
+                  <div class="map-legend-marker past"></div>
+                  <span>Événement passé</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="jmc-col">
-        <div class="jmc-module">
-          <h5 class="jmc-title">Calendrier des événements</h5>
-          <div class="jmc-cal-viewport">
-            <object class="jmc-pane" type="text/html" title="Calendrier Zoho" data="https://calendar.zoho.eu/zc/ui/embed/#calendar=zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c&amp;title=Calendrier%20des%20%C3%A9v%C3%A8nements&amp;type=1&amp;language=fr&amp;timezone=Europe%2FParis&amp;showTitle=0&amp;showTimezone=0&amp;startingDayOfWeek=1&amp;timeFormat=1&amp;view=month&amp;showDetail=0&amp;theme=1&amp;showAttendee=0&amp;showSwitchingViews=0&amp;expandAllday=0&amp;eventColorType=light&amp;showAllEvents=1">
-              <a href="https://calendar.zoho.eu/" target="_blank" rel="noopener">Ouvrir le calendrier</a>
-            </object>
+
+        <!-- Calendrier FullCalendar -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📅</span> Calendrier des événements
+            </h2>
+            <div class="events-calendar-body">
+              <div id="fullcalendar"></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <script>
-    (function(){
-      var root = document.currentScript && document.currentScript.parentNode;
-      if (!root || !root.classList || !root.classList.contains('jmc-section')) root = document.currentScript.closest('section');
-      if (!root) return;
-      var pad  = root.getAttribute('data-top-pad');  if (pad)  root.style.setProperty('--top-pad', pad + 'px');
-      var crop = root.getAttribute('data-cal-top');  if (crop) root.style.setProperty('--cal-top-crop', crop + 'px');
-      if (window.jarallax && root.classList.contains('jarallax')) {
-        try { jarallax(root, { speed: parseFloat(root.getAttribute('data-speed')) || 0.45, imgPosition: root.getAttribute('data-img-position') || '50% 40%' }); } catch(e){}
-      }
-    })();
-  </script>
 </section>
+</main>
+
+<!-- Popup personnalisée pour les événements -->
+<div id="eventModal" class="event-modal">
+  <div class="event-modal-content">
+    <button class="event-modal-close" onclick="closeEventModal()">&times;</button>
+    <div class="event-modal-header">
+      <h3 class="event-modal-title" id="modalTitle"></h3>
+    </div>
+    <div class="event-modal-body" id="modalBody"></div>
+  </div>
 </div>
- </div>
-  <input name="animation" type="hidden">
-  </body>
+
+<!-- Scripts -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/parallax/jarallax.js"></script>
+<script src="assets/theme/js/script.js"></script>
+<script src="assets/js/mobile-menu-fix.js"></script>
+<script src="assets/js/init.js"></script>
+
+<!-- Leaflet JS pour la carte interactive -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<!-- ICAL Parser -->
+<script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+
+<!-- Script carte interactive + calendrier -->
+<script src="assets/js/events-map-calendar.js"></script>
+
+</body>
 </html>

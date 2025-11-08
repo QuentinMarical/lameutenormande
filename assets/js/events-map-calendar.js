@@ -1,0 +1,576 @@
+// Système de carte interactive et calendrier synchronisés - HYBRIDE ULTRA-RAPIDE
+// Charge events.json pour les coordonnées GPS en fallback
+
+let map;
+let markers = [];
+let allEvents = [];
+let calendar;
+let eventsGeoData = {}; // Cache des coordonnées depuis events.json
+
+// Couleurs
+const COLOR_FURRY = '#43BCCD';
+const COLOR_OTHER = '#DDA600';
+const COLOR_PAST = '#999';
+
+// Mots-clés pour détecter les événements furry
+const FURRY_KEYWORDS = ['furry', 'furries', 'fursona', 'fursuit', 'anthro', 'canthro', 'faun'];
+
+/**
+ * Détecte si un événement est furry
+ */
+function isFurryEvent(title) {
+  const titleLower = title.toLowerCase();
+  return FURRY_KEYWORDS.some(keyword => titleLower.includes(keyword));
+}
+
+/**
+ * Vérifie si un événement est passé
+ */
+function isPastEvent(endDate) {
+  return new Date(endDate) < new Date();
+}
+
+/**
+ * Initialise la carte Leaflet
+ */
+function initMap() {
+  map = L.map('interactive-map').setView([47.0, 2.0], 6);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(map);
+  
+  console.log('? Carte Leaflet initialisée');
+}
+
+/**
+ * Charge les coordonnées GPS depuis events.json
+ */
+async function loadEventsGeoData() {
+  try {
+    const response = await fetch('assets/data/events.json');
+    if (response.ok) {
+      const events = await response.json();
+      
+      console.log('?? Chargement events.json...', events.length, 'événements');
+      
+      // Créer un index par nom de ville/lieu ET par titre
+      events.forEach(event => {
+        if (event.location && event.location.lat && event.location.lng) {
+          // CORRECTION: utiliser lat/lng (pas latitude/longitude)
+          const coords = {
+            lat: event.location.lat,
+            lng: event.location.lng,
+            name: event.location.name || event.location.address
+          };
+          
+          // Index par titre principal (en minuscules pour matching)
+          const titleKey = event.title.toLowerCase().trim();
+          eventsGeoData[titleKey] = coords;
+          
+          // Index par titres alternatifs si disponibles
+          if (event.alternativeTitles && Array.isArray(event.alternativeTitles)) {
+            event.alternativeTitles.forEach(altTitle => {
+              const altKey = altTitle.toLowerCase().trim();
+              eventsGeoData[altKey] = coords;
+            });
+          }
+          
+          // Index par nom de ville (si disponible)
+          if (event.location.name) {
+            const nameKey = event.location.name.toLowerCase().trim();
+            eventsGeoData[nameKey] = coords;
+            
+            // Index aussi par première partie du nom (ex: "Saint-Denis" de "Saint-Denis, France")
+            const cityPart = event.location.name.split(',')[0].toLowerCase().trim();
+            if (cityPart !== nameKey) {
+              eventsGeoData[cityPart] = coords;
+            }
+          }
+          
+          // Index par adresse
+          if (event.location.address) {
+            const addrKey = event.location.address.toLowerCase().trim();
+            eventsGeoData[addrKey] = coords;
+          }
+          
+          console.log(`  ?? ${event.title} ? ${coords.lat}, ${coords.lng}`);
+        }
+      });
+      
+      console.log(`? ${Object.keys(eventsGeoData).length} clés d'index GPS créées`);
+    }
+  } catch (e) {
+    console.error('? Erreur chargement events.json:', e);
+  }
+}
+
+/**
+ * Cherche les coordonnées GPS pour un événement
+ */
+function findGeoCoordinates(event) {
+  const location = event.location || '';
+  const title = event.title || '';
+  
+  // 1. Essayer d'extraire depuis le texte location (format: lat,lng AVANT le texte)
+  // Recherche format: "48.9667,2.5167 Paris" ou "geo:48.9667,2.5167 Paris"
+  const geoMatch = location.match(/^(geo:)?([-\d.]+),\s*([-\d.]+)/);
+  if (geoMatch) {
+    const lat = parseFloat(geoMatch[2]);
+    const lng = parseFloat(geoMatch[3]);
+    // Valider que ce sont de vraies coordonnées (France: lat 41-51, lng -5 à 10)
+    if (lat >= 41 && lat <= 51 && lng >= -5 && lng <= 10) {
+      console.log(`?? GPS extrait du texte pour "${title}": ${lat}, ${lng}`);
+      return {
+        lat: lat,
+        lng: lng,
+        name: location.replace(geoMatch[0], '').trim()
+      };
+    }
+  }
+  
+  // 2. Chercher dans events.json par titre exact
+  const titleKey = title.toLowerCase().trim();
+  if (eventsGeoData[titleKey]) {
+    console.log(`?? GPS trouvé pour "${title}" via titre exact`);
+    return eventsGeoData[titleKey];
+  }
+  
+  // 3. Normaliser les titres avec accents et variations
+  const normalizedTitle = titleKey
+    .replace(/é/g, 'e')
+    .replace(/è/g, 'e')
+    .replace(/ê/g, 'e')
+    .replace(/à/g, 'a')
+    .replace(/ù/g, 'u')
+    .replace(/ô/g, 'o')
+    .replace(/'/g, "'");
+  
+  for (const [key, coords] of Object.entries(eventsGeoData)) {
+    const normalizedKey = key
+      .replace(/é/g, 'e')
+      .replace(/è/g, 'e')
+      .replace(/ê/g, 'e')
+      .replace(/à/g, 'a')
+      .replace(/ù/g, 'u')
+      .replace(/ô/g, 'o')
+      .replace(/'/g, "'");
+    
+    if (normalizedTitle === normalizedKey) {
+      console.log(`?? GPS trouvé pour "${title}" via titre normalisé`);
+      return coords;
+    }
+  }
+  
+  // 4. Chercher dans events.json par nom de ville
+  const locationKey = location.toLowerCase().trim();
+  if (eventsGeoData[locationKey]) {
+    console.log(`?? GPS trouvé pour "${location}" via nom exact`);
+    return eventsGeoData[locationKey];
+  }
+  
+  // 5. Chercher par correspondance partielle sur la ville
+  const locationParts = locationKey.split(/[,\s]+/);
+  for (const part of locationParts) {
+    if (part.length > 4 && eventsGeoData[part]) {
+      console.log(`?? GPS trouvé pour "${location}" via partie "${part}"`);
+      return eventsGeoData[part];
+    }
+  }
+  
+  // 6. Chercher en retirant les numéros de rue de l'adresse
+  const locationWithoutNumbers = locationKey.replace(/^\d+\s+/, '').trim();
+  for (const [key, coords] of Object.entries(eventsGeoData)) {
+    if (key.includes(locationWithoutNumbers) || locationWithoutNumbers.includes(key)) {
+      console.log(`?? GPS trouvé pour "${location}" via adresse partielle "${key}"`);
+      return coords;
+    }
+  }
+  
+  // 7. Dernière tentative : chercher si une clé contient le titre ou vice versa
+  for (const [key, coords] of Object.entries(eventsGeoData)) {
+    if (titleKey.length > 5 && (titleKey.includes(key) || key.includes(titleKey))) {
+      console.log(`?? GPS trouvé pour "${title}" via matching partiel avec "${key}"`);
+      return coords;
+    }
+  }
+  
+  console.warn(`? Pas de GPS pour: "${title}" (lieu: "${location}")`);
+  return null;
+}
+
+/**
+ * Crée un marqueur sur la carte - INSTANTANÉ
+ */
+function createMarker(lat, lng, event) {
+  if (!lat || !lng || isNaN(lat) || isNaN(lng)) {
+    console.error(`? Coordonnées invalides pour ${event.title}:`, lat, lng);
+    return;
+  }
+  
+  const isFurry = event.extendedProps.isFurry;
+  const isPast = isPastEvent(event.end || event.start);
+  
+  let markerColor = isFurry ? COLOR_FURRY : COLOR_OTHER;
+  if (isPast) markerColor = COLOR_PAST;
+  
+  const icon = L.divIcon({
+    className: 'custom-marker',
+    html: `<div style="background-color: ${markerColor}; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.4); cursor: pointer;"></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15]
+  });
+  
+  const marker = L.marker([lat, lng], { icon: icon });
+  
+  const startDate = new Date(event.start);
+  const endDate = event.end ? new Date(event.end) : null;
+  
+  let dateStr = startDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (endDate && endDate.getTime() !== startDate.getTime()) {
+    dateStr += ' - ' + endDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  
+  const popupContent = `
+    <div class="map-popup">
+      <div class="map-popup-title">${isFurry ? '??' : '??'} ${event.title}</div>
+      <div class="map-popup-date">?? ${dateStr}</div>
+      <div class="map-popup-location">?? ${event.extendedProps.locationName || event.extendedProps.location}</div>
+      <button class="map-popup-btn ${isFurry ? 'furry' : 'other'}" onclick="openEventModalFromMap('${event.id}')">
+        Voir les détails
+      </button>
+    </div>
+  `;
+  
+  marker.bindPopup(popupContent, { maxWidth: 300, closeButton: true });
+  marker.addTo(map);
+  markers.push({ marker, event });
+  
+  console.log(`? Marqueur ajouté: ${event.title} à [${lat}, ${lng}]`);
+}
+
+window.openEventModalFromMap = function(eventId) {
+  const event = allEvents.find(e => e.id === eventId);
+  if (event) {
+    map.closePopup();
+    openEventModal(event);
+  }
+};
+
+function openEventModal(event) {
+  const modal = document.getElementById('eventModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  
+  const isFurry = event.extendedProps.isFurry;
+  const emoji = isFurry ? '??' : '??';
+  
+  modalTitle.innerHTML = `<span class="event-modal-emoji">${emoji}</span> ${event.title}`;
+  
+  let bodyHTML = '';
+  
+  if (event.start) {
+    const startDate = new Date(event.start);
+    const endDate = event.end ? new Date(event.end) : null;
+    
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit' };
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">??</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Date & Heure</div>
+          <div class="event-info-text">
+            ${startDate.toLocaleDateString('fr-FR', dateOptions)}
+            ${startDate.getHours() !== 0 ? ' à ' + startDate.toLocaleTimeString('fr-FR', timeOptions) : ''}
+    `;
+    
+    if (endDate && endDate.getTime() !== startDate.getTime()) {
+      bodyHTML += `
+            <br>? ${endDate.toLocaleDateString('fr-FR', dateOptions)}
+            ${endDate.getHours() !== 0 ? ' à ' + endDate.toLocaleTimeString('fr-FR', timeOptions) : ''}
+      `;
+    }
+    
+    bodyHTML += '</div></div></div>';
+  }
+  
+  if (event.extendedProps.location || event.extendedProps.locationName) {
+    const locationText = event.extendedProps.location || event.extendedProps.locationName;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">??</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Lieu</div>
+          <div class="event-info-text">
+            <a href="${mapsUrl}" target="_blank" rel="noopener">${locationText}</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  if (event.extendedProps.description) {
+    let description = event.extendedProps.description;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    description = description.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">??</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Description</div>
+          <div class="event-info-text event-description">${description}</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  bodyHTML += `
+    <div style="text-align: center;">
+      <span class="event-badge">${isFurry ? '?? Événement Furry' : '?? Autre Événement'}</span>
+    </div>
+  `;
+  
+  if (event.extendedProps.location || event.extendedProps.locationName) {
+    const locationText = event.extendedProps.location || event.extendedProps.locationName;
+    
+    const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(locationText)}&navigate=yes`;
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(locationText)}`;
+    const appleMapsUrl = `https://maps.apple.com/?daddr=${encodeURIComponent(locationText)}`;
+    
+    bodyHTML += `
+      <div class="event-navigation-buttons">
+        <a href="${wazeUrl}" target="_blank" rel="noopener" class="event-nav-btn waze">
+          <span>Waze</span>
+        </a>
+        <a href="${googleMapsUrl}" target="_blank" rel="noopener" class="event-nav-btn google-maps">
+          <span>Google Maps</span>
+        </a>
+        <a href="${appleMapsUrl}" target="_blank" rel="noopener" class="event-nav-btn apple-plans">
+          <span>Apple Plans</span>
+        </a>
+      </div>
+    `;
+  }
+  
+  modalBody.innerHTML = bodyHTML;
+  modal.style.display = 'block';
+  
+  modal.onclick = function(e) {
+    if (e.target === modal) closeEventModal();
+  };
+  
+  document.addEventListener('keydown', handleEscapeKey);
+}
+
+function closeEventModal() {
+  document.getElementById('eventModal').style.display = 'none';
+  document.removeEventListener('keydown', handleEscapeKey);
+}
+
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') closeEventModal();
+}
+
+/**
+ * Charge les événements depuis Zoho Calendar - ULTRA RAPIDE
+ */
+async function loadEvents() {
+  const icalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
+  const corsProxy = 'https://corsproxy.io/?';
+  
+  try {
+    console.log('?? Chargement des événements depuis Zoho...');
+    
+    const response = await fetch(corsProxy + encodeURIComponent(icalUrl));
+    if (!response.ok) throw new Error('Erreur chargement iCal');
+    
+    const icalData = await response.text();
+    console.log('? iCal Zoho chargé, parsing...');
+    
+    const jcalData = ICAL.parse(icalData);
+    const comp = new ICAL.Component(jcalData);
+    const vevents = comp.getAllSubcomponents('vevent');
+    
+    console.log('?? Événements Zoho trouvés:', vevents.length);
+    
+    const events = vevents.map(vevent => {
+      const event = new ICAL.Event(vevent);
+      const isFurry = isFurryEvent(event.summary);
+      const color = isFurry ? COLOR_FURRY : COLOR_OTHER;
+      
+      // Chercher les coordonnées GPS
+      const geoData = findGeoCoordinates({
+        title: event.summary,
+        location: event.location || ''
+      });
+      
+      return {
+        id: event.uid,
+        title: event.summary,
+        start: event.startDate.toJSDate(),
+        end: event.endDate.toJSDate(),
+        backgroundColor: color,
+        borderColor: color,
+        extendedProps: {
+          location: event.location,
+          locationName: geoData ? geoData.name : event.location,
+          description: event.description || '',
+          isFurry: isFurry,
+          lat: geoData ? geoData.lat : null,
+          lng: geoData ? geoData.lng : null
+        }
+      };
+    });
+    
+    allEvents = events;
+    
+    console.log('? Événements parsés:', events.length);
+    
+    // Mettre à jour carte et calendrier en parallèle
+    updateMap(events);
+    updateCalendar(events);
+    
+    const furryCount = events.filter(e => e.extendedProps.isFurry).length;
+    const otherCount = events.filter(e => !e.extendedProps.isFurry).length;
+    const withCoords = events.filter(e => e.extendedProps.lat && e.extendedProps.lng).length;
+    
+    console.log(`? ${events.length} événements (${furryCount} furry, ${otherCount} autres)`);
+    console.log(`?? ${withCoords}/${events.length} événements avec GPS`);
+    
+    if (withCoords < events.length) {
+      console.warn(`?? ${events.length - withCoords} événements SANS GPS !`);
+    }
+    
+    showSuccessMessage(events.length, furryCount, otherCount);
+    
+  } catch (error) {
+    console.error('? Erreur:', error);
+    showErrorMessage();
+  }
+}
+
+/**
+ * Met à jour la carte - INSTANTANÉ
+ */
+function updateMap(events) {
+  console.log('??? Mise à jour de la carte...');
+  
+  // Effacer anciens marqueurs
+  markers.forEach(m => m.marker.remove());
+  markers = [];
+  
+  // Ajouter marqueurs INSTANTANÉMENT (déjà les coordonnées GPS !)
+  events.forEach(event => {
+    if (event.extendedProps.lat && event.extendedProps.lng) {
+      createMarker(event.extendedProps.lat, event.extendedProps.lng, event);
+    } else {
+      console.warn(`?? Pas de GPS pour: ${event.title}`);
+    }
+  });
+  
+  console.log(`? ${markers.length}/${events.length} marqueurs ajoutés`);
+  
+  // Auto-zoom sur marqueurs
+  if (markers.length > 0) {
+    const group = L.featureGroup(markers.map(m => m.marker));
+    map.fitBounds(group.getBounds().pad(0.1));
+  } else {
+    console.error('? AUCUN marqueur ajouté !');
+  }
+}
+
+/**
+ * Met à jour le calendrier
+ */
+function updateCalendar(events) {
+  const calendarEl = document.getElementById('fullcalendar');
+  
+  if (calendar) calendar.destroy();
+  
+  calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    locale: 'fr',
+    firstDay: 1,
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,dayGridWeek,listMonth'
+    },
+    buttonText: {
+      today: "Aujourd'hui",
+      month: 'Mois',
+      week: 'Semaine',
+      list: 'Liste'
+    },
+    events: events,
+    eventClick: function(info) {
+      info.jsEvent.preventDefault();
+      openEventModal(info.event);
+    },
+    eventDidMount: function(info) {
+      const isFurry = info.event.extendedProps.isFurry;
+      info.el.title = (isFurry ? '?? ' : '?? ') + info.event.title + 
+        (info.event.extendedProps.locationName ? '\n?? ' + info.event.extendedProps.locationName : '') +
+        '\n' + (isFurry ? '?? Événement furry' : '?? Autre événement');
+    },
+    height: '100%',
+    aspectRatio: 1.5,
+    eventDisplay: 'block',
+    displayEventTime: false,
+    weekNumbers: false,
+    navLinks: true,
+    editable: false,
+    dayMaxEvents: 3,
+    moreLinkText: 'plus'
+  });
+
+  calendar.render();
+  console.log('? Calendrier mis à jour');
+}
+
+function showSuccessMessage(total, furry, other) {
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position: fixed; top: 100px; right: 20px; background: rgba(67, 188, 205, 0.95); color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; z-index: 9999; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+  msg.innerHTML = `? ${total} événements chargés<br><small>?? ${furry} furry · ?? ${other} autres</small>`;
+  document.body.appendChild(msg);
+  
+  setTimeout(() => {
+    msg.style.transition = 'opacity 0.5s';
+    msg.style.opacity = '0';
+    setTimeout(() => msg.remove(), 500);
+  }, 4000);
+}
+
+function showErrorMessage() {
+  document.getElementById('fullcalendar').innerHTML = `
+    <div style="padding: 2rem; color: #fff; text-align: center;">
+      <h3>? Erreur de chargement</h3>
+      <p>Impossible de charger les événements depuis Zoho Calendar.</p>
+    </div>
+  `;
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('?? Initialisation système hybride...');
+  
+  initMap();
+  
+  // Charger les coordonnées GPS depuis events.json AVANT Zoho
+  await loadEventsGeoData();
+  
+  // Charger les événements depuis Zoho
+  loadEvents();
+  
+  // Actualisation auto toutes les 5 minutes
+  setInterval(() => {
+    console.log('?? Actualisation...');
+    loadEvents();
+  }, 5 * 60 * 1000);
+});

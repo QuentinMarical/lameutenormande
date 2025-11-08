@@ -1,0 +1,221 @@
+﻿# 🗓️ Système de Calendrier Interactif avec Zoho Calendar
+
+## ✨ Fonctionnalités
+
+- **Synchronisation Zoho Calendar** via flux iCal (auto-update!)
+- **Calendrier FullCalendar** moderne et responsive
+- **Google Maps intégré** avec marqueurs
+- **Couleurs automatiques** selon le type d'événement
+- **Fallback intelligent** sur events.json local
+- **Responsive** mobile & desktop
+- **Accessible** (WCAG 2.1 AA)
+
+---
+
+## 🔄 **SYNCHRONISATION AUTOMATIQUE**
+
+### Comment ça marche ?
+
+1. **Vous ajoutez** un événement dans Zoho Calendar
+2. **Le site charge** automatiquement le flux iCal
+3. **L'événement apparaît** dans FullCalendar
+4. **Pas besoin** de modifier events.json !
+
+### URL iCal configurée :
+```
+https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c
+```
+
+---
+
+## 🎨 **Détection automatique des couleurs**
+
+Le système détecte automatiquement le type d'événement selon le titre :
+
+| Mots-clés dans le titre | Couleur | Hex |
+|-------------------------|---------|-----|
+| "convention", "con " | 🟠 Orange | #DDA600 |
+| "meet", "rencontre" | 🟣 Violet | #662E9B |
+| "picnic", "pique", "repas" | 🟢 Vert | #23BA74 |
+| "noël", "noel", "galette" | 🔴 Rouge | #BC2130 |
+| Autre | 🔵 Bleu | #43BCCD |
+
+**Exemple :**
+- "Convention Rouen 2025" → 🟠 Orange
+- "Meetup Le Havre" → 🟣 Violet
+- "Pique-nique Normandie" → 🟢 Vert
+
+---
+
+## ⚙️ Configuration (DÉJÀ FAIT !)
+
+### ✅ Ce qui est configuré :
+
+1. **Flux iCal Zoho** - Intégré dans Événements.html
+2. **Parser iCal.js** - Chargé depuis CDN
+3. **Proxy CORS** - corsproxy.io pour contourner les restrictions
+4. **Fallback** - events.json en secours
+5. **Serveur local** - start-server.bat prêt
+
+### 🌐 Lancer le site :
+
+```bash
+# Option 1 : Fichier BAT
+Double-clic sur start-server.bat
+
+# Option 2 : Commande manuelle
+python -m http.server 8000
+```
+
+Puis ouvrir : **http://localhost:8000/Événements.html**
+
+---
+
+## 📝 Ajouter des événements
+
+### Méthode 1 : Zoho Calendar (RECOMMANDÉ)
+
+1. Aller sur https://calendar.zoho.eu/
+2. Ajouter un événement avec :
+   - **Titre** : Nom de l'événement (utilisez les mots-clés pour la couleur)
+   - **Date/Heure** : Quand ça se passe
+   - **Lieu** : Où ça se passe
+   - **Description** : Détails supplémentaires
+3. Sauvegarder
+4. **Actualiser** la page web → L'événement apparaît !
+
+### Méthode 2 : events.json (Fallback)
+
+Si Zoho est inaccessible, éditer `assets/data/events.json` :
+
+```json
+{
+  "id": "mon-event",
+  "title": "Nom de l'événement",
+  "start": "2025-06-15",
+  "end": "2025-06-16",
+  "location": {
+    "lat": 49.4432,
+    "lng": 1.0993,
+    "name": "Ville, Pays",
+    "address": "Adresse complète"
+  },
+  "description": "Description",
+  "color": "#43BCCD",
+  "type": "convention"
+}
+```
+
+---
+
+## 🎯 Avantages vs Zoho iframe
+
+| Fonctionnalité | Zoho iframe | FullCalendar + iCal |
+|---------------|-------------|---------------------|
+| **Responsive mobile** | ⚠️ Limité | ✅ Excellent |
+| **Personnalisation** | ❌ Non | ✅ Total |
+| **Couleurs par type** | ❌ Non | ✅ Oui |
+| **Performance** | ⚠️ Moyen | ✅ Rapide |
+| **Offline fallback** | ❌ Non | ✅ Oui (events.json) |
+| **Synchronisation** | ✅ Oui | ✅ Oui |
+| **Accessibilité** | ⚠️ Limitée | ✅ WCAG 2.1 |
+
+---
+
+## 🔧 Workflow Mobirise
+
+1. **Modifier dans Mobirise** (design, structure)
+2. **Exporter** vers `C:\Users\maric\Documents\TEST\`
+3. **Exécuter** `.\reinject-optimizations.ps1`
+4. **Tester** localement avec `start-server.bat`
+5. **Déployer**
+
+Le script va **automatiquement** :
+- ✅ Ré-ajouter les liens CSS/JS
+- ✅ Ré-injecter le système calendrier
+- ✅ Corriger les liens et textes
+
+---
+
+## 🐛 Dépannage
+
+### La carte ne s'affiche pas
+
+- ✅ Vérifier que vous êtes sur `http://localhost:8000` (pas `file://`)
+- ✅ Vérifier la connexion Internet
+
+### Le calendrier est vide
+
+**Vérifier la console (F12) :**
+
+```
+✅ Bon : "iCal chargé, parsing..."
+✅ Bon : "Événements trouvés: X"
+✅ Bon : "✅ Calendrier initialisé avec X événements"
+
+❌ Erreur : "Erreur chargement iCal"
+  → Le fallback events.json se charge automatiquement
+
+❌ Erreur : "Failed to fetch"
+  → Vérifier que le serveur local est lancé
+```
+
+### Après export Mobirise, ça ne marche plus
+
+```powershell
+.\reinject-optimizations.ps1
+```
+
+---
+
+## 📚 Technologies utilisées
+
+- **FullCalendar 6.1.10** - Calendrier interactif
+- **iCal.js 1.5.0** - Parser de fichiers iCal
+- **corsproxy.io** - Proxy CORS gratuit
+- **Google Maps** - Carte iframe
+- **Zoho Calendar** - Source des événements
+
+---
+
+## 🎯 Exemple d'événement Zoho
+
+**Dans Zoho Calendar, créer :**
+
+- **Titre** : "Convention Rouen 2025"
+- **Date début** : 15/06/2025 10:00
+- **Date fin** : 16/06/2025 18:00
+- **Lieu** : Rouen, France
+- **Description** : Grande convention furry en Normandie
+
+**Résultat dans FullCalendar :**
+- 🟠 Couleur orange (détecté "Convention")
+- 📅 Affiché sur 2 jours
+- 📍 Lieu visible au clic
+- ✨ Tooltip au survol
+
+---
+
+## 💡 Conseils
+
+### Pour de meilleures couleurs :
+
+Utilisez ces mots dans vos titres Zoho :
+- **"Convention"** ou **"Con "** → Orange
+- **"Meet"** ou **"Rencontre"** → Violet  
+- **"Picnic"** ou **"Repas"** → Vert
+- **"Noël"** ou **"Galette"** → Rouge
+
+### Pour la carte Google Maps :
+
+Éditez vos marqueurs dans :
+https://www.google.com/maps/d/edit?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg
+
+---
+
+**Fichier** : `CALENDAR_README.md`  
+**Version** : 2.0 (Zoho iCal Integration)  
+**Compatibilité** : Mobirise 6.x  
+**Date** : Novembre 2025
+
+🐾 **Votre calendrier est maintenant synchronisé avec Zoho ! Plus besoin de tout gérer manuellement ! 🎉**

@@ -1,0 +1,171 @@
+﻿# 🐾 Script de Réinjection des Optimisations
+# À exécuter après chaque export depuis Mobirise
+
+Write-Host "🐾 La Meute Normande - Script de Réinjection des Optimisations" -ForegroundColor Cyan
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host ""
+
+$projectPath = $PSScriptRoot
+
+# Fonction pour insérer du contenu avant une balise
+function Insert-BeforeTag {
+    param($filePath, $searchTag, $contentToInsert)
+    
+    if (Test-Path $filePath) {
+        $content = Get-Content $filePath -Raw -Encoding UTF8
+        
+        if ($content -notmatch [regex]::Escape($contentToInsert)) {
+            $content = $content -replace $searchTag, "$contentToInsert`n$searchTag"
+            Set-Content $filePath -Value $content -Encoding UTF8 -NoNewline
+            Write-Host "? Modifié: $filePath" -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "??  Déjà présent dans: $filePath" -ForegroundColor Yellow
+            return $false
+        }
+    } else {
+        Write-Host "? Fichier non trouvé: $filePath" -ForegroundColor Red
+        return $false
+    }
+}
+
+# Fonction pour remplacer du texte
+function Replace-Text {
+    param($filePath, $oldText, $newText)
+    
+    if (Test-Path $filePath) {
+        $content = Get-Content $filePath -Raw -Encoding UTF8
+        
+        if ($content -match [regex]::Escape($oldText)) {
+            $content = $content -replace [regex]::Escape($oldText), $newText
+            Set-Content $filePath -Value $content -Encoding UTF8 -NoNewline
+            Write-Host "? Remplacé dans: $filePath" -ForegroundColor Green
+            return $true
+        } else {
+            Write-Host "??  Texte déjà correct dans: $filePath" -ForegroundColor Yellow
+            return $false
+        }
+    } else {
+        Write-Host "? Fichier non trouvé: $filePath" -ForegroundColor Red
+        return $false
+    }
+}
+
+Write-Host "?? Étape 1/6 : Ajout des meta tags SEO..." -ForegroundColor Cyan
+
+$metaTags = @'
+  <link rel="manifest" href="manifest.json">
+  <meta name="keywords" content="furry, haute-normandie, normandie, conventions, communauté, groupe, événements">
+  <meta name="author" content="La Meute Normande">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="La Meute Normande - Communauté Furry Haute-Normandie">
+  <meta property="og:description" content="Un groupe de furry déjanté en Haute-Normandie! Rejoignez notre communauté.">
+  <meta property="og:image" content="assets/images/logo-206x86.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="La Meute Normande">
+  <meta name="twitter:description" content="Un groupe de furry déjanté en Haute-Normandie!">
+'@
+
+Insert-BeforeTag -filePath "$projectPath\index.html" -searchTag "<title>" -contentToInsert $metaTags
+Insert-BeforeTag -filePath "$projectPath\Événements.html" -searchTag "<title>" -contentToInsert $metaTags
+
+Write-Host ""
+Write-Host "📱 Étape 2/6 : Ajout des liens CSS et JS personnalisés..." -ForegroundColor Cyan
+
+$customCSS = '  <link rel="stylesheet" href="assets/css/custom-optimizations.css">'
+Insert-BeforeTag -filePath "$projectPath\index.html" -searchTag "</head>" -contentToInsert $customCSS
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</head>" -contentToInsert $customCSS
+
+# Ajouter le CSS du système de calendrier pour la page événements
+$eventsCalendarCSS = '  <link rel="stylesheet" href="assets/css/events-calendar.css">'
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</head>" -contentToInsert $eventsCalendarCSS
+
+$mobileMenuFixJS = '<script src="assets/js/mobile-menu-fix.js"></script>'
+Insert-BeforeTag -filePath "$projectPath\index.html" -searchTag "<script src=`"assets/js/init.js`"></script>" -contentToInsert $mobileMenuFixJS
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "<script src=`"assets/js/init.js`"></script>" -contentToInsert $mobileMenuFixJS
+
+$customJS = '<script src="assets/js/init.js"></script>'
+Insert-BeforeTag -filePath "$projectPath\index.html" -searchTag "</body>" -contentToInsert $customJS
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</body>" -contentToInsert $customJS
+
+# Ajouter Google Maps API
+$googleMapsAPI = '<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=Function.prototype" async defer></script>'
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</body>" -contentToInsert $googleMapsAPI
+
+# Ajouter le JS du système de calendrier pour la page événements
+$eventsCalendarJS = '<script src="assets/js/events-calendar.js"></script>'
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</body>" -contentToInsert $eventsCalendarJS
+
+# Ajouter le JS de correction du menu mobile
+$mobileMenuFixJS = '<script src="assets/js/mobile-menu-fix.js"></script>'
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "</body>" -contentToInsert $mobileMenuFixJS
+
+$skipLink = '  <!-- Skip to main content for accessibility -->' + "`n" + '  <a href="#main-content" class="skip-to-content">Aller au contenu principal</a>'
+Insert-BeforeTag -filePath "$projectPath\index.html" -searchTag "<body>" -contentToInsert $skipLink
+Insert-BeforeTag -filePath "$projectPath\événements.html" -searchTag "<body>" -contentToInsert $skipLink
+
+Write-Host ""
+Write-Host "?? Étape 3/6 : Correction des liens placeholder..." -ForegroundColor Cyan
+
+# Corrections dans index.html
+Replace-Text -filePath "$projectPath\index.html" -oldText 'href="https://mobiri.se" aria-expanded="false">photos' -newText 'href="#photos">Photos'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'href="https://mobiri.se">contact' -newText 'href="#contact">Contact'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'href="https://mobiri.se">rejoignez-nous' -newText 'href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer">Rejoignez-nous'
+
+# Corrections dans Événements.html
+Replace-Text -filePath "$projectPath\Événements.html" -oldText 'href="https://mobiri.se" aria-expanded="false">photos' -newText 'href="index.html#photos">Photos'
+Replace-Text -filePath "$projectPath\Événements.html" -oldText 'href="https://mobiri.se">contact' -newText 'href="index.html#contact">Contact'
+
+Write-Host ""
+Write-Host "?? Étape 4/6 : Correction des fautes d'orthographe..." -ForegroundColor Cyan
+
+Replace-Text -filePath "$projectPath\index.html" -oldText 'auquel on participe' -newText 'auxquels on participe'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'passé et future' -newText 'passés et futurs'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'Où somme-nous' -newText 'Où sommes-nous'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'alt="OwO"' -newText 'alt="Logo La Meute Normande"'
+
+Replace-Text -filePath "$projectPath\Événements.html" -oldText 'alt="OwO"' -newText 'alt="Logo La Meute Normande"'
+
+Write-Host ""
+Write-Host "?? Étape 5/6 : Ajout des attributs de sécurité..." -ForegroundColor Cyan
+
+# Ajouter rel="noopener noreferrer" sur les liens externes
+Replace-Text -filePath "$projectPath\index.html" -oldText 'href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank">' -newText 'href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer" aria-label="Rejoignez-nous sur Telegram">'
+Replace-Text -filePath "$projectPath\index.html" -oldText 'href="https://www.instagram.com/la.meute_normande" target="_blank">' -newText 'href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" aria-label="Suivez-nous sur Instagram">'
+
+Replace-Text -filePath "$projectPath\Événements.html" -oldText 'href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank">' -newText 'href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer" aria-label="Rejoignez-nous sur Telegram">'
+Replace-Text -filePath "$projectPath\Événements.html" -oldText 'href="https://www.instagram.com/la.meute_normande" target="_blank">' -newText 'href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" aria-label="Suivez-nous sur Instagram">'
+
+Write-Host ""
+Write-Host "?? Étape 6/6 : Amélioration des titres sémantiques..." -ForegroundColor Cyan
+
+Replace-Text -filePath "$projectPath\index.html" -oldText '<h6 class="mbr-section-subtitle' -newText '<h2 class="mbr-section-subtitle'
+Replace-Text -filePath "$projectPath\index.html" -oldText '</h6>' -newText '</h2>'
+Replace-Text -filePath "$projectPath\index.html" -oldText '<h5 class="card-title' -newText '<h3 class="card-title'
+Replace-Text -filePath "$projectPath\index.html" -oldText '</h5>' -newText '</h3>'
+
+Write-Host ""
+Write-Host "================================================================" -ForegroundColor Cyan
+Write-Host "✅ Script terminé avec succès!" -ForegroundColor Green
+Write-Host ""
+Write-Host "📊 Résumé des modifications:" -ForegroundColor Yellow
+Write-Host "  • Meta tags SEO ajoutés" -ForegroundColor White
+Write-Host "  • CSS/JS personnalisés liés" -ForegroundColor White
+Write-Host "  • Système calendrier interactif installé" -ForegroundColor White
+Write-Host "  • Liens placeholder corrigés" -ForegroundColor White
+Write-Host "  • Fautes d'orthographe corrigées" -ForegroundColor White
+Write-Host "  • Attributs de sécurité ajoutés" -ForegroundColor White
+Write-Host "  • Structure HTML améliorée" -ForegroundColor White
+Write-Host ""
+Write-Host "⚠️  IMPORTANT: N'oubliez pas de remplacer YOUR_API_KEY" -ForegroundColor Yellow
+Write-Host "   par votre vraie clé Google Maps API !" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "🎯 Conseil: Testez votre site après avoir exécuté ce script!" -ForegroundColor Cyan
+Write-Host ""
+
+# Pause pour voir les résultats
+Read-Host "Appuyez sur Entrée pour fermer..."

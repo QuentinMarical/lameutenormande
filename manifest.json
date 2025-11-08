@@ -1,0 +1,17 @@
+{
+  "name": "La Meute Normande",
+  "short_name": "Meute Normande",
+  "description": "Communauté Furry en Haute-Normandie",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/images/macaron-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }
+  ]
+}

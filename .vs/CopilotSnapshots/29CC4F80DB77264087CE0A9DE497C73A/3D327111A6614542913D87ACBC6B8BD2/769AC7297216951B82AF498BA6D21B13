@@ -1,0 +1,668 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Mobirise v6.0.6, mobirise.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="assets/images/macaron-128x128.png" type="image/x-icon">
+  <link rel="manifest" href="manifest.json">
+  <meta name="description" content="Découvrez tous les événements auxquels participe La Meute Normande. Consultez notre carte et notre calendrier des événements furry en Normandie.">
+  <meta name="keywords" content="événements furry, conventions, normandie, calendrier, carte événements">
+  <meta name="author" content="La Meute Normande">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Événements - La Meute Normande">
+  <meta property="og:description" content="Découvrez tous nos événements passés et à venir">
+  
+  <title>Événements - La Meute Normande</title>
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/animatecss/animate.css">
+  <link rel="stylesheet" href="assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="assets/theme/css/style.css">
+  <link href="assets/fonts/style.css" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brygada+1918:wght@400;700&display=swap"></noscript>
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kL5fRe" type="text/css">
+  <link rel="stylesheet" href="assets/css/custom-optimizations.css">
+  <link rel="stylesheet" href="assets/css/events-calendar.css">
+  
+  <!-- FullCalendar CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css">
+  
+  <!-- Styles pour la popup personnalisée -->
+  <style>
+    .event-modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-in;
+    }
+    
+    .event-modal-content {
+      position: relative;
+      background: linear-gradient(135deg, rgba(67, 188, 205, 0.95) 0%, rgba(102, 46, 155, 0.95) 100%);
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 1.5rem;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: slideDown 0.3s ease-out;
+      overflow: hidden;
+    }
+    
+    .event-modal-header {
+      padding: 2rem 2rem 1.5rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .event-modal-title {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .event-modal-emoji {
+      font-size: 2.5rem;
+    }
+    
+    .event-modal-body {
+      padding: 2rem;
+      color: #fff;
+    }
+    
+    .event-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 0.75rem;
+      backdrop-filter: blur(10px);
+    }
+    
+    .event-info-icon {
+      font-size: 1.5rem;
+      min-width: 30px;
+      text-align: center;
+    }
+    
+    .event-info-content {
+      flex: 1;
+    }
+    
+    .event-info-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    
+    .event-info-text {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+    
+    .event-info-text a {
+      color: #fff;
+      text-decoration: underline;
+      text-decoration-color: rgba(255, 255, 255, 0.5);
+      text-decoration-thickness: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .event-info-text a:hover {
+      text-decoration-color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    .event-description {
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+    
+    .event-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    
+    /* Boutons d'itinéraire */
+    .event-navigation-buttons {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .event-nav-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 0.875rem 1.25rem;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 0.75rem;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+    
+    .event-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      color: #fff;
+      text-decoration: none;
+    }
+    
+    .event-nav-btn:active {
+      transform: translateY(0);
+    }
+    
+    .event-nav-icon {
+      font-size: 1.2rem;
+    }
+    
+    .event-modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      line-height: 1;
+      padding: 0;
+    }
+    
+    .event-modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg) scale(1.1);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .event-modal-content {
+        margin: 10% auto;
+        width: 95%;
+      }
+      
+      .event-modal-header {
+        padding: 1.5rem 1.5rem 1rem;
+      }
+      
+      .event-modal-title {
+        font-size: 1.4rem;
+      }
+      
+      .event-modal-body {
+        padding: 1.5rem;
+      }
+      
+      .event-info-row {
+        padding: 0.75rem;
+      }
+      
+      .event-navigation-buttons {
+        flex-direction: column;
+      }
+      
+      .event-nav-btn {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to main content for accessibility -->
+  <a href="#main-content" class="skip-to-content">Aller au contenu principal</a>
+  
+  <section data-bs-version="5.1" class="menu menu2 cid-uUdZRAoUyl" once="menu" id="menu02-3">
+	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="index.html" aria-label="Accueil La Meute Normande">
+						<img src="assets/images/logo-206x86.png" alt="Logo La Meute Normande" style="height: 3.3rem;">
+					</a>
+				</span>
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
+					<li class="nav-item">
+						<a class="nav-link link text-white text-primary display-2" href="Événements.html" aria-current="page">Événements</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-white display-2" href="index.html#photos">Photos</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-white display-2" href="index.html#contact">Contact</a>
+					</li>
+				</ul>
+				<div class="icons-menu">
+					<a class="iconfont-wrapper" href="https://t.me/+Kv0RM5JpSJw4NzRk" target="_blank" rel="noopener noreferrer" aria-label="Rejoignez-nous sur Telegram">
+						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
+					</a>
+					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" aria-label="Suivez-nous sur Instagram">
+						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+</section>
+
+<main id="main-content">
+<section class="events-calendar-section" id="events-calendar-section">
+  <div class="events-calendar-container">
+    <!-- Fond parallax -->
+    <div class="events-calendar-overlay" aria-hidden="true"></div>
+    <img class="events-calendar-background jarallax-img" src="assets/images/img-2829-2000x1000.jpg" alt="Fond d'événements La Meute Normande" loading="lazy">
+
+    <div class="events-calendar-content">
+      <div class="events-calendar-row">
+        <!-- Carte Google Maps -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📍</span> Carte des événements
+            </h2>
+            <div class="events-calendar-body">
+              <iframe 
+                id="google-map"
+                src="https://www.google.com/maps/d/u/0/embed?mid=1WRE4KOTMhnBxaiavDsXBI8QEWNYwCLg&ehbc=3A3A3c&noprof=1&hl=fr"
+                style="width: 100%; height: 100%; border: none;"
+                allowfullscreen
+                loading="lazy"
+                title="Carte des événements La Meute Normande">
+              </iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendrier FullCalendar -->
+        <div class="events-calendar-col">
+          <div class="events-calendar-module">
+            <h2 class="events-calendar-title">
+              <span aria-hidden="true">📅</span> Calendrier des événements
+            </h2>
+            <div class="events-calendar-body">
+              <div id="fullcalendar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- Popup personnalisée pour les événements -->
+<div id="eventModal" class="event-modal">
+  <div class="event-modal-content">
+    <button class="event-modal-close" onclick="closeEventModal()">&times;</button>
+    <div class="event-modal-header">
+      <h3 class="event-modal-title" id="modalTitle"></h3>
+    </div>
+    <div class="event-modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/parallax/jarallax.js"></script>
+<script src="assets/theme/js/script.js"></script>
+<script src="assets/js/mobile-menu-fix.js"></script>
+<script src="assets/js/init.js"></script>
+
+<!-- FullCalendar JS -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<!-- ICAL Parser -->
+<script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+
+<!-- Script popup + calendrier -->
+<script>
+// Fonctions de gestion de la popup
+function openEventModal(event) {
+  const modal = document.getElementById('eventModal');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  
+  const isFurry = event.extendedProps.isFurry;
+  const emoji = isFurry ? '🐾' : '🎮';
+  
+  // Titre
+  modalTitle.innerHTML = `<span class="event-modal-emoji">${emoji}</span> ${event.title}`;
+  
+  // Contenu
+  let bodyHTML = '';
+  
+  // Dates
+  if (event.start) {
+    const startDate = new Date(event.start);
+    const endDate = event.end ? new Date(event.end) : null;
+    
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit' };
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">📅</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Date & Heure</div>
+          <div class="event-info-text">
+            ${startDate.toLocaleDateString('fr-FR', dateOptions)}
+            ${startDate.getHours() !== 0 ? ' à ' + startDate.toLocaleTimeString('fr-FR', timeOptions) : ''}
+    `;
+    
+    if (endDate && endDate.getTime() !== startDate.getTime()) {
+      bodyHTML += `
+            <br>→ ${endDate.toLocaleDateString('fr-FR', dateOptions)}
+            ${endDate.getHours() !== 0 ? ' à ' + endDate.toLocaleTimeString('fr-FR', timeOptions) : ''}
+      `;
+    }
+    
+    bodyHTML += `
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Lieu avec lien Google Maps
+  if (event.extendedProps.location) {
+    const locationText = event.extendedProps.location;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">📍</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Lieu</div>
+          <div class="event-info-text">
+            <a href="${mapsUrl}" target="_blank" rel="noopener">${locationText}</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Description
+  if (event.extendedProps.description) {
+    // Détecter les URLs dans la description et les rendre cliquables
+    let description = event.extendedProps.description;
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    description = description.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    
+    bodyHTML += `
+      <div class="event-info-row">
+        <div class="event-info-icon">📝</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Description</div>
+          <div class="event-info-text event-description">${description}</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Badge type
+  bodyHTML += `
+    <div style="text-align: center;">
+      <span class="event-badge">${isFurry ? '🔵 Événement Furry' : '🟠 Autre Événement'}</span>
+    </div>
+  `;
+  
+  // Boutons d'itinéraire
+  if (event.extendedProps.location) {
+    const locationText = event.extendedProps.location;
+    const wazeUrl = `https://waze.com/ul?q=${encodeURIComponent(locationText)}`;
+    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(locationText)}`;
+    const appleMapsUrl = `http://maps.apple.com/?q=${encodeURIComponent(locationText)}`;
+    
+    bodyHTML += `
+      <div class="event-navigation-buttons">
+        <a href="${wazeUrl}" target="_blank" class="event-nav-btn" rel="noopener">
+          <span class="event-nav-icon">🌐</span> Itinéraire Waze
+        </a>
+        <a href="${googleMapsUrl}" target="_blank" class="event-nav-btn" rel="noopener">
+          <span class="event-nav-icon">🗺️</span> Itinéraire Google Maps
+        </a>
+        <a href="${appleMapsUrl}" target="_blank" class="event-nav-btn" rel="noopener">
+          <span class="event-nav-icon">🍏</span> Itinéraire Apple Maps
+        </a>
+      </div>
+    `;
+  }
+  
+  modalBody.innerHTML = bodyHTML;
+  modal.style.display = 'block';
+  
+  // Fermeture au clic en dehors
+  modal.onclick = function(e) {
+    if (e.target === modal) {
+      closeEventModal();
+    }
+  };
+  
+  // Fermeture avec Escape
+  document.addEventListener('keydown', handleEscapeKey);
+}
+
+function closeEventModal() {
+  const modal = document.getElementById('eventModal');
+  modal.style.display = 'none';
+  document.removeEventListener('keydown', handleEscapeKey);
+}
+
+function handleEscapeKey(e) {
+  if (e.key === 'Escape') {
+    closeEventModal();
+  }
+}
+
+// Initialisation du calendrier
+document.addEventListener('DOMContentLoaded', function() {
+  const calendarEl = document.getElementById('fullcalendar');
+  
+  if (!calendarEl) {
+    console.error('Element #fullcalendar non trouvé');
+    return;
+  }
+
+  const icalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
+  const corsProxy = 'https://corsproxy.io/?';
+  
+  const COLOR_FURRY = '#43BCCD';
+  const COLOR_OTHER = '#DDA600';
+  
+  const FURRY_KEYWORDS = ['furry', 'furries', 'fursona', 'fursuit', 'anthro', 'canthro', 'faun'];
+  
+  function isFurryEvent(title) {
+    const titleLower = title.toLowerCase();
+    return FURRY_KEYWORDS.some(keyword => titleLower.includes(keyword));
+  }
+  
+  fetch(corsProxy + encodeURIComponent(icalUrl))
+    .then(response => {
+      if (!response.ok) throw new Error('Erreur chargement iCal');
+      return response.text();
+    })
+    .then(icalData => {
+      console.log('✅ iCal Zoho chargé, parsing...');
+      
+      const jcalData = ICAL.parse(icalData);
+      const comp = new ICAL.Component(jcalData);
+      const vevents = comp.getAllSubcomponents('vevent');
+      
+      console.log('📅 Événements trouvés:', vevents.length);
+      
+      const events = vevents.map(vevent => {
+        const event = new ICAL.Event(vevent);
+        const color = isFurryEvent(event.summary) ? COLOR_FURRY : COLOR_OTHER;
+        const emoji = isFurryEvent(event.summary) ? '🐾' : '🎮';
+        
+        console.log(`  ${emoji} ${event.summary} → ${color === COLOR_FURRY ? 'Bleu (Furry)' : 'Orange (Autre)'}`);
+        
+        return {
+          id: event.uid,
+          title: event.summary,
+          start: event.startDate.toJSDate(),
+          end: event.endDate.toJSDate(),
+          description: event.description || '',
+          location: event.location || '',
+          backgroundColor: color,
+          borderColor: color,
+          extendedProps: {
+            location: event.location,
+            description: event.description,
+            isFurry: isFurryEvent(event.summary)
+          }
+        };
+      });
+      
+      console.log('✅ Événements parsés:', events.length);
+      console.log('🔵 Événements furry:', events.filter(e => e.extendedProps.isFurry).length);
+      console.log('🟠 Autres événements:', events.filter(e => !e.extendedProps.isFurry).length);
+      
+      // Créer le calendrier
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        firstDay: 1, // 🔥 LUNDI EN PREMIER !
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,dayGridWeek,listMonth'
+        },
+        buttonText: {
+          today: "Aujourd'hui",
+          month: 'Mois',
+          week: 'Semaine',
+          list: 'Liste'
+        },
+        events: events,
+        eventClick: function(info) {
+          info.jsEvent.preventDefault();
+          openEventModal(info.event); // 🔥 POPUP PERSONNALISÉE !
+        },
+        eventDidMount: function(info) {
+          const isFurry = info.event.extendedProps.isFurry;
+          info.el.title = (isFurry ? '🐾 ' : '🎮 ') + info.event.title + 
+            (info.event.extendedProps.location ? '\n📍 ' + info.event.extendedProps.location : '') +
+            '\n' + (isFurry ? '🔵 Événement furry' : '🟠 Autre événement');
+        },
+        height: '100%',
+        aspectRatio: 1.5,
+        eventDisplay: 'block',
+        displayEventTime: false, // 🔥 PAS D'HEURE DANS LE TITRE !
+        weekNumbers: false,
+        navLinks: true,
+        editable: false,
+        dayMaxEvents: 3,
+        moreLinkText: 'plus'
+      });
+
+      calendar.render();
+      
+      const furryCount = events.filter(e => e.extendedProps.isFurry).length;
+      const otherCount = events.filter(e => !e.extendedProps.isFurry).length;
+      
+      console.log(`✅ Calendrier initialisé : ${events.length} événements depuis Zoho (${furryCount} furry, ${otherCount} autres)`);
+      
+      const successMsg = document.createElement('div');
+      successMsg.style.cssText = 'position: fixed; top: 100px; right: 20px; background: rgba(67, 188, 205, 0.95); color: white; padding: 1rem 1.5rem; border-radius: 0.5rem; z-index: 9999; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+      successMsg.innerHTML = `✅ ${events.length} événements chargés<br><small>🔵 ${furryCount} furry · 🟠 ${otherCount} autres</small>`;
+      document.body.appendChild(successMsg);
+      
+      setTimeout(() => {
+        successMsg.style.transition = 'opacity 0.5s';
+        successMsg.style.opacity = '0';
+        setTimeout(() => successMsg.remove(), 500);
+      }, 4000);
+    })
+    .catch(error => {
+      console.error('❌ Erreur chargement iCal:', error);
+      calendarEl.innerHTML = `
+        <div style="padding: 2rem; color: #fff; text-align: center;">
+          <h3>❌ Erreur de chargement</h3>
+          <p>Impossible de charger les événements depuis Zoho Calendar.</p>
+          <p><small>Vérifiez votre connexion Internet ou contactez l'administrateur.</small></p>
+        </div>
+      `;
+    });
+});
+</script>
+
+</body>
+</html>

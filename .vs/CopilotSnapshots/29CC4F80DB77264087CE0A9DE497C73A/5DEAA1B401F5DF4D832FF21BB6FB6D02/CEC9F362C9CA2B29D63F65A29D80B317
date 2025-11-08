@@ -1,0 +1,465 @@
+﻿/* ==========================================================================
+   Système de Navigation par Onglets pour la Page Événements
+   Mobile: Tabs avec fade effect | Desktop: Côte à côte
+   ========================================================================== */
+
+/* ===========================
+   CONTAINER PRINCIPAL
+   =========================== */
+.events-section {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  /* Padding pour la navbar fixe sur mobile */
+  padding-top: 80px;
+}
+
+.events-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Fond parallax */
+.events-overlay {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  opacity: 0.45;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.events-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 40%;
+  z-index: 0;
+}
+
+/* ===========================
+   CONTENT WRAPPER
+   =========================== */
+.events-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+}
+
+.events-top-padding {
+  flex: 0 0 40px;
+  height: 40px;
+}
+
+.events-cards-wrapper {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+   NAVIGATION PAR ONGLETS (MOBILE)
+   =========================== */
+.events-tabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.5rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.events-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.375rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Effet de hover */
+.events-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
+/* État actif avec surbrillance */
+.events-tab-btn.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+}
+
+/* Animation de surbrillance */
+.events-tab-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  50%, 100% {
+    left: 100%;
+  }
+}
+
+.events-tab-icon {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.events-tab-btn.active .events-tab-icon {
+  transform: scale(1.1);
+}
+
+.events-tab-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===========================
+   CONTAINER DES CARTES
+   =========================== */
+.events-cards-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.events-cards-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===========================
+   CARTES INDIVIDUELLES
+   =========================== */
+.events-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0 8px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
+  pointer-events: none;
+}
+
+/* Carte active avec effet fade */
+.events-card.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.events-card-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(108, 117, 125, 0.5);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Contenu de la carte */
+.events-card-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* iframes */
+.events-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: #000;
+}
+
+/* Viewport du calendrier */
+.events-calendar-viewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  position: relative;
+}
+
+.events-calendar-object {
+  /* Élargir pour masquer les bords noirs des deux côtés */
+  width: calc(100% + 20px);
+  height: 100%;
+  border: none;
+  display: block;
+  background: transparent;
+  /* Décalage vers la gauche pour centrer et masquer les bords */
+  margin-left: -10px;
+  padding: 0;
+  /* Masquer tout débordement */
+  overflow: hidden;
+}
+
+/* ===========================
+   RESPONSIVE : TABLETTE
+   =========================== */
+@media (min-width: 768px) {
+  .events-tab-btn {
+    font-size: 1rem;
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .events-card {
+    padding: 0 0.5rem;
+  }
+}
+
+/* ===========================
+   RESPONSIVE : DESKTOP
+   =========================== */
+@media (min-width: 992px) {
+  /* En desktop, pas de changement au padding-top (navbar gérée différemment) */
+  .events-section {
+    padding-top: 80px;
+  }
+
+  /* Masquer la navigation par onglets sur desktop */
+  .events-tabs-nav {
+    display: none;
+  }
+  
+  /* Réorganiser pour affichage côte à côte */
+  .events-cards-stack {
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .events-card {
+    position: relative;
+    flex: 0 0 50%;
+    width: 50%;
+    padding: 0 0.75rem;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+  }
+  
+  /* Ajuster les cartes pour desktop */
+  .events-card-inner {
+    border: 1px solid rgba(108, 117, 125, 0.6);
+  }
+  
+  /* Meilleur espacement */
+  .events-content {
+    padding: 0 24px;
+  }
+}
+
+/* ===========================
+   RESPONSIVE : GRAND ÉCRAN
+   =========================== */
+@media (min-width: 1200px) {
+  .events-content {
+    max-width: 1600px;
+  }
+  
+  .events-card {
+    padding: 0 1rem;
+  }
+}
+
+/* ===========================
+   ÉTATS ET INTERACTIONS
+   =========================== */
+
+/* État de chargement */
+.events-card.loading .events-iframe {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  background-size: 200% 100%;
+  animation: loadingShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Focus pour accessibilité */
+.events-tab-btn:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}
+
+/* ===========================
+   MODE SOMBRE / CLAIR
+   =========================== */
+@media (prefers-color-scheme: light) {
+  .events-card-inner {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(108, 117, 125, 0.3);
+  }
+  
+  .events-tabs-nav {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .events-tab-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .events-tab-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.8);
+  }
+  
+  .events-tab-btn.active {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.4);
+    color: #000;
+  }
+}
+
+/* ===========================
+   PRINT
+   =========================== */
+@media print {
+  .events-tabs-nav,
+  .events-overlay {
+    display: none !important;
+  }
+  
+  .events-cards-stack {
+    display: block;
+  }
+  
+  .events-card {
+    position: relative;
+    opacity: 1;
+    visibility: visible;
+    page-break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+}
+
+/* ===========================
+   PERFORMANCE
+   =========================== */
+
+/* Optimisation GPU */
+.events-card,
+.events-card-inner,
+.events-tab-btn {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ===========================
+   ACCESSIBILITÉ
+   =========================== */
+
+/* Respect des préférences d'animation */
+@media (prefers-reduced-motion: reduce) {
+  .events-card,
+  .events-tab-btn,
+  .events-tab-icon {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .events-tab-btn.active::before {
+    animation: none !important;
+  }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+  .events-card-inner {
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+  
+  .events-tab-btn {
+    border-width: 2px;
+  }
+  
+  .events-tab-btn.active {
+    border-color: rgba(255, 255, 255, 0.8);
+  }
+}
+
+/* Taille de texte personnalisée */
+@media (max-width: 374px) {
+  .events-tab-text {
+    font-size: 0.75rem;
+  }
+  
+  .events-tab-icon {
+    width: 16px;
+    height: 16px;
+  }
+}

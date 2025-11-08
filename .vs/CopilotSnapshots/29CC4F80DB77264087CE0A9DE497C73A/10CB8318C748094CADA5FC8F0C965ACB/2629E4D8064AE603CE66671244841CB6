@@ -1,0 +1,155 @@
+﻿/* ==========================================================================
+   Optimisations CSS personnalisées pour La Meute Normande
+   ========================================================================== */
+
+/* Performance: Utilisation de containment pour optimiser le rendu */
+/* Fallback compatible validateurs et navigateurs */
+.container,
+.mbr-section {
+  contain: layout paint;
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+.nav-link {
+  text-decoration: none;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  text-decoration: underline;
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 4px;
+}
+
+/* Optimisation des images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Amélioration de la lisibilité */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Optimisation pour les animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus visible pour l'accessibilité au clavier */
+*:focus-visible {
+  outline: 2px solid #ffc107;
+  outline-offset: 2px;
+}
+
+/* Amélioration des boutons */
+.btn {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover,
+.btn:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Optimisation des iframes */
+iframe {
+  border: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* Amélioration du skip-to-content pour l'accessibilité */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 9999;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Optimisation responsive */
+@media (max-width: 768px) {
+  .jmc-section {
+    height: auto !important;
+    min-height: 100vh;
+  }
+  
+  .jmc-col {
+    width: 100% !important;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Amélioration du contraste pour le texte sur fond sombre */
+.mbr-white {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Loading lazy pour les images de fond */
+.mbr-parallax-background {
+  will-change: transform;
+}
+
+/* Optimisation des performances pour le scroll */
+.navbar-fixed-top {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Amélioration de la carte et du calendrier */
+.jmc-module {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.jmc-module:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Print styles */
+@media print {
+  nav,
+  .navbar,
+  .mbr-arrow,
+  .icons-menu {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+}
