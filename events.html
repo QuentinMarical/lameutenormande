@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html  >
+<head>
+  
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <meta name="description" content="">
+  
+  
+  <title>Événements</title>
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="assets/theme/css/style.css">
+  <link href="assets/fonts/style.css" rel="stylesheet">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=UQ7KY3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=UQ7KY3" type="text/css">
+
+  
+  
+  
+</head>
+<body>
+  
+  <section data-bs-version="5.1" class="menu menu2 cid-v2D2HLImen" once="menu" id="menu02-4">
+	
+
+	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="index.html">
+						<img src="assets/images/logo-96x40.png" alt="La Meute Normande" style="height: 3.7rem;">
+					</a>
+				</span>
+				
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
+						<a class="nav-link link text-white text-primary display-4" href="events.html">Événements</a>
+					</li>
+					
+					<li class="nav-item">
+						<a class="nav-link link text-white text-primary display-4" href="contact.html">Contact</a>
+					</li></ul>
+				<div class="icons-menu">
+					<a class="iconfont-wrapper" href="https://t.me/Annonces_Meute_Normande">
+						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(12, 44, 104); fill: rgb(12, 44, 104);"></span>
+					</a>
+					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande">
+						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(249, 44, 80); fill: rgb(249, 44, 80);"></span>
+					</a>
+					
+					
+				</div>
+				
+			</div>
+		</div>
+	</nav>
+</section>
+
+<section class="mbr-section mbr-section--no-padding cid-v2DoFDRAW7" id="witsec-html-block-7">
+
+
+
+
+
+<style>
+/* CSS DE LA MODALE */
+.event-modal {
+  display: none !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.event-modal.show {
+  display: flex !important;
+}
+
+.event-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: -1;
+  cursor: pointer;
+}
+
+.event-modal-content {
+  position: relative;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.98) 0%, rgba(118, 75, 162, 0.98) 100%);
+  padding: 0;
+  border-radius: 1.5rem;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  max-height: 80vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.event-modal-title {
+  margin: 0;
+  padding: 2rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.event-modal-body {
+  padding: 2rem;
+  color: #fff;
+}
+
+.event-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0.75rem;
+}
+
+.event-info-icon {
+  font-size: 1.5rem;
+  min-width: 30px;
+  flex-shrink: 0;
+}
+
+.event-info-content {
+  flex: 1;
+}
+
+.event-info-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.event-info-text {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  word-break: break-word;
+  margin-bottom: 0.75rem;
+}
+
+.event-info-text a {
+  color: #ffc107;
+  text-decoration: underline;
+  transition: all 0.3s;
+}
+
+.event-location-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.location-btn {
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.location-google {
+  background: rgba(66, 133, 244, 0.8);
+  border-color: #4285F4;
+}
+
+.location-google:hover {
+  background: #4285F4;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.5);
+  transform: translateY(-2px);
+}
+
+.location-waze {
+  background: rgba(0, 198, 219, 0.8);
+  border-color: #00C6DB;
+}
+
+.location-waze:hover {
+  background: #00C6DB;
+  box-shadow: 0 4px 12px rgba(0, 198, 219, 0.5);
+  transform: translateY(-2px);
+}
+
+.location-apple {
+  background: rgba(155, 155, 155, 0.8);
+  border-color: #9B9B9B;
+}
+
+.location-apple:hover {
+  background: #9B9B9B;
+  box-shadow: 0 4px 12px rgba(155, 155, 155, 0.5);
+  transform: translateY(-2px);
+}
+
+.event-url-button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: rgba(76, 175, 80, 0.9);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.event-url-button:hover {
+  background: #4CAF50;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+  transform: translateY(-2px);
+}
+
+.event-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  z-index: 1;
+}
+
+.event-modal-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg) scale(1.1);
+}
+</style>
+
+<div class="container container-calendar">
+  <div class="calendar-zone">
+    <div class="calendar-wrapper" id="calendar-wrapper">
+      <div class="calendar-header">
+        <button class="calendar-arrow-btn calendar-prev">‹</button>
+        <div class="calendar-controls-center">
+          <button class="calendar-btn calendar-today">Aujourd'hui</button>
+          <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
+          <button class="calendar-btn" id="btn-toggle-fullscreen">Plein écran</button>
+          <span class="calendar-month">Décembre 2024</span>
+        </div>
+        <button class="calendar-arrow-btn calendar-next">›</button>
+      </div>
+      <div class="fullcalendar-container"></div>
+    </div>
+  </div>
+</div>
+
+<div class="event-modal">
+  <div class="event-modal-overlay"></div>
+  <div class="event-modal-content">
+    <button class="event-modal-close">×</button>
+    <h3 class="event-modal-title"></h3>
+    <div class="event-modal-body"></div>
+  </div>
+</div>
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<script>
+'use strict';
+(function() {
+  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  let calendar = null, currentDate = new Date(), lastDisplayedMonth = null, updateTimeout = null;
+  let currentView = 'dayGridMonth', isFullscreen = false, loadedEvents = [];
+  const isMobile = () => window.innerWidth <= 768;
+  const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
+
+  function closeEventModal() {
+    const modal = document.querySelector('.event-modal');
+    if (modal) modal.classList.remove('show');
+  }
+
+  function openEventModal(event, props) {
+    const modal = document.querySelector('.event-modal');
+    const modalTitle = document.querySelector('.event-modal-title');
+    const modalBody = document.querySelector('.event-modal-body');
+    if (!modal || !modalTitle || !modalBody) return;
+    modalTitle.textContent = props.summary || event.title;
+    let bodyHTML = '';
+    if (props.startDate) {
+      const startStr = props.startDate.toLocaleDateString('fr-FR', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      bodyHTML += `<div class="event-info-row">
+        <div class="event-info-icon">📅</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Du</div>
+          <div class="event-info-text">${startStr}</div>
+        </div>
+      </div>`;
+    }
+    if (props.endDate && props.endDate.toDateString() !== props.startDate.toDateString()) {
+      const endStr = props.endDate.toLocaleDateString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+      const duration = Math.ceil((props.endDate - props.startDate) / (1000*60*60*24)) + 1;
+      bodyHTML += `<div class="event-info-row">
+        <div class="event-info-icon">🏁</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Au</div>
+          <div class="event-info-text">${endStr} (${duration} jours)</div>
+        </div>
+      </div>`;
+    }
+    if (props.location) {
+      const encodedLocation = encodeURIComponent(props.location);
+      bodyHTML += `<div class="event-info-row">
+        <div class="event-info-icon">📍</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Lieu</div>
+          <div class="event-info-text">${props.location}</div>
+          <div class="event-location-buttons">
+            <a href="https://www.google.com/maps/search/${encodedLocation}" target="_blank" rel="noopener" class="location-btn location-google">Google Maps</a>
+            <a href="https://www.waze.com/ul?q=${encodedLocation}" target="_blank" rel="noopener" class="location-btn location-waze">Waze</a>
+            <a href="http://maps.apple.com/?q=${encodedLocation}" target="_blank" rel="noopener" class="location-btn location-apple">Apple Plans</a>
+          </div>
+        </div>
+      </div>`;
+    }
+    if (props.description) {
+      bodyHTML += `<div class="event-info-row">
+        <div class="event-info-icon">📝</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Description</div>
+          <div class="event-info-text">${props.description}</div>
+        </div>
+      </div>`;
+    }
+    if (props.url && props.url.trim()) {
+      bodyHTML += `<div class="event-info-row">
+        <div class="event-info-icon">🔗</div>
+        <div class="event-info-content">
+          <div class="event-info-label">Lien de l'événement</div>
+          <div class="event-info-text">
+            <a href="${props.url}" target="_blank" rel="noopener" class="event-url-button">Accéder au site</a>
+          </div>
+        </div>
+      </div>`;
+    }
+    modalBody.innerHTML = bodyHTML;
+    modal.classList.add('show');
+  }
+
+  function updateMonthLabel(date) {
+    const monthEl = document.querySelector('.calendar-month');
+    if (monthEl && date) monthEl.textContent = monthNames[date.getMonth()] + ' ' + date.getFullYear();
+  }
+
+  function consolidateMultiDayEvents(events) {
+    const mapByUID = {};
+    events.forEach(ev => {
+      // Group by UID
+      if (!mapByUID[ev.id]) {
+        mapByUID[ev.id] = { ...ev };
+      } else {
+        // Extend date range if necessary
+        if (ev.start < mapByUID[ev.id].start) mapByUID[ev.id].start = ev.start;
+        if (ev.end > mapByUID[ev.id].end) mapByUID[ev.id].end = ev.end;
+      }
+    });
+
+    // Apply multi-day and past attributes
+    const now = new Date();
+    return Object.values(mapByUID).map(ev => {
+      const isPast = ev.end < now;
+      const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));
+      const classes = [];
+      if (days > 1) classes.push('fc-event-multiday');
+      if (isPast) classes.push('fc-event-past');
+      return { ...ev, classNames: classes };
+    });
+  }
+
+  function initCalendar(viewName) {
+    const calendarEl = document.querySelector('.fullcalendar-container');
+    if (calendar !== null) calendar.destroy();
+    calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: viewName,
+      initialDate: currentDate,
+      locale: 'fr',
+      firstDay: 1,
+      headerToolbar: false,
+      height: isFullscreen ? '100%' : 'auto',
+      contentHeight: isFullscreen ? '100%' : 'auto',
+      dayMaxEvents: false,
+      dayMaxEventRows: false,
+      eventMaxStack: 99,
+      eventDisplay: 'block',
+      allDaySlot: true,
+      slotMinTime: '06:00:00',
+      slotMaxTime: '23:00:00',
+      slotLabelInterval: '01:00:00',
+      events: loadedEvents,
+      eventClick: function(info) {
+        info.jsEvent.preventDefault();
+        openEventModal(info.event, info.event.extendedProps);
+      },
+      datesSet: function(info) {
+        if (updateTimeout) clearTimeout(updateTimeout);
+        updateTimeout = setTimeout(() => {
+          const displayDate = info.view.currentStart || info.start;
+          updateMonthLabel(displayDate);
+        }, 50);
+      }
+    });
+    calendar.render();
+    currentView = viewName;
+    updateMonthLabel(currentDate);
+  }
+
+  function toggleView() {
+    const btnToggleView = document.getElementById('btn-toggle-view');
+    if (currentView === 'dayGridMonth') {
+      initCalendar('listMonth');
+      if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
+    } else {
+      initCalendar('dayGridMonth');
+      if (btnToggleView) btnToggleView.textContent = 'Vue Liste';
+    }
+  }
+
+  function toggleFullscreen() {
+    const wrapper = document.getElementById('calendar-wrapper');
+    const btnFullscreen = document.getElementById('btn-toggle-fullscreen');
+    isFullscreen = !isFullscreen;
+    if (isFullscreen) {
+      wrapper.classList.add('fullscreen-mode');
+      if (btnFullscreen) btnFullscreen.textContent = 'Quitter plein écran';
+    } else {
+      wrapper.classList.remove('fullscreen-mode');
+      if (btnFullscreen) btnFullscreen.textContent = 'Plein écran';
+    }
+    if (calendar) {
+      calendar.setOption('height', isFullscreen ? '100%' : 'auto');
+      calendar.setOption('contentHeight', isFullscreen ? '100%' : 'auto');
+    }
+  }
+
+  function handleOrientationChange() {
+    if (isMobile()) {
+      if (isPortrait()) {
+        if (isFullscreen) toggleFullscreen();
+        if (currentView !== 'listMonth') {
+          initCalendar('listMonth');
+          const btnToggleView = document.getElementById('btn-toggle-view');
+          if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
+        }
+      } else {
+        if (!isFullscreen) toggleFullscreen();
+        if (currentView !== 'dayGridMonth') {
+          initCalendar('dayGridMonth');
+          const btnToggleView = document.getElementById('btn-toggle-view');
+          if (btnToggleView) btnToggleView.textContent = 'Vue Liste';
+        }
+      }
+    }
+  }
+
+  setTimeout(function() {
+    const calendarEl = document.querySelector('.fullcalendar-container');
+    const prevBtn = document.querySelector('.calendar-prev');
+    const nextBtn = document.querySelector('.calendar-next');
+    const todayBtn = document.querySelector('.calendar-today');
+    const modalOverlay = document.querySelector('.event-modal-overlay');
+    const modalClose = document.querySelector('.event-modal-close');
+    const btnToggleView = document.getElementById('btn-toggle-view');
+    const btnToggleFullscreen = document.getElementById('btn-toggle-fullscreen');
+    if (!calendarEl) return;
+    if (modalClose) modalClose.onclick = closeEventModal;
+    if (modalOverlay) modalOverlay.onclick = closeEventModal;
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeEventModal();
+    });
+    if (btnToggleView) btnToggleView.onclick = toggleView;
+    if (btnToggleFullscreen) btnToggleFullscreen.onclick = toggleFullscreen;
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    (async function() {
+      try {
+        const response = await fetch('\\proxy-ical.php');
+        if (!response.ok) throw new Error('Erreur chargement iCal');
+        const icalText = await response.text();
+        const jcalData = ICAL.parse(icalText);
+        const comp = new ICAL.Component(jcalData);
+        const vevents = comp.getAllSubcomponents('vevent');
+        loadedEvents = [];
+        vevents.forEach((vevent, index) => {
+          try {
+            const event = new ICAL.Event(vevent);
+            if (!event.startDate) return;
+            let startDate = event.startDate.toJSDate();
+            let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);
+            const dtStartProp = vevent.getFirstProperty('dtstart');
+            const isAllDay = dtStartProp && dtStartProp.getParameter('value') === 'DATE';
+            if (isAllDay && endDate.getTime() !== startDate.getTime()) {
+              endDate.setDate(endDate.getDate() + 1);
+            }
+            let cleanTitle = event.summary || 'Sans titre';
+            cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, '');
+            cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, '');
+            cleanTitle = cleanTitle.trim();
+            let eventUrl = '';
+            if (event.component && event.component.getFirstPropertyValue) {
+              const urlProp = event.component.getFirstPropertyValue('url');
+              const attachProp = event.component.getFirstPropertyValue('attach');
+              eventUrl = urlProp || attachProp || '';
+            }
+            loadedEvents.push({
+              id: event.uid || `event-${index}`,
+              title: cleanTitle,
+              start: startDate,
+              end: endDate,
+              allDay: true,
+              display: 'block',
+              backgroundColor: '#667eea',
+              borderColor: '#667eea',
+              extendedProps: {
+                description: event.description || '',
+                location: event.location || '',
+                summary: cleanTitle,
+                startDate: startDate,
+                endDate: endDate,
+                url: eventUrl
+              }
+            });
+          } catch (e) { /* ignore */ }
+        });
+
+        // Consolidate multi-day events
+        loadedEvents = consolidateMultiDayEvents(loadedEvents);
+
+        if (isMobile() && isPortrait()) {
+          initCalendar('listMonth');
+          if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
+        } else {
+          initCalendar('dayGridMonth');
+          if (btnToggleView) btnToggleView.textContent = 'Vue Liste';
+        }
+        if (prevBtn) prevBtn.onclick = () => calendar && calendar.prev();
+        if (nextBtn) nextBtn.onclick = () => calendar && calendar.next();
+        if (todayBtn) todayBtn.onclick = () => {
+          if (calendar) {
+            calendar.today();
+            const today = new Date();
+            updateMonthLabel(today);
+          }
+        };
+      } catch (error) {
+        console.error('Calendar: Erreur', error);
+      }
+    })();
+  }, 100);
+})();
+</script>
+
+</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
+  
+  
+ <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
+  </body>
+</html>

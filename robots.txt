@@ -1,9 +1,4 @@
 User-agent: *
-Allow: /
+Disallow: /cgi-bin
 
-# Sitemap location
-Sitemap: https://votredomaine.com/sitemap.xml
 
-# Disallow admin/system files
-Disallow: /assets/
-Disallow: /.vs/
