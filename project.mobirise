@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "La Meute Normande",
-    "currentPage": "events.html",
+    "currentPage": "index.html",
     "theme": {
       "name": "startm5",
       "title": "StartM5",
@@ -67,7 +67,7 @@
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "yvidymgtpk",
+    "mbrsiteDomain": "mdjlzydkf2",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
@@ -1803,21 +1803,30 @@
               "background-image": "url(@bg-value)"
             },
             ".container-calendar": {
-              "max-width": "1100px",
+              "max-width": "1200px",
               "margin": "0 auto",
-              "padding": "0 1rem"
+              "padding": "0 0.75rem",
+              "width": "100%"
             },
             ".calendar-zone": {
-              "margin": "1rem 0",
+              "margin": "0.5rem 0",
               "display": "flex",
               "flex-direction": "column",
               "height": "100%",
-              "min-height": "100%"
+              "min-height": "100%",
+              "overflow-y": "hidden !important",
+              "-webkit-overflow-scrolling": "touch",
+              "scrollbar-width": "thin",
+              "scrollbar-color": "rgba(255, 255, 255, 0.3) transparent"
+            },
+            ".calendar-zone.list-view-active": {
+              "max-height": "none !important",
+              "overflow-y": "visible !important"
             },
             ".calendar-wrapper": {
               "background": "linear-gradient(135deg, #1e1e2e 0%, #2d2d3d 100%)",
-              "border-radius": "16px",
-              "padding": "1rem",
+              "border-radius": "12px",
+              "padding": "0.5rem",
               "box-shadow": "0 10px 40px rgba(0, 0, 0, 0.4)",
               "border": "1px solid rgba(255, 255, 255, 0.1)",
               "display": "flex",
@@ -1844,18 +1853,19 @@
               "display": "flex",
               "justify-content": "space-between",
               "align-items": "center",
-              "gap": "1rem",
-              "margin-bottom": "1rem",
+              "gap": "0.3rem",
+              "margin-bottom": "0.4rem",
               "flex-wrap": "wrap",
-              "flex-shrink": "0"
+              "flex-shrink": "0",
+              "padding": "0.2rem 0"
             },
             ".calendar-controls-center": {
               "display": "flex",
               "justify-content": "center",
               "align-items": "center",
-              "gap": "0.75rem",
+              "gap": "0.3rem",
               "flex": "1",
-              "min-width": "300px",
+              "min-width": "240px",
               "flex-wrap": "wrap"
             },
             ".calendar-arrow-btn": {
@@ -1863,9 +1873,9 @@
               "color": "white",
               "border": "none",
               "border-radius": "50%",
-              "width": "2.5rem",
-              "height": "2.5rem",
-              "font-size": "1.5rem",
+              "width": "1.75rem",
+              "height": "1.75rem",
+              "font-size": "1.2rem",
               "font-weight": "300",
               "cursor": "pointer",
               "transition": "all 0.3s",
@@ -1891,15 +1901,15 @@
               "order": "1"
             },
             ".calendar-btn": {
-              "padding": "0.6rem 1rem",
+              "padding": "0.35rem 0.5rem",
               "background": "#667eea",
               "color": "white",
               "border": "none",
-              "border-radius": "8px",
+              "border-radius": "6px",
               "font-weight": "600",
               "cursor": "pointer",
               "transition": "all 0.3s",
-              "font-size": "0.85rem",
+              "font-size": "0.65rem",
               "box-shadow": "0 4px 12px rgba(102, 126, 234, 0.3)",
               "white-space": "nowrap",
               "flex-shrink": "0"
@@ -1910,38 +1920,475 @@
               "box-shadow": "0 6px 16px rgba(118, 75, 162, 0.4)"
             },
             ".calendar-month": {
-              "font-size": "1.1rem",
+              "font-size": "0.8rem",
               "font-weight": "700",
               "color": "#ffffff",
-              "min-width": "150px",
+              "min-width": "100px",
               "text-align": "center",
               "flex-shrink": "0"
             },
             ".fullcalendar-container": {
               "width": "100%",
-              "flex": "1",
-              "overflow": "hidden",
+              "flex": "1 1 auto",
               "display": "flex",
-              "flex-direction": "column"
+              "flex-direction": "column",
+              "min-height": "0"
             },
             ".fc": {
               "font-family": "'Inter Tight', sans-serif",
               "color": "#ffffff",
               "height": "100%",
               "display": "flex",
+              "flex-direction": "column",
+              "width": "100%",
+              "max-width": "100%"
+            },
+            ".fc-listMonth-view": {
+              "max-height": "none !important",
+              "height": "auto !important"
+            },
+            ".fc-listMonth-view .fc-scroller": {
+              "overflow": "visible !important",
+              "max-height": "none !important",
+              "height": "auto !important"
+            },
+            ".fc-list": {
+              "max-height": "none !important",
+              "height": "auto !important"
+            },
+            ".fc *": {
+              "border-color": "rgba(255, 255, 255, 0.1)"
+            },
+            ".fc .fc-scroller": {
+              "overflow-x": "hidden",
+              "overflow-y": "auto",
+              "scrollbar-width": "thin"
+            },
+            ".fc .fc-view-harness, .fc .fc-view, .fc .fc-scrollgrid": {
+              "width": "100%",
+              "max-width": "100%",
+              "overflow-x": "hidden"
+            },
+            ".fc .fc-daygrid-table": {
+              "table-layout": "fixed !important",
+              "width": "100% !important",
+              "border-collapse": "collapse !important"
+            },
+            ".fc .fc-daygrid-day-frame": {
+              "overflow-x": "visible",
+              "min-height": "0",
+              "flex": "1",
+              "display": "flex",
+              "flex-direction": "column",
+              "overflow": "visible"
+            },
+            ".fc .fc-list-table": {
+              "width": "100%",
+              "table-layout": "auto",
+              "border-collapse": "collapse"
+            },
+            ".fc .fc-event-title": {
+              "white-space": "normal",
+              "word-break": "break-word",
+              "overflow-wrap": "break-word",
+              "hyphens": "auto",
+              "font-weight": "600 !important",
+              "font-size": "0.7rem !important",
+              "overflow": "hidden",
+              "text-overflow": "ellipsis",
+              "padding": "0 !important",
+              "line-height": "1.2"
+            },
+            ".fc .fc-daygrid": {
+              "flex": "1",
+              "display": "flex",
               "flex-direction": "column"
+            },
+            ".fc .fc-daygrid-body": {
+              "flex": "1",
+              "display": "flex",
+              "flex-direction": "column",
+              "overflow": "hidden"
+            },
+            ".fc .fc-col-header-cell": {
+              "background": "linear-gradient(135deg, #2d2d3d 0%, #3d3d4d 100%)",
+              "color": "#ffffff",
+              "font-weight": "700",
+              "padding": "0.3rem",
+              "text-align": "center",
+              "text-transform": "uppercase",
+              "font-size": "0.65rem",
+              "letter-spacing": "0.3px",
+              "border": "1px solid rgba(255, 255, 255, 0.1)",
+              "flex-shrink": "0"
+            },
+            ".fc .fc-daygrid-day": {
+              "background": "rgba(30, 30, 46, 0.5)",
+              "border": "1px solid rgba(255, 255, 255, 0.1)",
+              "vertical-align": "top",
+              "padding": "0.15rem",
+              "position": "relative",
+              "flex": "1",
+              "min-height": "0",
+              "overflow": "visible"
+            },
+            ".fc .fc-daygrid-day:hover": {
+              "background": "rgba(102, 126, 234, 0.15)"
+            },
+            ".fc .fc-day-today": {
+              "background": "rgba(255, 193, 7, 0.15) !important",
+              "border": "2px solid #ffc107 !important"
+            },
+            ".fc .fc-day-other": {
+              "background": "rgba(20, 20, 30, 0.3)"
+            },
+            ".fc .fc-daygrid-day-number": {
+              "padding": "0.15rem",
+              "color": "#ffffff",
+              "font-weight": "700",
+              "font-size": "0.65rem",
+              "z-index": "1"
+            },
+            ".fc .fc-day-today .fc-daygrid-day-number": {
+              "background": "#ffc107",
+              "color": "#1e1e2e",
+              "width": "16px",
+              "height": "16px",
+              "border-radius": "50%",
+              "display": "flex",
+              "align-items": "center",
+              "justify-content": "center",
+              "box-shadow": "0 2px 8px rgba(255, 193, 7, 0.4)",
+              "padding": "0",
+              "font-size": "0.6rem"
+            },
+            ".fc .fc-daygrid-day-events": {
+              "margin-top": "0.15rem",
+              "overflow": "visible",
+              "flex": "1"
+            },
+            ".fc .fc-daygrid-block-event": {
+              "position": "relative",
+              "height": "auto !important",
+              "min-height": "1.3em !important"
+            },
+            ".fc .fc-daygrid-block-event .fc-event-main": {
+              "padding": "0.2rem 0.3rem !important",
+              "display": "flex",
+              "align-items": "center",
+              "height": "100% !important",
+              "min-height": "1.3em !important"
+            },
+            ".fc .fc-event": {
+              "font-size": "0.7rem !important",
+              "font-weight": "600 !important",
+              "padding": "2px 4px !important",
+              "border-radius": "6px !important",
+              "margin": "1px 0 !important",
+              "line-height": "1.2 !important",
+              "border": "none !important",
+              "box-shadow": "0 2px 4px rgba(0, 0, 0, 0.2) !important",
+              "transition": "all 0.3s ease !important"
+            },
+            ".fc-event-future": {
+              "background": "linear-gradient(135deg, #667eea, #764ba2) !important",
+              "border-color": "#667eea !important",
+              "color": "white !important"
+            },
+            ".fc-event-future:hover": {
+              "transform": "translateY(-2px) !important",
+              "box-shadow": "0 4px 12px rgba(102, 126, 234, 0.5) !important"
+            },
+            ".fc-event-now": {
+              "background": "linear-gradient(135deg, #4caf50, #45a049) !important",
+              "border-color": "#4CAF50 !important",
+              "color": "white !important",
+              "box-shadow": "0 4px 12px rgba(76, 175, 80, 0.6) !important",
+              "transform": "scale(1.03) !important",
+              "animation": "pulse 2s infinite"
+            },
+            "@keyframes pulse": {
+              "0%": {
+                "box-shadow": "0 4px 12px rgba(76, 175, 80, 0.6)"
+              },
+              "50%": {
+                "box-shadow": "0 4px 16px rgba(76, 175, 80, 0.9)"
+              },
+              "100%": {
+                "box-shadow": "0 4px 12px rgba(76, 175, 80, 0.6)"
+              }
+            },
+            ".fc-event-now:hover": {
+              "transform": "scale(1.05) !important",
+              "box-shadow": "0 6px 20px rgba(76, 175, 80, 0.8) !important"
+            },
+            ".fc-event-past": {
+              "background-color": "#495057 !important",
+              "border-color": "#495057 !important",
+              "color": "#adb5bd !important",
+              "opacity": "0.7 !important"
+            },
+            ".fc-event-past:hover": {
+              "opacity": "0.85 !important",
+              "transform": "none !important"
+            },
+            ".fc-event-multiday": {
+              "font-size": "0.75rem !important",
+              "opacity": "0.9 !important"
+            },
+            ".fc a.fc-event": {
+              "text-decoration": "none"
+            },
+            ".fc a.fc-event:hover": {
+              "transform": "translateY(-1px) !important"
+            },
+            ".fc .fc-list-day, .fc .fc-list-day-cushion": {
+              "background": "#667eea !important",
+              "color": "#fff !important",
+              "font-weight": "700",
+              "font-size": "0.85rem !important",
+              "border-radius": "10px !important",
+              "padding": "0.5rem 0.8rem !important",
+              "margin": "0 0 2px 0 !important"
+            },
+            ".fc .fc-list-event": {
+              "background": "transparent !important",
+              "border-radius": "12px !important",
+              "margin": "0 0 2px 0 !important",
+              "padding": "0.6rem 1rem !important",
+              "border": "none !important",
+              "transition": "all 0.3s ease"
+            },
+            ".fc .fc-list-event .fc-event-title": {
+              "font-size": "0.85rem !important",
+              "font-weight": "600 !important",
+              "padding": "0.3rem 0.8rem !important",
+              "margin": "0 !important",
+              "display": "inline-block !important"
+            },
+            "@media (min-width: 1200px)": {
+              ".container-calendar": {
+                "max-width": "1150px",
+                "padding": "0 0.75rem"
+              },
+              ".calendar-wrapper": {
+                "padding": "0.65rem"
+              },
+              ".fc .fc-col-header-cell": {
+                "padding": "0.35rem 0.4rem",
+                "font-size": "0.7rem"
+              },
+              ".fc .fc-daygrid-day": {
+                "padding": "0.2rem",
+                "min-height": "0"
+              },
+              ".fc .fc-daygrid-day-number": {
+                "padding": "0.2rem",
+                "font-size": "0.7rem"
+              },
+              ".fc .fc-event": {
+                "font-size": "0.75rem !important",
+                "padding": "3px 5px !important",
+                "margin": "1px 0 !important"
+              },
+              ".fc .fc-daygrid-block-event": {
+                "min-height": "1.4em !important"
+              },
+              ".fc .fc-daygrid-block-event .fc-event-main": {
+                "min-height": "1.4em !important",
+                "padding": "0.25rem 0.4rem !important"
+              }
+            },
+            "@media (min-width: 1400px)": {
+              ".container-calendar": {
+                "max-width": "1250px",
+                "padding": "0 1rem"
+              },
+              ".calendar-wrapper": {
+                "padding": "0.75rem"
+              },
+              ".fc .fc-daygrid-day": {
+                "min-height": "0",
+                "padding": "0.25rem"
+              }
+            },
+            "@media (max-width: 1199px)": {
+              ".calendar-zone": {
+                "overflow-y": "hidden !important"
+              }
+            },
+            "@media (max-width: 768px)": {
+              ".container-calendar": {
+                "padding": "0 0.5rem"
+              },
+              ".calendar-wrapper": {
+                "padding": "0.5rem"
+              },
+              ".fc .fc-daygrid-day": {
+                "min-height": "0",
+                "padding": "0.2rem"
+              },
+              ".fc .fc-event": {
+                "font-size": "0.8rem !important",
+                "padding": "3px 6px !important",
+                "max-width": "100%",
+                "box-sizing": "border-box"
+              },
+              ".fc .fc-daygrid-block-event": {
+                "min-height": "1.6em !important"
+              },
+              ".fc .fc-daygrid-day-number": {
+                "padding": "0.2rem"
+              },
+              ".fc .fc-col-header-cell": {
+                "padding": "0.5rem 0.3rem",
+                "font-size": "0.7rem"
+              },
+              ".fc .fc-list-event": {
+                "padding": "0.7rem 1rem !important"
+              },
+              ".fc .fc-list-event .fc-event-title": {
+                "font-size": "0.85rem !important",
+                "white-space": "normal !important"
+              },
+              ".fc .fc-list-day, .fc .fc-list-day-cushion": {
+                "padding": "0.5rem 0.8rem !important",
+                "font-size": "0.85rem !important"
+              },
+              ".calendar-zone": {
+                "max-height": "90vh"
+              }
+            },
+            "@media (max-width: 480px)": {
+              ".container-calendar": {
+                "padding": "0 0.25rem"
+              },
+              ".calendar-wrapper": {
+                "padding": "0.4rem",
+                "border-radius": "10px"
+              },
+              ".fc .fc-daygrid-day": {
+                "min-height": "0",
+                "padding": "0.2rem"
+              },
+              ".fc .fc-event": {
+                "font-size": "0.75rem !important",
+                "padding": "2px 5px !important"
+              },
+              ".fc .fc-daygrid-block-event": {
+                "min-height": "1.4em !important"
+              },
+              ".fc .fc-event-title": {
+                "font-size": "0.8rem !important"
+              },
+              ".fc .fc-col-header-cell": {
+                "padding": "0.4rem 0.25rem",
+                "font-size": "0.65rem"
+              },
+              ".fc .fc-daygrid-day-number": {
+                "font-size": "0.65rem"
+              },
+              ".fc .fc-list-event .fc-event-title": {
+                "font-size": "0.8rem !important"
+              },
+              "html, body": {
+                "overflow-x": "hidden",
+                "height": "100%"
+              },
+              ".calendar-root": {
+                "display": "flex",
+                "flex-direction": "column",
+                "min-height": "100vh"
+              },
+              ".calendar-root > .container-calendar": {
+                "flex": "1 1 auto",
+                "display": "flex",
+                "flex-direction": "column"
+              },
+              ".calendar-root .calendar-zone": {
+                "flex": "1 1 auto"
+              },
+              ".calendar-zone, .calendar-wrapper": {
+                "min-height": "0"
+              },
+              ".calendar-header": {
+                "gap": "0.25rem"
+              },
+              ".calendar-btn": {
+                "font-size": "0.7rem",
+                "padding": "0.4rem 0.6rem"
+              },
+              ".calendar-month": {
+                "font-size": "0.85rem",
+                "min-width": "100px"
+              }
+            },
+            ".fc-listMonth-view .fc-list-table": {
+              "border-collapse": "collapse !important",
+              "border-spacing": "0 !important"
+            },
+            ".fc-listMonth-view table": {
+              "border-collapse": "collapse !important",
+              "border-spacing": "0 !important"
+            },
+            ".fc-theme-standard .fc-list-table td, .fc-theme-standard .fc-list-table th": {
+              "border": "none !important",
+              "padding": "0 !important"
+            },
+            ".fc-theme-standard .fc-list": {
+              "border": "none !important",
+              "background": "transparent !important"
+            },
+            ".fc-theme-standard .fc-list-day": {
+              "border": "none !important"
+            },
+            ".fc-theme-standard .fc-list-day-cushion": {
+              "display": "block !important",
+              "width": "100% !important",
+              "box-sizing": "border-box !important",
+              "border": "none !important",
+              "margin": "0 !important",
+              "background-clip": "padding-box !important"
+            },
+            ".fc-listMonth-view .fc-list-day, .fc-listMonth-view .fc-list-day-cushion": {
+              "padding": "0.3rem 0.6rem !important",
+              "margin": "0 !important",
+              "border-radius": "6px !important"
+            },
+            ".fc-listMonth-view .fc-list-event": {
+              "padding": "0.45rem 0.6rem !important",
+              "margin": "0 !important"
+            },
+            ".fc-listMonth-view .fc-list-event + .fc-list-event": {
+              "margin-top": "2px !important"
+            },
+            ".fc-listMonth-view .fc-list-table tbody tr": {
+              "border-bottom": "1px solid rgba(255, 255, 255, 0.06)"
+            },
+            ".fc-listMonth-view .fc-list-table tbody tr.fc-list-day": {
+              "border-bottom": "none !important"
+            },
+            ".fc-listMonth-view .fc-list-table tbody tr > td": {
+              "padding": "0 !important"
+            },
+            ".fc-listMonth-view .fc-list-day-side": {
+              "color": "#ffb74d",
+              "padding-left": "0.4rem"
+            },
+            ".fc-listMonth-view .fc-list-day-text": {
+              "padding-left": "0.4rem"
             }
           },
           "_name": "witsec-html-block",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section class=\"mbr-section mbr-section--no-padding\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\n\n<mbr-parameters>\n    <header>Size</header>\n    <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\">\n    <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"9\" step=\"1\" value=\"9\" condition=\"fullScreen == false\">\n    <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"9\" step=\"1\" value=\"9\" condition=\"fullScreen == false\">\n\n    <header>Background</header>\n    <fieldset type=\"background\" name=\"bg\" parallax>\n        <input type=\"image\" title=\"Background Image\" value=\"../_images/background.jpg\" parallax>\n        <input type=\"color\" title=\"Background Color\" value=\"#2d2d3d\" selected>\n        <input type=\"video\" title=\"Background Video\" value=\"https://www.youtube.com/watch?v=36YgDDJ7XSc\">\n    </fieldset>\n    <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n    <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n    <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n\n    <header>Calendrier FullCalendar</header>\n    <input type=\"text\" title=\"URL iCalendar\" name=\"icalUrl\" value=\"https://calendar.google.com/calendar/ical/VOTRE_CALENDRIER_ID%40group.calendar.google.com/public/basic.ics\">\n    <input type=\"text\" title=\"Titre du calendrier\" name=\"calendarTitle\" value=\"📅 Calendrier des événements\">\n</mbr-parameters>\n\n<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type!== 'color'\" mbr-style=\"{'opacity': overlayOpacity, 'background-color': overlayColor}\"></div>\n\n<style>\n/* Placez ici tout le CSS que vous avez fourni ci-dessous inchangé */\n</style>\n\n<div class=\"container container-calendar\" mbr-class=\"{'container': !fullScreen}\">\n  <div class=\"calendar-zone\">\n    <div class=\"calendar-wrapper\" id=\"calendar-wrapper\">\n      <div class=\"calendar-header\">\n        <button class=\"calendar-arrow-btn calendar-prev\">‹</button>\n        <div class=\"calendar-controls-center\">\n          <button class=\"calendar-btn calendar-today\">Aujourd'hui</button>\n          <button class=\"calendar-btn\" id=\"btn-toggle-view\">Vue Liste</button>\n          <button class=\"calendar-btn\" id=\"btn-toggle-fullscreen\">Plein écran</button>\n          <span class=\"calendar-month\">Décembre 2024</span>\n        </div>\n        <button class=\"calendar-arrow-btn calendar-next\">›</button>\n      </div>\n      <div class=\"fullcalendar-container\"></div>\n    </div>\n  </div>\n</div>\n\n<div class=\"event-modal\">\n  <div class=\"event-modal-overlay\"></div>\n  <div class=\"event-modal-content\">\n    <button class=\"event-modal-close\">×</button>\n    <h3 class=\"event-modal-title\"></h3>\n    <div class=\"event-modal-body\"></div>\n  </div>\n</div>\n\n<link href=\"https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css\" rel=\"stylesheet\">\n[JS_CODE_0]\n[JS_CODE_1]\n\n[JS_CODE_2]\n\n</section>\n",
+          "_customHTML": "<section class=\"mbr-section mbr-section--no-padding\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\n\n  <mbr-parameters>\n    <header>Size</header>\n    <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\">\n    <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"9\" step=\"1\" value=\"7\" condition=\"fullScreen == false\">\n    <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"9\" step=\"1\" value=\"1\" condition=\"fullScreen == false\">\n\n    <header>Background</header>\n    <fieldset type=\"background\" name=\"bg\" parallax>\n      <input type=\"image\" title=\"Background Image\" value=\"../_images/background.jpg\" parallax>\n      <input type=\"color\" title=\"Background Color\" value=\"#2d2d3d\" selected>\n      <input type=\"video\" title=\"Background Video\" value>\n    </fieldset>\n    <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n    <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n    <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n\n    <header>Calendrier FullCalendar</header>\n    <input type=\"text\" title=\"URL iCalendar\" name=\"icalUrl\" value=\"https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c\" data-ical-url>\n    <input type=\"text\" title=\"Titre du calendrier\" name=\"calendarTitle\" value=\"📅 Calendrier des événements\">\n  </mbr-parameters>\n\n  <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type!== 'color'\" mbr-style=\"{'opacity': overlayOpacity, 'background-color': overlayColor}\">\n  </div>\n\n  <style>\n        .mbr-section {\n          min-height: 100vh !important;\n          display: flex !important;\n          flex-direction: column !important;\n        }\n    \n        .mbr-section > .container-calendar {\n          flex: 1 1 auto !important;\n          display: flex !important;\n          flex-direction: column !important;\n        }\n    \n    .event-modal {\n      display: none !important;\n      position: fixed;\n      z-index: 10000;\n      top: 0;\n      left: 0;\n      width: 100vw;\n      height: 100vh;\n      align-items: center;\n      justify-content: center;\n      background: rgba(0, 0, 0, 0.65);\n      -webkit-backdrop-filter: blur(6px);\n      backdrop-filter: blur(6px);\n    }\n\n    .event-modal.show {\n      display: flex !important;\n    }\n\n    .event-modal-overlay {\n      position: absolute;\n      top: 0;\n      left: 0;\n      width: 100%;\n      height: 100%;\n      background: rgba(0, 0, 0, 0.85);\n      z-index: -1;\n      cursor: pointer;\n    }\n\n    .event-modal-content {\n      position: relative;\n      width: 100vw;\n      height: 100vh;\n      max-width: 100vw;\n      max-height: 100vh;\n      border-radius: 0 !important;\n      margin: 0;\n      box-shadow: none;\n      padding: 0;\n      background: linear-gradient(135deg, rgba(30, 30, 46, 0.98) 0%, rgba(45, 45, 61, 0.98) 100%);\n      overflow-y: auto;\n      overflow-x: hidden;\n      -webkit-overflow-scrolling: touch;\n      display: flex;\n      flex-direction: column;\n    }\n\n    .event-modal-title {\n      margin: 0;\n      padding: 2rem;\n      font-size: 1.8rem;\n      font-weight: 700;\n      color: #fff;\n      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n      border-bottom: 2px solid rgba(255, 255, 255, 0.2);\n    }\n\n    .event-modal-body {\n      padding: 2rem;\n      color: #fff;\n    }\n\n    .event-info-row {\n      display: flex;\n      align-items: flex-start;\n      gap: 1rem;\n      margin-bottom: 1.5rem;\n      padding: 1rem;\n      background: rgba(0, 0, 0, 0.2);\n      border-radius: 0.75rem;\n    }\n\n    .event-info-icon {\n      font-size: 1.5rem;\n      min-width: 30px;\n      flex-shrink: 0;\n    }\n\n    .event-info-content {\n      flex: 1;\n    }\n\n    .event-info-label {\n      font-size: 0.85rem;\n      opacity: 0.8;\n      margin-bottom: 0.25rem;\n      text-transform: uppercase;\n      font-weight: 600;\n    }\n\n    .event-info-text {\n      font-size: 1.1rem;\n      line-height: 1.5;\n      font-weight: 500;\n      word-break: break-word;\n      margin-bottom: 0.75rem;\n    }\n\n    .event-info-text a {\n      color: #ffc107;\n      text-decoration: underline;\n      transition: all 0.3s;\n    }\n\n    .event-location-buttons {\n      display: flex;\n      flex-wrap: wrap;\n      gap: 0.75rem;\n      margin-top: 1rem;\n      padding-top: 1rem;\n      border-top: 1px solid rgba(255, 255, 255, 0.2);\n    }\n\n    .location-btn {\n      flex: 1;\n      min-width: 100px;\n      padding: 0.75rem 1rem;\n      border-radius: 0.5rem;\n      font-size: 0.9rem;\n      font-weight: 600;\n      text-decoration: none;\n      text-align: center;\n      cursor: pointer;\n      transition: all 0.3s;\n      border: 2px solid rgba(255, 255, 255, 0.3);\n      color: #fff;\n    }\n\n    .location-google {\n      background: rgba(66, 133, 244, 0.8);\n      border-color: #4285F4;\n    }\n\n    .location-google:hover {\n      background: #4285F4;\n      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.5);\n      transform: translateY(-2px);\n    }\n\n    .location-waze {\n      background: rgba(0, 198, 219, 0.8);\n      border-color: #00C6DB;\n    }\n\n    .location-waze:hover {\n      background: #00C6DB;\n      box-shadow: 0 4px 12px rgba(0, 198, 219, 0.5);\n      transform: translateY(-2px);\n    }\n\n    .location-apple {\n      background: rgba(155, 155, 155, 0.8);\n      border-color: #9B9B9B;\n    }\n\n    .location-apple:hover {\n      background: #9B9B9B;\n      box-shadow: 0 4px 12px rgba(155, 155, 155, 0.5);\n      transform: translateY(-2px);\n    }\n\n    .event-url-button {\n      display: inline-block;\n      padding: 0.75rem 1.5rem;\n      background: rgba(76, 175, 80, 0.9);\n      color: #fff;\n      text-decoration: none;\n      border-radius: 0.5rem;\n      font-weight: 600;\n      transition: all 0.3s;\n      margin-top: 0.5rem;\n    }\n\n    .event-url-button:hover {\n      background: #4CAF50;\n      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);\n      transform: translateY(-2px);\n    }\n\n    .event-modal-close {\n      position: absolute;\n      top: 1rem;\n      right: 1rem;\n      background: rgba(255, 255, 255, 0.2);\n      border: none;\n      color: white;\n      font-size: 2rem;\n      width: 3rem;\n      height: 3rem;\n      border-radius: 50%;\n      cursor: pointer;\n      transition: all 0.3s;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      line-height: 1;\n      padding: 0;\n      z-index: 1;\n    }\n\n    .event-modal-close:hover {\n      background: rgba(255, 255, 255, 0.3);\n      transform: rotate(90deg) scale(1.1);\n    }\n\n    body.scroll-locked {\n      overflow: hidden !important;\n      position: fixed !important;\n      width: 100% !important;\n      height: 100% !important;\n    }\n\n    .calendar-zone::-webkit-scrollbar {\n      width: 6px;\n    }\n\n    .calendar-zone::-webkit-scrollbar-track {\n      background: rgba(45, 45, 61, 0.5);\n      border-radius: 3px;\n    }\n\n    .calendar-zone::-webkit-scrollbar-thumb {\n      background: rgba(255, 255, 255, 0.3);\n      border-radius: 3px;\n    }\n\n    .calendar-zone::-webkit-scrollbar-thumb:hover {\n      background: rgba(255, 255, 255, 0.5);\n    }\n    /* Jours hors mois invisibles (contenu caché) mais quadrillage conservé */\n    .fc-day-other .fc-daygrid-day-number { visibility: hidden !important; }\n    .fc-day-other .fc-event { display: none !important; }\n    .fc-day-other { background: rgba(30, 30, 46, 0.5) !important; }\n    .fc-day-other:hover { background: rgba(30, 30, 46, 0.5) !important; }\n  </style>\n\n  <div class=\"container container-calendar\" mbr-class=\"{'container': !fullScreen}\">\n    <div class=\"calendar-zone\">\n      <div class=\"calendar-wrapper\" id=\"calendar-wrapper\">\n        <div class=\"calendar-header\">\n          <button class=\"calendar-arrow-btn calendar-prev\">‹</button>\n          <div class=\"calendar-controls-center\">\n            <button class=\"calendar-btn calendar-today\">Aujourd'hui</button>\n            <button class=\"calendar-btn\" id=\"btn-toggle-view\">Vue Liste</button>\n            <button class=\"calendar-btn\" id=\"btn-toggle-fullscreen\">Plein écran</button>\n            <span class=\"calendar-month\">Décembre 2024</span>\n          </div>\n          <button class=\"calendar-arrow-btn calendar-next\">›</button>\n        </div>\n        <div class=\"fullcalendar-container\"></div>\n      </div>\n    </div>\n  </div>\n\n  <div class=\"event-modal\">\n    <div class=\"event-modal-overlay\"></div>\n    <div class=\"event-modal-content\">\n      <button class=\"event-modal-close\">×</button>\n      <h3 class=\"event-modal-title\"></h3>\n      <div class=\"event-modal-body\"></div>\n    </div>\n  </div>\n\n  <link href=\"https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css\" rel=\"stylesheet\">\n  [JS_CODE_0]\n  [JS_CODE_1]\n\n  [JS_CODE_2]\n\n</section>",
           "_cid": "v2DoFDRAW7",
           "_anchor": "witsec-html-block-7",
           "_PHPplaceholders": [],
           "_JSplaceholders": [
             "<script src=\"https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js\"></script>",
-            "<script src=\"https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js\"></script>",
-            "<script>\n'use strict';\n(function() {\n  const monthNames = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];\n  let calendar = null, currentDate = new Date(), lastDisplayedMonth = null, updateTimeout = null;\n  let currentView = 'dayGridMonth', isFullscreen = false, loadedEvents = [];\n  const isMobile = () => window.innerWidth <= 768;\n  const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;\n\n  function closeEventModal() {\n    const modal = document.querySelector('.event-modal');\n    if (modal) modal.classList.remove('show');\n  }\n\n  function openEventModal(event, props) {\n    const modal = document.querySelector('.event-modal');\n    const modalTitle = document.querySelector('.event-modal-title');\n    const modalBody = document.querySelector('.event-modal-body');\n    if (!modal || !modalTitle || !modalBody) return;\n    modalTitle.textContent = props.summary || event.title;\n    let bodyHTML = '';\n    if (props.startDate) {\n      const startStr = props.startDate.toLocaleDateString('fr-FR', {\n        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'\n      });\n      bodyHTML += `<div class=\"event-info-row\">\n        <div class=\"event-info-icon\">📅</div>\n        <div class=\"event-info-content\">\n          <div class=\"event-info-label\">Du</div>\n          <div class=\"event-info-text\">${startStr}</div>\n        </div>\n      </div>`;\n    }\n    if (props.endDate && props.endDate.toDateString() !== props.startDate.toDateString()) {\n      const endStr = props.endDate.toLocaleDateString('fr-FR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});\n      const duration = Math.ceil((props.endDate - props.startDate) / (1000*60*60*24)) + 1;\n      bodyHTML += `<div class=\"event-info-row\">\n        <div class=\"event-info-icon\">🏁</div>\n        <div class=\"event-info-content\">\n          <div class=\"event-info-label\">Au</div>\n          <div class=\"event-info-text\">${endStr} (${duration} jours)</div>\n        </div>\n      </div>`;\n    }\n    if (props.location) {\n      const encodedLocation = encodeURIComponent(props.location);\n      bodyHTML += `<div class=\"event-info-row\">\n        <div class=\"event-info-icon\">📍</div>\n        <div class=\"event-info-content\">\n          <div class=\"event-info-label\">Lieu</div>\n          <div class=\"event-info-text\">${props.location}</div>\n          <div class=\"event-location-buttons\">\n            <a href=\"https://www.google.com/maps/search/${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-google\">Google Maps</a>\n            <a href=\"https://www.waze.com/ul?q=${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-waze\">Waze</a>\n            <a href=\"http://maps.apple.com/?q=${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-apple\">Apple Plans</a>\n          </div>\n        </div>\n      </div>`;\n    }\n    if (props.description) {\n      bodyHTML += `<div class=\"event-info-row\">\n        <div class=\"event-info-icon\">📝</div>\n        <div class=\"event-info-content\">\n          <div class=\"event-info-label\">Description</div>\n          <div class=\"event-info-text\">${props.description}</div>\n        </div>\n      </div>`;\n    }\n    if (props.url && props.url.trim()) {\n      bodyHTML += `<div class=\"event-info-row\">\n        <div class=\"event-info-icon\">🔗</div>\n        <div class=\"event-info-content\">\n          <div class=\"event-info-label\">Lien de l'événement</div>\n          <div class=\"event-info-text\">\n            <a href=\"${props.url}\" target=\"_blank\" rel=\"noopener\" class=\"event-url-button\">Accéder au site</a>\n          </div>\n        </div>\n      </div>`;\n    }\n    modalBody.innerHTML = bodyHTML;\n    modal.classList.add('show');\n  }\n\n  function updateMonthLabel(date) {\n    const monthEl = document.querySelector('.calendar-month');\n    if (monthEl && date) monthEl.textContent = monthNames[date.getMonth()] + ' ' + date.getFullYear();\n  }\n\n  function consolidateMultiDayEvents(events) {\n    const mapByUID = {};\n    events.forEach(ev => {\n      if (!mapByUID[ev.id]) {\n        mapByUID[ev.id] = { ...ev };\n      } else {\n        if (ev.start < mapByUID[ev.id].start) mapByUID[ev.id].start = ev.start;\n        if (ev.end > mapByUID[ev.id].end) mapByUID[ev.id].end = ev.end;\n      }\n    });\n    const now = new Date();\n    return Object.values(mapByUID).map(ev => {\n      const isPast = ev.end < now;\n      const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));\n      const classes = [];\n      if (days > 1) classes.push('fc-event-multiday');\n      if (isPast) classes.push('fc-event-past');\n      return { ...ev, classNames: classes };\n    });\n  }\n\n  function initCalendar(viewName) {\n    const calendarEl = document.querySelector('.fullcalendar-container');\n    if (calendar !== null) calendar.destroy();\n    calendar = new FullCalendar.Calendar(calendarEl, {\n      initialView: viewName,\n      initialDate: currentDate,\n      locale: 'fr',\n      firstDay: 1,\n      headerToolbar: false,\n      height: isFullscreen ? '100%' : 'auto',\n      contentHeight: isFullscreen ? '100%' : 'auto',\n      dayMaxEvents: false,\n      dayMaxEventRows: false,\n      eventMaxStack: 99,\n      eventDisplay: 'block',\n      allDaySlot: true,\n      slotMinTime: '06:00:00',\n      slotMaxTime: '23:00:00',\n      slotLabelInterval: '01:00:00',\n      events: loadedEvents,\n      eventClick: function(info) {\n        info.jsEvent.preventDefault();\n        openEventModal(info.event, info.event.extendedProps);\n      },\n      datesSet: function(info) {\n        if (updateTimeout) clearTimeout(updateTimeout);\n        updateTimeout = setTimeout(() => {\n          const displayDate = info.view.currentStart || info.start;\n          updateMonthLabel(displayDate);\n        }, 50);\n      }\n    });\n    calendar.render();\n    currentView = viewName;\n    updateMonthLabel(currentDate);\n  }\n\n  function toggleView() {\n    const btnToggleView = document.getElementById('btn-toggle-view');\n    if (currentView === 'dayGridMonth') {\n      initCalendar('listMonth');\n      if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';\n    } else {\n      initCalendar('dayGridMonth');\n      if (btnToggleView) btnToggleView.textContent = 'Vue Liste';\n    }\n  }\n\n  function toggleFullscreen() {\n    const wrapper = document.getElementById('calendar-wrapper');\n    const btnFullscreen = document.getElementById('btn-toggle-fullscreen');\n    isFullscreen = !isFullscreen;\n    if (isFullscreen) {\n      wrapper.classList.add('fullscreen-mode');\n      if (btnFullscreen) btnFullscreen.textContent = 'Quitter plein écran';\n    } else {\n      wrapper.classList.remove('fullscreen-mode');\n      if (btnFullscreen) btnFullscreen.textContent = 'Plein écran';\n    }\n    if (calendar) {\n      calendar.setOption('height', isFullscreen ? '100%' : 'auto');\n      calendar.setOption('contentHeight', isFullscreen ? '100%' : 'auto');\n    }\n  }\n\n  function handleOrientationChange() {\n    if (isMobile()) {\n      if (isPortrait()) {\n        if (isFullscreen) toggleFullscreen();\n        if (currentView !== 'listMonth') {\n          initCalendar('listMonth');\n          const btnToggleView = document.getElementById('btn-toggle-view');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';\n        }\n      } else {\n        if (!isFullscreen) toggleFullscreen();\n        if (currentView !== 'dayGridMonth') {\n          initCalendar('dayGridMonth');\n          const btnToggleView = document.getElementById('btn-toggle-view');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Liste';\n        }\n      }\n    }\n  }\n\n  setTimeout(function() {\n    const calendarEl = document.querySelector('.fullcalendar-container');\n    const prevBtn = document.querySelector('.calendar-prev');\n    const nextBtn = document.querySelector('.calendar-next');\n    const todayBtn = document.querySelector('.calendar-today');\n    const modalOverlay = document.querySelector('.event-modal-overlay');\n    const modalClose = document.querySelector('.event-modal-close');\n    const btnToggleView = document.getElementById('btn-toggle-view');\n    const btnToggleFullscreen = document.getElementById('btn-toggle-fullscreen');\n    if (!calendarEl) return;\n    if (modalClose) modalClose.onclick = closeEventModal;\n    if (modalOverlay) modalOverlay.onclick = closeEventModal;\n    document.addEventListener('keydown', (e) => {\n      if (e.key === 'Escape') closeEventModal();\n    });\n    if (btnToggleView) btnToggleView.onclick = toggleView;\n    if (btnToggleFullscreen) btnToggleFullscreen.onclick = toggleFullscreen;\n    window.addEventListener('orientationchange', handleOrientationChange);\n    window.addEventListener('resize', handleOrientationChange);\n\n    (async function() {\n      try {\n        const icalUrl = document.querySelector('input[name=\"icalUrl\"]')?.value || '';\n        if (!icalUrl) throw new Error('Aucune URL iCal configurée');\n        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(icalUrl)}`;\n        const response = await fetch(proxyUrl);\n        if (!response.ok) throw new Error(`Erreur chargement iCal: ${response.status}`);\n        const icalText = await response.text();\n        const jcalData = ICAL.parse(icalText);\n        const comp = new ICAL.Component(jcalData);\n        const vevents = comp.getAllSubcomponents('vevent');\n        loadedEvents = [];\n        vevents.forEach((vevent, index) => {\n          try {\n            const event = new ICAL.Event(vevent);\n            if (!event.startDate) return;\n            let startDate = event.startDate.toJSDate();\n            let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);\n            const dtStartProp = vevent.getFirstProperty('dtstart');\n            const isAllDay = dtStartProp && dtStartProp.getParameter('value') === 'DATE';\n            if (isAllDay && endDate.getTime() !== startDate.getTime()) endDate.setDate(endDate.getDate() + 1);\n            let cleanTitle = event.summary || 'Sans titre';\n            cleanTitle = cleanTitle.replace(/\\s*\\d{1,2}h\\s*/gi, '');\n            cleanTitle = cleanTitle.replace(/\\s*\\d{1,2}:\\d{2}.*$/i, '');\n            cleanTitle = cleanTitle.trim();\n            let eventUrl = '';\n            if (event.component && event.component.getFirstPropertyValue) {\n              const urlProp = event.component.getFirstPropertyValue('url');\n              const attachProp = event.component.getFirstPropertyValue('attach');\n              eventUrl = urlProp || attachProp || '';\n            }\n            loadedEvents.push({\n              id: event.uid || `event-${index}`,\n              title: cleanTitle,\n              start: startDate,\n              end: endDate,\n              allDay: true,\n              display: 'block',\n              backgroundColor: '#667eea',\n              borderColor: '#667eea',\n              extendedProps: {\n                description: event.description || '',\n                location: event.location || '',\n                summary: cleanTitle,\n                startDate: startDate,\n                endDate: endDate,\n                url: eventUrl\n              }\n            });\n          } catch (e) { }\n        });\n        loadedEvents = consolidateMultiDayEvents(loadedEvents);\n\n        if (isMobile() && isPortrait()) {\n          initCalendar('listMonth');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';\n        } else {\n          initCalendar('dayGridMonth');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Liste';\n        }\n        if (prevBtn) prevBtn.onclick = () => calendar && calendar.prev();\n        if (nextBtn) nextBtn.onclick = () => calendar && calendar.next();\n        if (todayBtn) todayBtn.onclick = () => {\n          if (calendar) {\n            calendar.today();\n            updateMonthLabel(new Date());\n          }\n        };\n      } catch (error) {\n        console.error('Calendar: Erreur', error);\n        const calendarEl = document.querySelector('.fullcalendar-container');\n        if (calendarEl) {\n          calendarEl.innerHTML = `<div style=\"padding:2rem;text-align:center;color:#ffc107;background:rgba(255,193,7,0.1);border-radius:12px;border:1px solid #ffc107;\">\n            ❌ Erreur chargement calendrier<br>\n            <small>Vérifiez l'URL iCal dans les paramètres</small>\n          </div>`;\n        }\n      }\n    })();\n  }, 100);\n})();\n</script>"
+            "<script src=\"https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js\"></script>",
+            "<script>\n    'use strict';\n    \n    (function() {\n      const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];\n      let calendar = null;\n      let currentDate = new Date();\n      let updateTimeout = null;\n      let currentView = 'dayGridMonth';\n      let isFullscreen = false;\n      let loadedEvents = [];\n      const isMobile = () => window.innerWidth <= 768;\n      const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;\n\n      function closeEventModal() {\n        const modal = document.querySelector('.event-modal');\n        if (modal) modal.classList.remove('show');\n      }\n\n      function openEventModal(event, props) {\n        const modal = document.querySelector('.event-modal');\n        const modalTitle = document.querySelector('.event-modal-title');\n        const modalBody = document.querySelector('.event-modal-body');\n        \n        if (!modal || !modalTitle || !modalBody) return;\n        \n        modalTitle.textContent = props.summary || event.title;\n        let bodyHTML = '';\n        \n        if (props.startDate) {\n          const startStr = props.startDate.toLocaleDateString('fr-FR', {\n            weekday: 'long',\n            year: 'numeric',\n            month: 'long',\n            day: 'numeric'\n          });\n          bodyHTML += `\n            <div class=\"event-info-row\">\n              <div class=\"event-info-icon\">📅</div>\n              <div class=\"event-info-content\">\n                <div class=\"event-info-label\">Du</div>\n                <div class=\"event-info-text\">${startStr}</div>\n              </div>\n            </div>`;\n        }\n        \n        if (props.endDate && props.endDate.toDateString() !== props.startDate.toDateString()) {\n          const endStr = props.endDate.toLocaleDateString('fr-FR', {\n            weekday: 'long',\n            year: 'numeric',\n            month: 'long',\n            day: 'numeric'\n          });\n          const duration = Math.ceil((props.endDate - props.startDate) / (1000 * 60 * 60 * 24)) + 1;\n          bodyHTML += `\n            <div class=\"event-info-row\">\n              <div class=\"event-info-icon\">🏁</div>\n              <div class=\"event-info-content\">\n                <div class=\"event-info-label\">Au</div>\n                <div class=\"event-info-text\">${endStr} (${duration} jours)</div>\n              </div>\n            </div>`;\n        }\n        \n        if (props.location) {\n          const encodedLocation = encodeURIComponent(props.location);\n          bodyHTML += `\n            <div class=\"event-info-row\">\n              <div class=\"event-info-icon\">📍</div>\n              <div class=\"event-info-content\">\n                <div class=\"event-info-label\">Lieu</div>\n                <div class=\"event-info-text\">${props.location}</div>\n                <div class=\"event-location-buttons\">\n                  <a href=\"https://www.google.com/maps/search/${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-google\">Google Maps</a>\n                  <a href=\"https://www.waze.com/ul?q=${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-waze\">Waze</a>\n                  <a href=\"http://maps.apple.com/?q=${encodedLocation}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-apple\">Apple Plans</a>\n                </div>\n              </div>\n            </div>`;\n        }\n        \n        if (props.description) {\n          bodyHTML += `\n            <div class=\"event-info-row\">\n              <div class=\"event-info-icon\">📝</div>\n              <div class=\"event-info-content\">\n                <div class=\"event-info-label\">Description</div>\n                <div class=\"event-info-text\">${props.description}</div>\n              </div>\n            </div>`;\n        }\n        \n        if (props.url && props.url.trim()) {\n          bodyHTML += `\n            <div class=\"event-info-row\">\n              <div class=\"event-info-icon\">🔗</div>\n              <div class=\"event-info-content\">\n                <div class=\"event-info-label\">Lien de l'événement</div>\n                <div class=\"event-info-text\">\n                  <a href=\"${props.url}\" target=\"_blank\" rel=\"noopener\" class=\"event-url-button\">Accéder au site</a>\n                </div>\n              </div>\n            </div>`;\n        }\n        \n        modalBody.innerHTML = bodyHTML;\n        modal.classList.add('show');\n      }\n\n      function updateMonthLabel(date) {\n        const monthEl = document.querySelector('.calendar-month');\n        if (monthEl && date) {\n          monthEl.textContent = monthNames[date.getMonth()] + ' ' + date.getFullYear();\n        }\n      }\n\n      function consolidateMultiDayEvents(events) {\n        const mapByUID = {};\n        \n        events.forEach(ev => {\n          if (!mapByUID[ev.id]) {\n            mapByUID[ev.id] = { ...ev };\n          } else {\n            if (ev.start < mapByUID[ev.id].start) mapByUID[ev.id].start = ev.start;\n            if (ev.end > mapByUID[ev.id].end) mapByUID[ev.id].end = ev.end;\n          }\n        });\n        \n        const now = new Date();\n        return Object.values(mapByUID).map(ev => {\n          const isPast = ev.end < now;\n          const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));\n          const classes = [];\n          if (days > 1) classes.push('fc-event-multiday');\n          if (isPast) classes.push('fc-event-past');\n          return { ...ev, classNames: classes };\n        });\n      }\n\n      // Masque les lignes de semaines qui ne contiennent aucun jour du mois courant\n      function pruneOuterMonthRows() {\n        if (!calendar || currentView !== 'dayGridMonth') return;\n        const calendarEl = document.querySelector('.fullcalendar-container');\n        if (!calendarEl) return;\n        const view = calendar.view;\n        if (!view || !view.currentStart) return;\n        const targetMonth = view.currentStart.getMonth();\n        const body = calendarEl.querySelector('.fc-daygrid-body');\n        if (!body) return;\n        const rows = body.querySelectorAll('tr');\n        rows.forEach(row => {\n          const cells = row.querySelectorAll('.fc-daygrid-day');\n          let hasCurrent = false;\n          cells.forEach(cell => {\n            const dateStr = cell.getAttribute('data-date');\n            if (dateStr) {\n              const d = new Date(dateStr + 'T00:00:00');\n              if (!isNaN(d) && d.getMonth() === targetMonth) {\n                hasCurrent = true;\n              }\n            }\n          });\n          // Si aucune cellule du mois courant => masquer entièrement la ligne\n          if (!hasCurrent) {\n            row.style.display = 'none';\n          } else {\n            row.style.display = '';\n          }\n        });\n        // Recalcule la hauteur après modification\n        setTimeout(() => { if (calendar) calendar.updateSize(); }, 30);\n      }\n\n      function initCalendar(viewName) {\n        const calendarEl = document.querySelector('.fullcalendar-container');\n        const wrapper = document.getElementById('calendar-wrapper');\n        \n        if (calendar !== null) calendar.destroy();\n        resizeWrapperHeight();\n        \n        calendar = new FullCalendar.Calendar(calendarEl, {\n          initialView: viewName,\n          initialDate: currentDate,\n          locale: 'fr',\n          firstDay: 1,\n          headerToolbar: false,\n          showNonCurrentDates: false,\n          height: '100%',\n          contentHeight: 'auto',\n          expandRows: true,\n          dayMaxEvents: false,\n          dayMaxEventRows: false,\n          eventMaxStack: 99,\n          eventDisplay: 'block',\n          allDaySlot: true,\n          slotMinTime: '06:00:00',\n          slotMaxTime: '23:00:00',\n          slotLabelInterval: '01:00:00',\n          events: loadedEvents,\n          eventClick: function(info) {\n            info.jsEvent.preventDefault();\n            openEventModal(info.event, info.event.extendedProps);\n          },\n          datesSet: function(info) {\n            if (updateTimeout) clearTimeout(updateTimeout);\n            updateTimeout = setTimeout(() => {\n              const displayDate = info.view.currentStart || info.start;\n              updateMonthLabel(displayDate);\n              pruneOuterMonthRows();\n            }, 50);\n          }\n        });\n        \n        calendar.render();\n        currentView = viewName;\n        updateMonthLabel(currentDate);\n        \n        // Ensure proper sizing after render\n        setTimeout(() => {\n          resizeWrapperHeight();\n          if (calendar) calendar.updateSize();\n          pruneOuterMonthRows();\n        }, 100);\n      }\n\n      function toggleView() {\n        const btnToggleView = document.getElementById('btn-toggle-view');\n        const calendarZone = document.querySelector('.calendar-zone');\n        \n        if (currentView === 'dayGridMonth') {\n          initCalendar('listMonth');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';\n                  if (calendarZone) calendarZone.classList.add('list-view-active');\n        } else {\n          initCalendar('dayGridMonth');\n          if (btnToggleView) btnToggleView.textContent = 'Vue Liste';\n                  if (calendarZone) calendarZone.classList.remove('list-view-active');\n        }\n      }\n\n      function toggleFullscreen() {\n        const wrapper = document.getElementById('calendar-wrapper');\n        const btnFullscreen = document.getElementById('btn-toggle-fullscreen');\n        \n        isFullscreen = !isFullscreen;\n        \n        if (isFullscreen) {\n          wrapper.classList.add('fullscreen-mode');\n          if (btnFullscreen) btnFullscreen.textContent = 'Quitter plein écran';\n        } else {\n          wrapper.classList.remove('fullscreen-mode');\n          if (btnFullscreen) btnFullscreen.textContent = 'Plein écran';\n        }\n        \n        if (calendar) {\n          if (isFullscreen) {\n            calendar.setOption('height', '100%');\n            calendar.setOption('contentHeight', '100%');\n          } else {\n            resizeWrapperHeight();\n            calendar.setOption('height', '100%');\n            calendar.setOption('contentHeight', 'auto');\n          }\n          calendar.updateSize();\n        }\n      }\n\n      function resizeWrapperHeight() {\n        const wrapper = document.getElementById('calendar-wrapper');\n        if (!wrapper || isFullscreen) return;\n        \n        // Calculate exact available viewport height\n        const top = wrapper.getBoundingClientRect().top;\n        const bottomMargin = 16;\n        const available = window.innerHeight - top - bottomMargin;\n        \n        if (available > 200) {\n          wrapper.style.height = available + 'px';\n          \n          // Force calendar to recalculate and fit without internal scrolling\n          if (calendar) {\n            setTimeout(() => {\n              calendar.updateSize();\n            }, 50);\n          }\n        }\n      }\n\n      function handleOrientationChange() {\n        if (isMobile()) {\n                    const calendarZone = document.querySelector('.calendar-zone');\n          if (isPortrait()) {\n            if (isFullscreen) toggleFullscreen();\n            if (currentView !== 'listMonth') {\n                            if (calendarZone) calendarZone.classList.add('list-view-active');\n              initCalendar('listMonth');\n              const btnToggleView = document.getElementById('btn-toggle-view');\n              if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';\n            }\n          } else {\n            if (!isFullscreen) toggleFullscreen();\n            if (currentView !== 'dayGridMonth') {\n                            if (calendarZone) calendarZone.classList.remove('list-view-active');\n              initCalendar('dayGridMonth');\n              const btnToggleView = document.getElementById('btn-toggle-view');\n              if (btnToggleView) btnToggleView.textContent = 'Vue Liste';\n            }\n          }\n        }\n      }\n\n      let scrollBlocked = false;\n      \n      function toggleScrollLock(state) {\n        const body = document.body;\n        \n        if (state && !scrollBlocked) {\n          scrollBlocked = true;\n          body.classList.add('scroll-locked');\n          document.documentElement.classList.add('scroll-locked');\n        } else if (!state && scrollBlocked) {\n          scrollBlocked = false;\n          body.classList.remove('scroll-locked');\n          document.documentElement.classList.remove('scroll-locked');\n        }\n      }\n\n      setTimeout(function() {\n        const calendarEl = document.querySelector('.fullcalendar-container');\n        const prevBtn = document.querySelector('.calendar-prev');\n        const nextBtn = document.querySelector('.calendar-next');\n        const todayBtn = document.querySelector('.calendar-today');\n        const modalOverlay = document.querySelector('.event-modal-overlay');\n        const modalClose = document.querySelector('.event-modal-close');\n        const btnToggleView = document.getElementById('btn-toggle-view');\n        const btnToggleFullscreen = document.getElementById('btn-toggle-fullscreen');\n        \n        if (!calendarEl) return;\n        if (typeof FullCalendar === 'undefined' || !FullCalendar.Calendar) {\n          const warn = document.createElement('div');\n          warn.style.cssText = 'padding: 1rem; text-align: center; color: #ffc107; background: rgba(255, 193, 7, 0.1); border-radius: 12px; border: 1px solid #ffc107;';\n          warn.innerHTML = '⚠️ Le calendrier n\\'a pas pu charger les librairies externes (CDN bloqué).<br><small>Essayez d\\'autoriser le site ou utilisez une connexion réseau différente.</small>';\n          calendarEl.appendChild(warn);\n          return;\n        }\n        \n        if (modalClose) modalClose.onclick = closeEventModal;\n        if (modalOverlay) modalOverlay.onclick = closeEventModal;\n        \n        document.addEventListener('keydown', (e) => {\n          if (e.key === 'Escape') closeEventModal();\n        });\n        \n        if (btnToggleView) btnToggleView.onclick = toggleView;\n        if (btnToggleFullscreen) btnToggleFullscreen.onclick = toggleFullscreen;\n        \n        window.addEventListener('orientationchange', handleOrientationChange);\n        window.addEventListener('resize', handleOrientationChange);\n        window.addEventListener('resize', resizeWrapperHeight);\n        window.addEventListener('load', resizeWrapperHeight);\n\n        const calendarZone = document.querySelector('.calendar-zone');\n        \n        if (calendarZone) {\n          const handleScroll = (e) => {\n            if (calendarZone.scrollTop === 0) {\n              toggleScrollLock(false);\n            } else {\n              toggleScrollLock(true);\n            }\n          };\n          calendarZone.addEventListener('scroll', handleScroll, { passive: true });\n          handleScroll();\n        }\n\n        window.addEventListener('load', () => {\n          if (calendarZone) toggleScrollLock(calendarZone.scrollTop > 0);\n        });\n\n        (async function() {\n          try {\n            let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||\n                          document.querySelector('input[name=\"icalUrl\"]')?.value ||\n                          \"https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c\";\n\n            const proxyUrl = \"https://api.allorigins.win/raw?url=\" + encodeURIComponent(icalUrl);\n            const response = await fetch(proxyUrl);\n            \n            if (!response.ok) {\n              throw new Error(`HTTP ${response.status}: ${response.statusText}`);\n            }\n\n            const icalText = await response.text();\n            const jcalData = ICAL.parse(icalText);\n            const comp = new ICAL.Component(jcalData);\n            const vevents = comp.getAllSubcomponents(\"vevent\");\n            loadedEvents = [];\n\n            vevents.forEach((vevent, index) => {\n              try {\n                const event = new ICAL.Event(vevent);\n                if (!event.startDate) return;\n                \n                let startDate = event.startDate.toJSDate();\n                let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);\n                const dtStartProp = vevent.getFirstProperty(\"dtstart\");\n                const isAllDay = dtStartProp && dtStartProp.getParameter(\"value\") === \"DATE\";\n                \n                if (isAllDay && endDate.getTime() !== startDate.getTime()) {\n                  endDate.setDate(endDate.getDate() + 1);\n                }\n                \n                let cleanTitle = event.summary || \"Sans titre\";\n                cleanTitle = cleanTitle.replace(/\\s*\\d{1,2}h\\s*/gi, \"\");\n                cleanTitle = cleanTitle.replace(/\\s*\\d{1,2}:\\d{2}.*$/i, \"\");\n                cleanTitle = cleanTitle.trim();\n                \n                let eventUrl = \"\";\n                if (event.component && event.component.getFirstPropertyValue) {\n                  const urlProp = event.component.getFirstPropertyValue(\"url\");\n                  const attachProp = event.component.getFirstPropertyValue(\"attach\");\n                  eventUrl = urlProp || attachProp || \"\";\n                }\n                \n                loadedEvents.push({\n                  id: event.uid || `event-${index}`,\n                  title: cleanTitle,\n                  start: startDate,\n                  end: endDate,\n                  allDay: true,\n                  display: \"block\",\n                  backgroundColor: \"#667eea\",\n                  borderColor: \"#667eea\",\n                  extendedProps: {\n                    description: event.description || \"\",\n                    location: event.location || \"\",\n                    summary: cleanTitle,\n                    startDate: startDate,\n                    endDate: endDate,\n                    url: eventUrl\n                  }\n                });\n              } catch (e) {\n                console.error('Erreur lors du traitement de l\\'événement:', e);\n              }\n            });\n\n            loadedEvents = consolidateMultiDayEvents(loadedEvents);\n\n            if (isMobile() && isPortrait()) {\n              initCalendar(\"listMonth\");\n                            const calendarZone = document.querySelector('.calendar-zone');\n              if (btnToggleView) btnToggleView.textContent = \"Vue Calendrier\";\n                          if (calendarZone) calendarZone.classList.add('list-view-active');\n            } else {\n              initCalendar(\"dayGridMonth\");\n                            const calendarZone = document.querySelector('.calendar-zone');\n              if (btnToggleView) btnToggleView.textContent = \"Vue Liste\";\n                          if (calendarZone) calendarZone.classList.remove('list-view-active');\n            }\n\n            if (prevBtn) prevBtn.onclick = () => calendar && calendar.prev();\n            if (nextBtn) nextBtn.onclick = () => calendar && calendar.next();\n            if (todayBtn) {\n              todayBtn.onclick = () => {\n                if (calendar) {\n                  calendar.today();\n                  updateMonthLabel(new Date());\n                }\n              };\n            }\n          } catch (error) {\n            console.error(\"Erreur de chargement du calendrier:\", error);\n            const calendarEl = document.querySelector(\".fullcalendar-container\");\n            if (calendarEl) {\n              calendarEl.innerHTML = `\n                <div style=\"padding: 2rem; text-align: center; color: #ffc107; background: rgba(255, 193, 7, 0.1); border-radius: 12px; border: 1px solid #ffc107;\">\n                  ❌ Erreur de chargement<br>\n                  <small>${error.message}</small><br>\n                  <small>Ouvrez F12 pour plus de détails</small>\n                </div>`;\n            }\n          }\n        })();\n      }, 100);\n    })();\n  </script>"
           ],
           "_protectedParams": [],
           "_global": false,
