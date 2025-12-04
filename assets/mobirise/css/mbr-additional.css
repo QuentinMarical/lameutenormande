@@ -2162,6 +2162,15 @@ a {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(118, 75, 162, 0.4);
 }
+.cid-v2DoFDRAW7 .btn-subscribe-style {
+  background: linear-gradient(135deg, #4caf50, #45a049) !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4) !important;
+}
+.cid-v2DoFDRAW7 .btn-subscribe-style:hover {
+  background: linear-gradient(135deg, #45a049, #3d8b40) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.6) !important;
+}
 .cid-v2DoFDRAW7 .calendar-month {
   font-size: 0.8rem;
   font-weight: 700;

@@ -21,7 +21,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=dvd3A3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=dvd3A3" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2pOKSZ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2pOKSZ" type="text/css">
 
   
   
@@ -106,6 +106,21 @@
       background: rgba(0, 0, 0, 0.65);
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
+    }
+
+    .event-modal[role="dialog"] {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .event-modal.show {
@@ -339,6 +354,7 @@
             <button class="calendar-btn calendar-today">Aujourd'hui</button>
             <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
             <button class="calendar-btn" id="btn-toggle-fullscreen">Plein écran</button>
+            <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
             <span class="calendar-month">Décembre 2024</span>
           </div>
           <button class="calendar-arrow-btn calendar-next">›</button>
@@ -357,9 +373,27 @@
     </div>
   </div>
 
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <!-- FullCalendar & ical.js with security headers and explicit MIME type -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
+
+  <!-- Fallback CSS for FullCalendar if CDN fails -->
+  <style>
+    /* Critical FullCalendar base styles */
+    .fc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .fc-button { background: #667eea; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
+    .fc-button:hover { background: #764ba2; }
+    .fc-button-active { background: #764ba2; }
+    .fc-daygrid-day { background: rgba(30, 30, 46, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .fc-daygrid-day:hover { background: rgba(102, 126, 234, 0.15); }
+    .fc-day-today { background: rgba(255, 193, 7, 0.15) !important; border: 2px solid #ffc107 !important; }
+    .fc-event { background: #667eea; border: none; border-radius: 4px; padding: 2px 4px; font-size: 0.8rem; }
+    .fc-event-title { font-weight: 600; }
+    .fc-col-header-cell { background: #2d2d3d; color: white; font-weight: 700; padding: 0.5rem; text-align: center; }
+    .fc-listMonth-view { max-height: none !important; height: auto !important; }
+    .fc-listMonth-view .fc-scroller { overflow: visible !important; max-height: none !important; height: auto !important; }
+  </style>
 
   <script>
     'use strict';
@@ -377,7 +411,11 @@
 
       function closeEventModal() {
         const modal = document.querySelector('.event-modal');
-        if (modal) modal.classList.remove('show');
+        if (modal) {
+          modal.classList.remove('show');
+          modal.setAttribute('aria-hidden', 'true');
+          modal.removeAttribute('role');
+        }
       }
 
       function openEventModal(event, props) {
@@ -386,6 +424,12 @@
         const modalBody = document.querySelector('.event-modal-body');
         
         if (!modal || !modalTitle || !modalBody) return;
+        
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-hidden', 'false');
+        modalTitle.id = 'modal-title';
+        modal.setAttribute('aria-labelledby', 'modal-title');
         
         modalTitle.textContent = props.summary || event.title;
         let bodyHTML = '';
@@ -414,7 +458,7 @@
             month: 'long',
             day: 'numeric'
           });
-          const duration = Math.ceil((props.endDate - props.startDate) / (1000 * 60 * 60 * 24)) + 1;
+          const duration = Math.ceil((props.endDate - props.startDate) / (1000 * 60 * 60 * 24));
           bodyHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">🏁</div>
@@ -468,6 +512,10 @@
         
         modalBody.innerHTML = bodyHTML;
         modal.classList.add('show');
+        setTimeout(() => {
+          const closeBtn = modal.querySelector('.event-modal-close');
+          if (closeBtn) closeBtn.focus();
+        }, 100);
       }
 
       function updateMonthLabel(date) {
@@ -688,7 +736,8 @@
         }
       }
 
-      setTimeout(function() {
+      // Démarrer immédiatement sans setTimeout
+      (function() {
         const calendarEl = document.querySelector('.fullcalendar-container');
         const prevBtn = document.querySelector('.calendar-prev');
         const nextBtn = document.querySelector('.calendar-next');
@@ -717,6 +766,100 @@
         if (btnToggleView) btnToggleView.onclick = toggleView;
         if (btnToggleFullscreen) btnToggleFullscreen.onclick = toggleFullscreen;
         
+        const btnSubscribe = document.getElementById('btn-subscribe');
+        if (btnSubscribe) {
+          btnSubscribe.onclick = () => {
+            const icalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
+            
+            // Créer une modal pour les instructions d'abonnement
+            const subscribeModal = document.createElement('div');
+            subscribeModal.className = 'event-modal show';
+            subscribeModal.setAttribute('role', 'dialog');
+            subscribeModal.setAttribute('aria-modal', 'true');
+            subscribeModal.innerHTML = `
+              <div class="event-modal-overlay"></div>
+              <div class="event-modal-content">
+                <button class="event-modal-close">×</button>
+                <h3 class="event-modal-title">📅 S'abonner au calendrier</h3>
+                <div class="event-modal-body">
+                  <div class="event-info-row">
+                    <div class="event-info-icon">🔗</div>
+                    <div class="event-info-content">
+                      <div class="event-info-label">Lien d'abonnement iCal</div>
+                      <div class="event-info-text">
+                        <input type="text" readonly value="${icalUrl}" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 0.5rem;" onclick="this.select()">
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+                          <button class="event-url-button" onclick="navigator.clipboard.writeText('${icalUrl}'); this.textContent='✓ Copié !'; setTimeout(() => this.textContent='Copier le lien', 2000)" style="flex: 1;">Copier le lien</button>
+                          <button class="event-url-button" onclick="window.open('${icalUrl}', '_blank')" style="flex: 1;">Télécharger</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="event-info-row">
+                    <div class="event-info-icon">💾</div>
+                    <div class="event-info-content">
+                      <div class="event-info-label">Télécharger et importer</div>
+                      <div class="event-info-text">
+                        <p style="margin: 0 0 0.8rem 0; font-size: 0.9rem;">La méthode la plus simple pour tous les systèmes :</p>
+                        <ol style="margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6;">
+                          <li><strong>Téléchargez</strong> le fichier iCal avec le lien ci-dessus</li>
+                          <li><strong>Ouvrez</strong> le fichier téléchargé (double-clic ou clic droit → Ouvrir avec)</li>
+                          <li>Sélectionnez votre application de calendrier ou de messagerie<br>(Outlook, Apple Calendar, Google Calendar, Thunderbird, Evolution, etc.)</li>
+                          <li>Confirmez <strong>l'import</strong> du calendrier</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="event-info-row">
+                    <div class="event-info-icon">🌐</div>
+                    <div class="event-info-content">
+                      <div class="event-info-label">S'abonner directement (Web)</div>
+                      <div class="event-info-text">
+                        <p style="margin: 0 0 0.8rem 0; font-size: 0.9rem;">Si votre application supporte les URLs iCal :</p>
+                        <ol style="margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6;">
+                          <li><strong>Copiez</strong> le lien iCal ci-dessus</li>
+                          <li>Ouvrez <strong>Google Calendar</strong>, <strong>Apple Calendar</strong>, <strong>Outlook</strong>, ou autre</li>
+                          <li>Recherchez l'option <strong>"Ajouter un calendrier"</strong> ou <strong>"S'abonner"</strong></li>
+                          <li><strong>Collez</strong> le lien iCal fourni</li>
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="event-info-row">
+                    <div class="event-info-icon">ℹ️</div>
+                    <div class="event-info-content">
+                      <div class="event-info-label">Systèmes compatibles</div>
+                      <div class="event-info-text">
+                        <p style="margin: 0; font-size: 0.85rem;">Tous les calendriers et applications de messagerie modernes supportent le format iCal :</p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #ccc;">
+                          📧 <strong>Messagerie :</strong> Outlook, Thunderbird, Evolution, Mail (macOS/iOS)<br>
+                          📅 <strong>Calendrier :</strong> Google Calendar, Apple Calendar, Calendrier (Windows), Gnome Calendar<br>
+                          ☁️ <strong>Autres :</strong> NextCloud, Owncloud, Kolab, et tous les services iCal-compatible
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+            
+            document.body.appendChild(subscribeModal);
+            
+            const closeBtn = subscribeModal.querySelector('.event-modal-close');
+            const overlay = subscribeModal.querySelector('.event-modal-overlay');
+            
+            const closeSubscribe = () => {
+              subscribeModal.remove();
+            };
+            
+            if (closeBtn) closeBtn.onclick = closeSubscribe;
+            if (overlay) overlay.onclick = closeSubscribe;
+          };
+        }
+        
         window.addEventListener('orientationchange', handleOrientationChange);
         window.addEventListener('resize', handleOrientationChange);
         window.addEventListener('resize', resizeWrapperHeight);
@@ -741,20 +884,99 @@
         });
 
         (async function() {
-          try {
-            let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
-                          document.querySelector('input[name="icalUrl"]')?.value ||
-                          "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
+          const fetchWithRetry = async (url, maxRetries = 1) => {
+            for (let i = 0; i < maxRetries; i++) {
+              try {
+                const response = await fetch(url, {
+                  headers: {
+                    'Accept': 'text/calendar, application/ics, text/plain, */*',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                  },
+                  cache: 'force-cache',
+                  mode: 'cors'
+                });
+                console.log(`   Réponse: ${response.status} ${response.statusText}, Type: ${response.headers.get('content-type')}`);
+                if (response.ok) return response;
+                if (response.status === 403 || response.status === 401) {
+                  throw new Error(`Accès refusé (${response.status}). Vérifiez que le calendrier est public.`);
+                }
+              } catch (err) {
+                console.log(`   Erreur réseau/parse (${i + 1}/${maxRetries}):`, err.message);
+                if (i === maxRetries - 1) throw err;
+                await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+              }
+            }
+            throw new Error('Max retries exceeded');
+          };
 
-            const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(icalUrl);
-            const response = await fetch(proxyUrl);
+          try {
+            // L'URL Zoho fournie par défaut
+            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
             
-            if (!response.ok) {
-              throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
+                          document.querySelector('[data-ical-url]')?.getAttribute('value') ||
+                          document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
+                          document.querySelector('input[name="icalUrl"]')?.value ||
+                          defaultIcalUrl;
+            
+            console.log('URL trouvée:', icalUrl);
+            
+            // Validate URL exists
+            if (!icalUrl || icalUrl.trim().length === 0) {
+              throw new Error('No iCal URL provided in parameters');
+            }
+
+            let response = null;
+            const proxies = [
+              { name: 'Direct', url: icalUrl },
+              { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
+              { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
+              { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
+            ];
+            
+            let lastError = null;
+            // Essayer 3 proxies max pour accélérer
+            for (let i = 0; i < Math.min(3, proxies.length); i++) {
+              const proxy = proxies[i];
+              try {
+                console.log(`🔄 Tentative ${i + 1}/${Math.min(3, proxies.length)}: ${proxy.name}`);
+                console.log(`   URL: ${proxy.url.substring(0, 80)}...`);
+                
+                response = await fetchWithRetry(proxy.url, 1);
+                
+                if (response.status === 200) {
+                  console.log(`✅ Succès avec ${proxy.name}`);
+                  break;
+                } else {
+                  console.warn(`⚠️ ${proxy.name} retourné le statut ${response.status}`);
+                }
+              } catch (err) {
+                lastError = err;
+                console.warn(`❌ ${proxy.name} échoué:`, err.message);
+              }
+            }
+            
+            if (!response || !response.ok) {
+              console.error('Dernier erreur:', lastError);
+              throw new Error(`Impossible de charger le calendrier. Dernier essai: ${lastError?.message || 'Unknown'}`);
+            }
+            
+            if (!response || !response.ok) {
+              throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
             }
 
             const icalText = await response.text();
-            const jcalData = ICAL.parse(icalText);
+            if (!icalText || icalText.trim().length === 0) {
+              throw new Error('iCal file is empty or invalid');
+            }
+            
+            let jcalData = null;
+            try {
+              jcalData = ICAL.parse(icalText);
+            } catch (parseErr) {
+              throw new Error('Invalid iCal format: ' + parseErr.message);
+            }
+            
             const comp = new ICAL.Component(jcalData);
             const vevents = comp.getAllSubcomponents("vevent");
             loadedEvents = [];
@@ -822,8 +1044,14 @@
                           if (calendarZone) calendarZone.classList.remove('list-view-active');
             }
 
-            if (prevBtn) prevBtn.onclick = () => calendar && calendar.prev();
-            if (nextBtn) nextBtn.onclick = () => calendar && calendar.next();
+            if (prevBtn) {
+              prevBtn.onclick = () => calendar && calendar.prev();
+              prevBtn.setAttribute('aria-label', 'Mois précédent');
+            }
+            if (nextBtn) {
+              nextBtn.onclick = () => calendar && calendar.next();
+              nextBtn.setAttribute('aria-label', 'Mois suivant');
+            }
             if (todayBtn) {
               todayBtn.onclick = () => {
                 if (calendar) {
@@ -831,21 +1059,44 @@
                   updateMonthLabel(new Date());
                 }
               };
+              todayBtn.setAttribute('aria-label', 'Aller à aujourd\'hui');
             }
           } catch (error) {
             console.error("Erreur de chargement du calendrier:", error);
             const calendarEl = document.querySelector(".fullcalendar-container");
             if (calendarEl) {
+              let errorMsg = error.message;
+              let suggestions = '';
+              
+              if (error.message.includes('No iCal URL')) {
+                errorMsg = 'Aucune URL iCal n\'a été fournie.';
+                suggestions = '<br><strong>Action requise :</strong> Entrez une URL iCal valide dans les paramètres du formulaire ci-dessus.';
+              } else if (error.message.includes('Impossible de charger')) {
+                errorMsg = 'Impossible de charger le calendrier avec l\'URL fournie.';
+                suggestions = '<br><strong>Solutions :</strong><ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;"><li>✅ Vérifiez que l\'URL du calendrier Zoho est <strong>correcte</strong> et <strong>publique</strong></li><li>✅ Testez l\'URL directement dans votre navigateur</li><li>✅ Assurez-vous que le partage du calendrier Zoho est activé</li><li>✅ Attendez quelques secondes avant de recharger (cache proxy)</li><li>ℹ️ Consultez la console (F12) pour plus de détails techniques</li></ul>';
+              } else if (error.message.includes('Accès refusé')) {
+                errorMsg = 'Accès refusé au calendrier Zoho.';
+                suggestions = '<br><strong>Action :</strong> Vérifiez que le calendrier est <strong>public</strong> dans les paramètres de partage Zoho.';
+              } else if (error.message.includes('Invalid iCal')) {
+                errorMsg = 'Le fichier iCal n\'est pas au bon format.';
+                suggestions = '<br><strong>Conseil :</strong> Vérifiez que l\'URL pointe vers un fichier iCal valide (.ics).';
+              } else if (error.message.includes('empty')) {
+                errorMsg = 'Le fichier iCal est vide.';
+              } else if (error.message.includes('Network') || error.message.includes('réseau')) {
+                errorMsg = 'Erreur de connexion réseau.';
+                suggestions = '<br><strong>Action :</strong> Vérifiez votre connexion Internet et rechargez la page.';
+              }
+              
               calendarEl.innerHTML = `
-                <div style="padding: 2rem; text-align: center; color: #ffc107; background: rgba(255, 193, 7, 0.1); border-radius: 12px; border: 1px solid #ffc107;">
-                  ❌ Erreur de chargement<br>
-                  <small>${error.message}</small><br>
-                  <small>Ouvrez F12 pour plus de détails</small>
+                <div style="padding: 2rem; text-align: center; color: #ffc107; background: rgba(255, 193, 7, 0.1); border-radius: 12px; border: 1px solid #ffc107; max-width: 600px; margin: 0 auto;">
+                  ❌ ${errorMsg}<br>
+                  <small style="color: #888; margin-top: 0.5rem; display: block;">Ouvrez F12 (console) pour plus de détails techniques</small>
+                  ${suggestions}
                 </div>`;
             }
           }
         })();
-      }, 100);
+      })();
     })();
   </script>
 
