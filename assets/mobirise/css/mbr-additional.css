@@ -2402,24 +2402,49 @@ a {
   color: #fff !important;
   font-weight: 700;
   font-size: 0.85rem !important;
-  border-radius: 10px !important;
-  padding: 0.5rem 0.8rem !important;
-  margin: 0 0 2px 0 !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  margin: 1rem 0 0.8rem 0 !important;
+  vertical-align: middle !important;
 }
 .cid-v2DoFDRAW7 .fc .fc-list-event {
-  background: transparent !important;
-  border-radius: 12px !important;
-  margin: 0 0 2px 0 !important;
-  padding: 0.6rem 1rem !important;
-  border: none !important;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.15)) !important;
+  border-radius: 10px !important;
+  margin: 0 0 14px 0 !important;
+  padding: 14px 18px !important;
+  border: 2px solid rgba(102, 126, 234, 0.4) !important;
   transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event:hover {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.45), rgba(118, 75, 162, 0.4)) !important;
+  border-color: rgba(102, 126, 234, 0.8) !important;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.5);
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event:hover .fc-event-title {
+  color: #fff !important;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event:hover .fc-list-event-time {
+  color: #e0e0e0 !important;
 }
 .cid-v2DoFDRAW7 .fc .fc-list-event .fc-event-title {
-  font-size: 0.85rem !important;
+  font-size: 0.95rem !important;
   font-weight: 600 !important;
-  padding: 0.3rem 0.8rem !important;
+  padding: 0 !important;
   margin: 0 !important;
-  display: inline-block !important;
+  color: #fff !important;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event-time {
+  font-size: 0.9rem !important;
+  color: #adb5bd !important;
+  font-weight: 500;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event-time:empty {
+  display: none !important;
+}
+.cid-v2DoFDRAW7 .fc-list-event-dot {
+  display: none !important;
 }
 @media (min-width: 1200px) {
   .cid-v2DoFDRAW7 .container-calendar {
@@ -2468,14 +2493,6 @@ a {
   }
 }
 @media (max-width: 1199px) {
-  .cid-v2DoFDRAW7 .calendar-zone {
-    overflow-y: hidden !important;
-  }
-}
-@media (max-width: 768px) {
-  .cid-v2DoFDRAW7 .container-calendar {
-    padding: 0 0.5rem;
-  }
   .cid-v2DoFDRAW7 .calendar-wrapper {
     padding: 0.5rem;
   }
@@ -2499,20 +2516,27 @@ a {
     padding: 0.5rem 0.3rem;
     font-size: 0.7rem;
   }
-  .cid-v2DoFDRAW7 .fc .fc-list-event {
-    padding: 0.7rem 1rem !important;
+  .cid-v2DoFDRAW7 .calendar-zone {
+    max-height: 90vh;
   }
-  .cid-v2DoFDRAW7 .fc .fc-list-event .fc-event-title {
-    font-size: 0.85rem !important;
-    white-space: normal !important;
+}
+@media (max-width: 768px) {
+  .cid-v2DoFDRAW7 .container-calendar {
+    padding: 0 0.5rem;
   }
   .cid-v2DoFDRAW7 .fc .fc-list-day,
   .cid-v2DoFDRAW7 .fc .fc-list-day-cushion {
-    padding: 0.5rem 0.8rem !important;
     font-size: 0.85rem !important;
+    padding: 8px 12px !important;
   }
-  .cid-v2DoFDRAW7 .calendar-zone {
-    max-height: 90vh;
+  .cid-v2DoFDRAW7 .fc .fc-list-event {
+    padding: 8px 12px !important;
+  }
+  .cid-v2DoFDRAW7 .fc .fc-list-event .fc-event-title {
+    font-size: 0.9rem !important;
+  }
+  .cid-v2DoFDRAW7 .fc .fc-list-event-time {
+    font-size: 0.85rem !important;
   }
 }
 @media (max-width: 480px) {
@@ -2545,7 +2569,10 @@ a {
     font-size: 0.65rem;
   }
   .cid-v2DoFDRAW7 .fc .fc-list-event .fc-event-title {
-    font-size: 0.8rem !important;
+    font-size: 0.95rem !important;
+  }
+  .cid-v2DoFDRAW7 .fc .fc-list-event-time {
+    font-size: 0.9rem !important;
   }
   .cid-v2DoFDRAW7 html,
   .cid-v2DoFDRAW7 body {
@@ -2611,12 +2638,12 @@ a {
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day,
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day-cushion {
-  padding: 0.3rem 0.6rem !important;
-  margin: 0 !important;
+  padding: 6px 12px !important;
+  margin: 0.75rem 0 0.4rem 0 !important;
   border-radius: 6px !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event {
-  padding: 0.45rem 0.6rem !important;
+  padding: 8px 14px !important;
   margin: 0 !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event + .fc-list-event {
@@ -2632,11 +2659,56 @@ a {
   padding: 0 !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day-side {
-  color: #ffb74d;
-  padding-left: 0.4rem;
+  display: none !important;
+}
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day-side-text {
+  display: none !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day-text {
   padding-left: 0.4rem;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+.cid-v2DoFDRAW7 th[scope="colgroup"] .fc-list-day-cushion.fc-cell-shaded,
+.cid-v2DoFDRAW7 th[scope="colgroup"],
+.cid-v2DoFDRAW7 .fc-list-day-cushion,
+.cid-v2DoFDRAW7 .fc-cell-shaded {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 10px !important;
+}
+.cid-v2DoFDRAW7 th[scope="colgroup"] .fc-list-day-cushion.fc-cell-shaded::before,
+.cid-v2DoFDRAW7 th[scope="colgroup"] .fc-list-day-cushion.fc-cell-shaded::after,
+.cid-v2DoFDRAW7 .fc-list-day-cushion::before,
+.cid-v2DoFDRAW7 .fc-list-day-cushion::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+.cid-v2DoFDRAW7 th[scope="colgroup"] .fc-list-day-text,
+.cid-v2DoFDRAW7 th[scope="colgroup"] .fc-list-day-side-text {
+  background: transparent !important;
+  background-image: none !important;
+}
+.cid-v2DoFDRAW7 .fc,
+.cid-v2DoFDRAW7 .fc-theme-standard {
+  --fc-list-day-bg-color: transparent;
+  --fc-neutral-bg-color: transparent;
+  --fc-page-bg-color: transparent;
+  --fc-list-event-hover-bg-color: transparent;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-sticky .fc-list-day > * {
+  background: #2a2a38;
+  position: sticky;
+  top: 0px;
+  z-index: 10;
 }
 .cid-v2JjpkmvsV {
   z-index: 1000;

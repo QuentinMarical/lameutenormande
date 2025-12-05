@@ -21,7 +21,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2pOKSZ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2pOKSZ" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=obzjuF"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=obzjuF" type="text/css">
 
   
   
@@ -399,6 +399,24 @@
     'use strict';
     
     (function() {
+      const originalSetInterval = window.setInterval;
+      const moduleIntervals = new Set();
+      window.setInterval = function(fn, delay) {
+        const id = originalSetInterval.call(window, fn, delay);
+        moduleIntervals.add(id);
+        return id;
+      };
+      
+      let preventReload = true;
+      window.addEventListener('beforeunload', function(e) {
+        if (preventReload) {
+          e.preventDefault();
+          e.returnValue = '';
+        }
+      });
+    })();
+    
+    (function() {
       const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
       let calendar = null;
       let currentDate = new Date();
@@ -548,7 +566,6 @@
         });
       }
 
-      // Masque les lignes de semaines qui ne contiennent aucun jour du mois courant
       function pruneOuterMonthRows() {
         if (!calendar || currentView !== 'dayGridMonth') return;
         const calendarEl = document.querySelector('.fullcalendar-container');
@@ -571,14 +588,12 @@
               }
             }
           });
-          // Si aucune cellule du mois courant => masquer entièrement la ligne
           if (!hasCurrent) {
             row.style.display = 'none';
           } else {
             row.style.display = '';
           }
         });
-        // Recalcule la hauteur après modification
         setTimeout(() => { if (calendar) calendar.updateSize(); }, 30);
       }
 
@@ -612,6 +627,17 @@
             info.jsEvent.preventDefault();
             openEventModal(info.event, info.event.extendedProps);
           },
+          eventDidMount: function(info) {
+            if (info.event.allDay && info.view.type === 'listMonth') {
+              const timeEl = info.el.querySelector('.fc-list-event-time');
+              if (timeEl) {
+                const text = timeEl.textContent.toLowerCase().trim();
+                if (text === 'all-day' || text === 'toute la journée' || text === '') {
+                  timeEl.style.display = 'none';
+                }
+              }
+            }
+          },
           datesSet: function(info) {
             if (updateTimeout) clearTimeout(updateTimeout);
             updateTimeout = setTimeout(() => {
@@ -626,7 +652,6 @@
         currentView = viewName;
         updateMonthLabel(currentDate);
         
-        // Ensure proper sizing after render
         setTimeout(() => {
           resizeWrapperHeight();
           if (calendar) calendar.updateSize();
@@ -680,7 +705,6 @@
         const wrapper = document.getElementById('calendar-wrapper');
         if (!wrapper || isFullscreen) return;
         
-        // Calculate exact available viewport height
         const top = wrapper.getBoundingClientRect().top;
         const bottomMargin = 16;
         const available = window.innerHeight - top - bottomMargin;
@@ -688,7 +712,6 @@
         if (available > 200) {
           wrapper.style.height = available + 'px';
           
-          // Force calendar to recalculate and fit without internal scrolling
           if (calendar) {
             setTimeout(() => {
               calendar.updateSize();
@@ -736,7 +759,6 @@
         }
       }
 
-      // Démarrer immédiatement sans setTimeout
       (function() {
         const calendarEl = document.querySelector('.fullcalendar-container');
         const prevBtn = document.querySelector('.calendar-prev');
@@ -771,7 +793,6 @@
           btnSubscribe.onclick = () => {
             const icalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
             
-            // Créer une modal pour les instructions d'abonnement
             const subscribeModal = document.createElement('div');
             subscribeModal.className = 'event-modal show';
             subscribeModal.setAttribute('role', 'dialog');
@@ -910,7 +931,6 @@
           };
 
           try {
-            // L'URL Zoho fournie par défaut
             const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
             
             let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
@@ -921,7 +941,6 @@
             
             console.log('URL trouvée:', icalUrl);
             
-            // Validate URL exists
             if (!icalUrl || icalUrl.trim().length === 0) {
               throw new Error('No iCal URL provided in parameters');
             }
@@ -935,7 +954,6 @@
             ];
             
             let lastError = null;
-            // Essayer 3 proxies max pour accélérer
             for (let i = 0; i < Math.min(3, proxies.length); i++) {
               const proxy = proxies[i];
               try {
