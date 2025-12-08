@@ -2088,19 +2088,6 @@ a {
   flex: 1;
   transition: all 0.3s ease;
 }
-.cid-v2DoFDRAW7 .calendar-wrapper.fullscreen-mode {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 9999 !important;
-  background-color: #1e1e2e;
-  border-radius: 0 !important;
-  padding: 1rem !important;
-  margin: 0 !important;
-  max-width: none !important;
-}
 .cid-v2DoFDRAW7 .calendar-header {
   display: flex;
   justify-content: space-between;

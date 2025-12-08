@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=hx8R8E"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=hx8R8E" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pIiw31"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pIiw31" type="text/css">
 
   
   
@@ -98,16 +98,19 @@
     .event-modal {
       display: none !important;
       position: fixed;
-      z-index: 10000;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      z-index: 2147483647 !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
       align-items: center;
       justify-content: center;
       background: rgba(0, 0, 0, 0.65);
       -webkit-backdrop-filter: blur(6px);
       backdrop-filter: blur(6px);
+      isolation: isolate !important;
     }
 
     .event-modal[role="dialog"] {
@@ -117,11 +120,11 @@
     @keyframes slideIn {
       from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: translateY(100%);
       }
       to {
         opacity: 1;
-        transform: scale(1);
+        transform: translateY(0);
       }
     }
 
@@ -156,6 +159,29 @@
       -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
+      animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(100%);
+      }
+    }
+
+    .event-modal.closing .event-modal-content {
+      animation: slideDown 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
     }
 
     .event-modal-title {
@@ -323,6 +349,15 @@
       height: 100% !important;
     }
 
+    /* Masquer tous les éléments du site quand la modale est ouverte */
+    body.modal-open > *:not(.event-modal) {
+      visibility: hidden !important;
+    }
+
+    body.modal-open .event-modal {
+      visibility: visible !important;
+    }
+
     .calendar-zone::-webkit-scrollbar {
       width: 6px;
     }
@@ -355,7 +390,6 @@
           <div class="calendar-controls-center">
             <button class="calendar-btn calendar-today">Aujourd'hui</button>
             <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
-            <button class="calendar-btn" id="btn-toggle-fullscreen">Plein écran</button>
             <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
             <span class="calendar-month">Décembre 2024</span>
           </div>
@@ -423,7 +457,6 @@
       let currentDate = new Date();
       let updateTimeout = null;
       let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
-      let isFullscreen = false;
       let loadedEvents = [];
       const isMobile = () => window.innerWidth <= 768;
       const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
@@ -431,9 +464,15 @@
       function closeEventModal() {
         const modal = document.querySelector('.event-modal');
         if (modal) {
-          modal.classList.remove('show');
-          modal.setAttribute('aria-hidden', 'true');
-          modal.removeAttribute('role');
+          modal.classList.add('closing');
+          
+          setTimeout(() => {
+            modal.classList.remove('show');
+            modal.classList.remove('closing');
+            modal.setAttribute('aria-hidden', 'true');
+            modal.removeAttribute('role');
+            document.body.classList.remove('modal-open');
+          }, 300);
         }
       }
 
@@ -444,13 +483,18 @@
         
         if (!modal || !modalTitle || !modalBody) return;
         
-        modal.setAttribute('role', 'dialog');
-        modal.setAttribute('aria-modal', 'true');
-        modal.setAttribute('aria-hidden', 'false');
-        modalTitle.id = 'modal-title';
-        modal.setAttribute('aria-labelledby', 'modal-title');
+        // Masquer tous les éléments du site AVANT d'ouvrir la modale
+        document.body.classList.add('modal-open');
         
-        modalTitle.textContent = props.summary || event.title;
+        // Petit délai pour s'assurer que le masquage est appliqué
+        requestAnimationFrame(() => {
+          modal.setAttribute('role', 'dialog');
+          modal.setAttribute('aria-modal', 'true');
+          modal.setAttribute('aria-hidden', 'false');
+          modalTitle.id = 'modal-title';
+          modal.setAttribute('aria-labelledby', 'modal-title');
+          
+          modalTitle.textContent = props.summary || event.title;
         let bodyHTML = '';
         
         if (props.startDate) {
@@ -529,12 +573,57 @@
             </div>`;
         }
         
-        modalBody.innerHTML = bodyHTML;
-        modal.classList.add('show');
-        setTimeout(() => {
-          const closeBtn = modal.querySelector('.event-modal-close');
-          if (closeBtn) closeBtn.focus();
-        }, 100);
+          modalBody.innerHTML = bodyHTML;
+          modal.classList.add('show');
+          
+          // Gestion du swipe vers le bas pour fermer
+          const modalContent = modal.querySelector('.event-modal-content');
+          let startY = 0;
+          let currentY = 0;
+          let isDragging = false;
+          
+          const handleTouchStart = (e) => {
+            if (modalContent.scrollTop === 0) {
+              startY = e.touches[0].clientY;
+              isDragging = true;
+            }
+          };
+          
+          const handleTouchMove = (e) => {
+            if (!isDragging) return;
+            currentY = e.touches[0].clientY;
+            const deltaY = currentY - startY;
+            
+            if (deltaY > 0 && modalContent.scrollTop === 0) {
+              e.preventDefault();
+              modalContent.style.transform = `translateY(${deltaY}px)`;
+              modalContent.style.transition = 'none';
+            }
+          };
+          
+          const handleTouchEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const deltaY = currentY - startY;
+            modalContent.style.transition = '';
+            
+            if (deltaY > 150) {
+              closeEventModal();
+            } else {
+              modalContent.style.transform = '';
+            }
+          };
+          
+          modalContent.addEventListener('touchstart', handleTouchStart, { passive: false });
+          modalContent.addEventListener('touchmove', handleTouchMove, { passive: false });
+          modalContent.addEventListener('touchend', handleTouchEnd);
+          
+          setTimeout(() => {
+            const closeBtn = modal.querySelector('.event-modal-close');
+            if (closeBtn) closeBtn.focus();
+          }, 100);
+        });
       }
 
       function updateMonthLabel(date) {
@@ -686,36 +775,11 @@
         }
       }
 
-      function toggleFullscreen() {
-        const wrapper = document.getElementById('calendar-wrapper');
-        const btnFullscreen = document.getElementById('btn-toggle-fullscreen');
-        
-        isFullscreen = !isFullscreen;
-        
-        if (isFullscreen) {
-          wrapper.classList.add('fullscreen-mode');
-          if (btnFullscreen) btnFullscreen.textContent = 'Quitter plein écran';
-        } else {
-          wrapper.classList.remove('fullscreen-mode');
-          if (btnFullscreen) btnFullscreen.textContent = 'Plein écran';
-        }
-        
-        if (calendar) {
-          if (isFullscreen) {
-            calendar.setOption('height', '100%');
-            calendar.setOption('contentHeight', '100%');
-          } else {
-            resizeWrapperHeight();
-            calendar.setOption('height', '100%');
-            calendar.setOption('contentHeight', 'auto');
-          }
-          calendar.updateSize();
-        }
-      }
+
 
       function resizeWrapperHeight() {
         const wrapper = document.getElementById('calendar-wrapper');
-        if (!wrapper || isFullscreen) return;
+        if (!wrapper) return;
         
         const top = wrapper.getBoundingClientRect().top;
         const bottomMargin = 16;
@@ -736,8 +800,6 @@
         if (isMobile()) {
           const calendarZone = document.querySelector('.calendar-zone');
           if (isPortrait()) {
-            if (isFullscreen) toggleFullscreen();
-            
             // Switch to list view if allowed, and (default mobile is true OR forced)
             // But if we are already in list view, do nothing.
             // If allowCalendarView is false, we are forced to list view anyway.
@@ -751,7 +813,6 @@
               if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
             }
           } else {
-            if (!isFullscreen) toggleFullscreen();
             
             // Switch to calendar view if allowed.
             // If allowListView is false, we are forced to calendar view.
@@ -795,7 +856,6 @@
         const modalOverlay = document.querySelector('.event-modal-overlay');
         const modalClose = document.querySelector('.event-modal-close');
         const btnToggleView = document.getElementById('btn-toggle-view');
-        const btnToggleFullscreen = document.getElementById('btn-toggle-fullscreen');
         
         if (!calendarEl) return;
         if (typeof FullCalendar === 'undefined' || !FullCalendar.Calendar) {
@@ -814,7 +874,6 @@
         });
         
         if (btnToggleView) btnToggleView.onclick = toggleView;
-        if (btnToggleFullscreen) btnToggleFullscreen.onclick = toggleFullscreen;
         
         const btnSubscribe = document.getElementById('btn-subscribe');
         if (btnSubscribe) {
