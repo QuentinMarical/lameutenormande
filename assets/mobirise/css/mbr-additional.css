@@ -1856,7 +1856,7 @@ a {
   width: 30px;
   height: 2px;
   border-right: 5px;
-  background-color: #ff0202;
+  background-color: #e34200;
 }
 .cid-v2D2HLImen button.navbar-toggler .hamburger span:nth-child(1) {
   top: 0;
@@ -2094,7 +2094,7 @@ a {
   left: 0;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 2147483640 !important;
+  z-index: 9999 !important;
   background-color: #1e1e2e;
   border-radius: 0 !important;
   padding: 1rem !important;
@@ -2744,7 +2744,7 @@ a {
 .cid-v4N9BybemT {
   padding-top: 0rem;
   padding-bottom: 0rem;
-  background-color: #1b1b23;
+  background-color: #000000;
   overflow: hidden;
 }
 .cid-v4N9BybemT .media-container-row .mbr-text {
@@ -3364,7 +3364,7 @@ a {
 .cid-v4N9BybemT {
   padding-top: 0rem;
   padding-bottom: 0rem;
-  background-color: #1b1b23;
+  background-color: #000000;
   overflow: hidden;
 }
 .cid-v4N9BybemT .media-container-row .mbr-text {
