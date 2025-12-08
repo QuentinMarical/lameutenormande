@@ -15,13 +15,14 @@
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/parallax/jarallax.css">
   <link rel="stylesheet" href="assets/dropdown/css/style.css">
   <link rel="stylesheet" href="assets/socicon/css/styles.css">
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=w1lQyn"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=w1lQyn" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kpj3DZ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kpj3DZ" type="text/css">
 
   
   
@@ -74,11 +75,12 @@
 	</nav>
 </section>
 
-<section class="mbr-section mbr-section--no-padding cid-v2DoFDRAW7" id="witsec-html-block-7">
+<section class="mbr-section mbr-section--no-padding cid-v2DoFDRAW7 mbr-parallax-background" id="witsec-html-block-7">
 
   
 
-  
+  <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);">
+  </div>
 
   <style>
         .mbr-section {
@@ -345,7 +347,7 @@
     .fc-day-other:hover { background: rgba(30, 30, 46, 0.5) !important; }
   </style>
 
-  <div class="container container-calendar">
+  <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
     <div class="calendar-zone">
       <div class="calendar-wrapper" id="calendar-wrapper">
         <div class="calendar-header">
@@ -398,65 +400,29 @@
   <script>
     'use strict';
     
-    (function() {
-      // Block automatic page reloads
-      try {
-        window.location.reload = function() {
-          console.log('Blocked page reload attempt');
-        };
-      } catch (e) { console.warn('Could not override location.reload'); }
 
-      // Block meta refresh
-      function removeMetaRefresh() {
-        document.querySelectorAll('meta[http-equiv="refresh"]').forEach(m => {
-          m.remove();
-          console.log('Blocked meta refresh');
-        });
-      }
-      removeMetaRefresh();
-      
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          mutation.addedNodes.forEach(function(node) {
-            if (node.tagName === 'META' && node.getAttribute('http-equiv')?.toLowerCase() === 'refresh') {
-              node.remove();
-              console.log('Blocked meta refresh');
-            }
-          });
-        });
-      });
-      if (document.head) {
-        observer.observe(document.head, { childList: true, subtree: true });
-      }
-
-      const originalSetInterval = window.setInterval;
-      const moduleIntervals = new Set();
-      window.setInterval = function(fn, delay) {
-        // Block short intervals that might be refreshers (e.g. 30s = 30000ms)
-        if (delay === 30000 || delay === 30001) {
-             console.log('Blocked 30s interval');
-             return -1;
-        }
-        const id = originalSetInterval.call(window, fn, delay);
-        moduleIntervals.add(id);
-        return id;
-      };
-      
-      let preventReload = true;
-      window.addEventListener('beforeunload', function(e) {
-        if (preventReload) {
-          e.preventDefault();
-          e.returnValue = '';
-        }
-      });
-    })();
     
     (function() {
       const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+      
+      const container = document.querySelector('.container-calendar');
+      // Note: Mobirise might not replace boolean attributes with "true"/"false" strings but remove them or set them. 
+      // Assuming standard behavior where {{var}} is replaced by string.
+      // If the attribute is missing, we assume true (default).
+      const getAttr = (name) => {
+         if (!container) return true;
+         const val = container.getAttribute(name);
+         return val !== 'false';
+      };
+      
+      const allowListView = getAttr('data-allow-list-view');
+      const allowCalendarView = getAttr('data-allow-calendar-view');
+      const defaultListViewMobile = getAttr('data-default-list-view-mobile');
+
       let calendar = null;
       let currentDate = new Date();
       let updateTimeout = null;
-      let currentView = 'dayGridMonth';
+      let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
       let isFullscreen = false;
       let loadedEvents = [];
       const isMobile = () => window.innerWidth <= 768;
@@ -768,19 +734,35 @@
 
       function handleOrientationChange() {
         if (isMobile()) {
-                    const calendarZone = document.querySelector('.calendar-zone');
+          const calendarZone = document.querySelector('.calendar-zone');
           if (isPortrait()) {
             if (isFullscreen) toggleFullscreen();
-            if (currentView !== 'listMonth') {
-                            if (calendarZone) calendarZone.classList.add('list-view-active');
+            
+            // Switch to list view if allowed, and (default mobile is true OR forced)
+            // But if we are already in list view, do nothing.
+            // If allowCalendarView is false, we are forced to list view anyway.
+            
+            const shouldBeList = !allowCalendarView || (allowListView && defaultListViewMobile);
+            
+            if (shouldBeList && currentView !== 'listMonth') {
+              if (calendarZone) calendarZone.classList.add('list-view-active');
               initCalendar('listMonth');
               const btnToggleView = document.getElementById('btn-toggle-view');
               if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
             }
           } else {
             if (!isFullscreen) toggleFullscreen();
-            if (currentView !== 'dayGridMonth') {
-                            if (calendarZone) calendarZone.classList.remove('list-view-active');
+            
+            // Switch to calendar view if allowed.
+            // If allowListView is false, we are forced to calendar view.
+            
+            const shouldBeCalendar = !allowListView || allowCalendarView;
+            
+            // However, if allowCalendarView is false, we CANNOT switch to calendar view.
+            if (!allowCalendarView) return;
+
+            if (shouldBeCalendar && currentView !== 'dayGridMonth') {
+              if (calendarZone) calendarZone.classList.remove('list-view-active');
               initCalendar('dayGridMonth');
               const btnToggleView = document.getElementById('btn-toggle-view');
               if (btnToggleView) btnToggleView.textContent = 'Vue Liste';
@@ -837,7 +819,12 @@
         const btnSubscribe = document.getElementById('btn-subscribe');
         if (btnSubscribe) {
           btnSubscribe.onclick = () => {
-            const icalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
+            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
+            const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
+                          document.querySelector('[data-ical-url]')?.getAttribute('value') ||
+                          document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
+                          document.querySelector('input[name="icalUrl"]')?.value ||
+                          defaultIcalUrl;
             
             const subscribeModal = document.createElement('div');
             subscribeModal.className = 'event-modal show';
@@ -1096,16 +1083,26 @@
 
             loadedEvents = consolidateMultiDayEvents(loadedEvents);
 
-            if (isMobile() && isPortrait()) {
-              initCalendar("listMonth");
-                            const calendarZone = document.querySelector('.calendar-zone');
-              if (btnToggleView) btnToggleView.textContent = "Vue Calendrier";
-                          if (calendarZone) calendarZone.classList.add('list-view-active');
+            let startView = 'dayGridMonth';
+            if (!allowCalendarView && allowListView) {
+                startView = 'listMonth';
+            } else if (isMobile() && isPortrait() && allowListView && defaultListViewMobile) {
+                startView = 'listMonth';
+            } else if (!allowListView) {
+                startView = 'dayGridMonth';
+            }
+
+            initCalendar(startView);
+            
+            const calendarZone = document.querySelector('.calendar-zone');
+            const btnToggleView = document.getElementById('btn-toggle-view');
+            
+            if (startView === 'listMonth') {
+                 if (btnToggleView) btnToggleView.textContent = "Vue Calendrier";
+                 if (calendarZone) calendarZone.classList.add('list-view-active');
             } else {
-              initCalendar("dayGridMonth");
-                            const calendarZone = document.querySelector('.calendar-zone');
-              if (btnToggleView) btnToggleView.textContent = "Vue Liste";
-                          if (calendarZone) calendarZone.classList.remove('list-view-active');
+                 if (btnToggleView) btnToggleView.textContent = "Vue Liste";
+                 if (calendarZone) calendarZone.classList.remove('list-view-active');
             }
 
             if (prevBtn) {
@@ -1164,7 +1161,23 @@
     })();
   </script>
 
-</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section>
+
+<section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-f">
+
+    
+
+    
+
+    <div class="container">
+        <div class="media-container-row align-center mbr-white">
+            <div class="col-12">
+                <p class="mbr-text mb-0 mbr-fonts-style display-7">
+                    Site réalisé par <a href="tg://resolve?domain=NitraFox" class="text-primary">Nitra🦊</a>&nbsp;et calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="text-info">Spyro the bat🦇</a></p>
+            </div>
+        </div>
+    </div>
+</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
