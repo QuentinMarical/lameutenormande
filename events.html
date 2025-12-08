@@ -21,7 +21,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=obzjuF"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=obzjuF" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=w1lQyn"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=w1lQyn" type="text/css">
 
   
   
@@ -374,7 +374,7 @@
   </div>
 
   <!-- FullCalendar & ical.js with security headers and explicit MIME type -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+  <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
@@ -399,9 +399,44 @@
     'use strict';
     
     (function() {
+      // Block automatic page reloads
+      try {
+        window.location.reload = function() {
+          console.log('Blocked page reload attempt');
+        };
+      } catch (e) { console.warn('Could not override location.reload'); }
+
+      // Block meta refresh
+      function removeMetaRefresh() {
+        document.querySelectorAll('meta[http-equiv="refresh"]').forEach(m => {
+          m.remove();
+          console.log('Blocked meta refresh');
+        });
+      }
+      removeMetaRefresh();
+      
+      const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          mutation.addedNodes.forEach(function(node) {
+            if (node.tagName === 'META' && node.getAttribute('http-equiv')?.toLowerCase() === 'refresh') {
+              node.remove();
+              console.log('Blocked meta refresh');
+            }
+          });
+        });
+      });
+      if (document.head) {
+        observer.observe(document.head, { childList: true, subtree: true });
+      }
+
       const originalSetInterval = window.setInterval;
       const moduleIntervals = new Set();
       window.setInterval = function(fn, delay) {
+        // Block short intervals that might be refreshers (e.g. 30s = 30000ms)
+        if (delay === 30000 || delay === 30001) {
+             console.log('Blocked 30s interval');
+             return -1;
+        }
         const id = originalSetInterval.call(window, fn, delay);
         moduleIntervals.add(id);
         return id;
@@ -558,10 +593,21 @@
         const now = new Date();
         return Object.values(mapByUID).map(ev => {
           const isPast = ev.end < now;
+          const isNow = ev.start <= now && ev.end >= now;
+          const isFuture = ev.start > now;
+          
           const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));
           const classes = [];
           if (days > 1) classes.push('fc-event-multiday');
-          if (isPast) classes.push('fc-event-past');
+          
+          if (isPast) {
+            classes.push('fc-event-past');
+          } else if (isNow) {
+            classes.push('fc-event-now');
+          } else if (isFuture) {
+            classes.push('fc-event-future');
+          }
+          
           return { ...ev, classNames: classes };
         });
       }

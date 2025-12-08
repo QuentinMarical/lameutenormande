@@ -1847,7 +1847,7 @@ a {
   width: 30px;
   height: 2px;
   border-right: 5px;
-  background-color: #ff0202;
+  background-color: #e34200;
 }
 .cid-v2D2HLImen button.navbar-toggler .hamburger span:nth-child(1) {
   top: 0;
@@ -2404,23 +2404,42 @@ a {
   font-size: 0.85rem !important;
   border-radius: 6px !important;
   padding: 6px 12px !important;
-  margin: 1rem 0 0.8rem 0 !important;
   vertical-align: middle !important;
 }
 .cid-v2DoFDRAW7 .fc .fc-list-event {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.15)) !important;
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
   border-radius: 10px !important;
   margin: 0 0 14px 0 !important;
   padding: 14px 18px !important;
-  border: 2px solid rgba(102, 126, 234, 0.4) !important;
+  border: none !important;
   transition: all 0.3s ease;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
+.cid-v2DoFDRAW7 .fc .fc-list-event.fc-event-past {
+  background: #495057 !important;
+  border-color: #495057 !important;
+  color: #adb5bd !important;
+  opacity: 0.7 !important;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event.fc-event-now {
+  background: linear-gradient(135deg, #4caf50, #45a049) !important;
+  border-color: #4CAF50 !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.6) !important;
+}
 .cid-v2DoFDRAW7 .fc .fc-list-event:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.45), rgba(118, 75, 162, 0.4)) !important;
-  border-color: rgba(102, 126, 234, 0.8) !important;
+  transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(102, 126, 234, 0.5);
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event.fc-event-past:hover {
+  opacity: 0.85 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+.cid-v2DoFDRAW7 .fc .fc-list-event.fc-event-now:hover {
+  transform: scale(1.02) !important;
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.8) !important;
 }
 .cid-v2DoFDRAW7 .fc .fc-list-event:hover .fc-event-title {
   color: #fff !important;
@@ -2609,45 +2628,48 @@ a {
   }
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-table {
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-}
-.cid-v2DoFDRAW7 .fc-listMonth-view table {
-  border-collapse: collapse !important;
-  border-spacing: 0 !important;
-}
-.cid-v2DoFDRAW7 .fc-theme-standard .fc-list-table td,
-.cid-v2DoFDRAW7 .fc-theme-standard .fc-list-table th {
-  border: none !important;
-  padding: 0 !important;
-}
-.cid-v2DoFDRAW7 .fc-theme-standard .fc-list {
-  border: none !important;
-  background: transparent !important;
-}
-.cid-v2DoFDRAW7 .fc-theme-standard .fc-list-day {
-  border: none !important;
-}
-.cid-v2DoFDRAW7 .fc-theme-standard .fc-list-day-cushion {
   display: block !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-  border: none !important;
-  margin: 0 !important;
-  background-clip: padding-box !important;
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
 }
-.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day,
+.cid-v2DoFDRAW7 .fc-listMonth-view tbody {
+  display: block !important;
+  width: 100%;
+}
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day {
+  display: block !important;
+  background: transparent !important;
+  border: none !important;
+  margin-bottom: 0 !important;
+}
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-day-cushion {
-  padding: 6px 12px !important;
-  margin: 0.75rem 0 0.4rem 0 !important;
-  border-radius: 6px !important;
+  display: block !important;
+  padding: 12px 20px !important;
+  border-radius: 8px !important;
+  font-size: 1rem !important;
+  background: #667eea !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event {
-  padding: 8px 14px !important;
-  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 22px 28px !important;
+  margin-bottom: 16px !important;
+  border-radius: 12px !important;
 }
-.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event + .fc-list-event {
-  margin-top: 2px !important;
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event td {
+  padding: 0 !important;
+  border: none !important;
+  display: block !important;
+}
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event td.fc-list-event-time {
+  display: none !important;
+}
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event .fc-event-title,
+.cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-event-title {
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
 }
 .cid-v2DoFDRAW7 .fc-listMonth-view .fc-list-table tbody tr {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
