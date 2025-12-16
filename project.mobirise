@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "La Meute Normande",
-    "currentPage": "events.html",
+    "currentPage": "index.html",
     "theme": {
       "name": "startm5",
       "title": "StartM5",
@@ -67,12 +67,12 @@
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "sf3cijrukj",
+    "mbrsiteDomain": "qm1vuullvs",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
     "sitemapSwitcherAuto": "on",
-    "siteUrl": "https://quentinmarical.github.io/lameutenormande",
+    "siteUrl": "https://lameutenormande.fr",
     "cookiesAlert": false,
     "gdpr": false,
     "witsec-white-label": true,
@@ -83,11 +83,12 @@
     "index.html": {
       "settings": {
         "main": true,
-        "title": "Home",
-        "meta_descr": "",
+        "title": "La Meute Normande",
+        "meta_descr": "Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, nous nous retrouvons pour participer à des événements ensemble assez régulièrement.",
         "header_custom": "",
         "footer_custom": "",
-        "html_before": ""
+        "html_before": "",
+        "meta_image": "@PROJECT_PATH@/assets/images/la%2520meute%2520normandemodif%25202-1256x888.png"
       },
       "components": [
         {
