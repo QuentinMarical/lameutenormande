@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pIiw31"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pIiw31" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=aCtDPV"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=aCtDPV" type="text/css">
 
   
   
@@ -576,48 +576,7 @@
           modalBody.innerHTML = bodyHTML;
           modal.classList.add('show');
           
-          // Gestion du swipe vers le bas pour fermer
-          const modalContent = modal.querySelector('.event-modal-content');
-          let startY = 0;
-          let currentY = 0;
-          let isDragging = false;
-          
-          const handleTouchStart = (e) => {
-            if (modalContent.scrollTop === 0) {
-              startY = e.touches[0].clientY;
-              isDragging = true;
-            }
-          };
-          
-          const handleTouchMove = (e) => {
-            if (!isDragging) return;
-            currentY = e.touches[0].clientY;
-            const deltaY = currentY - startY;
-            
-            if (deltaY > 0 && modalContent.scrollTop === 0) {
-              e.preventDefault();
-              modalContent.style.transform = `translateY(${deltaY}px)`;
-              modalContent.style.transition = 'none';
-            }
-          };
-          
-          const handleTouchEnd = () => {
-            if (!isDragging) return;
-            isDragging = false;
-            
-            const deltaY = currentY - startY;
-            modalContent.style.transition = '';
-            
-            if (deltaY > 150) {
-              closeEventModal();
-            } else {
-              modalContent.style.transform = '';
-            }
-          };
-          
-          modalContent.addEventListener('touchstart', handleTouchStart, { passive: false });
-          modalContent.addEventListener('touchmove', handleTouchMove, { passive: false });
-          modalContent.addEventListener('touchend', handleTouchEnd);
+          // Suppression du swipe-down pour fermer la popup sur mobile
           
           setTimeout(() => {
             const closeBtn = modal.querySelector('.event-modal-close');
@@ -997,6 +956,11 @@
         });
 
         (async function() {
+
+          // Ajout d'un cache localStorage pour le flux iCal (clé unique par URL, durée 6h)
+          const ICAL_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 heures en ms
+          const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
+
           const fetchWithRetry = async (url, maxRetries = 1) => {
             for (let i = 0; i < maxRetries; i++) {
               try {
@@ -1037,47 +1001,60 @@
               throw new Error('No iCal URL provided in parameters');
             }
 
-            let response = null;
-            const proxies = [
-              { name: 'Direct', url: icalUrl },
-              { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
-              { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
-              { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
-            ];
-            
-            let lastError = null;
-            for (let i = 0; i < Math.min(3, proxies.length); i++) {
-              const proxy = proxies[i];
-              try {
-                console.log(`🔄 Tentative ${i + 1}/${Math.min(3, proxies.length)}: ${proxy.name}`);
-                console.log(`   URL: ${proxy.url.substring(0, 80)}...`);
-                
-                response = await fetchWithRetry(proxy.url, 1);
-                
-                if (response.status === 200) {
-                  console.log(`✅ Succès avec ${proxy.name}`);
-                  break;
-                } else {
-                  console.warn(`⚠️ ${proxy.name} retourné le statut ${response.status}`);
-                }
-              } catch (err) {
-                lastError = err;
-                console.warn(`❌ ${proxy.name} échoué:`, err.message);
-              }
-            }
-            
-            if (!response || !response.ok) {
-              console.error('Dernier erreur:', lastError);
-              throw new Error(`Impossible de charger le calendrier. Dernier essai: ${lastError?.message || 'Unknown'}`);
-            }
-            
-            if (!response || !response.ok) {
-              throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
-            }
 
-            const icalText = await response.text();
-            if (!icalText || icalText.trim().length === 0) {
-              throw new Error('iCal file is empty or invalid');
+            // Vérifie le cache localStorage
+            let icalText = null;
+            let cacheKey = getIcalCacheKey(icalUrl);
+            let cache = null;
+            try {
+              cache = JSON.parse(localStorage.getItem(cacheKey));
+            } catch (e) { cache = null; }
+            const nowTs = Date.now();
+            if (cache && cache.data && cache.ts && (nowTs - cache.ts < ICAL_CACHE_DURATION)) {
+              icalText = cache.data;
+              console.log('✅ Utilisation du cache localStorage pour le flux iCal');
+            } else {
+              let response = null;
+              const proxies = [
+                { name: 'Direct', url: icalUrl },
+                { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
+                { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
+                { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
+              ];
+              let lastError = null;
+              for (let i = 0; i < Math.min(3, proxies.length); i++) {
+                const proxy = proxies[i];
+                try {
+                  console.log(`🔄 Tentative ${i + 1}/${Math.min(3, proxies.length)}: ${proxy.name}`);
+                  console.log(`   URL: ${proxy.url.substring(0, 80)}...`);
+                  response = await fetchWithRetry(proxy.url, 1);
+                  if (response.status === 200) {
+                    console.log(`✅ Succès avec ${proxy.name}`);
+                    break;
+                  } else {
+                    console.warn(`⚠️ ${proxy.name} retourné le statut ${response.status}`);
+                  }
+                } catch (err) {
+                  lastError = err;
+                  console.warn(`❌ ${proxy.name} échoué:`, err.message);
+                }
+              }
+              if (!response || !response.ok) {
+                console.error('Dernier erreur:', lastError);
+                throw new Error(`Impossible de charger le calendrier. Dernier essai: ${lastError?.message || 'Unknown'}`);
+              }
+              if (!response || !response.ok) {
+                throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
+              }
+              icalText = await response.text();
+              if (!icalText || icalText.trim().length === 0) {
+                throw new Error('iCal file is empty or invalid');
+              }
+              // Met à jour le cache
+              try {
+                localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
+                console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
+              } catch (e) { /* ignore quota errors */ }
             }
             
             let jcalData = null;
@@ -1087,54 +1064,124 @@
               throw new Error('Invalid iCal format: ' + parseErr.message);
             }
             
+
+            // Nouvelle gestion : prise en charge des récurrences et exceptions
             const comp = new ICAL.Component(jcalData);
             const vevents = comp.getAllSubcomponents("vevent");
             loadedEvents = [];
+
+            // Utilisation d'un map pour éviter les doublons d'UID+date
+            const eventMap = new Map();
 
             vevents.forEach((vevent, index) => {
               try {
                 const event = new ICAL.Event(vevent);
                 if (!event.startDate) return;
-                
-                let startDate = event.startDate.toJSDate();
-                let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);
-                const dtStartProp = vevent.getFirstProperty("dtstart");
-                const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
-                
-                if (isAllDay && endDate.getTime() !== startDate.getTime()) {
-                  endDate.setDate(endDate.getDate() + 1);
-                }
-                
-                let cleanTitle = event.summary || "Sans titre";
-                cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
-                cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
-                cleanTitle = cleanTitle.trim();
-                
-                let eventUrl = "";
-                if (event.component && event.component.getFirstPropertyValue) {
-                  const urlProp = event.component.getFirstPropertyValue("url");
-                  const attachProp = event.component.getFirstPropertyValue("attach");
-                  eventUrl = urlProp || attachProp || "";
-                }
-                
-                loadedEvents.push({
-                  id: event.uid || `event-${index}`,
-                  title: cleanTitle,
-                  start: startDate,
-                  end: endDate,
-                  allDay: true,
-                  display: "block",
-                  backgroundColor: "#667eea",
-                  borderColor: "#667eea",
-                  extendedProps: {
-                    description: event.description || "",
-                    location: event.location || "",
-                    summary: cleanTitle,
-                    startDate: startDate,
-                    endDate: endDate,
-                    url: eventUrl
+
+                // Gestion des événements récurrents
+                if (event.isRecurring()) {
+                  // Limite de génération : 1 an avant et 2 ans après aujourd'hui
+                  const now = new Date();
+                  const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
+                  const rangeEnd = new Date(now.getFullYear() + 2, 11, 31);
+                  const expand = event.iterator(rangeStart);
+                  let next;
+                  let count = 0;
+                  while ((next = expand.next()) && count < 500) {
+                    const occStart = next.toJSDate();
+                    let occEnd = null;
+                    if (event.endDate) {
+                      // Calcule la durée de l'événement original
+                      const duration = event.endDate.subtractDate(event.startDate);
+                      occEnd = next.clone();
+                      occEnd.addDuration(duration);
+                      occEnd = occEnd.toJSDate();
+                    } else {
+                      occEnd = new Date(occStart);
+                    }
+                    // Gestion allDay
+                    const dtStartProp = vevent.getFirstProperty("dtstart");
+                    const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
+                    if (isAllDay && occEnd.getTime() !== occStart.getTime()) {
+                      occEnd.setDate(occEnd.getDate() + 1);
+                    }
+                    let cleanTitle = event.summary || "Sans titre";
+                    cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
+                    cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
+                    cleanTitle = cleanTitle.trim();
+                    let eventUrl = "";
+                    if (event.component && event.component.getFirstPropertyValue) {
+                      const urlProp = event.component.getFirstPropertyValue("url");
+                      const attachProp = event.component.getFirstPropertyValue("attach");
+                      eventUrl = urlProp || attachProp || "";
+                    }
+                    // Clé unique UID+date
+                    const key = (event.uid || `event-${index}`) + '_' + occStart.toISOString();
+                    if (!eventMap.has(key)) {
+                      loadedEvents.push({
+                        id: key,
+                        title: cleanTitle,
+                        start: occStart,
+                        end: occEnd,
+                        allDay: true,
+                        display: "block",
+                        backgroundColor: "#667eea",
+                        borderColor: "#667eea",
+                        extendedProps: {
+                          description: event.description || "",
+                          location: event.location || "",
+                          summary: cleanTitle,
+                          startDate: occStart,
+                          endDate: occEnd,
+                          url: eventUrl
+                        }
+                      });
+                      eventMap.set(key, true);
+                    }
+                    count++;
                   }
-                });
+                } else {
+                  // Non récurrent : comme avant
+                  let startDate = event.startDate.toJSDate();
+                  let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);
+                  const dtStartProp = vevent.getFirstProperty("dtstart");
+                  const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
+                  if (isAllDay && endDate.getTime() !== startDate.getTime()) {
+                    endDate.setDate(endDate.getDate() + 1);
+                  }
+                  let cleanTitle = event.summary || "Sans titre";
+                  cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
+                  cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
+                  cleanTitle = cleanTitle.trim();
+                  let eventUrl = "";
+                  if (event.component && event.component.getFirstPropertyValue) {
+                    const urlProp = event.component.getFirstPropertyValue("url");
+                    const attachProp = event.component.getFirstPropertyValue("attach");
+                    eventUrl = urlProp || attachProp || "";
+                  }
+                  const key = (event.uid || `event-${index}`) + '_' + startDate.toISOString();
+                  if (!eventMap.has(key)) {
+                    loadedEvents.push({
+                      id: key,
+                      title: cleanTitle,
+                      start: startDate,
+                      end: endDate,
+                      allDay: true,
+                      display: "block",
+                      backgroundColor: "#667eea",
+                      borderColor: "#667eea",
+                      extendedProps: {
+                        description: event.description || "",
+                        location: event.location || "",
+                        summary: cleanTitle,
+                        startDate: startDate,
+                        endDate: endDate,
+                        url: eventUrl
+                      }
+                    });
+                    eventMap.set(key, true);
+                  }
+                }
               } catch (e) {
                 console.error('Erreur lors du traitement de l\'événement:', e);
               }
