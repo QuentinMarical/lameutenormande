@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=EnzGTo"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=EnzGTo" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2o0z7j"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2o0z7j" type="text/css">
 
   
   
@@ -609,20 +609,45 @@
           const isPast = ev.end < now;
           const isNow = ev.start <= now && ev.end >= now;
           const isFuture = ev.start > now;
-          
           const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));
           const classes = [];
           if (days > 1) classes.push('fc-event-multiday');
-          
+
+          // Correction détection emoji 🦊 (regex unicode)
+          const foxEmojiRegex = /\u{1F98A}/u;
+          const hasFox = typeof ev.title === 'string' && foxEmojiRegex.test(ev.title);
+
+          // Ajout d'une propriété backgroundColor pour les 🦊 futurs
+          let backgroundColor = undefined;
+          let borderColor = undefined;
+          let textColor = undefined;
           if (isPast) {
             classes.push('fc-event-past');
           } else if (isNow) {
             classes.push('fc-event-now');
           } else if (isFuture) {
-            classes.push('fc-event-future');
+            if (hasFox) {
+              classes.push('fc-event-future', 'fc-event-fox');
+              // Dégradé orange/rouge pour 🦊
+              backgroundColor = 'linear-gradient(135deg, #ff9800, #ff3d00)';
+              borderColor = '#ff9800';
+              textColor = '#fff';
+            } else {
+              classes.push('fc-event-future');
+            }
           }
-          
-          return { ...ev, classNames: classes };
+
+          // FullCalendar v6+ accepte extendedProps pour customiser le rendu
+          return {
+            ...ev,
+            classNames: classes,
+            extendedProps: {
+              ...(ev.extendedProps || {}),
+              backgroundColor,
+              borderColor,
+              textColor
+            }
+          };
         });
       }
 
@@ -688,6 +713,15 @@
             openEventModal(info.event, info.event.extendedProps);
           },
           eventDidMount: function(info) {
+            // Appliquer le dégradé pour les événements 🦊 futurs
+            const bg = info.event.extendedProps && info.event.extendedProps.backgroundColor;
+            const border = info.event.extendedProps && info.event.extendedProps.borderColor;
+            const txt = info.event.extendedProps && info.event.extendedProps.textColor;
+            if (bg && info.el) {
+              info.el.style.background = bg;
+              if (border) info.el.style.borderColor = border;
+              if (txt) info.el.style.color = txt;
+            }
             if (info.event.allDay && info.view.type === 'listMonth') {
               const timeEl = info.el.querySelector('.fc-list-event-time');
               if (timeEl) {
@@ -1074,13 +1108,23 @@
             const eventMap = new Map();
 
             vevents.forEach((vevent, index) => {
+
               try {
                 const event = new ICAL.Event(vevent);
                 if (!event.startDate) return;
 
+                // Fonction utilitaire pour couleur 🦊
+                function getEventColors(title, start, now) {
+                  // Si futur et 🦊 dans le titre
+                  if (title.includes('🦊') && start > now) {
+                    return { backgroundColor: '#ff9800', borderColor: '#ff9800' };
+                  }
+                  // Couleur future par défaut
+                  return { backgroundColor: '#667eea', borderColor: '#667eea' };
+                }
+
                 // Gestion des événements récurrents
                 if (event.isRecurring()) {
-                  // Limite de génération : 1 an avant et 2 ans après aujourd'hui
                   const now = new Date();
                   const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
                   const rangeEnd = new Date(now.getFullYear() + 2, 11, 31);
@@ -1091,7 +1135,6 @@
                     const occStart = next.toJSDate();
                     let occEnd = null;
                     if (event.endDate) {
-                      // Calcule la durée de l'événement original
                       const duration = event.endDate.subtractDate(event.startDate);
                       occEnd = next.clone();
                       occEnd.addDuration(duration);
@@ -1099,7 +1142,6 @@
                     } else {
                       occEnd = new Date(occStart);
                     }
-                    // Gestion allDay
                     const dtStartProp = vevent.getFirstProperty("dtstart");
                     const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
                     if (isAllDay && occEnd.getTime() !== occStart.getTime()) {
@@ -1115,9 +1157,9 @@
                       const attachProp = event.component.getFirstPropertyValue("attach");
                       eventUrl = urlProp || attachProp || "";
                     }
-                    // Clé unique UID+date
                     const key = (event.uid || `event-${index}`) + '_' + occStart.toISOString();
                     if (!eventMap.has(key)) {
+                      const colors = getEventColors(cleanTitle, occStart, now);
                       loadedEvents.push({
                         id: key,
                         title: cleanTitle,
@@ -1125,8 +1167,8 @@
                         end: occEnd,
                         allDay: true,
                         display: "block",
-                        backgroundColor: "#667eea",
-                        borderColor: "#667eea",
+                        backgroundColor: colors.backgroundColor,
+                        borderColor: colors.borderColor,
                         extendedProps: {
                           description: event.description || "",
                           location: event.location || "",
@@ -1141,7 +1183,6 @@
                     count++;
                   }
                 } else {
-                  // Non récurrent : comme avant
                   let startDate = event.startDate.toJSDate();
                   let endDate = event.endDate ? event.endDate.toJSDate() : new Date(startDate);
                   const dtStartProp = vevent.getFirstProperty("dtstart");
@@ -1161,6 +1202,8 @@
                   }
                   const key = (event.uid || `event-${index}`) + '_' + startDate.toISOString();
                   if (!eventMap.has(key)) {
+                    const now = new Date();
+                    const colors = getEventColors(cleanTitle, startDate, now);
                     loadedEvents.push({
                       id: key,
                       title: cleanTitle,
@@ -1168,8 +1211,8 @@
                       end: endDate,
                       allDay: true,
                       display: "block",
-                      backgroundColor: "#667eea",
-                      borderColor: "#667eea",
+                      backgroundColor: colors.backgroundColor,
+                      borderColor: colors.borderColor,
                       extendedProps: {
                         description: event.description || "",
                         location: event.location || "",
