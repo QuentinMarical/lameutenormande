@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2o0z7j"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2o0z7j" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=f3V1OB"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=f3V1OB" type="text/css">
 
   
   
@@ -30,7 +30,7 @@
 </head>
 <body>
   
-  <section data-bs-version="5.1" class="menu menu2 cid-v2D2HLImen" once="menu" id="menu02-4">
+  <section data-bs-version="5.1" class="menu menu2 cid-v2D2HLImen" once="menu" id="menu02-g">
 	
 
 	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
@@ -75,372 +75,483 @@
 	</nav>
 </section>
 
-<section class="mbr-section mbr-section--no-padding cid-v2DoFDRAW7 mbr-parallax-background" id="witsec-html-block-7">
+<section data-bs-version="5.1" class="mbr-section mbr-section--no-padding cid-v5QUnVSVmZ mbr-parallax-background" id="header09-i">
 
-  
+    
 
-  <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);">
-  </div>
+    <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);">
+    </div>
 
-  <style>
+    <style>
         .mbr-section {
-          min-height: 100vh !important;
-          display: flex !important;
-          flex-direction: column !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
         }
-    
-        .mbr-section > .container-calendar {
-          flex: 1 1 auto !important;
-          display: flex !important;
-          flex-direction: column !important;
+
+            .mbr-section > .container-calendar {
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+
+        .event-modal {
+            display: none !important;
+            position: fixed;
+            z-index: 2147483647 !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.65);
+            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+            isolation: isolate !important;
         }
-    
-    .event-modal {
-      display: none !important;
-      position: fixed;
-      z-index: 2147483647 !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0, 0, 0, 0.65);
-      -webkit-backdrop-filter: blur(6px);
-      backdrop-filter: blur(6px);
-      isolation: isolate !important;
-    }
 
-    .event-modal[role="dialog"] {
-      animation: slideIn 0.3s ease-out;
-    }
+            .event-modal[role="dialog"] {
+                animation: slideIn 0.3s ease-out;
+            }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(100%);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(100%);
+            }
 
-    .event-modal.show {
-      display: flex !important;
-    }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .event-modal-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      z-index: -1;
-      cursor: pointer;
-    }
+        .event-modal.show {
+            display: flex !important;
+        }
 
-    .event-modal-content {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      max-width: 100vw;
-      max-height: 100vh;
-      border-radius: 0 !important;
-      margin: 0;
-      box-shadow: none;
-      padding: 0;
-      background: linear-gradient(135deg, rgba(30, 30, 46, 0.98) 0%, rgba(45, 45, 61, 0.98) 100%);
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      display: flex;
-      flex-direction: column;
-      animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
+        .event-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: -1;
+            cursor: pointer;
+        }
 
-    @keyframes slideUp {
-      from {
-        transform: translateY(100%);
-      }
-      to {
-        transform: translateY(0);
-      }
-    }
+        .event-modal-content {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0 !important;
+            margin: 0;
+            box-shadow: none;
+            padding: 0;
+            background: linear-gradient(135deg, rgba(30, 30, 46, 0.98) 0%, rgba(45, 45, 61, 0.98) 100%);
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
 
-    @keyframes slideDown {
-      from {
-        transform: translateY(0);
-      }
-      to {
-        transform: translateY(100%);
-      }
-    }
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
 
-    .event-modal.closing .event-modal-content {
-      animation: slideDown 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
-    }
+            to {
+                transform: translateY(0);
+            }
+        }
 
-    .event-modal-title {
-      margin: 0;
-      padding: 2rem;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #fff;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-    }
+        @keyframes slideDown {
+            from {
+                transform: translateY(0);
+            }
 
-    .event-modal-body {
-      padding: 2rem;
-      color: #fff;
-    }
+            to {
+                transform: translateY(100%);
+            }
+        }
 
-    .event-info-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 0.75rem;
-    }
+        .event-modal.closing .event-modal-content {
+            animation: slideDown 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+        }
 
-    .event-info-icon {
-      font-size: 1.5rem;
-      min-width: 30px;
-      flex-shrink: 0;
-    }
+        .event-modal-title {
+            margin: 0;
+            padding: 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .event-info-content {
-      flex: 1;
-    }
+        .event-modal-body {
+            padding: 2rem;
+            color: #fff;
+        }
 
-    .event-info-label {
-      font-size: 0.85rem;
-      opacity: 0.8;
-      margin-bottom: 0.25rem;
-      text-transform: uppercase;
-      font-weight: 600;
-    }
+        /* Modal two-column layout for desktop */
+        .event-modal-body-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.25rem;
+        }
 
-    .event-info-text {
-      font-size: 1.1rem;
-      line-height: 1.5;
-      font-weight: 500;
-      word-break: break-word;
-      margin-bottom: 0.75rem;
-    }
+        .event-modal-left, .event-modal-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
 
-    .event-info-text a {
-      color: #ffc107;
-      text-decoration: underline;
-      transition: all 0.3s;
-    }
+        @media (min-width: 900px) {
+            .event-modal-body-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .event-modal-content {
+                padding: 1rem 1.25rem 2rem 1.25rem;
+            }
+        }
 
-    .event-location-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
-    }
+        /* Remove start-times inside FullCalendar views (visual only) */
+        .fc .fc-time, .fc .fc-event-time, .fc .fc-list-event-time {
+            display: none !important;
+        }
 
-    .location-btn {
-      flex: 1;
-      min-width: 100px;
-      padding: 0.75rem 1rem;
-      border-radius: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      text-decoration: none;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      color: #fff;
-    }
+        .event-info-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+        }
 
-    .location-google {
-      background: rgba(66, 133, 244, 0.8);
-      border-color: #4285F4;
-    }
+        .event-info-icon {
+            font-size: 1.5rem;
+            min-width: 30px;
+            flex-shrink: 0;
+        }
 
-    .location-google:hover {
-      background: #4285F4;
-      box-shadow: 0 4px 12px rgba(66, 133, 244, 0.5);
-      transform: translateY(-2px);
-    }
+        .event-info-content {
+            flex: 1;
+        }
 
-    .location-waze {
-      background: rgba(0, 198, 219, 0.8);
-      border-color: #00C6DB;
-    }
+        .event-info-label {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-    .location-waze:hover {
-      background: #00C6DB;
-      box-shadow: 0 4px 12px rgba(0, 198, 219, 0.5);
-      transform: translateY(-2px);
-    }
+        .event-info-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            font-weight: 500;
+            word-break: break-word;
+            margin-bottom: 0.75rem;
+        }
 
-    .location-apple {
-      background: rgba(155, 155, 155, 0.8);
-      border-color: #9B9B9B;
-    }
+            .event-info-text a {
+                color: #ffc107;
+                text-decoration: underline;
+                transition: all 0.3s;
+            }
 
-    .location-apple:hover {
-      background: #9B9B9B;
-      box-shadow: 0 4px 12px rgba(155, 155, 155, 0.5);
-      transform: translateY(-2px);
-    }
+        .event-location-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .event-url-button {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
-      background: rgba(76, 175, 80, 0.9);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 0.5rem;
-      font-weight: 600;
-      transition: all 0.3s;
-      margin-top: 0.5rem;
-    }
+        .location-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
 
-    .event-url-button:hover {
-      background: #4CAF50;
-      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
-      transform: translateY(-2px);
-    }
+        .location-google {
+            background: rgba(66, 133, 244, 0.8);
+            border-color: #4285F4;
+        }
 
-    .event-modal-close {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      font-size: 2rem;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-      padding: 0;
-      z-index: 1;
-    }
+            .location-google:hover {
+                background: #4285F4;
+                box-shadow: 0 4px 12px rgba(66, 133, 244, 0.5);
+                transform: translateY(-2px);
+            }
 
-    .event-modal-close:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: rotate(90deg) scale(1.1);
-    }
+        .location-waze {
+            background: rgba(0, 198, 219, 0.8);
+            border-color: #00C6DB;
+        }
 
-    body.scroll-locked {
-      overflow: hidden !important;
-      position: fixed !important;
-      width: 100% !important;
-      height: 100% !important;
-    }
+            .location-waze:hover {
+                background: #00C6DB;
+                box-shadow: 0 4px 12px rgba(0, 198, 219, 0.5);
+                transform: translateY(-2px);
+            }
 
-    /* Masquer tous les éléments du site quand la modale est ouverte */
-    body.modal-open > *:not(.event-modal) {
-      visibility: hidden !important;
-    }
+        .location-apple {
+            background: rgba(155, 155, 155, 0.8);
+            border-color: #9B9B9B;
+        }
 
-    body.modal-open .event-modal {
-      visibility: visible !important;
-    }
+            .location-apple:hover {
+                background: #9B9B9B;
+                box-shadow: 0 4px 12px rgba(155, 155, 155, 0.5);
+                transform: translateY(-2px);
+            }
 
-    .calendar-zone::-webkit-scrollbar {
-      width: 6px;
-    }
+        .event-url-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: rgba(76, 175, 80, 0.9);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
 
-    .calendar-zone::-webkit-scrollbar-track {
-      background: rgba(45, 45, 61, 0.5);
-      border-radius: 3px;
-    }
+            .event-url-button:hover {
+                background: #4CAF50;
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
+                transform: translateY(-2px);
+            }
 
-    .calendar-zone::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 3px;
-    }
+        .event-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0;
+            z-index: 1;
+        }
 
-    .calendar-zone::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.5);
-    }
-    /* Jours hors mois invisibles (contenu caché) mais quadrillage conservé */
-    .fc-day-other .fc-daygrid-day-number { visibility: hidden !important; }
-    .fc-day-other .fc-event { display: none !important; }
-    .fc-day-other { background: rgba(30, 30, 46, 0.5) !important; }
-    .fc-day-other:hover { background: rgba(30, 30, 46, 0.5) !important; }
-  </style>
+            .event-modal-close:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: rotate(90deg) scale(1.1);
+            }
 
-  <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
-    <div class="calendar-zone">
-      <div class="calendar-wrapper" id="calendar-wrapper">
-        <div class="calendar-header">
-          <button class="calendar-arrow-btn calendar-prev">‹</button>
-          <div class="calendar-controls-center">
-            <button class="calendar-btn calendar-today">Aujourd'hui</button>
-            <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
-            <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
-            <span class="calendar-month">Décembre 2024</span>
-          </div>
-          <button class="calendar-arrow-btn calendar-next">›</button>
+        body.scroll-locked {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        /* Masquer tous les éléments du site quand la modale est ouverte */
+        body.modal-open > *:not(.event-modal) {
+            visibility: hidden !important;
+        }
+
+        body.modal-open .event-modal {
+            visibility: visible !important;
+        }
+
+        .calendar-zone::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .calendar-zone::-webkit-scrollbar-track {
+            background: rgba(45, 45, 61, 0.5);
+            border-radius: 3px;
+        }
+
+        .calendar-zone::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+            .calendar-zone::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.5);
+            }
+        /* Jours hors mois invisibles (contenu caché) mais quadrillage conservé */
+        .fc-day-other .fc-daygrid-day-number {
+            visibility: hidden !important;
+        }
+
+        /* Ne pas masquer les événements dans les cellules hors mois (voir module CSS) */
+
+        .fc-day-other {
+            background: rgba(30, 30, 46, 0.5) !important;
+        }
+
+            .fc-day-other:hover {
+                background: rgba(30, 30, 46, 0.5) !important;
+            }
+    </style>
+
+
+    <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
+        <div class="calendar-zone">
+            <div class="calendar-loader" id="calendar-loader" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
+                <div style="text-align:center; width:100%;">
+                    <div class="loader-spinner" style="margin: 0 auto 1rem auto; width: 48px; height: 48px; border: 6px solid #eee; border-top: 6px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <div id="calendar-loader-message" style="color:#888; font-size:1.1rem;">Chargement du calendrier...</div>
+                    <div id="calendar-loader-progress" style="width: 100%; max-width: 320px; height: 8px; background: #eee; border-radius: 5px; margin: 18px auto 0 auto; overflow: hidden; display: none;">
+                        <div id="calendar-loader-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="calendar-wrapper" id="calendar-wrapper" style="display:none;">
+                <div class="calendar-header">
+                    <button class="calendar-arrow-btn calendar-prev">‹</button>
+                    <div class="calendar-controls-center">
+                        <button class="calendar-btn calendar-today">Aujourd'hui</button>
+                        <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
+                        <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
+                        <span class="calendar-month">Décembre 2024</span>
+                    </div>
+                    <button class="calendar-arrow-btn calendar-next">›</button>
+                </div>
+                <div class="fullcalendar-container"></div>
+            </div>
         </div>
-        <div class="fullcalendar-container"></div>
-      </div>
     </div>
-  </div>
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-  <div class="event-modal">
-    <div class="event-modal-overlay"></div>
-    <div class="event-modal-content">
-      <button class="event-modal-close">×</button>
-      <h3 class="event-modal-title"></h3>
-      <div class="event-modal-body"></div>
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
+    <div class="event-modal">
+        <div class="event-modal-overlay"></div>
+        <div class="event-modal-content">
+            <button class="event-modal-close">×</button>
+            <h3 class="event-modal-title"></h3>
+            <div class="event-modal-body"></div>
+        </div>
     </div>
-  </div>
 
-  <!-- FullCalendar & ical.js with security headers and explicit MIME type -->
-  <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
+    <!-- FullCalendar & ical.js with security headers and explicit MIME type -->
+    <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
-  <!-- Fallback CSS for FullCalendar if CDN fails -->
-  <style>
-    /* Critical FullCalendar base styles */
-    .fc { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
-    .fc-button { background: #667eea; border: none; color: white; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; }
-    .fc-button:hover { background: #764ba2; }
-    .fc-button-active { background: #764ba2; }
-    .fc-daygrid-day { background: rgba(30, 30, 46, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .fc-daygrid-day:hover { background: rgba(102, 126, 234, 0.15); }
-    .fc-day-today { background: rgba(255, 193, 7, 0.15) !important; border: 2px solid #ffc107 !important; }
-    .fc-event { background: #667eea; border: none; border-radius: 4px; padding: 2px 4px; font-size: 0.8rem; }
-    .fc-event-title { font-weight: 600; }
-    .fc-col-header-cell { background: #2d2d3d; color: white; font-weight: 700; padding: 0.5rem; text-align: center; }
-    .fc-listMonth-view { max-height: none !important; height: auto !important; }
-    .fc-listMonth-view .fc-scroller { overflow: visible !important; max-height: none !important; height: auto !important; }
-  </style>
+    <!-- Fallback CSS for FullCalendar if CDN fails -->
+    <style>
+        /* Critical FullCalendar base styles */
+        .fc {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
 
-  <script>
+        .fc-button {
+            background: #667eea;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .fc-button:hover {
+                background: #764ba2;
+            }
+
+        .fc-button-active {
+            background: #764ba2;
+        }
+
+        .fc-daygrid-day {
+            background: rgba(30, 30, 46, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+            .fc-daygrid-day:hover {
+                background: rgba(102, 126, 234, 0.15);
+            }
+
+        .fc-day-today {
+            background: rgba(255, 193, 7, 0.15) !important;
+            border: 2px solid #ffc107 !important;
+        }
+
+        .fc-event {
+            background: #667eea;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 4px;
+            font-size: 0.8rem;
+        }
+
+        .fc-event-title {
+            font-weight: 600;
+        }
+
+        .fc-col-header-cell {
+            background: #2d2d3d;
+            color: white;
+            font-weight: 700;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .fc-listMonth-view {
+            max-height: none !important;
+            height: auto !important;
+        }
+
+            .fc-listMonth-view .fc-scroller {
+                overflow: visible !important;
+                max-height: none !important;
+                height: auto !important;
+            }
+    </style>
+
+    <script>
     'use strict';
-    
 
-    
     (function() {
       const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-      
+
       const container = document.querySelector('.container-calendar');
-      // Note: Mobirise might not replace boolean attributes with "true"/"false" strings but remove them or set them. 
+      // Note: Mobirise might not replace boolean attributes with "true"/"false" strings but remove them or set them.
       // Assuming standard behavior where {{var}} is replaced by string.
       // If the attribute is missing, we assume true (default).
       const getAttr = (name) => {
@@ -448,7 +559,7 @@
          const val = container.getAttribute(name);
          return val !== 'false';
       };
-      
+
       const allowListView = getAttr('data-allow-list-view');
       const allowCalendarView = getAttr('data-allow-calendar-view');
       const defaultListViewMobile = getAttr('data-default-list-view-mobile');
@@ -465,7 +576,7 @@
         const modal = document.querySelector('.event-modal');
         if (modal) {
           modal.classList.add('closing');
-          
+
           setTimeout(() => {
             modal.classList.remove('show');
             modal.classList.remove('closing');
@@ -480,12 +591,12 @@
         const modal = document.querySelector('.event-modal');
         const modalTitle = document.querySelector('.event-modal-title');
         const modalBody = document.querySelector('.event-modal-body');
-        
+
         if (!modal || !modalTitle || !modalBody) return;
-        
+
         // Masquer tous les éléments du site AVANT d'ouvrir la modale
         document.body.classList.add('modal-open');
-        
+
         // Petit délai pour s'assurer que le masquage est appliqué
         requestAnimationFrame(() => {
           modal.setAttribute('role', 'dialog');
@@ -493,48 +604,55 @@
           modal.setAttribute('aria-hidden', 'false');
           modalTitle.id = 'modal-title';
           modal.setAttribute('aria-labelledby', 'modal-title');
-          
+
           modalTitle.textContent = props.summary || event.title;
-        let bodyHTML = '';
-        
+
+        // Build two-column content: left = dates + place, right = description + link
+        let leftHTML = '';
+        let rightHTML = '';
+
         if (props.startDate) {
-          const startStr = props.startDate.toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-          bodyHTML += `
+          const isAllDay = !!event.allDay;
+          const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const timeOptions = { hour: '2-digit', minute: '2-digit' };
+          const startDateOnly = props.startDate.toLocaleDateString('fr-FR', dateOptions);
+          const startTime = !isAllDay ? props.startDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+          const startDisplay = isAllDay ? `${startDateOnly} — Journée entière` : `${startDateOnly} • ${startTime}`;
+
+          leftHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">📅</div>
               <div class="event-info-content">
-                <div class="event-info-label">Du</div>
-                <div class="event-info-text">${startStr}</div>
+                <div class="event-info-label">Début</div>
+                <div class="event-info-text">${startDisplay}</div>
               </div>
             </div>`;
         }
-        
+
         if (props.endDate && props.endDate.toDateString() !== props.startDate.toDateString()) {
-          const endStr = props.endDate.toLocaleDateString('fr-FR', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
-          const duration = Math.ceil((props.endDate - props.startDate) / (1000 * 60 * 60 * 24));
-          bodyHTML += `
+          const isAllDay = !!event.allDay;
+          let displayEndDate = new Date(props.endDate);
+          if (isAllDay) displayEndDate = new Date(props.endDate.getTime() - 24*60*60*1000);
+          const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+          const timeOptions = { hour: '2-digit', minute: '2-digit' };
+          const endDateOnly = displayEndDate.toLocaleDateString('fr-FR', dateOptions);
+          const endTime = !isAllDay ? props.endDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+          const endDisplay = isAllDay ? `${endDateOnly} — Journée entière` : `${endDateOnly} • ${endTime}`;
+          const durationDays = Math.ceil((displayEndDate - props.startDate) / (24*60*60*1000)) + (isAllDay ? 1 : 0);
+
+          leftHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">🏁</div>
               <div class="event-info-content">
-                <div class="event-info-label">Au</div>
-                <div class="event-info-text">${endStr} (${duration} jours)</div>
+                <div class="event-info-label">Fin</div>
+                <div class="event-info-text">${endDisplay} (${durationDays} jour${durationDays>1?'s':''})</div>
               </div>
             </div>`;
         }
-        
+
         if (props.location) {
           const encodedLocation = encodeURIComponent(props.location);
-          bodyHTML += `
+          leftHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">📍</div>
               <div class="event-info-content">
@@ -548,9 +666,9 @@
               </div>
             </div>`;
         }
-        
+
         if (props.description) {
-          bodyHTML += `
+          rightHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">📝</div>
               <div class="event-info-content">
@@ -559,9 +677,9 @@
               </div>
             </div>`;
         }
-        
+
         if (props.url && props.url.trim()) {
-          bodyHTML += `
+          rightHTML += `
             <div class="event-info-row">
               <div class="event-info-icon">🔗</div>
               <div class="event-info-content">
@@ -572,12 +690,16 @@
               </div>
             </div>`;
         }
-        
-          modalBody.innerHTML = bodyHTML;
-          modal.classList.add('show');
-          
+
+          modalBody.innerHTML = `
+            <div class="event-modal-body-grid">
+              <div class="event-modal-left">${leftHTML}</div>
+              <div class="event-modal-right">${rightHTML}</div>
+            </div>`;
+           modal.classList.add('show');
+
           // Suppression du swipe-down pour fermer la popup sur mobile
-          
+
           setTimeout(() => {
             const closeBtn = modal.querySelector('.event-modal-close');
             if (closeBtn) closeBtn.focus();
@@ -593,60 +715,51 @@
       }
 
       function consolidateMultiDayEvents(events) {
-        const mapByUID = {};
-        
+        // Ne pas regrouper les occurrences récurrentes séparées :
+        // auparavant on retirait la partie date de l'id ("_...") et on regrouillait par UID,
+        // ce qui fusionnait toutes les occurrences en un seul événement multi-jours.
+        // Ici on ne fusionne que les événements ayant exactement le même id (vrais doublons).
+        const map = {};
         events.forEach(ev => {
-          if (!mapByUID[ev.id]) {
-            mapByUID[ev.id] = { ...ev };
-          } else {
-            if (ev.start < mapByUID[ev.id].start) mapByUID[ev.id].start = ev.start;
-            if (ev.end > mapByUID[ev.id].end) mapByUID[ev.id].end = ev.end;
+          const key = ev.id || (ev.title + '_' + (ev.start ? ev.start.toISOString() : Math.random()));
+          if (!map[key]) map[key] = { ...ev };
+          else {
+            // Si même id présent plusieurs fois, on conserve la période englobante
+            if (ev.start && (!map[key].start || ev.start < map[key].start)) map[key].start = ev.start;
+            // Keep extendedProps.endDate if present to compute status
+            if (ev.end && (!map[key].end || ev.end > map[key].end)) map[key].end = ev.end;
+            map[key].extendedProps = { ...(map[key].extendedProps || {}), ...(ev.extendedProps || {}) };
           }
         });
-        
-        const now = new Date();
-        return Object.values(mapByUID).map(ev => {
-          const isPast = ev.end < now;
-          const isNow = ev.start <= now && ev.end >= now;
-          const isFuture = ev.start > now;
-          const days = Math.round((ev.end - ev.start) / (24 * 60 * 60 * 1000));
-          const classes = [];
-          if (days > 1) classes.push('fc-event-multiday');
 
-          // Correction détection emoji 🦊 (regex unicode)
+        const now = new Date();
+        return Object.values(map).map(ev => {
+          // Use extendedProps.endDate if ev.end is not present (we intentionally avoid setting end on calendar event to keep it single-render)
+          const startDate = ev.start || (ev.extendedProps && ev.extendedProps.startDate) || null;
+          const endDate = ev.end || (ev.extendedProps && ev.extendedProps.endDate) || null;
+          const isPast = endDate && endDate < now;
+          const isNow = startDate && endDate && startDate <= now && endDate >= now;
+          const isFuture = startDate && startDate > now;
+          const classes = [];
           const foxEmojiRegex = /\u{1F98A}/u;
           const hasFox = typeof ev.title === 'string' && foxEmojiRegex.test(ev.title);
-
-          // Ajout d'une propriété backgroundColor pour les 🦊 futurs
-          let backgroundColor = undefined;
-          let borderColor = undefined;
-          let textColor = undefined;
-          if (isPast) {
-            classes.push('fc-event-past');
-          } else if (isNow) {
-            classes.push('fc-event-now');
-          } else if (isFuture) {
+          if (isPast) classes.push('fc-event-past');
+          else if (isNow) classes.push('fc-event-now');
+          else if (isFuture) {
             if (hasFox) {
               classes.push('fc-event-future', 'fc-event-fox');
-              // Dégradé orange/rouge pour 🦊
-              backgroundColor = 'linear-gradient(135deg, #ff9800, #ff3d00)';
-              borderColor = '#ff9800';
-              textColor = '#fff';
+              ev.extendedProps = ev.extendedProps || {};
+              ev.extendedProps.backgroundColor = ev.extendedProps.backgroundColor || 'linear-gradient(135deg, #ff9800, #ff3d00)';
+              ev.extendedProps.borderColor = ev.extendedProps.borderColor || '#ff9800';
+              ev.extendedProps.textColor = ev.extendedProps.textColor || '#fff';
             } else {
               classes.push('fc-event-future');
             }
           }
-
-          // FullCalendar v6+ accepte extendedProps pour customiser le rendu
           return {
             ...ev,
             classNames: classes,
-            extendedProps: {
-              ...(ev.extendedProps || {}),
-              backgroundColor,
-              borderColor,
-              textColor
-            }
+            id: ev.id
           };
         });
       }
@@ -685,10 +798,10 @@
       function initCalendar(viewName) {
         const calendarEl = document.querySelector('.fullcalendar-container');
         const wrapper = document.getElementById('calendar-wrapper');
-        
+
         if (calendar !== null) calendar.destroy();
         resizeWrapperHeight();
-        
+
         calendar = new FullCalendar.Calendar(calendarEl, {
           initialView: viewName,
           initialDate: currentDate,
@@ -712,6 +825,48 @@
             info.jsEvent.preventDefault();
             openEventModal(info.event, info.event.extendedProps);
           },
+          eventContent: function(arg) {
+             // Personnalisation du rendu en vue liste pour les multi-jours
+             if (arg.view.type.startsWith('list')) {
+               const start = arg.event.start;
+               const end = arg.event.end;
+               let html = '';
+               let nbJours = 1;
+               let isAllDay = arg.event.allDay;
+               const hideStart = arg.event.extendedProps && arg.event.extendedProps.hideStartTime;
+               // If this row represents the event on a day that is not the original event start, skip rendering
+               try {
+                 const orig = arg.event.extendedProps && arg.event.extendedProps.origStart;
+                 if (orig && start) {
+                   const sDay = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
+                   const oDay = new Date(orig.getFullYear(), orig.getMonth(), orig.getDate()).getTime();
+                   if (sDay !== oDay) return { html: '' };
+                 }
+               } catch (e) { /* ignore */ }
+               if (start && end && end - start >= 24*60*60*1000) {
+                 // Pour les événements allDay, la date de fin est exclusive : on affiche jusqu'à end - 1 jour
+                 const options = { day: '2-digit', month: 'short', year: 'numeric' };
+                 let displayEnd = end;
+                 if (isAllDay) {
+                   displayEnd = new Date(end.getTime() - 24*60*60*1000);
+                 }
+                 const startStr = start.toLocaleDateString('fr-FR', options);
+                 const endStr = displayEnd.toLocaleDateString('fr-FR', options);
+                 // If hideStart flag, do not include times
+                 if (!hideStart && !isAllDay) {
+                   // include times if desired (kept simple)
+                 }
+                 nbJours = Math.round((displayEnd - start) / (24*60*60*1000)) + 1;
+                 html += `<div class="fc-event-title">${arg.event.title} <span class="multi-days-span" style="font-weight:normal;font-size:0.95em;margin-left:0.5em;color:#ffc107;">(${nbJours} jour${nbJours>1?'s':''})</span></div>`;
+                html += `<div class="fc-list-event-time" style="font-weight:bold;">Du ${startStr} au ${endStr}</div>`;
+               } else {
+                 html += `<div class="fc-event-title">${arg.event.title}</div>`;
+               }
+               return { html };
+             }
+             // Sinon, laisser le rendu par défaut
+             return true;
+           },
           eventDidMount: function(info) {
             // Appliquer le dégradé pour les événements 🦊 futurs
             const bg = info.event.extendedProps && info.event.extendedProps.backgroundColor;
@@ -722,15 +877,38 @@
               if (border) info.el.style.borderColor = border;
               if (txt) info.el.style.color = txt;
             }
-            if (info.event.allDay && info.view.type === 'listMonth') {
-              const timeEl = info.el.querySelector('.fc-list-event-time');
-              if (timeEl) {
-                const text = timeEl.textContent.toLowerCase().trim();
-                if (text === 'all-day' || text === 'toute la journée' || text === '') {
-                  timeEl.style.display = 'none';
+            // Si l'événement indique de masquer l'heure de début, retirer les éléments d'heure rendus
+            try {
+              const hideTime = info.event.extendedProps && info.event.extendedProps.hideStartTime;
+              if (hideTime && info.el) {
+                // Common FullCalendar time element classes
+                const timeEls = info.el.querySelectorAll('.fc-time, .fc-event-time, .fc-list-event-time, .fc-list-event .fc-event-time');
+                timeEls.forEach(el => el.style.display = 'none');
+                // also remove any text nodes that look like times (fallback)
+                Array.from(info.el.querySelectorAll('.fc-event-main, .fc-event-title, .fc-list-event-time, .fc-list-event')).forEach(container => {
+                  // nothing heavy here; if needed we could sanitize innerText, but avoid changing titles
+                });
+              }
+            } catch (e) { /* ignore */ }
+
+            // Masquer les occurrences supplémentaires uniquement en vue liste :
+            try {
+              if (info.view && info.view.type && info.view.type.startsWith('list') && info.el && info.event && info.event.start) {
+                const eventStartDate = info.event.start.toISOString().slice(0,10); // YYYY-MM-DD
+                // Plusieurs endroits possibles pour stocker la date de la cellule
+                const cellDate = info.el.getAttribute('data-date') || (info.el.closest && info.el.closest('[data-date]') && info.el.closest('[data-date]').getAttribute('data-date')) || (info.el.closest && info.el.closest('tr') && info.el.closest('tr').getAttribute('data-date'));
+                if (cellDate && cellDate !== eventStartDate) {
+                  info.el.style.display = 'none';
                 }
               }
-            }
+            } catch (e) { /* ignore */ }
+
+            // Hide empty content rows produced when we returned empty HTML in eventContent
+            try {
+              if (info.el && info.el.innerHTML.trim().length === 0) {
+                info.el.style.display = 'none';
+              }
+            } catch (e) { /* ignore */ }
           },
           datesSet: function(info) {
             if (updateTimeout) clearTimeout(updateTimeout);
@@ -741,12 +919,14 @@
             }, 50);
           }
         });
-        
+
         calendar.render();
         currentView = viewName;
         updateMonthLabel(currentDate);
-        
+
+        // Après le rendu, masquer les doublons multi-jours en vue liste
         setTimeout(() => {
+          // Plus besoin de masquer les doublons ici, car consolidation côté données et eventContent
           resizeWrapperHeight();
           if (calendar) calendar.updateSize();
           pruneOuterMonthRows();
@@ -756,7 +936,7 @@
       function toggleView() {
         const btnToggleView = document.getElementById('btn-toggle-view');
         const calendarZone = document.querySelector('.calendar-zone');
-        
+
         if (currentView === 'dayGridMonth') {
           initCalendar('listMonth');
           if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
@@ -773,14 +953,14 @@
       function resizeWrapperHeight() {
         const wrapper = document.getElementById('calendar-wrapper');
         if (!wrapper) return;
-        
+
         const top = wrapper.getBoundingClientRect().top;
         const bottomMargin = 16;
         const available = window.innerHeight - top - bottomMargin;
-        
+
         if (available > 200) {
           wrapper.style.height = available + 'px';
-          
+
           if (calendar) {
             setTimeout(() => {
               calendar.updateSize();
@@ -796,9 +976,9 @@
             // Switch to list view if allowed, and (default mobile is true OR forced)
             // But if we are already in list view, do nothing.
             // If allowCalendarView is false, we are forced to list view anyway.
-            
+
             const shouldBeList = !allowCalendarView || (allowListView && defaultListViewMobile);
-            
+
             if (shouldBeList && currentView !== 'listMonth') {
               if (calendarZone) calendarZone.classList.add('list-view-active');
               initCalendar('listMonth');
@@ -806,13 +986,13 @@
               if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
             }
           } else {
-            
+
             // Switch to calendar view if allowed.
             // If allowListView is false, we are forced to calendar view.
-            
+
             const shouldBeCalendar = !allowListView || allowCalendarView;
-            
-            // However, if allowCalendarView is false, we CANNOT switch to calendar view.
+
+            // Cependant, si allowCalendarView est faux, nous NE POUVONS PAS passer en vue calendrier.
             if (!allowCalendarView) return;
 
             if (shouldBeCalendar && currentView !== 'dayGridMonth') {
@@ -826,10 +1006,10 @@
       }
 
       let scrollBlocked = false;
-      
+
       function toggleScrollLock(state) {
         const body = document.body;
-        
+
         if (state && !scrollBlocked) {
           scrollBlocked = true;
           body.classList.add('scroll-locked');
@@ -849,7 +1029,7 @@
         const modalOverlay = document.querySelector('.event-modal-overlay');
         const modalClose = document.querySelector('.event-modal-close');
         const btnToggleView = document.getElementById('btn-toggle-view');
-        
+
         if (!calendarEl) return;
         if (typeof FullCalendar === 'undefined' || !FullCalendar.Calendar) {
           const warn = document.createElement('div');
@@ -858,16 +1038,16 @@
           calendarEl.appendChild(warn);
           return;
         }
-        
+
         if (modalClose) modalClose.onclick = closeEventModal;
         if (modalOverlay) modalOverlay.onclick = closeEventModal;
-        
+
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape') closeEventModal();
         });
-        
+
         if (btnToggleView) btnToggleView.onclick = toggleView;
-        
+
         const btnSubscribe = document.getElementById('btn-subscribe');
         if (btnSubscribe) {
           btnSubscribe.onclick = () => {
@@ -877,7 +1057,7 @@
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.value ||
                           defaultIcalUrl;
-            
+
             const subscribeModal = document.createElement('div');
             subscribeModal.className = 'event-modal show';
             subscribeModal.setAttribute('role', 'dialog');
@@ -901,7 +1081,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="event-info-row">
                     <div class="event-info-icon">💾</div>
                     <div class="event-info-content">
@@ -917,7 +1097,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="event-info-row">
                     <div class="event-info-icon">🌐</div>
                     <div class="event-info-content">
@@ -933,7 +1113,7 @@
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="event-info-row">
                     <div class="event-info-icon">ℹ️</div>
                     <div class="event-info-content">
@@ -951,28 +1131,28 @@
                 </div>
               </div>
             `;
-            
+
             document.body.appendChild(subscribeModal);
-            
+
             const closeBtn = subscribeModal.querySelector('.event-modal-close');
             const overlay = subscribeModal.querySelector('.event-modal-overlay');
-            
+
             const closeSubscribe = () => {
               subscribeModal.remove();
             };
-            
+
             if (closeBtn) closeBtn.onclick = closeSubscribe;
             if (overlay) overlay.onclick = closeSubscribe;
           };
         }
-        
+
         window.addEventListener('orientationchange', handleOrientationChange);
         window.addEventListener('resize', handleOrientationChange);
         window.addEventListener('resize', resizeWrapperHeight);
         window.addEventListener('load', resizeWrapperHeight);
 
         const calendarZone = document.querySelector('.calendar-zone');
-        
+
         if (calendarZone) {
           const handleScroll = (e) => {
             if (calendarZone.scrollTop === 0) {
@@ -980,7 +1160,7 @@
             } else {
               toggleScrollLock(true);
             }
-          };
+          }
           calendarZone.addEventListener('scroll', handleScroll, { passive: true });
           handleScroll();
         }
@@ -1022,15 +1202,15 @@
 
           try {
             const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
-            
+
             let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.value ||
                           defaultIcalUrl;
-            
+
             console.log('URL trouvée:', icalUrl);
-            
+
             if (!icalUrl || icalUrl.trim().length === 0) {
               throw new Error('No iCal URL provided in parameters');
             }
@@ -1044,10 +1224,35 @@
               cache = JSON.parse(localStorage.getItem(cacheKey));
             } catch (e) { cache = null; }
             const nowTs = Date.now();
+            const loaderMsg = document.getElementById('calendar-loader-message');
+            const loaderBar = document.getElementById('calendar-loader-bar');
+            const loaderProgress = document.getElementById('calendar-loader-progress');
+            let usedCache = false;
             if (cache && cache.data && cache.ts && (nowTs - cache.ts < ICAL_CACHE_DURATION)) {
               icalText = cache.data;
+              usedCache = true;
+              if (loaderMsg) loaderMsg.textContent = 'Chargement depuis le cache...';
+              if (loaderProgress) loaderProgress.style.display = 'none';
+              // Ajout d'un bouton pour rafraîchir si cache
+              let refreshBtn = document.getElementById('calendar-refresh-btn');
+              if (!refreshBtn) {
+                refreshBtn = document.createElement('button');
+                refreshBtn.id = 'calendar-refresh-btn';
+                refreshBtn.className = 'calendar-btn';
+                refreshBtn.style.margin = '1rem auto 0 auto';
+                refreshBtn.textContent = '🔄 Rafraîchir le calendrier';
+                refreshBtn.onclick = function() {
+                  localStorage.removeItem(cacheKey);
+                  window.location.reload();
+                };
+                const loaderDiv = document.getElementById('calendar-loader');
+                if (loaderDiv) loaderDiv.appendChild(refreshBtn);
+              }
               console.log('✅ Utilisation du cache localStorage pour le flux iCal');
             } else {
+              if (loaderMsg) loaderMsg.innerHTML = 'Téléchargement et mise en cache du calendrier en cours...<br><span style="font-size:0.95em; color:#aaa;">(cela peut prendre 5 à 10 secondes selon la connexion)</span>';
+              if (loaderProgress) loaderProgress.style.display = '';
+              if (loaderBar) loaderBar.style.width = '0%';
               let response = null;
               const proxies = [
                 { name: 'Direct', url: icalUrl },
@@ -1056,6 +1261,16 @@
                 { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
               ];
               let lastError = null;
+              // Simule la progression du loader
+              let fakeProgress = 0;
+              let fakeInterval = null;
+              if (loaderBar) {
+                loaderBar.style.width = '0%';
+                fakeInterval = setInterval(() => {
+                  fakeProgress = Math.min(95, fakeProgress + Math.random() * 5);
+                  loaderBar.style.width = fakeProgress + '%';
+                }, 200);
+              }
               for (let i = 0; i < Math.min(3, proxies.length); i++) {
                 const proxy = proxies[i];
                 try {
@@ -1073,31 +1288,63 @@
                   console.warn(`❌ ${proxy.name} échoué:`, err.message);
                 }
               }
+              if (fakeInterval) clearInterval(fakeInterval);
               if (!response || !response.ok) {
+                if (loaderBar) loaderBar.style.width = '0%';
                 console.error('Dernier erreur:', lastError);
                 throw new Error(`Impossible de charger le calendrier. Dernier essai: ${lastError?.message || 'Unknown'}`);
               }
               if (!response || !response.ok) {
+                if (loaderBar) loaderBar.style.width = '0%';
                 throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
               }
-              icalText = await response.text();
+              // Gestion de la barre de progression si possible
+              if (response && response.body && window.ReadableStream) {
+                const reader = response.body.getReader();
+                const contentLength = +response.headers.get('Content-Length') || 0;
+                let receivedLength = 0;
+                let chunks = [];
+                while(true) {
+                  const {done, value} = await reader.read();
+                  if (done) break;
+                  chunks.push(value);
+                  receivedLength += value.length;
+                  if (loaderBar && contentLength) {
+                    const percent = Math.min(100, Math.round(receivedLength / contentLength * 100));
+                    loaderBar.style.width = percent + '%';
+                  } else if (loaderBar) {
+                    loaderBar.style.width = ((receivedLength/10000)%100) + '%';
+                  }
+                }
+                let chunksAll = new Uint8Array(receivedLength);
+                let pos = 0;
+                for (let chunk of chunks) {
+                  chunksAll.set(chunk, pos);
+                  pos += chunk.length;
+                }
+                icalText = new TextDecoder('utf-8').decode(chunksAll);
+                if (loaderBar) loaderBar.style.width = '100%';
+              } else {
+                icalText = await response.text();
+                if (loaderBar) loaderBar.style.width = '100%';
+              }
               if (!icalText || icalText.trim().length === 0) {
+                if (loaderBar) loaderBar.style.width = '0%';
                 throw new Error('iCal file is empty or invalid');
               }
-              // Met à jour le cache
               try {
                 localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
                 console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
               } catch (e) { /* ignore quota errors */ }
             }
-            
+
             let jcalData = null;
             try {
               jcalData = ICAL.parse(icalText);
             } catch (parseErr) {
               throw new Error('Invalid iCal format: ' + parseErr.message);
             }
-            
+
 
             // Nouvelle gestion : prise en charge des récurrences et exceptions
             const comp = new ICAL.Component(jcalData);
@@ -1106,6 +1353,20 @@
 
             // Utilisation d'un map pour éviter les doublons d'UID+date
             const eventMap = new Map();
+
+            // Pré-scan pour les événements override (RECURRENCE-ID) afin de ne pas
+            // générer les occurrences de base qui sont remplacées par ces overrides.
+            const overrideMap = new Map();
+            vevents.forEach((v, i) => {
+              try {
+                const maybeOverride = v.getFirstProperty('recurrence-id');
+                if (maybeOverride) {
+                  const ev = new ICAL.Event(v);
+                  const k = (ev.uid || `event-override-${i}`) + '_' + (ev.startDate ? ev.startDate.toJSDate().toISOString() : i);
+                  overrideMap.set(k, true);
+                }
+              } catch (err) { /* ignore */ }
+            });
 
             vevents.forEach((vevent, index) => {
 
@@ -1126,13 +1387,19 @@
                 // Gestion des événements récurrents
                 if (event.isRecurring()) {
                   const now = new Date();
+                  // Expand occurrences in a reasonable window to avoid huge expansions
                   const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
-                  const rangeEnd = new Date(now.getFullYear() + 2, 11, 31);
+                  const rangeEnd = new Date(now.getFullYear() + 2, 11, 31, 23, 59, 59);
                   const expand = event.iterator(rangeStart);
                   let next;
                   let count = 0;
                   while ((next = expand.next()) && count < 500) {
                     const occStart = next.toJSDate();
+                    // Stop when beyond our rangeEnd
+                    if (occStart > rangeEnd) break;
+                    // Skip occurrences before rangeStart (iterator may yield before start in some cases)
+                    if (occStart < rangeStart) { count++; continue; }
+
                     let occEnd = null;
                     if (event.endDate) {
                       const duration = event.endDate.subtractDate(event.startDate);
@@ -1145,9 +1412,12 @@
                     const dtStartProp = vevent.getFirstProperty("dtstart");
                     const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
                     if (isAllDay && occEnd.getTime() !== occStart.getTime()) {
+                      // Dans iCal, DTEND pour les événements "DATE" est exclusif : on l'ajuste pour FullCalendar
                       occEnd.setDate(occEnd.getDate() + 1);
                     }
                     let cleanTitle = event.summary || "Sans titre";
+                    // Detect explicit '00h' or '00:00' in original summary and mark to hide start time
+                    const hasZeroHourInTitle = /(?:\b00h\b|\b00:00\b)/i.test(event.summary || '');
                     cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
                     cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
                     cleanTitle = cleanTitle.trim();
@@ -1158,14 +1428,17 @@
                       eventUrl = urlProp || attachProp || "";
                     }
                     const key = (event.uid || `event-${index}`) + '_' + occStart.toISOString();
+                    // If there's an override for this occurrence, skip creating the base occurrence
+                    if (overrideMap.has(key)) { count++; continue; }
                     if (!eventMap.has(key)) {
                       const colors = getEventColors(cleanTitle, occStart, now);
+                      // Include `end` so month/day views render multi-day bars correctly
                       loadedEvents.push({
                         id: key,
                         title: cleanTitle,
                         start: occStart,
                         end: occEnd,
-                        allDay: true,
+                        allDay: !!isAllDay,
                         display: "block",
                         backgroundColor: colors.backgroundColor,
                         borderColor: colors.borderColor,
@@ -1173,6 +1446,9 @@
                           description: event.description || "",
                           location: event.location || "",
                           summary: cleanTitle,
+                          hideStartTime: hasZeroHourInTitle,
+                          // store original VEVENT start (not the occurrence start) so we can detect multi-day split rows
+                          origStart: event.startDate ? event.startDate.toJSDate() : occStart,
                           startDate: occStart,
                           endDate: occEnd,
                           url: eventUrl
@@ -1188,9 +1464,11 @@
                   const dtStartProp = vevent.getFirstProperty("dtstart");
                   const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
                   if (isAllDay && endDate.getTime() !== startDate.getTime()) {
+                    // Ajuste DTEND exclusif pour les événements all-day
                     endDate.setDate(endDate.getDate() + 1);
                   }
                   let cleanTitle = event.summary || "Sans titre";
+                  const hasZeroHourInTitle = /(?:\b00h\b|\b00:00\b)/i.test(event.summary || '');
                   cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
                   cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
                   cleanTitle = cleanTitle.trim();
@@ -1201,15 +1479,17 @@
                     eventUrl = urlProp || attachProp || "";
                   }
                   const key = (event.uid || `event-${index}`) + '_' + startDate.toISOString();
+                  // Allow override VEVENTs (with RECURRENCE-ID) to replace base occurrences.
                   if (!eventMap.has(key)) {
                     const now = new Date();
                     const colors = getEventColors(cleanTitle, startDate, now);
+                    // Include `end` so month/day views render multi-day bars correctly
                     loadedEvents.push({
                       id: key,
                       title: cleanTitle,
                       start: startDate,
                       end: endDate,
-                      allDay: true,
+                      allDay: !!isAllDay,
                       display: "block",
                       backgroundColor: colors.backgroundColor,
                       borderColor: colors.borderColor,
@@ -1217,6 +1497,8 @@
                         description: event.description || "",
                         location: event.location || "",
                         summary: cleanTitle,
+                        hideStartTime: hasZeroHourInTitle,
+                        origStart: event.startDate ? event.startDate.toJSDate() : startDate,
                         startDate: startDate,
                         endDate: endDate,
                         url: eventUrl
@@ -1230,29 +1512,45 @@
               }
             });
 
+
             loadedEvents = consolidateMultiDayEvents(loadedEvents);
 
             let startView = 'dayGridMonth';
             if (!allowCalendarView && allowListView) {
-                startView = 'listMonth';
+              startView = 'listMonth';
             } else if (isMobile() && isPortrait() && allowListView && defaultListViewMobile) {
-                startView = 'listMonth';
+              startView = 'listMonth';
             } else if (!allowListView) {
-                startView = 'dayGridMonth';
+              startView = 'dayGridMonth';
             }
 
+
+            // Affiche le calendrier et masque le loader dès que les événements sont prêts
+            document.getElementById('calendar-loader').style.display = 'none';
+            document.getElementById('calendar-wrapper').style.display = '';
+
             initCalendar(startView);
-            
+
             const calendarZone = document.querySelector('.calendar-zone');
             const btnToggleView = document.getElementById('btn-toggle-view');
-            
+
             if (startView === 'listMonth') {
-                 if (btnToggleView) btnToggleView.textContent = "Vue Calendrier";
-                 if (calendarZone) calendarZone.classList.add('list-view-active');
+              if (btnToggleView) btnToggleView.textContent = "Vue Calendrier";
+              if (calendarZone) calendarZone.classList.add('list-view-active');
             } else {
-                 if (btnToggleView) btnToggleView.textContent = "Vue Liste";
-                 if (calendarZone) calendarZone.classList.remove('list-view-active');
+              if (btnToggleView) btnToggleView.textContent = "Vue Liste";
+              if (calendarZone) calendarZone.classList.remove('list-view-active');
             }
+
+            // Message UX si aucun événement
+            setTimeout(() => {
+              if (loadedEvents.length === 0) {
+               const calendarEl = document.querySelector('.fullcalendar-container');
+               if (calendarEl) {
+                calendarEl.innerHTML = `<div style="padding:2rem;text-align:center;color:#fff;background:rgba(102,126,234,0.1);border-radius:12px;max-width:600px;margin:0 auto;">Aucun événement à afficher pour cette période.</div>`;
+               }
+              }
+            }, 500);
 
             if (prevBtn) {
               prevBtn.onclick = () => calendar && calendar.prev();
@@ -1277,7 +1575,7 @@
             if (calendarEl) {
               let errorMsg = error.message;
               let suggestions = '';
-              
+
               if (error.message.includes('No iCal URL')) {
                 errorMsg = 'Aucune URL iCal n\'a été fournie.';
                 suggestions = '<br><strong>Action requise :</strong> Entrez une URL iCal valide dans les paramètres du formulaire ci-dessus.';
@@ -1296,7 +1594,7 @@
                 errorMsg = 'Erreur de connexion réseau.';
                 suggestions = '<br><strong>Action :</strong> Vérifiez votre connexion Internet et rechargez la page.';
               }
-              
+
               calendarEl.innerHTML = `
                 <div style="padding: 2rem; text-align: center; color: #ffc107; background: rgba(255, 193, 7, 0.1); border-radius: 12px; border: 1px solid #ffc107; max-width: 600px; margin: 0 auto;">
                   ❌ ${errorMsg}<br>
@@ -1308,11 +1606,11 @@
         })();
       })();
     })();
-  </script>
+    </script>
 
 </section>
 
-<section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-f">
+<section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-h">
 
     
 
