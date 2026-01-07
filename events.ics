@@ -477,7 +477,7 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Pop'Anim Festival 2026
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div><span style="background-color:rgb(255\, 255\, 255)"><span style="color:rgb(0\, 0\, 0)"><span style="font-family:Roboto\, Arial\, sans-serif"><span style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div>
+X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div>
 DTSTART:20260207T090000Z
 DTEND:20260208T165900Z
 LOCATION:Rue Saint-Jacques\, 76110 Goderville
@@ -487,9 +487,9 @@ STATUS:CONFIRMED
 UID:cfc9bf8d2e4d49fe8aeb20f637742724@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101159Z
-LAST-MODIFIED:20251220T080635Z
-DTSTAMP:20260104T042141Z
-URL:https://www.billetweb.fr/popanim-festival-4eme-edition
+LAST-MODIFIED:20260107T192108Z
+DTSTAMP:20260107T192110Z
+URL:https://www.facebook.com/events/1171477725040718/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Expo Paris 2025
