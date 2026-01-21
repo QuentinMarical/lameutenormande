@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=d7VBtP"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=d7VBtP" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=MOwJqs"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=MOwJqs" type="text/css">
 
   
   
@@ -519,6 +519,26 @@
           try { localStorage.removeItem(key); return true; }
           catch (e) { return false; }
         }
+      };
+      const defaultLocalIcalUrl = '/assets/events.ics';
+      const defaultRemoteIcalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
+      const toAbsoluteUrl = (url) => {
+        try { return new URL(url, window.location.href).href; }
+        catch (e) { return url; }
+      };
+      const isSameOrigin = (url) => {
+        try {
+          const u = new URL(url, window.location.href);
+          return u.origin === window.location.origin;
+        } catch (e) { return false; }
+      };
+      const resolveLocalUrl = async (url) => {
+        const abs = toAbsoluteUrl(url);
+        try {
+          const resp = await fetch(abs, { method: 'HEAD', cache: 'no-cache', mode: 'same-origin' });
+          if (resp && resp.ok) return abs;
+        } catch (e) { }
+        return null;
       };
       const isMobile = () => window.innerWidth <= 768;
       const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
@@ -1119,6 +1139,7 @@
             if (icalUrl) icalUrl = toAbsoluteUrl(icalUrl.trim());
 
             if (!icalUrl || icaleUrl.trim().length === 0) {
+            if (!icalUrl || icalUrl.trim().length === 0) {
               const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
               icalUrl = localResolved || toAbsoluteUrl(defaultRemoteIcalUrl);
             } else {
