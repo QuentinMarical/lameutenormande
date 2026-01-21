@@ -1,85 +1,31 @@
-<!DOCTYPE html>
-<html  >
-<head>
-  
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/macaron-128x128-128x128.png" type="image/x-icon">
-  <meta name="description" content="">
-  
-  
-  <title>Événements</title>
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
-  <link rel="stylesheet" href="assets/parallax/jarallax.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link href="assets/fonts/style.css" rel="stylesheet">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=DAF0XN"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=DAF0XN" type="text/css">
+﻿<section class="mbr-section mbr-section--no-padding" data-bg-video="{{bg.type == 'video' && bg.value.url}}" mbr-class="{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}">
 
-  
-  
-  
-</head>
-<body>
-  
-  <section data-bs-version="5.1" class="menu menu2 cid-v2D2HLImen" once="menu" id="menu02-g">
-	
+    <mbr-parameters>
+        <header>Size</header>
+        <input type="checkbox" title="Full Screen" name="fullScreen">
+        <input type="range" inline title="Top" name="paddingTop" min="0" max="9" step="1" value="7" condition="fullScreen == false">
+        <input type="range" inline title="Bottom" name="paddingBottom" min="0" max="9" step="1" value="1" condition="fullScreen == false">
 
-	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
-		<div class="container">
-			<div class="navbar-brand">
-				<span class="navbar-logo">
-					<a href="https://lameutenormande.fr">
-						<img src="assets/images/logo-96x40.png" alt="La Meute Normande" style="height: 3.7rem;">
-					</a>
-				</span>
-				
-			</div>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-				<div class="hamburger">
-					<span></span>
-					<span></span>
-					<span></span>
-					<span></span>
-				</div>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-						<a class="nav-link link text-white text-primary display-4" href="events.html">Événements</a>
-					</li>
-					
-					<li class="nav-item">
-						<a class="nav-link link text-white text-primary display-4" href="contact.html">Contact</a>
-					</li></ul>
-				<div class="icons-menu">
-					<a class="iconfont-wrapper" href="http://t.me/Annonces_Meute_Normande">
-						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
-					</a>
-					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande">
-						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(249, 44, 80); fill: rgb(249, 44, 80);"></span>
-					</a>
-					
-					
-				</div>
-				
-			</div>
-		</div>
-	</nav>
-</section>
+        <header>Background</header>
+        <fieldset type="background" name="bg" parallax>
+            <input type="image" title="Background Image" value="file:///C:/Users/maric/Desktop/Projet%20Mobirise%20Site%20Meute%20Normande/assets/images/img-2921-2000x1186.jpg" parallax selected>
+            <input type="color" title="Background Color" value="#2d2d3d">
+            <input type="video" title="Background Video" value>
+        </fieldset>
+        <input type="checkbox" title="Overlay" name="overlay" condition="bg.type !== 'color'" checked>
+        <input type="color" title="Overlay Color" name="overlayColor" value="#1a1a2e" condition="overlay && bg.type !== 'color'">
+        <input type="range" inline title="Opacity" name="overlayOpacity" min="0" max="1" step="0.1" value="0.8" condition="overlay && bg.type !== 'color'">
 
-<section data-bs-version="5.1" class="mbr-section mbr-section--no-padding cid-v5QUnVSVmZ mbr-parallax-background" id="header09-i">
+        <header>Calendrier FullCalendar</header>
+        <input type="text" title="URL iCalendar" name="icalUrl" value data-ical-url>
 
-    
+        <header>Contrôles</header>
+        <input type="checkbox" title="Autoriser Vue Calendrier" name="allowCalendarView" checked>
+        <input type="checkbox" title="Autoriser Vue Liste" name="allowListView" checked>
+        <input type="checkbox" title="Vue Liste par défaut (Mobile)" name="defaultListViewMobile" condition="allowListView" checked>
+    </mbr-parameters>
 
-    <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);">
+    <div class="mbr-overlay" mbr-if="overlay && bg.type!== 'color'" mbr-style="{'opacity': overlayOpacity, 'background-color': overlayColor}">
     </div>
 
     <style>
@@ -422,7 +368,7 @@
     </style>
 
 
-    <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
+    <div class="container container-calendar" mbr-class="{'container': !fullScreen}" data-allow-list-view="{{allowListView}}" data-allow-calendar-view="{{allowCalendarView}}" data-default-list-view-mobile="{{defaultListViewMobile}}">
         <div class="calendar-zone">
             <div class="calendar-loader" id="calendar-loader" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
                 <div style="text-align:center; width:100%;">
@@ -438,7 +384,7 @@
                     <button class="calendar-arrow-btn calendar-prev">‹</button>
                     <div class="calendar-controls-center">
                         <button class="calendar-btn calendar-today">Aujourd'hui</button>
-                        <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
+                        <button class="calendar-btn" id="btn-toggle-view" mbr-if="allowListView && allowCalendarView">Vue Liste</button>
                         <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
                         <span class="calendar-month">Décembre 2024</span>
                     </div>
@@ -1201,8 +1147,7 @@
           };
 
           try {
-            // Utilise le fichier local généré par le robot GitHub
-            const defaultIcalUrl = "./events.ics?v=" + Date.now();
+            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
 
             let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
@@ -1610,24 +1555,3 @@
     </script>
 
 </section>
-
-<section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-h">
-
-    
-
-    
-
-    <div class="container">
-        <div class="media-container-row align-center mbr-white">
-            <div class="col-12">
-                <p class="mbr-text mb-0 mbr-fonts-style display-7">
-                    Site réalisé par <a href="tg://resolve?domain=NitraFox" class="text-primary">Nitra🦊</a>&nbsp;et calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="text-info">Spyro the bat🦇</a></p>
-            </div>
-        </div>
-    </div>
-</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
-  
-  
- <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
-  </body>
-</html>
