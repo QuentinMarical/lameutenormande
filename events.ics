@@ -118,6 +118,22 @@ DTSTAMP:20260113T074459Z
 URL:https://www.facebook.com/share/r/1C9kyVabNP/?mibextid=wwXIfr
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Sortie Bowling
+DESCRIPTION:
+DTSTART:20260124T153000Z
+DTEND:20260124T223000Z
+LOCATION:Chorus Bowling\, 8 Av. Micheline Ostermeyer\, 76190 Yvetot\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:37b26d6eecec42c48c4c3d126fb29325@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260121T184713Z
+LAST-MODIFIED:20260121T184713Z
+DTSTAMP:20260121T184714Z
+URL:https://yvetot.chorus-game.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Touch Haru & Geek Touch
 DESCRIPTION:Japan Touch Haru & Geek Touch à Lyon.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Japan Touch Haru &amp\; Geek Touch à Lyon.<br /></div>
