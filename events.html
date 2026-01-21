@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=DAF0XN"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=DAF0XN" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=d7VBtP"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=d7VBtP" type="text/css">
 
   
   
@@ -202,7 +202,6 @@
             color: #fff;
         }
 
-        /* Modal two-column layout for desktop */
         .event-modal-body-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -224,7 +223,6 @@
             }
         }
 
-        /* Remove start-times inside FullCalendar views (visual only) */
         .fc .fc-time, .fc .fc-event-time, .fc .fc-list-event-time {
             display: none !important;
         }
@@ -379,7 +377,6 @@
             height: 100% !important;
         }
 
-        /* Masquer tous les éléments du site quand la modale est ouverte */
         body.modal-open > *:not(.event-modal) {
             visibility: hidden !important;
         }
@@ -405,12 +402,10 @@
             .calendar-zone::-webkit-scrollbar-thumb:hover {
                 background: rgba(255, 255, 255, 0.5);
             }
-        /* Jours hors mois invisibles (contenu caché) mais quadrillage conservé */
+
         .fc-day-other .fc-daygrid-day-number {
             visibility: hidden !important;
         }
-
-        /* Ne pas masquer les événements dans les cellules hors mois (voir module CSS) */
 
         .fc-day-other {
             background: rgba(30, 30, 46, 0.5) !important;
@@ -420,7 +415,6 @@
                 background: rgba(30, 30, 46, 0.5) !important;
             }
     </style>
-
 
     <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
         <div class="calendar-zone">
@@ -448,6 +442,7 @@
             </div>
         </div>
     </div>
+
     <style>
         @keyframes spin {
             0% {
@@ -469,91 +464,33 @@
         </div>
     </div>
 
-    <!-- FullCalendar & ical.js with security headers and explicit MIME type -->
-    <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <!-- ⚡ DEBUG: Preconnect + scripts SANS defer pour diagnostic -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous">
+
+    <!-- FullCalendar v6 & ical.js (CSS auto-injecté) -->
     <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
-    <!-- Fallback CSS for FullCalendar if CDN fails -->
-    <style>
-        /* Critical FullCalendar base styles */
-        .fc {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-        }
-
-        .fc-button {
-            background: #667eea;
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-            .fc-button:hover {
-                background: #764ba2;
-            }
-
-        .fc-button-active {
-            background: #764ba2;
-        }
-
-        .fc-daygrid-day {
-            background: rgba(30, 30, 46, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-            .fc-daygrid-day:hover {
-                background: rgba(102, 126, 234, 0.15);
-            }
-
-        .fc-day-today {
-            background: rgba(255, 193, 7, 0.15) !important;
-            border: 2px solid #ffc107 !important;
-        }
-
-        .fc-event {
-            background: #667eea;
-            border: none;
-            border-radius: 4px;
-            padding: 2px 4px;
-            font-size: 0.8rem;
-        }
-
-        .fc-event-title {
-            font-weight: 600;
-        }
-
-        .fc-col-header-cell {
-            background: #2d2d3d;
-            color: white;
-            font-weight: 700;
-            padding: 0.5rem;
-            text-align: center;
-        }
-
-        .fc-listMonth-view {
-            max-height: none !important;
-            height: auto !important;
-        }
-
-            .fc-listMonth-view .fc-scroller {
-                overflow: visible !important;
-                max-height: none !important;
-                height: auto !important;
-            }
-    </style>
-
     <script>
     'use strict';
+
+    const DEBUG_MODE = false;
+    if (!DEBUG_MODE) {
+      console.log = function() {};
+      console.warn = function() {};
+    }
+
+    // ⚡ DEBUG ACTIVÉ pour diagnostiquer le problème
+    console.log('🔍 DEBUG MODE ACTIVÉ - Analyse du chargement...');
+
+    // Vérifier que les librairies sont chargées
+    console.log('✓ FullCalendar disponible:', typeof FullCalendar !== 'undefined');
+    console.log('✓ ICAL disponible:', typeof ICAL !== 'undefined');
 
     (function() {
       const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
       const container = document.querySelector('.container-calendar');
-      // Note: Mobirise might not replace boolean attributes with "true"/"false" strings but remove them or set them.
-      // Assuming standard behavior where {{var}} is replaced by string.
-      // If the attribute is missing, we assume true (default).
       const getAttr = (name) => {
          if (!container) return true;
          const val = container.getAttribute(name);
@@ -569,6 +506,20 @@
       let updateTimeout = null;
       let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
       let loadedEvents = [];
+      const safeStorage = {
+        getItem: function(key) {
+          try { return localStorage.getItem(key); }
+          catch (e) { return null; }
+        },
+        setItem: function(key, value) {
+          try { localStorage.setItem(key, value); return true; }
+          catch (e) { return false; }
+        },
+        removeItem: function(key) {
+          try { localStorage.removeItem(key); return true; }
+          catch (e) { return false; }
+        }
+      };
       const isMobile = () => window.innerWidth <= 768;
       const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
 
@@ -594,10 +545,8 @@
 
         if (!modal || !modalTitle || !modalBody) return;
 
-        // Masquer tous les éléments du site AVANT d'ouvrir la modale
         document.body.classList.add('modal-open');
 
-        // Petit délai pour s'assurer que le masquage est appliqué
         requestAnimationFrame(() => {
           modal.setAttribute('role', 'dialog');
           modal.setAttribute('aria-modal', 'true');
@@ -607,7 +556,6 @@
 
           modalTitle.textContent = props.summary || event.title;
 
-        // Build two-column content: left = dates + place, right = description + link
         let leftHTML = '';
         let rightHTML = '';
 
@@ -698,8 +646,6 @@
             </div>`;
            modal.classList.add('show');
 
-          // Suppression du swipe-down pour fermer la popup sur mobile
-
           setTimeout(() => {
             const closeBtn = modal.querySelector('.event-modal-close');
             if (closeBtn) closeBtn.focus();
@@ -715,18 +661,12 @@
       }
 
       function consolidateMultiDayEvents(events) {
-        // Ne pas regrouper les occurrences récurrentes séparées :
-        // auparavant on retirait la partie date de l'id ("_...") et on regrouillait par UID,
-        // ce qui fusionnait toutes les occurrences en un seul événement multi-jours.
-        // Ici on ne fusionne que les événements ayant exactement le même id (vrais doublons).
         const map = {};
         events.forEach(ev => {
           const key = ev.id || (ev.title + '_' + (ev.start ? ev.start.toISOString() : Math.random()));
           if (!map[key]) map[key] = { ...ev };
           else {
-            // Si même id présent plusieurs fois, on conserve la période englobante
             if (ev.start && (!map[key].start || ev.start < map[key].start)) map[key].start = ev.start;
-            // Keep extendedProps.endDate if present to compute status
             if (ev.end && (!map[key].end || ev.end > map[key].end)) map[key].end = ev.end;
             map[key].extendedProps = { ...(map[key].extendedProps || {}), ...(ev.extendedProps || {}) };
           }
@@ -734,7 +674,6 @@
 
         const now = new Date();
         return Object.values(map).map(ev => {
-          // Use extendedProps.endDate if ev.end is not present (we intentionally avoid setting end on calendar event to keep it single-render)
           const startDate = ev.start || (ev.extendedProps && ev.extendedProps.startDate) || null;
           const endDate = ev.end || (ev.extendedProps && ev.extendedProps.endDate) || null;
           const isPast = endDate && endDate < now;
@@ -826,7 +765,6 @@
             openEventModal(info.event, info.event.extendedProps);
           },
           eventContent: function(arg) {
-             // Personnalisation du rendu en vue liste pour les multi-jours
              if (arg.view.type.startsWith('list')) {
                const start = arg.event.start;
                const end = arg.event.end;
@@ -834,7 +772,6 @@
                let nbJours = 1;
                let isAllDay = arg.event.allDay;
                const hideStart = arg.event.extendedProps && arg.event.extendedProps.hideStartTime;
-               // If this row represents the event on a day that is not the original event start, skip rendering
                try {
                  const orig = arg.event.extendedProps && arg.event.extendedProps.origStart;
                  if (orig && start) {
@@ -842,9 +779,8 @@
                    const oDay = new Date(orig.getFullYear(), orig.getMonth(), orig.getDate()).getTime();
                    if (sDay !== oDay) return { html: '' };
                  }
-               } catch (e) { /* ignore */ }
+               } catch (e) { }
                if (start && end && end - start >= 24*60*60*1000) {
-                 // Pour les événements allDay, la date de fin est exclusive : on affiche jusqu'à end - 1 jour
                  const options = { day: '2-digit', month: 'short', year: 'numeric' };
                  let displayEnd = end;
                  if (isAllDay) {
@@ -852,10 +788,6 @@
                  }
                  const startStr = start.toLocaleDateString('fr-FR', options);
                  const endStr = displayEnd.toLocaleDateString('fr-FR', options);
-                 // If hideStart flag, do not include times
-                 if (!hideStart && !isAllDay) {
-                   // include times if desired (kept simple)
-                 }
                  nbJours = Math.round((displayEnd - start) / (24*60*60*1000)) + 1;
                  html += `<div class="fc-event-title">${arg.event.title} <span class="multi-days-span" style="font-weight:normal;font-size:0.95em;margin-left:0.5em;color:#ffc107;">(${nbJours} jour${nbJours>1?'s':''})</span></div>`;
                 html += `<div class="fc-list-event-time" style="font-weight:bold;">Du ${startStr} au ${endStr}</div>`;
@@ -864,11 +796,9 @@
                }
                return { html };
              }
-             // Sinon, laisser le rendu par défaut
              return true;
            },
           eventDidMount: function(info) {
-            // Appliquer le dégradé pour les événements 🦊 futurs
             const bg = info.event.extendedProps && info.event.extendedProps.backgroundColor;
             const border = info.event.extendedProps && info.event.extendedProps.borderColor;
             const txt = info.event.extendedProps && info.event.extendedProps.textColor;
@@ -877,38 +807,29 @@
               if (border) info.el.style.borderColor = border;
               if (txt) info.el.style.color = txt;
             }
-            // Si l'événement indique de masquer l'heure de début, retirer les éléments d'heure rendus
             try {
               const hideTime = info.event.extendedProps && info.event.extendedProps.hideStartTime;
               if (hideTime && info.el) {
-                // Common FullCalendar time element classes
                 const timeEls = info.el.querySelectorAll('.fc-time, .fc-event-time, .fc-list-event-time, .fc-list-event .fc-event-time');
                 timeEls.forEach(el => el.style.display = 'none');
-                // also remove any text nodes that look like times (fallback)
-                Array.from(info.el.querySelectorAll('.fc-event-main, .fc-event-title, .fc-list-event-time, .fc-list-event')).forEach(container => {
-                  // nothing heavy here; if needed we could sanitize innerText, but avoid changing titles
-                });
               }
-            } catch (e) { /* ignore */ }
+            } catch (e) { }
 
-            // Masquer les occurrences supplémentaires uniquement en vue liste :
             try {
               if (info.view && info.view.type && info.view.type.startsWith('list') && info.el && info.event && info.event.start) {
-                const eventStartDate = info.event.start.toISOString().slice(0,10); // YYYY-MM-DD
-                // Plusieurs endroits possibles pour stocker la date de la cellule
+                const eventStartDate = info.event.start.toISOString().slice(0,10);
                 const cellDate = info.el.getAttribute('data-date') || (info.el.closest && info.el.closest('[data-date]') && info.el.closest('[data-date]').getAttribute('data-date')) || (info.el.closest && info.el.closest('tr') && info.el.closest('tr').getAttribute('data-date'));
                 if (cellDate && cellDate !== eventStartDate) {
                   info.el.style.display = 'none';
                 }
               }
-            } catch (e) { /* ignore */ }
+            } catch (e) { }
 
-            // Hide empty content rows produced when we returned empty HTML in eventContent
             try {
               if (info.el && info.el.innerHTML.trim().length === 0) {
                 info.el.style.display = 'none';
               }
-            } catch (e) { /* ignore */ }
+            } catch (e) { }
           },
           datesSet: function(info) {
             if (updateTimeout) clearTimeout(updateTimeout);
@@ -924,9 +845,7 @@
         currentView = viewName;
         updateMonthLabel(currentDate);
 
-        // Après le rendu, masquer les doublons multi-jours en vue liste
         setTimeout(() => {
-          // Plus besoin de masquer les doublons ici, car consolidation côté données et eventContent
           resizeWrapperHeight();
           if (calendar) calendar.updateSize();
           pruneOuterMonthRows();
@@ -947,8 +866,6 @@
                   if (calendarZone) calendarZone.classList.remove('list-view-active');
         }
       }
-
-
 
       function resizeWrapperHeight() {
         const wrapper = document.getElementById('calendar-wrapper');
@@ -973,10 +890,6 @@
         if (isMobile()) {
           const calendarZone = document.querySelector('.calendar-zone');
           if (isPortrait()) {
-            // Switch to list view if allowed, and (default mobile is true OR forced)
-            // But if we are already in list view, do nothing.
-            // If allowCalendarView is false, we are forced to list view anyway.
-
             const shouldBeList = !allowCalendarView || (allowListView && defaultListViewMobile);
 
             if (shouldBeList && currentView !== 'listMonth') {
@@ -986,13 +899,8 @@
               if (btnToggleView) btnToggleView.textContent = 'Vue Calendrier';
             }
           } else {
-
-            // Switch to calendar view if allowed.
-            // If allowListView is false, we are forced to calendar view.
-
             const shouldBeCalendar = !allowListView || allowCalendarView;
 
-            // Cependant, si allowCalendarView est faux, nous NE POUVONS PAS passer en vue calendrier.
             if (!allowCalendarView) return;
 
             if (shouldBeCalendar && currentView !== 'dayGridMonth') {
@@ -1051,7 +959,7 @@
         const btnSubscribe = document.getElementById('btn-subscribe');
         if (btnSubscribe) {
           btnSubscribe.onclick = () => {
-            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
+            const defaultIcalUrl = defaultRemoteIcalUrl;
             const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
@@ -1171,20 +1079,20 @@
 
         (async function() {
 
-          // Ajout d'un cache localStorage pour le flux iCal (clé unique par URL, durée 6h)
-          const ICAL_CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 heures en ms
+          const ICAL_CACHE_DURATION = 24 * 60 * 60 * 1000; // Cache 24h
           const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
 
           const fetchWithRetry = async (url, maxRetries = 1) => {
+            const sameOrigin = isSameOrigin(url);
             for (let i = 0; i < maxRetries; i++) {
               try {
                 const response = await fetch(url, {
-                  headers: {
+                  headers: sameOrigin ? undefined : {
                     'Accept': 'text/calendar, application/ics, text/plain, */*',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                   },
                   cache: 'force-cache',
-                  mode: 'cors'
+                  mode: sameOrigin ? 'same-origin' : 'cors'
                 });
                 console.log(`   Réponse: ${response.status} ${response.statusText}, Type: ${response.headers.get('content-type')}`);
                 if (response.ok) return response;
@@ -1201,14 +1109,24 @@
           };
 
           try {
-            // Utilise le fichier local généré par le robot GitHub
-            const defaultIcalUrl = "./events.ics?v=" + Date.now();
-
             let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.value ||
-                          defaultIcalUrl;
+                          defaultLocalIcalUrl ||
+                          defaultRemoteIcalUrl;
+
+            if (icalUrl) icalUrl = toAbsoluteUrl(icalUrl.trim());
+
+            if (!icalUrl || icaleUrl.trim().length === 0) {
+              const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
+              icalUrl = localResolved || toAbsoluteUrl(defaultRemoteIcalUrl);
+            } else {
+              const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
+              if (localResolved && (icalUrl === toAbsoluteUrl(defaultRemoteIcalUrl) || icalUrl === defaultLocalIcalUrl)) {
+                icalUrl = localResolved;
+              }
+            }
 
             console.log('URL trouvée:', icalUrl);
 
@@ -1216,13 +1134,11 @@
               throw new Error('No iCal URL provided in parameters');
             }
 
-
-            // Vérifie le cache localStorage
             let icalText = null;
             let cacheKey = getIcalCacheKey(icalUrl);
             let cache = null;
             try {
-              cache = JSON.parse(localStorage.getItem(cacheKey));
+              cache = JSON.parse(safeStorage.getItem(cacheKey));
             } catch (e) { cache = null; }
             const nowTs = Date.now();
             const loaderMsg = document.getElementById('calendar-loader-message');
@@ -1234,16 +1150,15 @@
               usedCache = true;
               if (loaderMsg) loaderMsg.textContent = 'Chargement depuis le cache...';
               if (loaderProgress) loaderProgress.style.display = 'none';
-              // Ajout d'un bouton pour rafraîchir si cache
               let refreshBtn = document.getElementById('calendar-refresh-btn');
               if (!refreshBtn) {
                 refreshBtn = document.createElement('button');
                 refreshBtn.id = 'calendar-refresh-btn';
                 refreshBtn.className = 'calendar-btn';
                 refreshBtn.style.margin = '1rem auto 0 auto';
-                refreshBtn.textContent = '🔄 Rafraîchir le calendrier';
+                refreshBtn.textContent = '\uD83D\uDD04 Rafraîchir le calendrier';
                 refreshBtn.onclick = function() {
-                  localStorage.removeItem(cacheKey);
+                  safeStorage.removeItem(cacheKey);
                   window.location.reload();
                 };
                 const loaderDiv = document.getElementById('calendar-loader');
@@ -1255,14 +1170,16 @@
               if (loaderProgress) loaderProgress.style.display = '';
               if (loaderBar) loaderBar.style.width = '0%';
               let response = null;
-              const proxies = [
+              const sameOriginUrl = isSameOrigin(icalUrl);
+              const proxies = sameOriginUrl ? [
+                { name: 'Direct', url: icalUrl }
+              ] : [
                 { name: 'Direct', url: icalUrl },
                 { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
                 { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
                 { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
               ];
               let lastError = null;
-              // Simule la progression du loader
               let fakeProgress = 0;
               let fakeInterval = null;
               if (loaderBar) {
@@ -1299,7 +1216,6 @@
                 if (loaderBar) loaderBar.style.width = '0%';
                 throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
               }
-              // Gestion de la barre de progression si possible
               if (response && response.body && window.ReadableStream) {
                 const reader = response.body.getReader();
                 const contentLength = +response.headers.get('Content-Length') || 0;
@@ -1334,9 +1250,9 @@
                 throw new Error('iCal file is empty or invalid');
               }
               try {
-                localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
-                console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
-              } catch (e) { /* ignore quota errors */ }
+                safeStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
+                console.log('\uD83D\uDDC4️ Cache localStorage mis à jour pour le flux iCal');
+              } catch (e) { }
             }
 
             let jcalData = null;
@@ -1346,17 +1262,12 @@
               throw new Error('Invalid iCal format: ' + parseErr.message);
             }
 
-
-            // Nouvelle gestion : prise en charge des récurrences et exceptions
             const comp = new ICAL.Component(jcalData);
             const vevents = comp.getAllSubcomponents("vevent");
             loadedEvents = [];
 
-            // Utilisation d'un map pour éviter les doublons d'UID+date
             const eventMap = new Map();
 
-            // Pré-scan pour les événements override (RECURRENCE-ID) afin de ne pas
-            // générer les occurrences de base qui sont remplacées par ces overrides.
             const overrideMap = new Map();
             vevents.forEach((v, i) => {
               try {
@@ -1366,7 +1277,7 @@
                   const k = (ev.uid || `event-override-${i}`) + '_' + (ev.startDate ? ev.startDate.toJSDate().toISOString() : i);
                   overrideMap.set(k, true);
                 }
-              } catch (err) { /* ignore */ }
+              } catch (err) { }
             });
 
             vevents.forEach((vevent, index) => {
@@ -1375,30 +1286,24 @@
                 const event = new ICAL.Event(vevent);
                 if (!event.startDate) return;
 
-                // Fonction utilitaire pour couleur 🦊
                 function getEventColors(title, start, now) {
-                  // Si futur et 🦊 dans le titre
                   if (title.includes('🦊') && start > now) {
                     return { backgroundColor: '#ff9800', borderColor: '#ff9800' };
                   }
-                  // Couleur future par défaut
                   return { backgroundColor: '#667eea', borderColor: '#667eea' };
                 }
 
-                // Gestion des événements récurrents
                 if (event.isRecurring()) {
                   const now = new Date();
-                  // Expand occurrences in a reasonable window to avoid huge expansions
-                  const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
-                  const rangeEnd = new Date(now.getFullYear() + 2, 11, 31, 23, 59, 59);
+                  const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
+                  const rangeEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0, 23, 59, 59);
                   const expand = event.iterator(rangeStart);
                   let next;
                   let count = 0;
-                  while ((next = expand.next()) && count < 500) {
+                  // Limite 20 pour performance
+                  while ((next = expand.next()) && count < 20) {
                     const occStart = next.toJSDate();
-                    // Stop when beyond our rangeEnd
                     if (occStart > rangeEnd) break;
-                    // Skip occurrences before rangeStart (iterator may yield before start in some cases)
                     if (occStart < rangeStart) { count++; continue; }
 
                     let occEnd = null;
@@ -1413,11 +1318,9 @@
                     const dtStartProp = vevent.getFirstProperty("dtstart");
                     const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
                     if (isAllDay && occEnd.getTime() !== occStart.getTime()) {
-                      // Dans iCal, DTEND pour les événements "DATE" est exclusif : on l'ajuste pour FullCalendar
                       occEnd.setDate(occEnd.getDate() + 1);
                     }
                     let cleanTitle = event.summary || "Sans titre";
-                    // Detect explicit '00h' or '00:00' in original summary and mark to hide start time
                     const hasZeroHourInTitle = /(?:\b00h\b|\b00:00\b)/i.test(event.summary || '');
                     cleanTitle = cleanTitle.replace(/\s*\d{1,2}h\s*/gi, "");
                     cleanTitle = cleanTitle.replace(/\s*\d{1,2}:\d{2}.*$/i, "");
@@ -1429,11 +1332,9 @@
                       eventUrl = urlProp || attachProp || "";
                     }
                     const key = (event.uid || `event-${index}`) + '_' + occStart.toISOString();
-                    // If there's an override for this occurrence, skip creating the base occurrence
                     if (overrideMap.has(key)) { count++; continue; }
                     if (!eventMap.has(key)) {
                       const colors = getEventColors(cleanTitle, occStart, now);
-                      // Include `end` so month/day views render multi-day bars correctly
                       loadedEvents.push({
                         id: key,
                         title: cleanTitle,
@@ -1448,7 +1349,6 @@
                           location: event.location || "",
                           summary: cleanTitle,
                           hideStartTime: hasZeroHourInTitle,
-                          // store original VEVENT start (not the occurrence start) so we can detect multi-day split rows
                           origStart: event.startDate ? event.startDate.toJSDate() : occStart,
                           startDate: occStart,
                           endDate: occEnd,
@@ -1465,7 +1365,6 @@
                   const dtStartProp = vevent.getFirstProperty("dtstart");
                   const isAllDay = dtStartProp && dtStartProp.getParameter("value") === "DATE";
                   if (isAllDay && endDate.getTime() !== startDate.getTime()) {
-                    // Ajuste DTEND exclusif pour les événements all-day
                     endDate.setDate(endDate.getDate() + 1);
                   }
                   let cleanTitle = event.summary || "Sans titre";
@@ -1480,11 +1379,9 @@
                     eventUrl = urlProp || attachProp || "";
                   }
                   const key = (event.uid || `event-${index}`) + '_' + startDate.toISOString();
-                  // Allow override VEVENTs (with RECURRENCE-ID) to replace base occurrences.
                   if (!eventMap.has(key)) {
                     const now = new Date();
                     const colors = getEventColors(cleanTitle, startDate, now);
-                    // Include `end` so month/day views render multi-day bars correctly
                     loadedEvents.push({
                       id: key,
                       title: cleanTitle,
@@ -1513,7 +1410,6 @@
               }
             });
 
-
             loadedEvents = consolidateMultiDayEvents(loadedEvents);
 
             let startView = 'dayGridMonth';
@@ -1525,8 +1421,6 @@
               startView = 'dayGridMonth';
             }
 
-
-            // Affiche le calendrier et masque le loader dès que les événements sont prêts
             document.getElementById('calendar-loader').style.display = 'none';
             document.getElementById('calendar-wrapper').style.display = '';
 
@@ -1543,7 +1437,6 @@
               if (calendarZone) calendarZone.classList.remove('list-view-active');
             }
 
-            // Message UX si aucun événement
             setTimeout(() => {
               if (loadedEvents.length === 0) {
                const calendarEl = document.querySelector('.fullcalendar-container');
