@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=vqw7l5"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=vqw7l5" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=JF0nHV"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=JF0nHV" type="text/css">
 
   
   
@@ -464,29 +464,13 @@
         </div>
     </div>
 
-    <!-- ⚡ DEBUG: Preconnect + scripts SANS defer pour diagnostic -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin="anonymous">
-
-    <!-- FullCalendar v6 & ical.js (CSS auto-injecté) -->
+    <!-- FullCalendar v6 & ical.js -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
     <script>
     'use strict';
-
-    const DEBUG_MODE = false;
-    if (!DEBUG_MODE) {
-      console.log = function() {};
-      console.warn = function() {};
-    }
-
-    // ⚡ DEBUG ACTIVÉ pour diagnostiquer le problème
-    const DEBUG_MODE = true;
-    console.log('🔍 DEBUG MODE ACTIVÉ - Analyse du chargement...');
-
-    // Vérifier que les librairies sont chargées
-    console.log('✓ FullCalendar disponible:', typeof FullCalendar !== 'undefined');
-    console.log('✓ ICAL disponible:', typeof ICAL !== 'undefined');
 
     (function() {
       const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -507,20 +491,6 @@
       let updateTimeout = null;
       let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
       let loadedEvents = [];
-      const safeStorage = {
-        getItem: function(key) {
-          try { return localStorage.getItem(key); }
-          catch (e) { return null; }
-        },
-        setItem: function(key, value) {
-          try { localStorage.setItem(key, value); return true; }
-          catch (e) { return false; }
-        },
-        removeItem: function(key) {
-          try { localStorage.removeItem(key); return true; }
-          catch (e) { return false; }
-        }
-      };
       const isMobile = () => window.innerWidth <= 768;
       const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
 
@@ -960,7 +930,6 @@
         const btnSubscribe = document.getElementById('btn-subscribe');
         if (btnSubscribe) {
           btnSubscribe.onclick = () => {
-            const defaultIcalUrl = defaultRemoteIcalUrl;
             const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
             const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
@@ -1081,21 +1050,18 @@
 
         (async function() {
 
-          const ICAL_CACHE_DURATION = 24 * 60 * 60 * 1000; // Cache 24h
+          const ICAL_CACHE_DURATION = 6 * 60 * 60 * 1000;
           const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
 
           const fetchWithRetry = async (url, maxRetries = 1) => {
-            const sameOrigin = isSameOrigin(url);
             for (let i = 0; i < maxRetries; i++) {
               try {
                 const response = await fetch(url, {
-                  headers: sameOrigin ? undefined : {
                   headers: {
                     'Accept': 'text/calendar, application/ics, text/plain, */*',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                   },
                   cache: 'force-cache',
-                  mode: sameOrigin ? 'same-origin' : 'cors'
                   mode: 'cors'
                 });
                 console.log(`   Réponse: ${response.status} ${response.statusText}, Type: ${response.headers.get('content-type')}`);
@@ -1119,21 +1085,7 @@
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.value ||
-                          defaultLocalIcalUrl ||
-                          defaultRemoteIcalUrl;
-
-            if (icalUrl) icalUrl = toAbsoluteUrl(icalUrl.trim());
                           defaultIcalUrl;
-
-            if (!icalUrl || icaleUrl.trim().length === 0) {
-              const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
-              icalUrl = localResolved || toAbsoluteUrl(defaultRemoteIcalUrl);
-            } else {
-              const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
-              if (localResolved && (icalUrl === toAbsoluteUrl(defaultRemoteIcalUrl) || icalUrl === defaultLocalIcalUrl)) {
-                icalUrl = localResolved;
-              }
-            }
 
             console.log('URL trouvée:', icalUrl);
 
@@ -1145,7 +1097,6 @@
             let cacheKey = getIcalCacheKey(icalUrl);
             let cache = null;
             try {
-              cache = JSON.parse(safeStorage.getItem(cacheKey));
               cache = JSON.parse(localStorage.getItem(cacheKey));
             } catch (e) { cache = null; }
             const nowTs = Date.now();
@@ -1164,10 +1115,8 @@
                 refreshBtn.id = 'calendar-refresh-btn';
                 refreshBtn.className = 'calendar-btn';
                 refreshBtn.style.margin = '1rem auto 0 auto';
-                refreshBtn.textContent = '\uD83D\uDD04 Rafraîchir le calendrier';
                 refreshBtn.textContent = '🔄 Rafraîchir le calendrier';
                 refreshBtn.onclick = function() {
-                  safeStorage.removeItem(cacheKey);
                   localStorage.removeItem(cacheKey);
                   window.location.reload();
                 };
@@ -1180,10 +1129,6 @@
               if (loaderProgress) loaderProgress.style.display = '';
               if (loaderBar) loaderBar.style.width = '0%';
               let response = null;
-              const sameOriginUrl = isSameOrigin(icalUrl);
-              const proxies = sameOriginUrl ? [
-                { name: 'Direct', url: icalUrl }
-              ] : [
               const proxies = [
                 { name: 'Direct', url: icalUrl },
                 { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
@@ -1261,8 +1206,6 @@
                 throw new Error('iCal file is empty or invalid');
               }
               try {
-                safeStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
-                console.log('\uD83D\uDDC4️ Cache localStorage mis à jour pour le flux iCal');
                 localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
                 console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
               } catch (e) { }
@@ -1308,17 +1251,12 @@
 
                 if (event.isRecurring()) {
                   const now = new Date();
-                  const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
-                  const rangeEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0, 23, 59, 59);
                   const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
                   const rangeEnd = new Date(now.getFullYear() + 2, 11, 31, 23, 59, 59);
                   const expand = event.iterator(rangeStart);
                   let next;
                   let count = 0;
-                  // Limite 20 pour performance
-                  while ((next = expand.next()) && count < 20) {
-                  // ⚡ DEBUG: Limite 60 pour avoir plus d'événements
-                  while ((next = expand.next()) && count < 60) {
+                  while ((next = expand.next()) && count < 500) {
                     const occStart = next.toJSDate();
                     if (occStart > rangeEnd) break;
                     if (occStart < rangeStart) { count++; continue; }
