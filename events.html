@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=MOwJqs"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=MOwJqs" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=vqw7l5"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=vqw7l5" type="text/css">
 
   
   
@@ -481,6 +481,7 @@
     }
 
     // ⚡ DEBUG ACTIVÉ pour diagnostiquer le problème
+    const DEBUG_MODE = true;
     console.log('🔍 DEBUG MODE ACTIVÉ - Analyse du chargement...');
 
     // Vérifier que les librairies sont chargées
@@ -519,26 +520,6 @@
           try { localStorage.removeItem(key); return true; }
           catch (e) { return false; }
         }
-      };
-      const defaultLocalIcalUrl = '/assets/events.ics';
-      const defaultRemoteIcalUrl = 'https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c';
-      const toAbsoluteUrl = (url) => {
-        try { return new URL(url, window.location.href).href; }
-        catch (e) { return url; }
-      };
-      const isSameOrigin = (url) => {
-        try {
-          const u = new URL(url, window.location.href);
-          return u.origin === window.location.origin;
-        } catch (e) { return false; }
-      };
-      const resolveLocalUrl = async (url) => {
-        const abs = toAbsoluteUrl(url);
-        try {
-          const resp = await fetch(abs, { method: 'HEAD', cache: 'no-cache', mode: 'same-origin' });
-          if (resp && resp.ok) return abs;
-        } catch (e) { }
-        return null;
       };
       const isMobile = () => window.innerWidth <= 768;
       const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
@@ -980,6 +961,7 @@
         if (btnSubscribe) {
           btnSubscribe.onclick = () => {
             const defaultIcalUrl = defaultRemoteIcalUrl;
+            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
             const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
@@ -1108,11 +1090,13 @@
               try {
                 const response = await fetch(url, {
                   headers: sameOrigin ? undefined : {
+                  headers: {
                     'Accept': 'text/calendar, application/ics, text/plain, */*',
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                   },
                   cache: 'force-cache',
                   mode: sameOrigin ? 'same-origin' : 'cors'
+                  mode: 'cors'
                 });
                 console.log(`   Réponse: ${response.status} ${response.statusText}, Type: ${response.headers.get('content-type')}`);
                 if (response.ok) return response;
@@ -1129,6 +1113,8 @@
           };
 
           try {
+            const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
+
             let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                           document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                           document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
@@ -1137,9 +1123,9 @@
                           defaultRemoteIcalUrl;
 
             if (icalUrl) icalUrl = toAbsoluteUrl(icalUrl.trim());
+                          defaultIcalUrl;
 
             if (!icalUrl || icaleUrl.trim().length === 0) {
-            if (!icalUrl || icalUrl.trim().length === 0) {
               const localResolved = await resolveLocalUrl(defaultLocalIcalUrl);
               icalUrl = localResolved || toAbsoluteUrl(defaultRemoteIcalUrl);
             } else {
@@ -1160,6 +1146,7 @@
             let cache = null;
             try {
               cache = JSON.parse(safeStorage.getItem(cacheKey));
+              cache = JSON.parse(localStorage.getItem(cacheKey));
             } catch (e) { cache = null; }
             const nowTs = Date.now();
             const loaderMsg = document.getElementById('calendar-loader-message');
@@ -1178,8 +1165,10 @@
                 refreshBtn.className = 'calendar-btn';
                 refreshBtn.style.margin = '1rem auto 0 auto';
                 refreshBtn.textContent = '\uD83D\uDD04 Rafraîchir le calendrier';
+                refreshBtn.textContent = '🔄 Rafraîchir le calendrier';
                 refreshBtn.onclick = function() {
                   safeStorage.removeItem(cacheKey);
+                  localStorage.removeItem(cacheKey);
                   window.location.reload();
                 };
                 const loaderDiv = document.getElementById('calendar-loader');
@@ -1195,6 +1184,7 @@
               const proxies = sameOriginUrl ? [
                 { name: 'Direct', url: icalUrl }
               ] : [
+              const proxies = [
                 { name: 'Direct', url: icalUrl },
                 { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
                 { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
@@ -1273,6 +1263,8 @@
               try {
                 safeStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
                 console.log('\uD83D\uDDC4️ Cache localStorage mis à jour pour le flux iCal');
+                localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
+                console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
               } catch (e) { }
             }
 
@@ -1318,11 +1310,15 @@
                   const now = new Date();
                   const rangeStart = new Date(now.getFullYear(), now.getMonth(), 1);
                   const rangeEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0, 23, 59, 59);
+                  const rangeStart = new Date(now.getFullYear() - 1, 0, 1);
+                  const rangeEnd = new Date(now.getFullYear() + 2, 11, 31, 23, 59, 59);
                   const expand = event.iterator(rangeStart);
                   let next;
                   let count = 0;
                   // Limite 20 pour performance
                   while ((next = expand.next()) && count < 20) {
+                  // ⚡ DEBUG: Limite 60 pour avoir plus d'événements
+                  while ((next = expand.next()) && count < 60) {
                     const occStart = next.toJSDate();
                     if (occStart > rangeEnd) break;
                     if (occStart < rangeStart) { count++; continue; }
