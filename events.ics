@@ -150,6 +150,21 @@ LAST-MODIFIED:20251210T214307Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Yvetot Cosgames Show 7
+DESCRIPTION:
+DTSTART:20260606T080000Z
+DTEND:20260607T170000Z
+LOCATION:Hall of Vieux Moulin\,49 Rue de l'Étang\, 76190 Yvetot\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:42f48ef54dfd4350804b1725f8b922f8@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260122T154104Z
+LAST-MODIFIED:20260122T154104Z
+DTSTAMP:20260122T154105Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
 DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.<br /></div>
