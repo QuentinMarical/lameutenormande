@@ -380,6 +380,22 @@ LAST-MODIFIED:20251210T214554Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:La Fête de la Scie Harfleur
+DESCRIPTION:
+DTSTART:20260411T120000Z
+DTEND:20260412T163000Z
+LOCATION:G54X+5RG Harfleur
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:99c5d6606c2c4255a72ad95e6daa720f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260123T180803Z
+LAST-MODIFIED:20260123T180803Z
+DTSTAMP:20260123T180804Z
+URL:https://www.harfleur.fr/la_fete_de_la_scie.html
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Brest 2025
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div><span style="color:rgb(0\, 0\, 0)\; font-family:Roboto\, Arial\, sans-serif\; font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; background-color:rgb(255\, 255\, 255)\; display:inline !important\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span><br /></div>
