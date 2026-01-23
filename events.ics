@@ -8,8 +8,8 @@ METHOD:PUBLISH
 BEGIN:VEVENT
 SUMMARY: Japan Otaku Festival Lisieux
 DESCRIPTION:
-DTSTART;VALUE=DATE:20251129
-DTEND;VALUE=DATE:20251201
+DTSTART:20251129T090000Z
+DTEND:20251130T170000Z
 LOCATION:1055 Rue Édouard Branly\, 14100 Lisieux
 CLASS:PUBLIC
 IMPORTANT:0
@@ -17,8 +17,8 @@ STATUS:CONFIRMED
 UID:0942f9f1c65f415f96d04b555259e2d3@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101344Z
-LAST-MODIFIED:20251012T143719Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T172254Z
+DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
@@ -40,8 +40,8 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Le Havre Japan North'Con
 DESCRIPTION:
-DTSTART;VALUE=DATE:20260307
-DTEND;VALUE=DATE:20260309
+DTSTART:20260307T090000Z
+DTEND:20260308T180000Z
 LOCATION:64 Quai de la Réunion\, 76600 Le Havre
 CLASS:PUBLIC
 IMPORTANT:0
@@ -49,25 +49,26 @@ STATUS:CONFIRMED
 UID:2224cf75541243aabba9419c538e9469@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101036Z
-LAST-MODIFIED:20251012T144409Z
-DTSTAMP:20260104T042141Z
-URL:https://breizhcon.bzh/le-havre/billetterie-le-havre/
+LAST-MODIFIED:20260123T175622Z
+DTSTAMP:20260123T175622Z
+URL:https://breizhcon.bzh/le-havre/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Migennes Collection
-DESCRIPTION:Migennes Collection à Migennes.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Migennes Collection à Migennes.<br /></div>
-DTSTART;VALUE=DATE:20260214
-DTEND;VALUE=DATE:20260216
-LOCATION:Salle des Sports\, 24 bis Avenue de l'Europe\, 89400 Migennes\, France
+DESCRIPTION:Tarif:\n\n1 jour : 4€\n\n2 jours : 7€\n\nGratuit pour les -12 ans accompagné d'un adulte\n\nHoraires:\n14 février de 10h à 19h\n15 février de 10h à 18h\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Tarif:<br /></div><div>1 jour : 4€<br /></div><div>2 jours : 7€<br /></div><div>Gratuit pour les -12 ans accompagné d'un adulte<br /><br />Horaires:<br />14 février de 10h à 19h</div><div>15 février de 10h à 18h</div>
+DTSTART:20260214T090000Z
+DTEND:20260215T170000Z
+LOCATION:Salle des Sports\, 23 Avenue de l'Europe\, 89400 Migennes\, France
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:2d02f6648fcc40ea9478a3ffcab21b95@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T212831Z
-LAST-MODIFIED:20251210T212953Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T174508Z
+DTSTAMP:20260123T174510Z
+URL:https://www.facebook.com/profile.php?id=61555903979503
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🎡Foire St-Romain
@@ -104,8 +105,8 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Rencontre La Légion du Sud x ABV Brocante
 DESCRIPTION:
-DTSTART;VALUE=DATE:20260121
-DTEND;VALUE=DATE:20260122
+DTSTART:20260121T090000Z
+DTEND:20260121T170000Z
 LOCATION:ABV Brocante / Design Vintage\,683 Rue Villaine\, 76850 Bosc-le-Hard\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -113,8 +114,8 @@ STATUS:CONFIRMED
 UID:3759e1aaf59b4f4294f7f1d7a928507f@zoho.eu
 TRANSP:OPAQUE
 CREATED:20260113T074409Z
-LAST-MODIFIED:20260113T074458Z
-DTSTAMP:20260113T074459Z
+LAST-MODIFIED:20260123T171544Z
+DTSTAMP:20260123T171546Z
 URL:https://www.facebook.com/share/r/1C9kyVabNP/?mibextid=wwXIfr
 END:VEVENT
 BEGIN:VEVENT
@@ -217,8 +218,8 @@ BEGIN:VEVENT
 SUMMARY:Limoges Japan Geek Festival
 DESCRIPTION:Limoges Japan Geek Festival.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Limoges Japan Geek Festival.<br /></div>
-DTSTART;VALUE=DATE:20260207
-DTEND;VALUE=DATE:20260209
+DTSTART:20260207T090000Z
+DTEND:20260208T180000Z
 LOCATION:Parc des Expositions de Limoges Boulevard Robert Schuman\, 87100 Limoges\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -226,15 +227,16 @@ STATUS:CONFIRMED
 UID:5af6daa5f6f3457bb875d4abe53b7942@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T213509Z
-LAST-MODIFIED:20251210T213542Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T172344Z
+DTSTAMP:20260123T172346Z
+URL:https://limogesjapangeekfestival.com/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Ostara
-DESCRIPTION:Ostara à Derval.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Ostara à Derval.<br /></div>
-DTSTART;VALUE=DATE:20260328
-DTEND;VALUE=DATE:20260329
+SUMMARY:Festival Ostara
+DESCRIPTION:Horaires:\n\nSamedi\, de 10h à 18h\n\nDimanche\, de 10h à 17h\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Horaires:<br /></div><div>Samedi\, de 10h à 18h<br /></div><div>Dimanche\, de 10h à 17h</div>
+DTSTART:20260328T090000Z
+DTEND:20260329T150000Z
 LOCATION:Salle vallée de la chere 44590 Derval\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -242,24 +244,9 @@ STATUS:CONFIRMED
 UID:6a3000d5ab2b4551bf4ad87625df5763@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T213814Z
-LAST-MODIFIED:20251210T213832Z
-DTSTAMP:20260104T042141Z
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Game Fest Nancy
-DESCRIPTION:Game Fest à Nancy.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Game Fest à Nancy.<br /></div>
-DTSTART;VALUE=DATE:20260207
-DTEND;VALUE=DATE:20260209
-LOCATION:Parc Expo de Vandoeuvre-lès-Nancy Rue Catherine Opalinska\, 54500 Vandoeuvre-lès-Nancy\, France
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:700636e83ab24c7b8143e59de900ff80@zoho.eu
-TRANSP:TRANSPARENT
-CREATED:20251210T213407Z
-LAST-MODIFIED:20251210T213434Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T175758Z
+DTSTAMP:20260123T175800Z
+URL:https://www.festival-ostara.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Ponto Geek 2025
@@ -280,8 +267,8 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Évreux
 DESCRIPTION:
-DTSTART;VALUE=DATE:20251122
-DTEND;VALUE=DATE:20251124
+DTSTART:20251122T090000Z
+DTEND:20251123T170000Z
 LOCATION:26 Av. du Maréchal Foch\, 27000 Évreux
 CLASS:PUBLIC
 IMPORTANT:0
@@ -289,16 +276,16 @@ STATUS:CONFIRMED
 UID:79985bb7bb814969b264f924e7e21f1a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101321Z
-LAST-MODIFIED:20251012T143658Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T172233Z
+DTSTAMP:20260123T172234Z
 URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Lille Winter 2025
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\nhttps://www.geek-days.com/lille-winter/billetterie/\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div><div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none"><b><a target="_blank" href="https://www.geek-days.com/lille-winter/billetterie/">https://www.geek-days.com/lille-winter/billetterie/</a></b></span></span></span></span><br /></div>
-DTSTART;VALUE=DATE:20251206
-DTEND;VALUE=DATE:20251208
+X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div><div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none"><b><a href="https://www.geek-days.com/lille-winter/billetterie/" target="_blank">https://www.geek-days.com/lille-winter/billetterie/</a></b></span></span></span></span><br /></div>
+DTSTART:20251206T090000Z
+DTEND:20251207T173000Z
 LOCATION:1 Bd des Cités Unies\, 59777 Lille
 CLASS:PUBLIC
 IMPORTANT:0
@@ -306,8 +293,8 @@ STATUS:CONFIRMED
 UID:8817f02c9f7e4bfb8904555e211de62f@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101637Z
-LAST-MODIFIED:20251217T125642Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T172211Z
+DTSTAMP:20260123T172212Z
 URL:https://www.geek-days.com/lille-winter/billetterie/
 END:VEVENT
 BEGIN:VEVENT
@@ -327,11 +314,11 @@ DTSTAMP:20260104T042141Z
 URL:https://www.fblacklight.org
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Festival Japan Manga Family
-DESCRIPTION:Festival Japan Manga Family à La Rochelle.\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Festival Japan Manga Family à La Rochelle.</div>
-DTSTART;VALUE=DATE:20260214
-DTEND;VALUE=DATE:20260216
+SUMMARY:Japan Manga Family La Rochelle
+DESCRIPTION:Samedi\n\n- 9h : Ouverture pour les prévente web\n\n- 10h : Ouverture pour les achats de tickets sur place\n\n- 19h : Fermeture\n\n\n\nDimanche\n\n- 9h : Ouverture pour les prévente web\n\n- 10h : Ouverture pour les achats de tickets sur place\n\n- 18h : Fermeture\n\n----------------------------------------------------------------\nBillet 1 jour:\n\n- De 8 à 12 ans PASS ENFANT\, 9 €\n\n- À partir de 13 ans\, PASS ADULTE\, 15 €\n\n- PASS FAMILLE (2 PASS ADULTE + 2 PASS ENFANT)\, 42 €\n\n\n\nBillet 2 jour:\n\n- À partir de 13 ans\, PASS ADULTE\, 25 €\n\n\n\nGratuit pour les moins de 8 ans.\n\n\n\nTarif découverte\, 10 euros (achat uniquement sur place) :\n\nA partir de 16h30 le samedi et 16h le dimanche\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">Samedi</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 9h : Ouverture pour les prévente web</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 10h : Ouverture pour les achats de tickets sur place</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 19h : Fermeture</span><br /></div><div><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">Dimanche</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 9h : Ouverture pour les prévente web</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 10h : Ouverture pour les achats de tickets sur place</span><br /></div><div><span style="orphans:2\; text-align:justify\; text-indent:0px\; widows:2\; float:none\; display:inline !important">- 18h : Fermeture</span><br /></div><div>----------------------------------------------------------------</div><div>Billet 1 jour:<br /></div><div>- De 8 à 12 ans PASS ENFANT\, 9 €<br /></div><div>- À partir de 13 ans\,  PASS ADULTE\, 15 €<br /></div><div>-  PASS FAMILLE (2 PASS ADULTE + 2 PASS ENFANT)\, 42 €<br /></div><div><br /></div><div>Billet 2 jour:<br /></div><div>-&nbsp\;À partir de 13 ans\, PASS ADULTE\, 25 €<br /></div><div><br /></div><div><span style="orphans:2\; text-indent:0px\; widows:2\; float:none\; display:inline !important">Gratuit pour les moins de 8 ans.</span><br /></div><div><br /></div><div><span style="orphans:2\; text-indent:0px\; widows:2\; float:none\; display:inline !important">Tarif découverte\, 10 euros (achat uniquement sur place) :</span><br /></div><div><span style="orphans:2\; text-indent:0px\; widows:2\; float:none\; display:inline !important">A partir de 16h30 le samedi et 16h le dimanche</span><br /></div><div><br /></div>
+DTSTART:20260214T080000Z
+DTEND:20260215T170000Z
 LOCATION:Espace Encan\, Quai Louis Prunier\, 17000 La Rochelle\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -339,8 +326,9 @@ STATUS:CONFIRMED
 UID:8ce97fd9c2b84c7a8e860faca3e5a18c@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T213106Z
-LAST-MODIFIED:20251210T213301Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T175412Z
+DTSTAMP:20260123T175414Z
+URL:https://japanfamilylarochelle.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Rétro Game Festival Beauvais
@@ -362,8 +350,8 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Canthrofur
 DESCRIPTION:
-DTSTART;VALUE=DATE:20260115
-DTEND;VALUE=DATE:20260120
+DTSTART:20260115T080000Z
+DTEND:20260119T223000Z
 LOCATION:Guérinot\, 63950 Saint-Sauves-d'Auvergne
 CLASS:PUBLIC
 IMPORTANT:0
@@ -371,8 +359,8 @@ STATUS:CONFIRMED
 UID:940e60452f6f486e9fde229d85c543e9@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T102233Z
-LAST-MODIFIED:20251204T123822Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T171826Z
+DTSTAMP:20260123T171829Z
 URL:https://www.canthrofur.org
 END:VEVENT
 BEGIN:VEVENT
@@ -427,8 +415,8 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Fauntastic 6
 DESCRIPTION:
-DTSTART;VALUE=DATE:20260403
-DTEND;VALUE=DATE:20260408
+DTSTART:20260403T120000Z
+DTEND:20260407T090000Z
 LOCATION:260 Av. Jean Monnet\, 69500 Bron
 CLASS:PUBLIC
 IMPORTANT:0
@@ -436,8 +424,8 @@ STATUS:CONFIRMED
 UID:b695fe5290614ab5ababb33eacc60fc2@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T102059Z
-LAST-MODIFIED:20251210T213908Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T180222Z
+DTSTAMP:20260123T180222Z
 URL:https://www.fauntastic.eu
 END:VEVENT
 BEGIN:VEVENT
@@ -459,9 +447,10 @@ URL:https://barq.app/c/a6ss61A/1167549/1
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Normannia
-DESCRIPTION:
-DTSTART;VALUE=DATE:20260214
-DTEND;VALUE=DATE:20260216
+DESCRIPTION:Horaires\n\n- Samedi 14 février de 10h à 23h\n\n- Dimanche 15 février de 10h à 18h\n\n\n\nTarifs\n\n- Gratuit pour les -3 ans\n\n- Pass 2 jours : 12€\n\n- Plein tarif : 9€ (8€ en e-billet)\n\n- Tarif réduit* : 6€\n\n*Le tarif réduit est accessible pour les visiteurs costumés\, enfants -12 ans\, PMR +1 accompagnant et personnes en recherche d'emploi.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; text-shadow:rgb(255\, 255\, 255) 0px 0px 6px" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">Horaires</span></span></span></span><br /></p><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Samedi 14 février de 10h à 23h</span></span></span><br /></p><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Dimanche 15 février de 10h à 18h</span></span></span><br /></p><div><br /></div><div><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; text-shadow:rgb(255\, 255\, 255) 0px 0px 6px" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">Tarifs</span></span></span></span><br /></div><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Gratuit pour les -3 ans</span></span></span><br /></p><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Pass 2 jours : 12€</span></span></span><br /></p><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Plein tarif : 9€ (8€ en e-billet)</span></span></span><br /></p><p style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px" class="font_8 wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text"><span style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline" class="wixui-rich-text__text">- Tarif réduit* : 6€</span></span></span><br /></p><div><span style="orphans:2\; text-indent:0px\; widows:2\; float:none\; display:inline !important">*Le tarif réduit est accessible pour les visiteurs costumés\, enfants -12 ans\, PMR +1 accompagnant et personnes en recherche d'emploi.</span><br /></div>
+DTSTART:20260214T090000Z
+DTEND:20260215T170000Z
 LOCATION:Parc Expo Rouen Rouen Congrès Evénements\, 46 Av. des Canadiens\, 76120 Le Grand-Quevilly
 CLASS:PUBLIC
 IMPORTANT:0
@@ -469,8 +458,8 @@ STATUS:CONFIRMED
 UID:bd0ce45102bf4b258b2dcfbc872dad6d@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101247Z
-LAST-MODIFIED:20251012T144237Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T173802Z
+DTSTAMP:20260123T173803Z
 URL:https://www.federation-francaise-medievale.fr/normannia
 END:VEVENT
 BEGIN:VEVENT
@@ -493,8 +482,8 @@ BEGIN:VEVENT
 SUMMARY:Geek Days Rennes
 DESCRIPTION:Geek Days à Rennes.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Geek Days à Rennes.<br /></div>
-DTSTART;VALUE=DATE:20260207
-DTEND;VALUE=DATE:20260209
+DTSTART:20260207T090000Z
+DTEND:20260208T180000Z
 LOCATION:Rennes parc expo 2 La Haie Gautrais\, 35170 Bruz\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -502,8 +491,9 @@ STATUS:CONFIRMED
 UID:c0de97c42e3c4d21b45685e3b45b491c@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T213611Z
-LAST-MODIFIED:20251210T213659Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260123T172454Z
+DTSTAMP:20260123T172454Z
+URL:https://www.geek-days.com/rennes/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Fenrir
