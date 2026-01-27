@@ -22,6 +22,21 @@ DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Fête médiéval Jeanne d'Arc
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260514
+DTEND;VALUE=DATE:20260517
+LOCATION:Rue Jeanne d'Arc\, Rouen
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0e02503688674c6687cdacc66de6266c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T173501Z
+LAST-MODIFIED:20260127T173501Z
+DTSTAMP:20260127T173502Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Margny-Compiègne Geek Convention
 DESCRIPTION:Margny-Compiègne Geek Convention à Margny-lès-Compiègne.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Margny-Compiègne Geek Convention à Margny-lès-Compiègne.<br /></div>
@@ -133,6 +148,22 @@ CREATED:20260121T184713Z
 LAST-MODIFIED:20260121T184713Z
 DTSTAMP:20260121T184714Z
 URL:https://yvetot.chorus-game.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Fête médiévale de Mortemer
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260815
+DTEND;VALUE=DATE:20260817
+LOCATION:Abbaye de Mortemer\, 27440 Lisors
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:3acbacae14c940aca5a2ea4b149524c2@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T174348Z
+LAST-MODIFIED:20260127T175124Z
+DTSTAMP:20260127T175125Z
+URL:https://www.abbaye-de-mortemer.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Touch Haru & Geek Touch
@@ -281,6 +312,22 @@ DTSTAMP:20260123T172234Z
 URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Samhain 2026
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261030
+DTEND;VALUE=DATE:20261102
+LOCATION:Abbatiale de Bernay\, Pl. Gustave Heon\, 27300 Bernay
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:85cec1bb19ad497782e1dc33c9a044de@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T174605Z
+LAST-MODIFIED:20260127T175246Z
+DTSTAMP:20260127T175247Z
+URL:https://halloweenbernay.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Lille Winter 2025
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\nhttps://www.geek-days.com/lille-winter/billetterie/\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div><div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none"><b><a href="https://www.geek-days.com/lille-winter/billetterie/" target="_blank">https://www.geek-days.com/lille-winter/billetterie/</a></b></span></span></span></span><br /></div>
@@ -329,6 +376,22 @@ CREATED:20251210T213106Z
 LAST-MODIFIED:20260123T175412Z
 DTSTAMP:20260123T175414Z
 URL:https://japanfamilylarochelle.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Médiévales de Falaise
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260808
+DTEND;VALUE=DATE:20260810
+LOCATION:Rue de la Roche\, 14700 Falaise
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:8f05e8accb6949aba8e41ed9d7619f06@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T173729Z
+LAST-MODIFIED:20260127T175150Z
+DTSTAMP:20260127T175151Z
+URL:https://www.chateau-guillaume-leconquerant.fr/billetterie-0-33.html
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Rétro Game Festival Beauvais
@@ -411,6 +474,22 @@ CREATED:20250924T101530Z
 LAST-MODIFIED:20250924T101530Z
 DTSTAMP:20260104T042141Z
 URL:https://ticketevent.fr/gdb25/public-1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Gisors\, La Légendaire
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260516
+DTEND;VALUE=DATE:20260518
+LOCATION:Gisors
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a515e8170b7d49f4bb2e72c39b77fbfc@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T174819Z
+LAST-MODIFIED:20260127T174819Z
+DTSTAMP:20260127T174819Z
+URL:https://vexin-normand-tourisme.com/sejourner/les-temps-forts/gisors-la-legendaire/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Caen 2025
@@ -605,6 +684,22 @@ TRANSP:TRANSPARENT
 CREATED:20250924T101444Z
 LAST-MODIFIED:20250924T101444Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Médiévales du château d’Harcourt
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260414
+DTEND;VALUE=DATE:20260424
+LOCATION:Domaine d'Harcourt\, Rue de la Gare\, 27800 Harcourt
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ea6767edb1ce4faf82d9a648d2158089@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260127T174125Z
+LAST-MODIFIED:20260127T175740Z
+DTSTAMP:20260127T175741Z
+URL:https://www.harcourt-normandie.fr/billetterie
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Festival de Samhain
