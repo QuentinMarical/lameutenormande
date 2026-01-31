@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=90nSpJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=90nSpJ" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=YcAWtJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=YcAWtJ" type="text/css">
 
   
   
@@ -466,10 +466,10 @@
     </div>
 
 
-    <!-- FullCalendar v6 & ical.js -->
-    <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
-    <script src="https://unpkg.com/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
+    <!-- FullCalendar v6 & ical.js - CDN Cloudflare (meilleur support CORS) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ical.js/1.5.0/ical.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/6.1.15/index.global.min.js"></script>
 
     <script>
         'use strict';
@@ -1058,27 +1058,30 @@
                     const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
 
                     const fetchWithRetry = async (url, maxRetries = 2) => {
+                        // Essayer d'abord l'URL locale si disponible (même domaine = pas de CORS)
+                        const localUrl = '/events.ics';
                         const proxies = [
-                            (u) => u, // Direct URL first
-                            (u) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`, // Reliable CORS proxy
-                            (u) => `https://corsproxy.io/?${encodeURIComponent(u)}` // Alternative CORS proxy
+                            (u) => localUrl, // URL locale sur le même domaine (PRIORITAIRE)
+                            (u) => u, // URL directe (fallback)
+                            (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, // AllOrigins
+                            (u) => `https://corsproxy.org/?${encodeURIComponent(u)}` // CorsProxy.org
                         ];
                         
                         for (let proxyIdx = 0; proxyIdx < proxies.length; proxyIdx++) {
-                            const isDirectFetch = proxyIdx === 0;
-                            console.log(`   Tentative ${proxyIdx + 1}/3: ${isDirectFetch ? 'Direct' : 'CORS Proxy'}`);
+                            const isLocalFetch = proxyIdx === 0;
+                            const isDirectFetch = proxyIdx === 1;
+                            const proxyName = isLocalFetch ? 'Local' : (isDirectFetch ? 'Direct' : 'CORS Proxy');
+                            console.log(`   Tentative ${proxyIdx + 1}/4: ${proxyName}`);
                             
                             for (let i = 0; i < maxRetries; i++) {
                                 try {
                                     const proxiedUrl = proxies[proxyIdx](url);
                                     const response = await fetch(proxiedUrl, {
                                         headers: {
-                                            'Accept': 'text/calendar, application/ics, text/plain, */*',
-                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                                            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
+                                            'Accept': 'text/calendar, application/ics, text/plain, */*'
                                         },
                                         cache: 'no-store',
-                                        mode: 'cors'
+                                        mode: isLocalFetch ? 'same-origin' : 'cors'
                                     });
                                     console.log(`   ✅ Réponse: ${response.status} ${response.statusText}`);
                                     if (response.ok) return response;
@@ -1086,7 +1089,7 @@
                                         throw new Error(`Accès refusé (${response.status}). Vérifiez que le calendrier est public.`);
                                     }
                                 } catch (err) {
-                                    console.log(`   ❌ Erreur (proxy ${proxyIdx + 1}, essai ${i + 1}/${maxRetries}):`, err.message);
+                                    console.log(`   ❌ Erreur (${proxyName}, essai ${i + 1}/${maxRetries}):`, err.message);
                                     if (i === maxRetries - 1 && proxyIdx === proxies.length - 1) throw err;
                                     if (i < maxRetries - 1) {
                                         await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
