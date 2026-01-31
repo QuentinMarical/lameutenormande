@@ -4105,29 +4105,56 @@ a {
   transform: scale(1.05);
   box-shadow: 0 4px 15px rgba(0, 136, 204, 0.5);
 }
-.cid-v9TjcZb4qU .event-link-badge {
+.cid-v9TjcZb4qU .event-details-wrapper {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(233, 30, 99, 0.15) 0%, rgba(156, 39, 176, 0.1) 100%);
+  border: 1px solid rgba(233, 30, 99, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+.cid-v9TjcZb4qU .event-title-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.cid-v9TjcZb4qU .event-calendar-icon {
+  font-size: 1.3rem;
+}
+.cid-v9TjcZb4qU .event-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+.cid-v9TjcZb4qU .event-date-display {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.75rem;
+}
+.cid-v9TjcZb4qU .btn-event-details {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, rgba(233, 30, 99, 0.8) 0%, rgba(156, 39, 176, 0.8) 100%);
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 0.75rem;
-  font-size: 0.9rem;
-  color: #fff;
-}
-.cid-v9TjcZb4qU .event-link-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.5);
+  padding: 0.6rem 1.2rem;
   background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);
-}
-.cid-v9TjcZb4qU .event-badge-icon {
-  font-size: 1.1rem;
-}
-.cid-v9TjcZb4qU .event-badge-text {
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 0.9rem;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+}
+.cid-v9TjcZb4qU .btn-event-details:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.6);
+  background: linear-gradient(135deg, #9c27b0 0%, #e91e63 100%);
+}
+.cid-v9TjcZb4qU .btn-icon {
+  font-size: 1rem;
 }
 @media (max-width: 576px) {
   .cid-v9TjcZb4qU .subscribers-card {

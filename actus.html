@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=6uOAFd"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=6uOAFd" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2y7cIw"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2y7cIw" type="text/css">
 
   
   
@@ -106,7 +106,7 @@
 				</div>
 				
 				<!-- Telegram Channel Widget - Posts -->
-				<div class="telegram-feed-container">
+				<div class="telegram-feed-container" data-event-name="Pop'Anim Festival">
 					<script async src="https://telegram.org/js/telegram-widget.js?22" 
 						data-telegram-post="Annonces_Meute_Normande/9" 
 						data-width="100%"
@@ -116,7 +116,7 @@
 					</script>
 				</div>
 				
-				<div class="telegram-feed-container mt-3">
+				<div class="telegram-feed-container mt-3" data-event-name="">
 					<script async src="https://telegram.org/js/telegram-widget.js?22" 
 						data-telegram-post="Annonces_Meute_Normande/8" 
 						data-width="100%"
@@ -126,7 +126,7 @@
 					</script>
 				</div>
 				
-				<div class="telegram-feed-container mt-3">
+				<div class="telegram-feed-container mt-3" data-event-name="">
 					<script async src="https://telegram.org/js/telegram-widget.js?22" 
 						data-telegram-post="Annonces_Meute_Normande/7" 
 						data-width="100%"
@@ -246,18 +246,24 @@
 		
 		// Scanner les posts Telegram pour les noms d'événements
 		function scanTelegramPosts() {
+			// Scanner les conteneurs existants après un délai
+			setTimeout(() => {
+				document.querySelectorAll('.telegram-feed-container[data-event-name]').forEach(container => {
+					checkAndAddEventBadge(container);
+				});
+			}, 1500);
+			
+			// Observer pour les nouveaux iframes
 			const observer = new MutationObserver((mutations) => {
 				mutations.forEach((mutation) => {
 					mutation.addedNodes.forEach((node) => {
 						if (node.nodeType === Node.ELEMENT_NODE) {
 							const iframes = node.querySelectorAll ? node.querySelectorAll('iframe') : [];
 							iframes.forEach(iframe => {
-								try {
-									// Ajouter un listener pour les clics sur les événements mentionnés
-									iframe.addEventListener('load', () => {
-										addEventLinksToContainer(iframe.closest('.telegram-feed-container'));
-									});
-								} catch (e) {}
+								const container = iframe.closest('.telegram-feed-container[data-event-name]');
+								if (container) {
+									setTimeout(() => checkAndAddEventBadge(container), 500);
+								}
 							});
 						}
 					});
@@ -267,33 +273,69 @@
 			observer.observe(document.body, { childList: true, subtree: true });
 		}
 		
-		// Ajouter des liens vers les événements si détectés
-		function addEventLinksToContainer(container) {
+		// Vérifier et ajouter le badge événement sous le post Telegram
+		function checkAndAddEventBadge(container) {
 			if (!container || !calendarEvents.length) return;
 			
-			// Chercher les événements connus dans le texte visible
-			calendarEvents.forEach(event => {
-				if (event.title && event.startDate && new Date(event.startDate) >= new Date()) {
-					// Créer un badge cliquable pour les événements à venir
-					const existingBadge = container.querySelector(`[data-event-title="${event.title}"]`);
-					if (!existingBadge) {
-						const badge = document.createElement('div');
-						badge.className = 'event-link-badge';
-						badge.setAttribute('data-event-title', event.title);
-						badge.innerHTML = `
-							<span class="event-badge-icon">📅</span>
-							<span class="event-badge-text">Voir sur le calendrier</span>
-						`;
-						badge.addEventListener('click', () => openEventInCalendar(event));
-						// Le badge sera ajouté si l'événement est mentionné
-					}
-				}
+			// Éviter les doublons
+			if (container.querySelector('.event-details-wrapper')) return;
+			
+			// Récupérer le nom d'événement depuis l'attribut data-event-name
+			const eventName = container.getAttribute('data-event-name');
+			if (!eventName || eventName.trim() === '') return;
+			
+			// Chercher l'événement correspondant dans le calendrier
+			const event = findEventByName(eventName);
+			if (!event) {
+				console.log('Événement non trouvé dans le calendrier:', eventName);
+				return;
+			}
+			
+			// Vérifier que l'événement est à venir
+			const now = new Date();
+			if (new Date(event.startDate) < now) return;
+			
+			// Créer le wrapper avec le titre de l'événement et le bouton
+			const wrapper = document.createElement('div');
+			wrapper.className = 'event-details-wrapper';
+			
+			// Formater la date
+			const eventDate = new Date(event.startDate);
+			const dateStr = eventDate.toLocaleDateString('fr-FR', { 
+				day: 'numeric', 
+				month: 'long', 
+				year: 'numeric' 
 			});
+			
+			wrapper.innerHTML = `
+				<div class="event-title-display">
+					<span class="event-calendar-icon">📅</span>
+					<span class="event-name">${event.title}</span>
+				</div>
+				<div class="event-date-display">${dateStr}</div>
+				<button class="btn-event-details">
+					<span class="btn-icon">📋</span> Voir les détails
+				</button>
+			`;
+			
+			// Ajouter le listener sur le bouton
+			wrapper.querySelector('.btn-event-details').addEventListener('click', () => {
+				openEventInCalendar(event);
+			});
+			
+			container.appendChild(wrapper);
+			console.log('Badge ajouté pour:', event.title);
+		}
+		
+		// Ajouter des liens vers les événements si détectés (fallback)
+		function addEventLinksToContainer(container) {
+			if (!container || !calendarEvents.length) return;
+			checkAndAddEventBadge(container);
 		}
 		
 		// Initialisation
-		document.addEventListener('DOMContentLoaded', () => {
-			loadCalendarEvents();
+		document.addEventListener('DOMContentLoaded', async () => {
+			await loadCalendarEvents();
 			scanTelegramPosts();
 		});
 	})();
