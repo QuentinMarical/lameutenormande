@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2y7cIw"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2y7cIw" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=Vsu8Ai"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=Vsu8Ai" type="text/css">
 
   
   
@@ -91,49 +91,37 @@
 					Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !
 				</p>
 				
-				<!-- Compteur d'abonnés Telegram -->
-				<div class="telegram-subscribers-widget mb-4">
-					<div class="subscribers-card">
-						<div class="subscribers-icon">👥</div>
-						<div class="subscribers-info">
-							<span class="subscribers-label">Membres du canal</span>
-							<a href="https://t.me/Annonces_Meute_Normande" target="_blank" class="subscribers-link">
-								<span class="channel-name">@Annonces_Meute_Normande</span>
-							</a>
-						</div>
-						<a href="https://t.me/Annonces_Meute_Normande" target="_blank" class="btn-join-small">Rejoindre</a>
-					</div>
-				</div>
-				
 				<!-- Telegram Channel Widget - Posts -->
-				<div class="telegram-feed-container" data-event-name="Pop'Anim Festival">
-					<script async src="https://telegram.org/js/telegram-widget.js?22" 
-						data-telegram-post="Annonces_Meute_Normande/9" 
-						data-width="100%"
-						data-color="E91E63"
-						data-dark="1"
-						data-dark-color="E91E63">
-					</script>
-				</div>
-				
-				<div class="telegram-feed-container mt-3" data-event-name="">
-					<script async src="https://telegram.org/js/telegram-widget.js?22" 
-						data-telegram-post="Annonces_Meute_Normande/8" 
-						data-width="100%"
-						data-color="E91E63"
-						data-dark="1"
-						data-dark-color="E91E63">
-					</script>
-				</div>
-				
-				<div class="telegram-feed-container mt-3" data-event-name="">
-					<script async src="https://telegram.org/js/telegram-widget.js?22" 
-						data-telegram-post="Annonces_Meute_Normande/7" 
-						data-width="100%"
-						data-color="E91E63"
-						data-dark="1"
-						data-dark-color="E91E63">
-					</script>
+				<div class="telegram-feed-horizontal">
+					<div class="telegram-feed-container" data-event-name="Pop'Anim Festival" data-max-height="280">
+						<script async src="https://telegram.org/js/telegram-widget.js?22" 
+							data-telegram-post="Annonces_Meute_Normande/9" 
+							data-width="100%"
+							data-color="E91E63"
+							data-dark="1"
+							data-dark-color="E91E63">
+						</script>
+					</div>
+					
+					<div class="telegram-feed-container" data-event-name="">
+						<script async src="https://telegram.org/js/telegram-widget.js?22" 
+							data-telegram-post="Annonces_Meute_Normande/8" 
+							data-width="100%"
+							data-color="E91E63"
+							data-dark="1"
+							data-dark-color="E91E63">
+						</script>
+					</div>
+					
+					<div class="telegram-feed-container" data-event-name="">
+						<script async src="https://telegram.org/js/telegram-widget.js?22" 
+							data-telegram-post="Annonces_Meute_Normande/7" 
+							data-width="100%"
+							data-color="E91E63"
+							data-dark="1"
+							data-dark-color="E91E63">
+						</script>
+					</div>
 				</div>
 				
 				<div class="mbr-section-btn mt-4">
@@ -333,8 +321,20 @@
 			checkAndAddEventBadge(container);
 		}
 		
+		// Appliquer les hauteurs maximales avec masque de fondu
+		function applyMaxHeights() {
+			document.querySelectorAll('.telegram-feed-container[data-max-height]').forEach(container => {
+				const maxHeight = parseInt(container.getAttribute('data-max-height'));
+				if (maxHeight > 0) {
+					container.classList.add('has-max-height');
+					container.style.setProperty('--post-max-height', maxHeight + 'px');
+				}
+			});
+		}
+		
 		// Initialisation
 		document.addEventListener('DOMContentLoaded', async () => {
+			applyMaxHeights();
 			await loadCalendarEvents();
 			scanTelegramPosts();
 		});
