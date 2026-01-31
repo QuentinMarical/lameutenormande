@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=ErMCvu"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=ErMCvu" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=WJABwA"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=WJABwA" type="text/css">
 
   
   
@@ -467,7 +467,7 @@
 
 
     <!-- FullCalendar v6 & ical.js -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <link href="https://unpkg.com/fullcalendar@6.1.15/main.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
@@ -932,7 +932,8 @@
                 const btnSubscribe = document.getElementById('btn-subscribe');
                 if (btnSubscribe) {
                     btnSubscribe.onclick = () => {
-                        const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
+                        // Utiliser uniquement le lien GitHub pour l'iCal
+                        const defaultIcalUrl = "https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics";
                         const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                             document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                             document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
@@ -1080,9 +1081,10 @@
                         throw new Error('Max retries exceeded');
                     };
 
-                    try {
-                        const defaultIcalUrl = "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c";
 
+                    try {
+                        // Utiliser uniquement le lien GitHub pour l'iCal
+                        const defaultIcalUrl = "https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics";
                         let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
                             document.querySelector('[data-ical-url]')?.getAttribute('value') ||
                             document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
@@ -1131,44 +1133,12 @@
                             if (loaderProgress) loaderProgress.style.display = '';
                             if (loaderBar) loaderBar.style.width = '0%';
                             let response = null;
-                            const proxies = [
-                                { name: 'Direct', url: icalUrl },
-                                { name: 'allorigins.win', url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(icalUrl) },
-                                { name: 'corsproxy.io', url: 'https://corsproxy.io/?' + encodeURIComponent(icalUrl) },
-                                { name: 'thingproxy.freehostingz.com', url: 'https://thingproxy.freehostingz.com/fetch/' + encodeURIComponent(icalUrl) }
-                            ];
-                            let lastError = null;
-                            let fakeProgress = 0;
-                            let fakeInterval = null;
-                            if (loaderBar) {
-                                loaderBar.style.width = '0%';
-                                fakeInterval = setInterval(() => {
-                                    fakeProgress = Math.min(95, fakeProgress + Math.random() * 5);
-                                    loaderBar.style.width = fakeProgress + '%';
-                                }, 200);
-                            }
-                            for (let i = 0; i < Math.min(3, proxies.length); i++) {
-                                const proxy = proxies[i];
-                                try {
-                                    console.log(`🔄 Tentative ${i + 1}/${Math.min(3, proxies.length)}: ${proxy.name}`);
-                                    console.log(`   URL: ${proxy.url.substring(0, 80)}...`);
-                                    response = await fetchWithRetry(proxy.url, 1);
-                                    if (response.status === 200) {
-                                        console.log(`✅ Succès avec ${proxy.name}`);
-                                        break;
-                                    } else {
-                                        console.warn(`⚠️ ${proxy.name} retourné le statut ${response.status}`);
-                                    }
-                                } catch (err) {
-                                    lastError = err;
-                                    console.warn(`❌ ${proxy.name} échoué:`, err.message);
-                                }
-                            }
-                            if (fakeInterval) clearInterval(fakeInterval);
-                            if (!response || !response.ok) {
+                            try {
+                                response = await fetchWithRetry(icalUrl, 1);
+                            } catch (err) {
                                 if (loaderBar) loaderBar.style.width = '0%';
-                                console.error('Dernier erreur:', lastError);
-                                throw new Error(`Impossible de charger le calendrier. Dernier essai: ${lastError?.message || 'Unknown'}`);
+                                console.error('Dernier erreur:', err);
+                                throw new Error(`Impossible de charger le calendrier. Dernier essai: ${err?.message || 'Unknown'}`);
                             }
                             if (!response || !response.ok) {
                                 if (loaderBar) loaderBar.style.width = '0%';
@@ -1432,10 +1402,10 @@
                                 suggestions = '<br><strong>Action requise :</strong> Entrez une URL iCal valide dans les paramètres du formulaire ci-dessus.';
                             } else if (error.message.includes('Impossible de charger')) {
                                 errorMsg = 'Impossible de charger le calendrier avec l\'URL fournie.';
-                                suggestions = '<br><strong>Solutions :</strong><ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;"><li>✅ Vérifiez que l\'URL du calendrier Zoho est <strong>correcte</strong> et <strong>publique</strong></li><li>✅ Testez l\'URL directement dans votre navigateur</li><li>✅ Assurez-vous que le partage du calendrier Zoho est activé</li><li>✅ Attendez quelques secondes avant de recharger (cache proxy)</li><li>ℹ️ Consultez la console (F12) pour plus de détails techniques</li></ul>';
+                                suggestions = '<br><strong>Solutions :</strong><ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;"><li>✅ Vérifiez que l\'URL du calendrier iCal est <strong>correcte</strong> et <strong>publique</strong></li><li>✅ Testez l\'URL directement dans votre navigateur</li><li>✅ Attendez quelques secondes avant de recharger (cache proxy)</li><li>ℹ️ Consultez la console (F12) pour plus de détails techniques</li></ul>';
                             } else if (error.message.includes('Accès refusé')) {
-                                errorMsg = 'Accès refusé au calendrier Zoho.';
-                                suggestions = '<br><strong>Action :</strong> Vérifiez que le calendrier est <strong>public</strong> dans les paramètres de partage Zoho.';
+                                errorMsg = 'Accès refusé au calendrier.';
+                                suggestions = '<br><strong>Action :</strong> Vérifiez que le calendrier est <strong>public</strong> et accessible.';
                             } else if (error.message.includes('Invalid iCal')) {
                                 errorMsg = 'Le fichier iCal n\'est pas au bon format.';
                                 suggestions = '<br><strong>Conseil :</strong> Vérifiez que l\'URL pointe vers un fichier iCal valide (.ics).';
