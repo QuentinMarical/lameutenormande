@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=862ZQ3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=862ZQ3" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=wV2ktA"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=wV2ktA" type="text/css">
 
   
   
@@ -93,7 +93,7 @@
 				
 				<!-- Telegram Channel Widget - Posts -->
 				<div class="telegram-feed-vertical">
-					<article class="telegram-article">
+					<article class="telegram-article" data-event-id="popanim2026">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -107,7 +107,7 @@
 						</div>
 					</article>
 					
-					<article class="telegram-article">
+					<article class="telegram-article" data-event-id="">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -121,7 +121,7 @@
 						</div>
 					</article>
 					
-					<article class="telegram-article">
+					<article class="telegram-article" data-event-id="">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -215,9 +215,19 @@
 						
 						calendarEvents = vevents.map(vevent => {
 							const event = new ICAL.Event(vevent);
+							const description = event.description || '';
+							
+							// Extraire l'identifiant depuis la description (format: [ID:xxx] ou #ID-xxx)
+							let eventId = '';
+							const idMatch = description.match(/\[ID:([^\]]+)\]/) || description.match(/#ID-([^\s\n]+)/);
+							if (idMatch) {
+								eventId = idMatch[1].trim().toLowerCase();
+							}
+							
 							return {
+								id: eventId,
 								title: event.summary || '',
-								description: event.description || '',
+								description: description,
 								location: event.location || '',
 								startDate: event.startDate ? event.startDate.toJSDate() : null,
 								endDate: event.endDate ? event.endDate.toJSDate() : null,
@@ -235,15 +245,27 @@
 			console.log('Calendrier non disponible - les liens événements seront désactivés');
 		}
 		
-		// Trouver un événement par son nom
-		function findEventByName(name) {
-			if (!name || !calendarEvents.length) return null;
+		// Trouver un événement par son ID ou son nom
+		function findEventByIdOrName(id, name) {
+			if (!calendarEvents.length) return null;
 			
-			const searchName = name.toLowerCase().trim();
-			return calendarEvents.find(event => {
-				const eventTitle = event.title.toLowerCase();
-				return eventTitle.includes(searchName) || searchName.includes(eventTitle);
-			});
+			// D'abord chercher par ID (plus fiable)
+			if (id && id.trim() !== '') {
+				const searchId = id.toLowerCase().trim();
+				const byId = calendarEvents.find(event => event.id === searchId);
+				if (byId) return byId;
+			}
+			
+			// Sinon chercher par nom
+			if (name && name.trim() !== '') {
+				const searchName = name.toLowerCase().trim();
+				return calendarEvents.find(event => {
+					const eventTitle = event.title.toLowerCase();
+					return eventTitle.includes(searchName) || searchName.includes(eventTitle);
+				});
+			}
+			
+			return null;
 		}
 		
 		// Fermer la modal
@@ -390,15 +412,14 @@
 			});
 		}
 		
-		// Scanner les posts Telegram pour les noms d'événements
-		async function scanTelegramPosts() {
+		// Scanner les posts Telegram pour les événements
+		function scanTelegramPosts() {
 			// Scanner les articles existants après un délai pour laisser les iframes charger
-			setTimeout(async () => {
-				const articles = document.querySelectorAll('.telegram-article');
-				for (const article of articles) {
-					await processArticle(article);
-				}
-			}, 2000);
+			setTimeout(() => {
+				document.querySelectorAll('.telegram-article').forEach(article => {
+					processArticle(article);
+				});
+			}, 1500);
 			
 			// Observer pour les nouveaux iframes
 			const observer = new MutationObserver((mutations) => {
@@ -409,7 +430,7 @@
 							iframes.forEach(iframe => {
 								const article = iframe.closest('.telegram-article');
 								if (article) {
-									setTimeout(() => processArticle(article), 1000);
+									setTimeout(() => processArticle(article), 500);
 								}
 							});
 						}
@@ -420,97 +441,29 @@
 			observer.observe(document.body, { childList: true, subtree: true });
 		}
 		
-		// Traiter un article : récupérer le contenu du post et détecter l'événement
-		async function processArticle(article) {
+		// Traiter un article : vérifier le data-event-id/name et ajouter le bouton
+		function processArticle(article) {
 			if (!article || !calendarEvents.length) return;
 			
 			// Éviter les doublons
 			if (article.querySelector('.event-arrow-btn')) return;
 			
-			// Récupérer l'ID du post depuis le script Telegram
-			const script = article.querySelector('script[data-telegram-post]');
-			if (!script) return;
+			// Récupérer l'ID et/ou le nom de l'événement
+			const eventId = article.getAttribute('data-event-id') || '';
+			const eventName = article.getAttribute('data-event-name') || '';
 			
-			const postId = script.getAttribute('data-telegram-post');
-			if (!postId) return;
-			
-			// D'abord vérifier si data-event-name est déjà défini manuellement
-			let eventName = article.getAttribute('data-event-name');
-			
-			// Si pas de nom manuel, essayer de le récupérer automatiquement
-			if (!eventName || eventName.trim() === '') {
-				eventName = await fetchEventNameFromPost(postId);
-				if (eventName) {
-					article.setAttribute('data-event-name', eventName);
-					console.log('Nom d\'événement détecté automatiquement:', eventName);
-				}
-			}
-			
-			if (!eventName || eventName.trim() === '') return;
+			if (!eventId && !eventName) return;
+			if (eventId.trim() === '' && eventName.trim() === '') return;
 			
 			// Chercher l'événement correspondant dans le calendrier
-			const event = findEventByName(eventName);
+			const event = findEventByIdOrName(eventId, eventName);
 			if (!event) {
-				console.log('Événement non trouvé dans le calendrier:', eventName);
+				console.log('Événement non trouvé dans le calendrier:', eventId || eventName);
 				return;
 			}
 			
 			// Ajouter le bouton
 			addEventButton(article, event);
-		}
-		
-		// Récupérer le nom d'événement depuis le post Telegram via la version web
-		async function fetchEventNameFromPost(postId) {
-			// Liste de proxies CORS à essayer
-			const corsProxies = [
-				'https://api.allorigins.win/raw?url=',
-				'https://corsproxy.io/?',
-				'https://api.codetabs.com/v1/proxy?quest='
-			];
-			
-			const telegramUrl = `https://t.me/${postId}?embed=1`;
-			
-			for (const proxy of corsProxies) {
-				try {
-					const response = await fetch(proxy + encodeURIComponent(telegramUrl), {
-						cache: 'no-cache'
-					});
-					
-					if (!response.ok) continue;
-					
-					const html = await response.text();
-					
-					// Chercher le pattern 📅 suivi du nom de l'événement
-					// Le texte peut être dans différents formats HTML
-					const patterns = [
-						/📅\s*([^\n<]+)/,
-						/&#128197;\s*([^\n<]+)/,
-						/\u{1F4C5}\s*([^\n<]+)/u
-					];
-					
-					for (const pattern of patterns) {
-						const match = html.match(pattern);
-						if (match && match[1]) {
-							// Nettoyer le nom (enlever les balises HTML résiduelles et trim)
-							let name = match[1]
-								.replace(/<[^>]*>/g, '')
-								.replace(/&[^;]+;/g, ' ')
-								.trim();
-							
-							// Prendre seulement la première ligne si plusieurs lignes
-							name = name.split('\n')[0].trim();
-							
-							if (name.length > 2 && name.length < 100) {
-								return name;
-							}
-						}
-					}
-				} catch (error) {
-					console.log('Proxy échoué:', proxy);
-				}
-			}
-			
-			return null;
 		}
 		
 		// Ajouter le bouton événement à l'article
@@ -532,11 +485,6 @@
 			// Insérer le bouton à la fin de l'article (après le wrapper)
 			article.appendChild(arrowBtn);
 			console.log('Bouton événement ajouté pour:', event.title);
-		}
-		
-		// Vérifier et ajouter le bouton fléché (legacy - pour compatibilité)
-		function checkAndAddEventBadge(article) {
-			processArticle(article);
 		}
 		
 		// Ajouter des liens vers les événements si détectés (fallback)
