@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=wV2ktA"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=wV2ktA" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=qnxoYD"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=qnxoYD" type="text/css">
 
   
   
@@ -235,6 +235,15 @@
 							};
 						});
 						console.log('Calendrier chargé depuis:', url, '-', calendarEvents.length, 'événements');
+						
+						// DEBUG: Afficher les événements avec ID
+						const eventsWithId = calendarEvents.filter(e => e.id);
+						console.log('Événements avec ID:', eventsWithId.length);
+						eventsWithId.forEach(e => console.log('  -', e.title, '| ID:', e.id));
+						
+						// Exposer pour debug console
+						window._calendarEvents = calendarEvents;
+						
 						icalLoaded = true;
 						return; // Succès, on arrête
 					}
@@ -452,15 +461,19 @@
 			const eventId = article.getAttribute('data-event-id') || '';
 			const eventName = article.getAttribute('data-event-name') || '';
 			
+			console.log('Processing article - ID:', eventId, '| Name:', eventName);
+			
 			if (!eventId && !eventName) return;
 			if (eventId.trim() === '' && eventName.trim() === '') return;
 			
 			// Chercher l'événement correspondant dans le calendrier
 			const event = findEventByIdOrName(eventId, eventName);
 			if (!event) {
-				console.log('Événement non trouvé dans le calendrier:', eventId || eventName);
+				console.log('❌ Événement non trouvé dans le calendrier:', eventId || eventName);
 				return;
 			}
+			
+			console.log('✅ Événement trouvé:', event.title);
 			
 			// Ajouter le bouton
 			addEventButton(article, event);
