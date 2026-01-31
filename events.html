@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=AePTYq"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=AePTYq" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=lyTOad"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=lyTOad" type="text/css">
 
   
   
@@ -467,9 +467,9 @@
 
 
     <!-- FullCalendar v6 & ical.js -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
+    <link href="https://unpkg.com/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet" type="text/css" crossorigin="anonymous">
+    <script src="https://unpkg.com/ical.js@1.5.0/build/ical.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/fullcalendar@6.1.15/index.global.min.js" crossorigin="anonymous"></script>
 
     <script>
         'use strict';
@@ -1059,39 +1059,40 @@
                     const fetchWithRetry = async (url, maxRetries = 2) => {
                         const proxies = [
                             (u) => u, // Direct URL first
-                            (u) => `https://cors.lameutenormande.fr/?url=${encodeURIComponent(u)}`, // Local CORS proxy if available
-                            (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}` // Public CORS proxy fallback
+                            (u) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`, // Reliable CORS proxy
+                            (u) => `https://corsproxy.io/?${encodeURIComponent(u)}` // Alternative CORS proxy
                         ];
                         
                         for (let proxyIdx = 0; proxyIdx < proxies.length; proxyIdx++) {
-                            const proxiedUrl = proxies[proxyIdx](url);
-                            console.log(`   Tentative ${proxyIdx + 1}: ${proxiedUrl}`);
+                            const isDirectFetch = proxyIdx === 0;
+                            console.log(`   Tentative ${proxyIdx + 1}/3: ${isDirectFetch ? 'Direct' : 'CORS Proxy'}`);
                             
                             for (let i = 0; i < maxRetries; i++) {
                                 try {
+                                    const proxiedUrl = proxies[proxyIdx](url);
                                     const response = await fetch(proxiedUrl, {
                                         headers: {
                                             'Accept': 'text/calendar, application/ics, text/plain, */*',
                                             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
                                         },
-                                        cache: 'no-cache',
+                                        cache: 'default',
                                         mode: 'cors'
                                     });
-                                    console.log(`   Réponse: ${response.status} ${response.statusText}, Type: ${response.headers.get('content-type')}`);
+                                    console.log(`   ✅ Réponse: ${response.status} ${response.statusText}`);
                                     if (response.ok) return response;
                                     if (response.status === 403 || response.status === 401) {
                                         throw new Error(`Accès refusé (${response.status}). Vérifiez que le calendrier est public.`);
                                     }
                                 } catch (err) {
-                                    console.log(`   Erreur (proxy ${proxyIdx + 1}, tentative ${i + 1}/${maxRetries}):`, err.message);
+                                    console.log(`   ❌ Erreur (proxy ${proxyIdx + 1}, essai ${i + 1}/${maxRetries}):`, err.message);
                                     if (i === maxRetries - 1 && proxyIdx === proxies.length - 1) throw err;
                                     if (i < maxRetries - 1) {
-                                        await new Promise(resolve => setTimeout(resolve, 300 * (i + 1)));
+                                        await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
                                     }
                                 }
                             }
                         }
-                        throw new Error('Max retries exceeded on all proxy attempts');
+                        throw new Error('Impossible de charger via tous les proxies CORS');
                     };
 
 
