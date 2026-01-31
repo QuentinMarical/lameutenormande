@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=G0cIFC"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=G0cIFC" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=xHm8b4"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=xHm8b4" type="text/css">
 
   
   
@@ -145,6 +145,16 @@
 		</div>
 	</div>
 	
+	<!-- Modal Événement -->
+	<div class="event-modal">
+		<div class="event-modal-overlay"></div>
+		<div class="event-modal-content">
+			<button class="event-modal-close">×</button>
+			<h3 class="event-modal-title"></h3>
+			<div class="event-modal-body"></div>
+		</div>
+	</div>
+	
 	<!-- Script pour lier les événements du calendrier -->
 	<script>
 	(function() {
@@ -236,12 +246,148 @@
 			});
 		}
 		
-		// Ouvrir la page événements avec l'événement sélectionné
-		function openEventInCalendar(eventData) {
-			// Stocker l'événement à ouvrir dans sessionStorage
-			sessionStorage.setItem('openEventFromActus', JSON.stringify(eventData));
-			// Rediriger vers la page événements
-			window.location.href = 'events.html';
+		// Fermer la modal
+		function closeEventModal() {
+			const modal = document.querySelector('.event-modal');
+			if (modal) {
+				modal.classList.add('closing');
+				document.body.classList.remove('modal-open');
+				setTimeout(() => {
+					modal.classList.remove('show', 'closing');
+				}, 300);
+			}
+		}
+		
+		// Ouvrir la modal avec les détails de l'événement
+		function openEventModal(event) {
+			const modal = document.querySelector('.event-modal');
+			const modalTitle = document.querySelector('.event-modal-title');
+			const modalBody = document.querySelector('.event-modal-body');
+			
+			if (!modal || !modalTitle || !modalBody) return;
+			
+			// Titre
+			modalTitle.textContent = event.title || 'Événement';
+			
+			// Formater les dates
+			const startDate = new Date(event.startDate);
+			const endDate = event.endDate ? new Date(event.endDate) : null;
+			
+			const dateOptions = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+			const timeOptions = { hour: '2-digit', minute: '2-digit' };
+			
+			let dateStr = startDate.toLocaleDateString('fr-FR', dateOptions);
+			let timeStr = startDate.toLocaleTimeString('fr-FR', timeOptions);
+			
+			if (endDate) {
+				const sameDay = startDate.toDateString() === endDate.toDateString();
+				if (sameDay) {
+					timeStr += ' - ' + endDate.toLocaleTimeString('fr-FR', timeOptions);
+				} else {
+					dateStr += ' au ' + endDate.toLocaleDateString('fr-FR', dateOptions);
+				}
+			}
+			
+			// Construire le contenu
+			let bodyHTML = '<div class="event-modal-body-grid">';
+			bodyHTML += '<div class="event-modal-left">';
+			
+			// Date
+			bodyHTML += `
+				<div class="event-info-row">
+					<span class="event-info-icon">📅</span>
+					<div class="event-info-content">
+						<div class="event-info-label">Date</div>
+						<div class="event-info-text">${dateStr}</div>
+					</div>
+				</div>
+			`;
+			
+			// Heure
+			bodyHTML += `
+				<div class="event-info-row">
+					<span class="event-info-icon">⏰</span>
+					<div class="event-info-content">
+						<div class="event-info-label">Horaire</div>
+						<div class="event-info-text">${timeStr}</div>
+					</div>
+				</div>
+			`;
+			
+			// Lieu
+			if (event.location) {
+				const encodedLocation = encodeURIComponent(event.location);
+				bodyHTML += `
+					<div class="event-info-row">
+						<span class="event-info-icon">📍</span>
+						<div class="event-info-content">
+							<div class="event-info-label">Lieu</div>
+							<div class="event-info-text">${event.location}</div>
+							<div class="event-location-buttons">
+								<a href="https://www.google.com/maps/search/?api=1&query=${encodedLocation}" target="_blank" class="location-btn location-google">🗺️ Google Maps</a>
+								<a href="https://waze.com/ul?q=${encodedLocation}" target="_blank" class="location-btn location-waze">🚗 Waze</a>
+								<a href="https://maps.apple.com/?q=${encodedLocation}" target="_blank" class="location-btn location-apple">🌍 Apple Plans</a>
+							</div>
+						</div>
+					</div>
+				`;
+			}
+			
+			bodyHTML += '</div><div class="event-modal-right">';
+			
+			// Description
+			if (event.description) {
+				// Convertir les URLs en liens cliquables
+				let desc = event.description.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank">$1</a>');
+				desc = desc.replace(/\n/g, '<br>');
+				
+				bodyHTML += `
+					<div class="event-info-row">
+						<span class="event-info-icon">📝</span>
+						<div class="event-info-content">
+							<div class="event-info-label">Description</div>
+							<div class="event-info-text">${desc}</div>
+						</div>
+					</div>
+				`;
+			}
+			
+			// Lien URL
+			if (event.url) {
+				bodyHTML += `
+					<div class="event-info-row">
+						<span class="event-info-icon">🔗</span>
+						<div class="event-info-content">
+							<div class="event-info-label">Plus d'infos</div>
+							<a href="${event.url}" target="_blank" class="event-url-button">Voir le site de l'événement</a>
+						</div>
+					</div>
+				`;
+			}
+			
+			bodyHTML += '</div></div>';
+			
+			modalBody.innerHTML = bodyHTML;
+			
+			// Afficher la modal
+			document.body.classList.add('modal-open');
+			modal.classList.add('show');
+			modal.setAttribute('role', 'dialog');
+			
+			// Event listeners pour fermer
+			const closeBtn = modal.querySelector('.event-modal-close');
+			const overlay = modal.querySelector('.event-modal-overlay');
+			
+			closeBtn.onclick = closeEventModal;
+			overlay.onclick = closeEventModal;
+			
+			// Fermer avec Escape
+			document.addEventListener('keydown', function escHandler(e) {
+				if (e.key === 'Escape') {
+					closeEventModal();
+					document.removeEventListener('keydown', escHandler);
+				}
+			});
 		}
 		
 		// Scanner les posts Telegram pour les noms d'événements
@@ -306,7 +452,7 @@
 			
 			// Ajouter le listener sur le bouton
 			arrowBtn.addEventListener('click', () => {
-				openEventInCalendar(event);
+				openEventModal(event);
 			});
 			
 			// Insérer le bouton au début de l'article (avant le wrapper)
