@@ -22,7 +22,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=lyTOad"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=lyTOad" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=90nSpJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=90nSpJ" type="text/css">
 
   
   
@@ -1053,7 +1053,8 @@
 
                 (async function () {
 
-                    const ICAL_CACHE_DURATION = 6 * 60 * 60 * 1000;
+                    // Cache désactivé - Contenu toujours live
+                    const ICAL_CACHE_DURATION = 0; // Pas de cache
                     const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
 
                     const fetchWithRetry = async (url, maxRetries = 2) => {
@@ -1073,9 +1074,10 @@
                                     const response = await fetch(proxiedUrl, {
                                         headers: {
                                             'Accept': 'text/calendar, application/ics, text/plain, */*',
-                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0'
                                         },
-                                        cache: 'default',
+                                        cache: 'no-store',
                                         mode: 'cors'
                                     });
                                     console.log(`   ✅ Réponse: ${response.status} ${response.statusText}`);
@@ -1122,9 +1124,9 @@
                         const loaderBar = document.getElementById('calendar-loader-bar');
                         const loaderProgress = document.getElementById('calendar-loader-progress');
                         let usedCache = false;
-                        if (cache && cache.data && cache.ts && (nowTs - cache.ts < ICAL_CACHE_DURATION)) {
-                            icalText = cache.data;
-                            usedCache = true;
+                        // Cache localStorage désactivé - Toujours récupérer les données fraîches
+                        if (false) { // Force à toujours aller chercher les données live
+                            // Code de cache désactivé
                             if (loaderMsg) loaderMsg.textContent = 'Chargement depuis le cache...';
                             if (loaderProgress) loaderProgress.style.display = 'none';
                             let refreshBtn = document.getElementById('calendar-refresh-btn');
@@ -1191,10 +1193,8 @@
                                 if (loaderBar) loaderBar.style.width = '0%';
                                 throw new Error('iCal file is empty or invalid');
                             }
-                            try {
-                                localStorage.setItem(cacheKey, JSON.stringify({ data: icalText, ts: nowTs }));
-                                console.log('🗄️ Cache localStorage mis à jour pour le flux iCal');
-                            } catch (e) { }
+                            // localStorage cache désactivé - pas de mise en cache locale
+                            console.log('✅ Données fraîches chargées (pas de cache)');
                         }
 
                         let jcalData = null;
