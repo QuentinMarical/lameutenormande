@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=Vsu8Ai"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=Vsu8Ai" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=XifPJH"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=XifPJH" type="text/css">
 
   
   
@@ -93,7 +93,7 @@
 				
 				<!-- Telegram Channel Widget - Posts -->
 				<div class="telegram-feed-horizontal">
-					<div class="telegram-feed-container" data-event-name="Pop'Anim Festival" data-max-height="280">
+					<div class="telegram-feed-container" data-event-name="Pop'Anim Festival" data-max-height="210">
 						<script async src="https://telegram.org/js/telegram-widget.js?22" 
 							data-telegram-post="Annonces_Meute_Normande/9" 
 							data-width="100%"
@@ -326,10 +326,37 @@
 			document.querySelectorAll('.telegram-feed-container[data-max-height]').forEach(container => {
 				const maxHeight = parseInt(container.getAttribute('data-max-height'));
 				if (maxHeight > 0) {
-					container.classList.add('has-max-height');
-					container.style.setProperty('--post-max-height', maxHeight + 'px');
+					// Créer un wrapper autour du contenu Telegram (script/iframe)
+					const script = container.querySelector('script');
+					if (script && !container.querySelector('.telegram-post-wrapper')) {
+						const wrapper = document.createElement('div');
+						wrapper.className = 'telegram-post-wrapper has-max-height';
+						wrapper.style.setProperty('--post-max-height', maxHeight + 'px');
+						
+						// Déplacer le script dans le wrapper
+						container.insertBefore(wrapper, script);
+						wrapper.appendChild(script);
+					}
 				}
 			});
+			
+			// Observer pour wrapper les iframes une fois chargées
+			const iframeObserver = new MutationObserver((mutations) => {
+				mutations.forEach((mutation) => {
+					mutation.addedNodes.forEach((node) => {
+						if (node.nodeName === 'IFRAME') {
+							const container = node.closest('.telegram-feed-container[data-max-height]');
+							if (container) {
+								const wrapper = container.querySelector('.telegram-post-wrapper');
+								if (wrapper && !wrapper.contains(node)) {
+									wrapper.appendChild(node);
+								}
+							}
+						}
+					});
+				});
+			});
+			iframeObserver.observe(document.body, { childList: true, subtree: true });
 		}
 		
 		// Initialisation
