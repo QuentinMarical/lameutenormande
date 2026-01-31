@@ -4016,6 +4016,7 @@ a {
   max-width: 800px;
   margin: 0 auto;
   display: flex;
+  flex-direction: row;
   align-items: stretch;
   gap: 0;
 }
@@ -4027,23 +4028,24 @@ a {
   min-width: 60px;
   background: linear-gradient(180deg, #e91e63 0%, #9c27b0 100%);
   border: none;
-  border-radius: 16px 0 0 16px;
+  border-radius: 0 16px 16px 0;
   cursor: pointer;
   transition: all 0.3s ease;
   color: #fff;
   font-size: 1.8rem;
-  box-shadow: -4px 0 20px rgba(233, 30, 99, 0.4);
+  box-shadow: 4px 0 20px rgba(233, 30, 99, 0.4);
+  order: 2;
 }
 .cid-v9TjcZb4qU .event-arrow-btn:hover {
   width: 70px;
   background: linear-gradient(180deg, #9c27b0 0%, #e91e63 100%);
-  box-shadow: -6px 0 25px rgba(233, 30, 99, 0.6);
+  box-shadow: 6px 0 25px rgba(233, 30, 99, 0.6);
 }
 .cid-v9TjcZb4qU .event-arrow-btn .arrow-icon {
   transition: transform 0.3s ease;
 }
 .cid-v9TjcZb4qU .event-arrow-btn:hover .arrow-icon {
-  transform: translateX(-3px);
+  transform: translateX(3px);
 }
 .cid-v9TjcZb4qU .telegram-post-wrapper {
   flex: 1;
@@ -4055,7 +4057,8 @@ a {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
 }
 .cid-v9TjcZb4qU .telegram-article.has-event .telegram-post-wrapper {
-  border-radius: 0 16px 16px 0;
+  border-radius: 16px 0 0 16px;
+  order: 1;
 }
 .cid-v9TjcZb4qU .telegram-post-content {
   border-radius: 12px;
@@ -4074,22 +4077,24 @@ a {
     width: 100%;
     min-width: 100%;
     height: 50px;
-    border-radius: 16px 16px 0 0;
+    border-radius: 0 0 16px 16px;
     flex-direction: row;
     gap: 0.5rem;
+    order: 2;
   }
   .cid-v9TjcZb4qU .event-arrow-btn:hover {
     width: 100%;
     height: 55px;
   }
   .cid-v9TjcZb4qU .event-arrow-btn .arrow-icon {
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
   }
   .cid-v9TjcZb4qU .event-arrow-btn:hover .arrow-icon {
-    transform: rotate(-90deg) translateX(-3px);
+    transform: rotate(90deg) translateX(3px);
   }
   .cid-v9TjcZb4qU .telegram-article.has-event .telegram-post-wrapper {
-    border-radius: 0 0 16px 16px;
+    border-radius: 16px 16px 0 0;
+    order: 1;
   }
   .cid-v9TjcZb4qU .event-modal-content {
     width: 95%;

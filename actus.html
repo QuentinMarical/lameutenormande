@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=xHm8b4"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=xHm8b4" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=JcavxB"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=JcavxB" type="text/css">
 
   
   
@@ -437,10 +437,6 @@
 				return;
 			}
 			
-			// Vérifier que l'événement est à venir
-			const now = new Date();
-			if (new Date(event.startDate) < now) return;
-			
 			// Ajouter la classe pour le style
 			article.classList.add('has-event');
 			
@@ -448,7 +444,7 @@
 			const arrowBtn = document.createElement('button');
 			arrowBtn.className = 'event-arrow-btn';
 			arrowBtn.title = 'Voir les détails de ' + event.title;
-			arrowBtn.innerHTML = '<span class="arrow-icon">◀</span>';
+			arrowBtn.innerHTML = '<span class="arrow-icon">▶</span>';
 			
 			// Ajouter le listener sur le bouton
 			arrowBtn.addEventListener('click', () => {
