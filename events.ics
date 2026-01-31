@@ -572,9 +572,9 @@ DTSTAMP:20260123T180222Z
 URL:https://www.fauntastic.eu
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:🎄 Marché de Noël Rouen
-DESCRIPTION:Repas au Square Verdrel à 13h.\nDéambulation à 14h pour aller vers la place de la Cathédrale où se trouve le marché de Noël.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Repas au Square Verdrel à 13h.</p><p>Déambulation à 14h pour aller vers la place de la Cathédrale où se trouve le marché de Noël.</p></div>
+SUMMARY:Marché de Noël Rouen 2025
+DESCRIPTION:Repas au Square Verdrel à 13h.\n\nDéambulation à 14h pour aller vers la place de la Cathédrale où se trouve le marché de Noël.\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Repas au Square Verdrel à 13h.<br /></p><p>Déambulation à 14h pour aller vers la place de la Cathédrale où se trouve le marché de Noël.<br /></p></div>
 DTSTART:20251220T120000Z
 DTEND:20251220T225900Z
 LOCATION:Square Verdrel Rouen
@@ -584,8 +584,8 @@ STATUS:CONFIRMED
 UID:ba38a5803d6b4985befda27806d0f68a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251204T124120Z
-LAST-MODIFIED:20251220T080712Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260131T162200Z
+DTSTAMP:20260131T162203Z
 URL:https://barq.app/c/a6ss61A/1167549/1
 END:VEVENT
 BEGIN:VEVENT
@@ -656,8 +656,8 @@ DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Pop'Anim Festival 2026
-DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div>
+DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n[ID:popanim2026]\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div><div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">[ID:popanim2026]</span></span></span></span><br /></div>
 DTSTART:20260207T090000Z
 DTEND:20260208T165900Z
 LOCATION:Rue Saint-Jacques\, 76110 Goderville
@@ -667,8 +667,8 @@ STATUS:CONFIRMED
 UID:cfc9bf8d2e4d49fe8aeb20f637742724@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101159Z
-LAST-MODIFIED:20260107T192108Z
-DTSTAMP:20260107T192110Z
+LAST-MODIFIED:20260131T165133Z
+DTSTAMP:20260131T165135Z
 URL:https://www.facebook.com/events/1171477725040718/
 END:VEVENT
 BEGIN:VEVENT
