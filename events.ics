@@ -263,6 +263,23 @@ DTSTAMP:20260123T172346Z
 URL:https://limogesjapangeekfestival.com/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Pop N'Geek 4
+DESCRIPTION:4ème édition de Pop N'Geek qui se déroulera au Gymnase Pierre de Coubertin de Conches-en-Ouche du samedi 7 au dimanche 8 mars 2026.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>4ème édition de Pop N'Geek qui se déroulera au Gymnase Pierre de Coubertin de Conches-en-Ouche du samedi 7 au dimanche 8 mars 2026.<br /></div>
+DTSTART:20260307T080000Z
+DTEND:20260308T170000Z
+LOCATION:Gymnase Pierre de coubertin\, 14 Rue Jacques Villon\, 27190 Conches-en-Ouche
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:5b3541d6f5ab417286e584c1d3b13268@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260131T084812Z
+LAST-MODIFIED:20260131T084812Z
+DTSTAMP:20260131T084814Z
+URL:https://www.gameureassociation.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Festival Ostara
 DESCRIPTION:Horaires:\n\nSamedi\, de 10h à 18h\n\nDimanche\, de 10h à 17h\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Horaires:<br /></div><div>Samedi\, de 10h à 18h<br /></div><div>Dimanche\, de 10h à 17h</div>
@@ -441,6 +458,22 @@ TRANSP:TRANSPARENT
 CREATED:20251210T214535Z
 LAST-MODIFIED:20251210T214554Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Otaku Night
+DESCRIPTION:1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.<br /></div>
+DTSTART:20260131T190000Z
+DTEND:20260201T010000Z
+LOCATION:Bubble Manga\, 1 Place Thiers\, 76600 Le Havre
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:954cc8e25f81478d9c8b91c50faf12b0@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260131T090528Z
+LAST-MODIFIED:20260131T090552Z
+DTSTAMP:20260131T090554Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:La Fête de la Scie Harfleur
