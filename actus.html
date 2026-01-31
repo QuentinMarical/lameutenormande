@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=XifPJH"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=XifPJH" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=G0cIFC"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=G0cIFC" type="text/css">
 
   
   
@@ -92,36 +92,48 @@
 				</p>
 				
 				<!-- Telegram Channel Widget - Posts -->
-				<div class="telegram-feed-horizontal">
-					<div class="telegram-feed-container" data-event-name="Pop'Anim Festival" data-max-height="210">
-						<script async src="https://telegram.org/js/telegram-widget.js?22" 
-							data-telegram-post="Annonces_Meute_Normande/9" 
-							data-width="100%"
-							data-color="E91E63"
-							data-dark="1"
-							data-dark-color="E91E63">
-						</script>
-					</div>
+				<div class="telegram-feed-vertical">
+					<article class="telegram-article" data-event-name="Pop'Anim Festival">
+						<div class="telegram-post-wrapper">
+							<div class="telegram-post-content">
+								<script async src="https://telegram.org/js/telegram-widget.js?22" 
+									data-telegram-post="Annonces_Meute_Normande/9" 
+									data-width="100%"
+									data-color="E91E63"
+									data-dark="1"
+									data-dark-color="E91E63">
+								</script>
+							</div>
+						</div>
+					</article>
 					
-					<div class="telegram-feed-container" data-event-name="">
-						<script async src="https://telegram.org/js/telegram-widget.js?22" 
-							data-telegram-post="Annonces_Meute_Normande/8" 
-							data-width="100%"
-							data-color="E91E63"
-							data-dark="1"
-							data-dark-color="E91E63">
-						</script>
-					</div>
+					<article class="telegram-article" data-event-name="">
+						<div class="telegram-post-wrapper">
+							<div class="telegram-post-content">
+								<script async src="https://telegram.org/js/telegram-widget.js?22" 
+									data-telegram-post="Annonces_Meute_Normande/8" 
+									data-width="100%"
+									data-color="E91E63"
+									data-dark="1"
+									data-dark-color="E91E63">
+								</script>
+							</div>
+						</div>
+					</article>
 					
-					<div class="telegram-feed-container" data-event-name="">
-						<script async src="https://telegram.org/js/telegram-widget.js?22" 
-							data-telegram-post="Annonces_Meute_Normande/7" 
-							data-width="100%"
-							data-color="E91E63"
-							data-dark="1"
-							data-dark-color="E91E63">
-						</script>
-					</div>
+					<article class="telegram-article" data-event-name="">
+						<div class="telegram-post-wrapper">
+							<div class="telegram-post-content">
+								<script async src="https://telegram.org/js/telegram-widget.js?22" 
+									data-telegram-post="Annonces_Meute_Normande/7" 
+									data-width="100%"
+									data-color="E91E63"
+									data-dark="1"
+									data-dark-color="E91E63">
+								</script>
+							</div>
+						</div>
+					</article>
 				</div>
 				
 				<div class="mbr-section-btn mt-4">
@@ -234,10 +246,10 @@
 		
 		// Scanner les posts Telegram pour les noms d'événements
 		function scanTelegramPosts() {
-			// Scanner les conteneurs existants après un délai
+			// Scanner les articles existants après un délai
 			setTimeout(() => {
-				document.querySelectorAll('.telegram-feed-container[data-event-name]').forEach(container => {
-					checkAndAddEventBadge(container);
+				document.querySelectorAll('.telegram-article[data-event-name]').forEach(article => {
+					checkAndAddEventBadge(article);
 				});
 			}, 1500);
 			
@@ -248,9 +260,9 @@
 						if (node.nodeType === Node.ELEMENT_NODE) {
 							const iframes = node.querySelectorAll ? node.querySelectorAll('iframe') : [];
 							iframes.forEach(iframe => {
-								const container = iframe.closest('.telegram-feed-container[data-event-name]');
-								if (container) {
-									setTimeout(() => checkAndAddEventBadge(container), 500);
+								const article = iframe.closest('.telegram-article[data-event-name]');
+								if (article) {
+									setTimeout(() => checkAndAddEventBadge(article), 500);
 								}
 							});
 						}
@@ -261,15 +273,15 @@
 			observer.observe(document.body, { childList: true, subtree: true });
 		}
 		
-		// Vérifier et ajouter le badge événement sous le post Telegram
-		function checkAndAddEventBadge(container) {
-			if (!container || !calendarEvents.length) return;
+		// Vérifier et ajouter le bouton fléché à gauche du post Telegram
+		function checkAndAddEventBadge(article) {
+			if (!article || !calendarEvents.length) return;
 			
 			// Éviter les doublons
-			if (container.querySelector('.event-details-wrapper')) return;
+			if (article.querySelector('.event-arrow-btn')) return;
 			
 			// Récupérer le nom d'événement depuis l'attribut data-event-name
-			const eventName = container.getAttribute('data-event-name');
+			const eventName = article.getAttribute('data-event-name');
 			if (!eventName || eventName.trim() === '') return;
 			
 			// Chercher l'événement correspondant dans le calendrier
@@ -283,36 +295,23 @@
 			const now = new Date();
 			if (new Date(event.startDate) < now) return;
 			
-			// Créer le wrapper avec le titre de l'événement et le bouton
-			const wrapper = document.createElement('div');
-			wrapper.className = 'event-details-wrapper';
+			// Ajouter la classe pour le style
+			article.classList.add('has-event');
 			
-			// Formater la date
-			const eventDate = new Date(event.startDate);
-			const dateStr = eventDate.toLocaleDateString('fr-FR', { 
-				day: 'numeric', 
-				month: 'long', 
-				year: 'numeric' 
-			});
-			
-			wrapper.innerHTML = `
-				<div class="event-title-display">
-					<span class="event-calendar-icon">📅</span>
-					<span class="event-name">${event.title}</span>
-				</div>
-				<div class="event-date-display">${dateStr}</div>
-				<button class="btn-event-details">
-					<span class="btn-icon">📋</span> Voir les détails
-				</button>
-			`;
+			// Créer le bouton fléché
+			const arrowBtn = document.createElement('button');
+			arrowBtn.className = 'event-arrow-btn';
+			arrowBtn.title = 'Voir les détails de ' + event.title;
+			arrowBtn.innerHTML = '<span class="arrow-icon">◀</span>';
 			
 			// Ajouter le listener sur le bouton
-			wrapper.querySelector('.btn-event-details').addEventListener('click', () => {
+			arrowBtn.addEventListener('click', () => {
 				openEventInCalendar(event);
 			});
 			
-			container.appendChild(wrapper);
-			console.log('Badge ajouté pour:', event.title);
+			// Insérer le bouton au début de l'article (avant le wrapper)
+			article.insertBefore(arrowBtn, article.firstChild);
+			console.log('Bouton événement ajouté pour:', event.title);
 		}
 		
 		// Ajouter des liens vers les événements si détectés (fallback)
@@ -321,47 +320,8 @@
 			checkAndAddEventBadge(container);
 		}
 		
-		// Appliquer les hauteurs maximales avec masque de fondu
-		function applyMaxHeights() {
-			document.querySelectorAll('.telegram-feed-container[data-max-height]').forEach(container => {
-				const maxHeight = parseInt(container.getAttribute('data-max-height'));
-				if (maxHeight > 0) {
-					// Créer un wrapper autour du contenu Telegram (script/iframe)
-					const script = container.querySelector('script');
-					if (script && !container.querySelector('.telegram-post-wrapper')) {
-						const wrapper = document.createElement('div');
-						wrapper.className = 'telegram-post-wrapper has-max-height';
-						wrapper.style.setProperty('--post-max-height', maxHeight + 'px');
-						
-						// Déplacer le script dans le wrapper
-						container.insertBefore(wrapper, script);
-						wrapper.appendChild(script);
-					}
-				}
-			});
-			
-			// Observer pour wrapper les iframes une fois chargées
-			const iframeObserver = new MutationObserver((mutations) => {
-				mutations.forEach((mutation) => {
-					mutation.addedNodes.forEach((node) => {
-						if (node.nodeName === 'IFRAME') {
-							const container = node.closest('.telegram-feed-container[data-max-height]');
-							if (container) {
-								const wrapper = container.querySelector('.telegram-post-wrapper');
-								if (wrapper && !wrapper.contains(node)) {
-									wrapper.appendChild(node);
-								}
-							}
-						}
-					});
-				});
-			});
-			iframeObserver.observe(document.body, { childList: true, subtree: true });
-		}
-		
 		// Initialisation
 		document.addEventListener('DOMContentLoaded', async () => {
-			applyMaxHeights();
 			await loadCalendarEvents();
 			scanTelegramPosts();
 		});

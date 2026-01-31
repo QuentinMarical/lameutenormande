@@ -4247,92 +4247,93 @@
             ".mbr-text, .mbr-section-btn": {
               "text-align": "center"
             },
-            ".telegram-feed-horizontal": {
+            ".telegram-feed-vertical": {
               "display": "flex",
-              "flex-direction": "row",
-              "gap": "1.5rem",
-              "overflow-x": "auto",
-              "overflow-y": "hidden",
-              "padding": "1rem 0.5rem",
-              "margin": "0 -1rem",
-              "scroll-snap-type": "x mandatory",
-              "-webkit-overflow-scrolling": "touch",
-              "scrollbar-width": "thin",
-              "scrollbar-color": "rgba(255, 255, 255, 0.3) transparent"
+              "flex-direction": "column",
+              "gap": "2rem",
+              "padding": "1rem 0",
+              "width": "100%"
             },
-            ".telegram-feed-horizontal::-webkit-scrollbar": {
-              "height": "8px"
-            },
-            ".telegram-feed-horizontal::-webkit-scrollbar-track": {
-              "background": "rgba(255, 255, 255, 0.1)",
-              "border-radius": "4px"
-            },
-            ".telegram-feed-horizontal::-webkit-scrollbar-thumb": {
-              "background": "rgba(255, 255, 255, 0.3)",
-              "border-radius": "4px"
-            },
-            ".telegram-feed-horizontal::-webkit-scrollbar-thumb:hover": {
-              "background": "rgba(255, 255, 255, 0.5)"
-            },
-            ".telegram-feed-horizontal .telegram-feed-container": {
-              "flex": "0 0 auto",
-              "width": "350px",
-              "min-width": "300px",
-              "max-width": "90vw",
-              "scroll-snap-align": "start",
-              "margin": "0"
-            },
-            "@media (min-width: 992px)": {
-              ".telegram-feed-horizontal .telegram-feed-container": {
-                "width": "400px"
-              }
-            },
-            ".telegram-feed-container": {
-              "max-width": "600px",
+            ".telegram-article": {
+              "width": "100%",
+              "max-width": "800px",
               "margin": "0 auto",
-              "border-radius": "12px",
-              "overflow": "hidden",
+              "display": "flex",
+              "align-items": "stretch",
+              "gap": "0"
+            },
+            ".event-arrow-btn": {
+              "display": "flex",
+              "align-items": "center",
+              "justify-content": "center",
+              "width": "60px",
+              "min-width": "60px",
+              "background": "linear-gradient(180deg, #e91e63 0%, #9c27b0 100%)",
+              "border": "none",
+              "border-radius": "16px 0 0 16px",
+              "cursor": "pointer",
+              "transition": "all 0.3s ease",
+              "color": "#fff",
+              "font-size": "1.8rem",
+              "box-shadow": "-4px 0 20px rgba(233, 30, 99, 0.4)"
+            },
+            ".event-arrow-btn:hover": {
+              "width": "70px",
+              "background": "linear-gradient(180deg, #9c27b0 0%, #e91e63 100%)",
+              "box-shadow": "-6px 0 25px rgba(233, 30, 99, 0.6)"
+            },
+            ".event-arrow-btn .arrow-icon": {
+              "transition": "transform 0.3s ease"
+            },
+            ".event-arrow-btn:hover .arrow-icon": {
+              "transform": "translateX(-3px)"
+            },
+            ".telegram-post-wrapper": {
+              "flex": "1",
+              "border-radius": "16px",
               "background": "rgba(255, 255, 255, 0.05)",
               "padding": "1rem",
               "backdrop-filter": "blur(10px)",
               "-webkit-backdrop-filter": "blur(10px)",
-              "box-shadow": "0 4px 20px rgba(0, 0, 0, 0.3)",
-              "max-height": "450px",
-              "position": "relative"
+              "box-shadow": "0 4px 30px rgba(0, 0, 0, 0.4)"
             },
-            ".telegram-feed-container iframe": {
-              "border-radius": "8px",
-              "max-width": "100%"
+            ".telegram-article.has-event .telegram-post-wrapper": {
+              "border-radius": "0 16px 16px 0"
             },
-            ".telegram-feed-container::before": {
-              "content": "''",
-              "position": "absolute",
-              "top": "0",
-              "right": "0",
-              "width": "50px",
-              "height": "45px",
-              "background": "linear-gradient(135deg, transparent 40%, #182533 60%)",
-              "z-index": "10",
-              "pointer-events": "none",
-              "border-radius": "0 8px 0 0"
-            },
-            ".telegram-post-wrapper": {
-              "position": "relative"
-            },
-            ".telegram-post-wrapper.has-max-height": {
-              "max-height": "var(--post-max-height, 300px)",
+            ".telegram-post-content": {
+              "border-radius": "12px",
               "overflow": "hidden"
             },
-            ".telegram-post-wrapper.has-max-height::after": {
-              "content": "''",
-              "position": "absolute",
-              "bottom": "0",
-              "left": "0",
-              "right": "0",
-              "height": "60px",
-              "background": "linear-gradient(to bottom, transparent 0%, rgba(26, 26, 46, 0.95) 100%)",
-              "pointer-events": "none",
-              "border-radius": "0 0 8px 8px"
+            ".telegram-post-content iframe": {
+              "border-radius": "12px",
+              "max-width": "100%",
+              "display": "block"
+            },
+            "@media (max-width: 768px)": {
+              ".telegram-article": {
+                "flex-direction": "column"
+              },
+              ".event-arrow-btn": {
+                "width": "100%",
+                "min-width": "100%",
+                "height": "50px",
+                "border-radius": "16px 16px 0 0",
+                "flex-direction": "row",
+                "gap": "0.5rem"
+              },
+              ".event-arrow-btn:hover": {
+                "width": "100%",
+                "height": "55px"
+              },
+              ".event-arrow-btn .arrow-icon": {
+                "transform": "rotate(-90deg)"
+              },
+              ".event-arrow-btn:hover .arrow-icon": {
+                "transform": "rotate(-90deg) translateX(-3px)"
+              },
+              ".telegram-article.has-event .telegram-post-wrapper": {
+                "border-radius": "0 0 16px 16px"
+              }
             },
             ".btn-primary": {
               "background": "linear-gradient(135deg, #0088cc 0%, #00aced 100%)",
@@ -4360,85 +4361,21 @@
             ".mb-4": {
               "margin-bottom": "1.5rem"
             },
-            ".event-details-wrapper": {
-              "margin-top": "1rem",
-              "padding": "1rem",
-              "background": "linear-gradient(135deg, rgba(233, 30, 99, 0.15) 0%, rgba(156, 39, 176, 0.1) 100%)",
-              "border": "1px solid rgba(233, 30, 99, 0.3)",
-              "border-radius": "12px",
-              "text-align": "center"
-            },
-            ".event-title-display": {
-              "display": "flex",
-              "align-items": "center",
-              "justify-content": "center",
-              "gap": "0.5rem",
-              "margin-bottom": "0.5rem"
-            },
-            ".event-calendar-icon": {
-              "font-size": "1.3rem"
-            },
-            ".event-name": {
-              "font-size": "1.1rem",
-              "font-weight": "700",
-              "color": "#fff"
-            },
-            ".event-date-display": {
-              "font-size": "0.9rem",
-              "color": "rgba(255, 255, 255, 0.7)",
-              "margin-bottom": "0.75rem"
-            },
-            ".btn-event-details": {
-              "display": "inline-flex",
-              "align-items": "center",
-              "gap": "0.5rem",
-              "padding": "0.6rem 1.2rem",
-              "background": "linear-gradient(135deg, #e91e63 0%, #9c27b0 100%)",
-              "border": "none",
-              "border-radius": "25px",
-              "color": "#fff",
-              "font-size": "0.9rem",
-              "font-weight": "600",
-              "cursor": "pointer",
-              "transition": "all 0.3s ease",
-              "box-shadow": "0 4px 15px rgba(233, 30, 99, 0.4)"
-            },
-            ".btn-event-details:hover": {
-              "transform": "translateY(-2px)",
-              "box-shadow": "0 6px 20px rgba(233, 30, 99, 0.6)",
-              "background": "linear-gradient(135deg, #9c27b0 0%, #e91e63 100%)"
-            },
             ".btn-icon": {
               "font-size": "1rem"
-            },
-            "@media (max-width: 576px)": {
-              ".subscribers-card": {
-                "flex-wrap": "wrap",
-                "justify-content": "center",
-                "text-align": "center"
-              },
-              ".subscribers-info": {
-                "width": "100%",
-                "align-items": "center"
-              },
-              ".btn-join-small": {
-                "width": "100%",
-                "text-align": "center",
-                "margin-top": "0.5rem"
-              }
             }
           },
           "_name": "header09",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\" class=\"telegram-actus startm5\" group=\"Content\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"10\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\t\t<header>Telegram Widget</header>\n\t\t<input type=\"range\" inline title=\"Posts to Show\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"10\">\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.7\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row justify-content-center\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>📢 Les actus de la Meute!</b></h1>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">\n\t\t\t\t\tRetrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !\n\t\t\t\t</p>\n\t\t\t\t\n\t\t\t\t<!-- Telegram Channel Widget - Posts -->\n\t\t\t\t<div class=\"telegram-feed-horizontal\">\n\t\t\t\t\t<div class=\"telegram-feed-container\" data-event-name=\"Pop'Anim Festival\" data-max-height=\"210\">\n\t\t\t\t\t\t[JS_CODE_0]\n\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t<div class=\"telegram-feed-container\" data-event-name>\n\t\t\t\t\t\t[JS_CODE_1]\n\t\t\t\t\t</div>\n\t\t\t\t\t\n\t\t\t\t\t<div class=\"telegram-feed-container\" data-event-name>\n\t\t\t\t\t\t[JS_CODE_2]\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://t.me/Annonces_Meute_Normande\" target=\"_blank\" data-app-placeholder=\"Type Text\">\n\t\t\t\t\t\t<span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Script pour lier les événements du calendrier -->\n\t[JS_CODE_3]\n</section>",
+          "_customHTML": "<section data-bs-version=\"5.1\" class=\"telegram-actus startm5\" group=\"Content\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"10\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\t\t<header>Telegram Widget</header>\n\t\t<input type=\"range\" inline title=\"Posts to Show\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"5\">\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.7\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row justify-content-center\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>📢 Les actus de la Meute!</b></h1>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">\n\t\t\t\t\tRetrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !\n\t\t\t\t</p>\n\t\t\t\t\n\t\t\t\t<!-- Telegram Channel Widget - Posts -->\n\t\t\t\t<div class=\"telegram-feed-vertical\">\n\t\t\t\t\t<article class=\"telegram-article\" data-event-name=\"Pop'Anim Festival\">\n\t\t\t\t\t\t<div class=\"telegram-post-wrapper\">\n\t\t\t\t\t\t\t<div class=\"telegram-post-content\">\n\t\t\t\t\t\t\t\t[JS_CODE_0]\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</article>\n\t\t\t\t\t\n\t\t\t\t\t<article class=\"telegram-article\" data-event-name=\"\">\n\t\t\t\t\t\t<div class=\"telegram-post-wrapper\">\n\t\t\t\t\t\t\t<div class=\"telegram-post-content\">\n\t\t\t\t\t\t\t\t[JS_CODE_1]\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</article>\n\t\t\t\t\t\n\t\t\t\t\t<article class=\"telegram-article\" data-event-name=\"\">\n\t\t\t\t\t\t<div class=\"telegram-post-wrapper\">\n\t\t\t\t\t\t\t<div class=\"telegram-post-content\">\n\t\t\t\t\t\t\t\t[JS_CODE_2]\n\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</article>\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://t.me/Annonces_Meute_Normande\" target=\"_blank\" data-app-placeholder=\"Type Text\">\n\t\t\t\t\t\t<span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Script pour lier les événements du calendrier -->\n\t[JS_CODE_3]\n</section>",
           "_cid": "v9TjcZb4qU",
           "_anchor": "header09-p",
           "_PHPplaceholders": [],
           "_JSplaceholders": [
-            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/9\" \n\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t</script>",
-            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/8\" \n\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t</script>",
-            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/7\" \n\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t</script>",
-            "<script>\n\t(function() {\n\t\t'use strict';\n\t\t\n\t\t// URLs du fichier iCal - D'abord local (généré par GitHub Actions), puis fallback\n\t\tconst ICAL_URLS = [\n\t\t\t'events.ics',                    // Fichier local (même dossier)\n\t\t\t'assets/events.ics',             // Fichier dans assets\n\t\t\t'./events.ics',                  // Relatif\n\t\t\twindow.location.origin + '/events.ics'  // URL absolue du site\n\t\t];\n\t\t\n\t\tlet calendarEvents = [];\n\t\tlet icalLoaded = false;\n\t\t\n\t\t// Charger ICAL.js dynamiquement depuis jsDelivr (meilleur support)\n\t\tfunction loadICALScript() {\n\t\t\treturn new Promise((resolve, reject) => {\n\t\t\t\tif (typeof ICAL !== 'undefined') {\n\t\t\t\t\tresolve();\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tconst script = document.createElement('script');\n\t\t\t\tscript.src = 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js';\n\t\t\t\tscript.onload = resolve;\n\t\t\t\tscript.onerror = () => {\n\t\t\t\t\t// Fallback sur une autre CDN\n\t\t\t\t\tconst script2 = document.createElement('script');\n\t\t\t\t\tscript2.src = 'https://unpkg.com/ical.js@1.5.0/build/ical.min.js';\n\t\t\t\t\tscript2.onload = resolve;\n\t\t\t\t\tscript2.onerror = reject;\n\t\t\t\t\tdocument.head.appendChild(script2);\n\t\t\t\t};\n\t\t\t\tdocument.head.appendChild(script);\n\t\t\t});\n\t\t}\n\t\t\n\t\t// Charger les événements du calendrier avec fallback\n\t\tasync function loadCalendarEvents() {\n\t\t\ttry {\n\t\t\t\tawait loadICALScript();\n\t\t\t} catch (e) {\n\t\t\t\tconsole.log('ICAL.js non disponible');\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\tfor (const url of ICAL_URLS) {\n\t\t\t\ttry {\n\t\t\t\t\tconst response = await fetch(url, { cache: 'no-cache' });\n\t\t\t\t\tif (!response.ok) continue;\n\t\t\t\t\t\n\t\t\t\t\tconst icsData = await response.text();\n\t\t\t\t\tif (typeof ICAL !== 'undefined' && icsData.includes('BEGIN:VCALENDAR')) {\n\t\t\t\t\t\tconst jcalData = ICAL.parse(icsData);\n\t\t\t\t\t\tconst comp = new ICAL.Component(jcalData);\n\t\t\t\t\t\tconst vevents = comp.getAllSubcomponents('vevent');\n\t\t\t\t\t\t\n\t\t\t\t\t\tcalendarEvents = vevents.map(vevent => {\n\t\t\t\t\t\t\tconst event = new ICAL.Event(vevent);\n\t\t\t\t\t\t\treturn {\n\t\t\t\t\t\t\t\ttitle: event.summary || '',\n\t\t\t\t\t\t\t\tdescription: event.description || '',\n\t\t\t\t\t\t\t\tlocation: event.location || '',\n\t\t\t\t\t\t\t\tstartDate: event.startDate ? event.startDate.toJSDate() : null,\n\t\t\t\t\t\t\t\tendDate: event.endDate ? event.endDate.toJSDate() : null,\n\t\t\t\t\t\t\t\turl: vevent.getFirstPropertyValue('url') || ''\n\t\t\t\t\t\t\t};\n\t\t\t\t\t\t});\n\t\t\t\t\t\tconsole.log('Calendrier chargé depuis:', url, '-', calendarEvents.length, 'événements');\n\t\t\t\t\t\ticalLoaded = true;\n\t\t\t\t\t\treturn; // Succès, on arrête\n\t\t\t\t\t}\n\t\t\t\t} catch (error) {\n\t\t\t\t\tconsole.log('Tentative échouée:', url);\n\t\t\t\t}\n\t\t\t}\n\t\t\tconsole.log('Calendrier non disponible - les liens événements seront désactivés');\n\t\t}\n\t\t\n\t\t// Trouver un événement par son nom\n\t\tfunction findEventByName(name) {\n\t\t\tif (!name || !calendarEvents.length) return null;\n\t\t\t\n\t\t\tconst searchName = name.toLowerCase().trim();\n\t\t\treturn calendarEvents.find(event => {\n\t\t\t\tconst eventTitle = event.title.toLowerCase();\n\t\t\t\treturn eventTitle.includes(searchName) || searchName.includes(eventTitle);\n\t\t\t});\n\t\t}\n\t\t\n\t\t// Ouvrir la page événements avec l'événement sélectionné\n\t\tfunction openEventInCalendar(eventData) {\n\t\t\t// Stocker l'événement à ouvrir dans sessionStorage\n\t\t\tsessionStorage.setItem('openEventFromActus', JSON.stringify(eventData));\n\t\t\t// Rediriger vers la page événements\n\t\t\twindow.location.href = 'events.html';\n\t\t}\n\t\t\n\t\t// Scanner les posts Telegram pour les noms d'événements\n\t\tfunction scanTelegramPosts() {\n\t\t\t// Scanner les conteneurs existants après un délai\n\t\t\tsetTimeout(() => {\n\t\t\t\tdocument.querySelectorAll('.telegram-feed-container[data-event-name]').forEach(container => {\n\t\t\t\t\tcheckAndAddEventBadge(container);\n\t\t\t\t});\n\t\t\t}, 1500);\n\t\t\t\n\t\t\t// Observer pour les nouveaux iframes\n\t\t\tconst observer = new MutationObserver((mutations) => {\n\t\t\t\tmutations.forEach((mutation) => {\n\t\t\t\t\tmutation.addedNodes.forEach((node) => {\n\t\t\t\t\t\tif (node.nodeType === Node.ELEMENT_NODE) {\n\t\t\t\t\t\t\tconst iframes = node.querySelectorAll ? node.querySelectorAll('iframe') : [];\n\t\t\t\t\t\t\tiframes.forEach(iframe => {\n\t\t\t\t\t\t\t\tconst container = iframe.closest('.telegram-feed-container[data-event-name]');\n\t\t\t\t\t\t\t\tif (container) {\n\t\t\t\t\t\t\t\t\tsetTimeout(() => checkAndAddEventBadge(container), 500);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\t\t\tobserver.observe(document.body, { childList: true, subtree: true });\n\t\t}\n\t\t\n\t\t// Vérifier et ajouter le badge événement sous le post Telegram\n\t\tfunction checkAndAddEventBadge(container) {\n\t\t\tif (!container || !calendarEvents.length) return;\n\t\t\t\n\t\t\t// Éviter les doublons\n\t\t\tif (container.querySelector('.event-details-wrapper')) return;\n\t\t\t\n\t\t\t// Récupérer le nom d'événement depuis l'attribut data-event-name\n\t\t\tconst eventName = container.getAttribute('data-event-name');\n\t\t\tif (!eventName || eventName.trim() === '') return;\n\t\t\t\n\t\t\t// Chercher l'événement correspondant dans le calendrier\n\t\t\tconst event = findEventByName(eventName);\n\t\t\tif (!event) {\n\t\t\t\tconsole.log('Événement non trouvé dans le calendrier:', eventName);\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\t// Vérifier que l'événement est à venir\n\t\t\tconst now = new Date();\n\t\t\tif (new Date(event.startDate) < now) return;\n\t\t\t\n\t\t\t// Créer le wrapper avec le titre de l'événement et le bouton\n\t\t\tconst wrapper = document.createElement('div');\n\t\t\twrapper.className = 'event-details-wrapper';\n\t\t\t\n\t\t\t// Formater la date\n\t\t\tconst eventDate = new Date(event.startDate);\n\t\t\tconst dateStr = eventDate.toLocaleDateString('fr-FR', { \n\t\t\t\tday: 'numeric', \n\t\t\t\tmonth: 'long', \n\t\t\t\tyear: 'numeric' \n\t\t\t});\n\t\t\t\n\t\t\twrapper.innerHTML = `\n\t\t\t\t<div class=\"event-title-display\">\n\t\t\t\t\t<span class=\"event-calendar-icon\">📅</span>\n\t\t\t\t\t<span class=\"event-name\">${event.title}</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"event-date-display\">${dateStr}</div>\n\t\t\t\t<button class=\"btn-event-details\">\n\t\t\t\t\t<span class=\"btn-icon\">📋</span> Voir les détails\n\t\t\t\t</button>\n\t\t\t`;\n\t\t\t\n\t\t\t// Ajouter le listener sur le bouton\n\t\t\twrapper.querySelector('.btn-event-details').addEventListener('click', () => {\n\t\t\t\topenEventInCalendar(event);\n\t\t\t});\n\t\t\t\n\t\t\tcontainer.appendChild(wrapper);\n\t\t\tconsole.log('Badge ajouté pour:', event.title);\n\t\t}\n\t\t\n\t\t// Ajouter des liens vers les événements si détectés (fallback)\n\t\tfunction addEventLinksToContainer(container) {\n\t\t\tif (!container || !calendarEvents.length) return;\n\t\t\tcheckAndAddEventBadge(container);\n\t\t}\n\t\t\n\t\t// Appliquer les hauteurs maximales avec masque de fondu\n\t\tfunction applyMaxHeights() {\n\t\t\tdocument.querySelectorAll('.telegram-feed-container[data-max-height]').forEach(container => {\n\t\t\t\tconst maxHeight = parseInt(container.getAttribute('data-max-height'));\n\t\t\t\tif (maxHeight > 0) {\n\t\t\t\t\t// Créer un wrapper autour du contenu Telegram (script/iframe)\n\t\t\t\t\tconst script = container.querySelector('script');\n\t\t\t\t\tif (script && !container.querySelector('.telegram-post-wrapper')) {\n\t\t\t\t\t\tconst wrapper = document.createElement('div');\n\t\t\t\t\t\twrapper.className = 'telegram-post-wrapper has-max-height';\n\t\t\t\t\t\twrapper.style.setProperty('--post-max-height', maxHeight + 'px');\n\t\t\t\t\t\t\n\t\t\t\t\t\t// Déplacer le script dans le wrapper\n\t\t\t\t\t\tcontainer.insertBefore(wrapper, script);\n\t\t\t\t\t\twrapper.appendChild(script);\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\t\t\t\n\t\t\t// Observer pour wrapper les iframes une fois chargées\n\t\t\tconst iframeObserver = new MutationObserver((mutations) => {\n\t\t\t\tmutations.forEach((mutation) => {\n\t\t\t\t\tmutation.addedNodes.forEach((node) => {\n\t\t\t\t\t\tif (node.nodeName === 'IFRAME') {\n\t\t\t\t\t\t\tconst container = node.closest('.telegram-feed-container[data-max-height]');\n\t\t\t\t\t\t\tif (container) {\n\t\t\t\t\t\t\t\tconst wrapper = container.querySelector('.telegram-post-wrapper');\n\t\t\t\t\t\t\t\tif (wrapper && !wrapper.contains(node)) {\n\t\t\t\t\t\t\t\t\twrapper.appendChild(node);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t});\n\t\t\tiframeObserver.observe(document.body, { childList: true, subtree: true });\n\t\t}\n\t\t\n\t\t// Initialisation\n\t\tdocument.addEventListener('DOMContentLoaded', async () => {\n\t\t\tapplyMaxHeights();\n\t\t\tawait loadCalendarEvents();\n\t\t\tscanTelegramPosts();\n\t\t});\n\t})();\n\t</script>"
+            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/9\" \n\t\t\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t\t\t</script>",
+            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/8\" \n\t\t\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t\t\t</script>",
+            "<script async src=\"https://telegram.org/js/telegram-widget.js?22\" \n\t\t\t\t\t\t\t\t\tdata-telegram-post=\"Annonces_Meute_Normande/7\" \n\t\t\t\t\t\t\t\t\tdata-width=\"100%\"\n\t\t\t\t\t\t\t\t\tdata-color=\"E91E63\"\n\t\t\t\t\t\t\t\t\tdata-dark=\"1\"\n\t\t\t\t\t\t\t\t\tdata-dark-color=\"E91E63\">\n\t\t\t\t\t\t\t\t</script>",
+            "<script>\n\t(function() {\n\t\t'use strict';\n\t\t\n\t\t// URLs du fichier iCal - D'abord local (généré par GitHub Actions), puis fallback\n\t\tconst ICAL_URLS = [\n\t\t\t'events.ics',                    // Fichier local (même dossier)\n\t\t\t'assets/events.ics',             // Fichier dans assets\n\t\t\t'./events.ics',                  // Relatif\n\t\t\twindow.location.origin + '/events.ics'  // URL absolue du site\n\t\t];\n\t\t\n\t\tlet calendarEvents = [];\n\t\tlet icalLoaded = false;\n\t\t\n\t\t// Charger ICAL.js dynamiquement depuis jsDelivr (meilleur support)\n\t\tfunction loadICALScript() {\n\t\t\treturn new Promise((resolve, reject) => {\n\t\t\t\tif (typeof ICAL !== 'undefined') {\n\t\t\t\t\tresolve();\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tconst script = document.createElement('script');\n\t\t\t\tscript.src = 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js';\n\t\t\t\tscript.onload = resolve;\n\t\t\t\tscript.onerror = () => {\n\t\t\t\t\t// Fallback sur une autre CDN\n\t\t\t\t\tconst script2 = document.createElement('script');\n\t\t\t\t\tscript2.src = 'https://unpkg.com/ical.js@1.5.0/build/ical.min.js';\n\t\t\t\t\tscript2.onload = resolve;\n\t\t\t\t\tscript2.onerror = reject;\n\t\t\t\t\tdocument.head.appendChild(script2);\n\t\t\t\t};\n\t\t\t\tdocument.head.appendChild(script);\n\t\t\t});\n\t\t}\n\t\t\n\t\t// Charger les événements du calendrier avec fallback\n\t\tasync function loadCalendarEvents() {\n\t\t\ttry {\n\t\t\t\tawait loadICALScript();\n\t\t\t} catch (e) {\n\t\t\t\tconsole.log('ICAL.js non disponible');\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\tfor (const url of ICAL_URLS) {\n\t\t\t\ttry {\n\t\t\t\t\tconst response = await fetch(url, { cache: 'no-cache' });\n\t\t\t\t\tif (!response.ok) continue;\n\t\t\t\t\t\n\t\t\t\t\tconst icsData = await response.text();\n\t\t\t\t\tif (typeof ICAL !== 'undefined' && icsData.includes('BEGIN:VCALENDAR')) {\n\t\t\t\t\t\tconst jcalData = ICAL.parse(icsData);\n\t\t\t\t\t\tconst comp = new ICAL.Component(jcalData);\n\t\t\t\t\t\tconst vevents = comp.getAllSubcomponents('vevent');\n\t\t\t\t\t\t\n\t\t\t\t\t\tcalendarEvents = vevents.map(vevent => {\n\t\t\t\t\t\t\tconst event = new ICAL.Event(vevent);\n\t\t\t\t\t\t\treturn {\n\t\t\t\t\t\t\t\ttitle: event.summary || '',\n\t\t\t\t\t\t\t\tdescription: event.description || '',\n\t\t\t\t\t\t\t\tlocation: event.location || '',\n\t\t\t\t\t\t\t\tstartDate: event.startDate ? event.startDate.toJSDate() : null,\n\t\t\t\t\t\t\t\tendDate: event.endDate ? event.endDate.toJSDate() : null,\n\t\t\t\t\t\t\t\turl: vevent.getFirstPropertyValue('url') || ''\n\t\t\t\t\t\t\t};\n\t\t\t\t\t\t});\n\t\t\t\t\t\tconsole.log('Calendrier chargé depuis:', url, '-', calendarEvents.length, 'événements');\n\t\t\t\t\t\ticalLoaded = true;\n\t\t\t\t\t\treturn; // Succès, on arrête\n\t\t\t\t\t}\n\t\t\t\t} catch (error) {\n\t\t\t\t\tconsole.log('Tentative échouée:', url);\n\t\t\t\t}\n\t\t\t}\n\t\t\tconsole.log('Calendrier non disponible - les liens événements seront désactivés');\n\t\t}\n\t\t\n\t\t// Trouver un événement par son nom\n\t\tfunction findEventByName(name) {\n\t\t\tif (!name || !calendarEvents.length) return null;\n\t\t\t\n\t\t\tconst searchName = name.toLowerCase().trim();\n\t\t\treturn calendarEvents.find(event => {\n\t\t\t\tconst eventTitle = event.title.toLowerCase();\n\t\t\t\treturn eventTitle.includes(searchName) || searchName.includes(eventTitle);\n\t\t\t});\n\t\t}\n\t\t\n\t\t// Ouvrir la page événements avec l'événement sélectionné\n\t\tfunction openEventInCalendar(eventData) {\n\t\t\t// Stocker l'événement à ouvrir dans sessionStorage\n\t\t\tsessionStorage.setItem('openEventFromActus', JSON.stringify(eventData));\n\t\t\t// Rediriger vers la page événements\n\t\t\twindow.location.href = 'events.html';\n\t\t}\n\t\t\n\t\t// Scanner les posts Telegram pour les noms d'événements\n\t\tfunction scanTelegramPosts() {\n\t\t\t// Scanner les articles existants après un délai\n\t\t\tsetTimeout(() => {\n\t\t\t\tdocument.querySelectorAll('.telegram-article[data-event-name]').forEach(article => {\n\t\t\t\t\tcheckAndAddEventBadge(article);\n\t\t\t\t});\n\t\t\t}, 1500);\n\t\t\t\n\t\t\t// Observer pour les nouveaux iframes\n\t\t\tconst observer = new MutationObserver((mutations) => {\n\t\t\t\tmutations.forEach((mutation) => {\n\t\t\t\t\tmutation.addedNodes.forEach((node) => {\n\t\t\t\t\t\tif (node.nodeType === Node.ELEMENT_NODE) {\n\t\t\t\t\t\t\tconst iframes = node.querySelectorAll ? node.querySelectorAll('iframe') : [];\n\t\t\t\t\t\t\tiframes.forEach(iframe => {\n\t\t\t\t\t\t\t\tconst article = iframe.closest('.telegram-article[data-event-name]');\n\t\t\t\t\t\t\t\tif (article) {\n\t\t\t\t\t\t\t\t\tsetTimeout(() => checkAndAddEventBadge(article), 500);\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t});\n\t\t\t\t});\n\t\t\t});\n\t\t\t\n\t\t\tobserver.observe(document.body, { childList: true, subtree: true });\n\t\t}\n\t\t\n\t\t// Vérifier et ajouter le bouton fléché à gauche du post Telegram\n\t\tfunction checkAndAddEventBadge(article) {\n\t\t\tif (!article || !calendarEvents.length) return;\n\t\t\t\n\t\t\t// Éviter les doublons\n\t\t\tif (article.querySelector('.event-arrow-btn')) return;\n\t\t\t\n\t\t\t// Récupérer le nom d'événement depuis l'attribut data-event-name\n\t\t\tconst eventName = article.getAttribute('data-event-name');\n\t\t\tif (!eventName || eventName.trim() === '') return;\n\t\t\t\n\t\t\t// Chercher l'événement correspondant dans le calendrier\n\t\t\tconst event = findEventByName(eventName);\n\t\t\tif (!event) {\n\t\t\t\tconsole.log('Événement non trouvé dans le calendrier:', eventName);\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\t// Vérifier que l'événement est à venir\n\t\t\tconst now = new Date();\n\t\t\tif (new Date(event.startDate) < now) return;\n\t\t\t\n\t\t\t// Ajouter la classe pour le style\n\t\t\tarticle.classList.add('has-event');\n\t\t\t\n\t\t\t// Créer le bouton fléché\n\t\t\tconst arrowBtn = document.createElement('button');\n\t\t\tarrowBtn.className = 'event-arrow-btn';\n\t\t\tarrowBtn.title = 'Voir les détails de ' + event.title;\n\t\t\tarrowBtn.innerHTML = '<span class=\"arrow-icon\">◀</span>';\n\t\t\t\n\t\t\t// Ajouter le listener sur le bouton\n\t\t\tarrowBtn.addEventListener('click', () => {\n\t\t\t\topenEventInCalendar(event);\n\t\t\t});\n\t\t\t\n\t\t\t// Insérer le bouton au début de l'article (avant le wrapper)\n\t\t\tarticle.insertBefore(arrowBtn, article.firstChild);\n\t\t\tconsole.log('Bouton événement ajouté pour:', event.title);\n\t\t}\n\t\t\n\t\t// Ajouter des liens vers les événements si détectés (fallback)\n\t\tfunction addEventLinksToContainer(container) {\n\t\t\tif (!container || !calendarEvents.length) return;\n\t\t\tcheckAndAddEventBadge(container);\n\t\t}\n\t\t\n\t\t// Initialisation\n\t\tdocument.addEventListener('DOMContentLoaded', async () => {\n\t\t\tawait loadCalendarEvents();\n\t\t\tscanTelegramPosts();\n\t\t});\n\t})();\n\t</script>"
           ],
           "_protectedParams": [],
           "_global": false,
