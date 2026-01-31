@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=JcavxB"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=JcavxB" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=862ZQ3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=862ZQ3" type="text/css">
 
   
   
@@ -93,7 +93,7 @@
 				
 				<!-- Telegram Channel Widget - Posts -->
 				<div class="telegram-feed-vertical">
-					<article class="telegram-article" data-event-name="Pop'Anim Festival">
+					<article class="telegram-article">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -107,7 +107,7 @@
 						</div>
 					</article>
 					
-					<article class="telegram-article" data-event-name="">
+					<article class="telegram-article">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -121,7 +121,7 @@
 						</div>
 					</article>
 					
-					<article class="telegram-article" data-event-name="">
+					<article class="telegram-article">
 						<div class="telegram-post-wrapper">
 							<div class="telegram-post-content">
 								<script async src="https://telegram.org/js/telegram-widget.js?22" 
@@ -391,13 +391,14 @@
 		}
 		
 		// Scanner les posts Telegram pour les noms d'événements
-		function scanTelegramPosts() {
-			// Scanner les articles existants après un délai
-			setTimeout(() => {
-				document.querySelectorAll('.telegram-article[data-event-name]').forEach(article => {
-					checkAndAddEventBadge(article);
-				});
-			}, 1500);
+		async function scanTelegramPosts() {
+			// Scanner les articles existants après un délai pour laisser les iframes charger
+			setTimeout(async () => {
+				const articles = document.querySelectorAll('.telegram-article');
+				for (const article of articles) {
+					await processArticle(article);
+				}
+			}, 2000);
 			
 			// Observer pour les nouveaux iframes
 			const observer = new MutationObserver((mutations) => {
@@ -406,9 +407,9 @@
 						if (node.nodeType === Node.ELEMENT_NODE) {
 							const iframes = node.querySelectorAll ? node.querySelectorAll('iframe') : [];
 							iframes.forEach(iframe => {
-								const article = iframe.closest('.telegram-article[data-event-name]');
+								const article = iframe.closest('.telegram-article');
 								if (article) {
-									setTimeout(() => checkAndAddEventBadge(article), 500);
+									setTimeout(() => processArticle(article), 1000);
 								}
 							});
 						}
@@ -419,15 +420,32 @@
 			observer.observe(document.body, { childList: true, subtree: true });
 		}
 		
-		// Vérifier et ajouter le bouton fléché à gauche du post Telegram
-		function checkAndAddEventBadge(article) {
+		// Traiter un article : récupérer le contenu du post et détecter l'événement
+		async function processArticle(article) {
 			if (!article || !calendarEvents.length) return;
 			
 			// Éviter les doublons
 			if (article.querySelector('.event-arrow-btn')) return;
 			
-			// Récupérer le nom d'événement depuis l'attribut data-event-name
-			const eventName = article.getAttribute('data-event-name');
+			// Récupérer l'ID du post depuis le script Telegram
+			const script = article.querySelector('script[data-telegram-post]');
+			if (!script) return;
+			
+			const postId = script.getAttribute('data-telegram-post');
+			if (!postId) return;
+			
+			// D'abord vérifier si data-event-name est déjà défini manuellement
+			let eventName = article.getAttribute('data-event-name');
+			
+			// Si pas de nom manuel, essayer de le récupérer automatiquement
+			if (!eventName || eventName.trim() === '') {
+				eventName = await fetchEventNameFromPost(postId);
+				if (eventName) {
+					article.setAttribute('data-event-name', eventName);
+					console.log('Nom d\'événement détecté automatiquement:', eventName);
+				}
+			}
+			
 			if (!eventName || eventName.trim() === '') return;
 			
 			// Chercher l'événement correspondant dans le calendrier
@@ -437,6 +455,66 @@
 				return;
 			}
 			
+			// Ajouter le bouton
+			addEventButton(article, event);
+		}
+		
+		// Récupérer le nom d'événement depuis le post Telegram via la version web
+		async function fetchEventNameFromPost(postId) {
+			// Liste de proxies CORS à essayer
+			const corsProxies = [
+				'https://api.allorigins.win/raw?url=',
+				'https://corsproxy.io/?',
+				'https://api.codetabs.com/v1/proxy?quest='
+			];
+			
+			const telegramUrl = `https://t.me/${postId}?embed=1`;
+			
+			for (const proxy of corsProxies) {
+				try {
+					const response = await fetch(proxy + encodeURIComponent(telegramUrl), {
+						cache: 'no-cache'
+					});
+					
+					if (!response.ok) continue;
+					
+					const html = await response.text();
+					
+					// Chercher le pattern 📅 suivi du nom de l'événement
+					// Le texte peut être dans différents formats HTML
+					const patterns = [
+						/📅\s*([^\n<]+)/,
+						/&#128197;\s*([^\n<]+)/,
+						/\u{1F4C5}\s*([^\n<]+)/u
+					];
+					
+					for (const pattern of patterns) {
+						const match = html.match(pattern);
+						if (match && match[1]) {
+							// Nettoyer le nom (enlever les balises HTML résiduelles et trim)
+							let name = match[1]
+								.replace(/<[^>]*>/g, '')
+								.replace(/&[^;]+;/g, ' ')
+								.trim();
+							
+							// Prendre seulement la première ligne si plusieurs lignes
+							name = name.split('\n')[0].trim();
+							
+							if (name.length > 2 && name.length < 100) {
+								return name;
+							}
+						}
+					}
+				} catch (error) {
+					console.log('Proxy échoué:', proxy);
+				}
+			}
+			
+			return null;
+		}
+		
+		// Ajouter le bouton événement à l'article
+		function addEventButton(article, event) {
 			// Ajouter la classe pour le style
 			article.classList.add('has-event');
 			
@@ -451,9 +529,14 @@
 				openEventModal(event);
 			});
 			
-			// Insérer le bouton au début de l'article (avant le wrapper)
-			article.insertBefore(arrowBtn, article.firstChild);
+			// Insérer le bouton à la fin de l'article (après le wrapper)
+			article.appendChild(arrowBtn);
 			console.log('Bouton événement ajouté pour:', event.title);
+		}
+		
+		// Vérifier et ajouter le bouton fléché (legacy - pour compatibilité)
+		function checkAndAddEventBadge(article) {
+			processArticle(article);
 		}
 		
 		// Ajouter des liens vers les événements si détectés (fallback)
