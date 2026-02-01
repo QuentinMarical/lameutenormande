@@ -6,6 +6,23 @@ X-WR-TIMEZONE:GMT
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
+SUMMARY:Furry Black Light 14
+DESCRIPTION:Cette année la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">Cette année la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.</p><p style="margin:0px\; box-sizing:border-box">40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !</p></div>
+DTSTART:20261027T230500Z
+DTEND:20261101T225500Z
+LOCATION:H4 Hôtel Paris Pleyel\,149 Boulevard Anatole France\, 93200 Saint-Denis\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:04b1ec6cbf0b406bae9c304288260fb0@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260201T175835Z
+LAST-MODIFIED:20260201T180006Z
+DTSTAMP:20260201T180008Z
+URL:https://fblacklight.org/fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY: Japan Otaku Festival Lisieux
 DESCRIPTION:
 DTSTART:20251129T090000Z
