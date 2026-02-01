@@ -7,19 +7,19 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
 SUMMARY:Furry Black Light 14
-DESCRIPTION:Cette année la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">Cette année la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.</p><p style="margin:0px\; box-sizing:border-box">40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !</p></div>
-DTSTART:20261027T230500Z
-DTEND:20261101T225500Z
-LOCATION:H4 Hôtel Paris Pleyel\,149 Boulevard Anatole France\, 93200 Saint-Denis\, France
+DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Cette&nbsp\;année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4  Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.<br /></div><p class="framer-text framer-styles-preset-1gatu9o" dir="ltr">40  étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un  séjour exceptionnel et haut-de-gamme qui vous attend pour cette  prochaine édition. Et le centre de convention sera entièrement privatisé  pour notre évènement !<br /></p><div><br /></div>
+DTSTART;VALUE=DATE:20261028
+DTEND;VALUE=DATE:20261102
+LOCATION:H4 Hôtel Paris Pleyel\, 149 Boulevard Anatole France\, 93200 Saint-Denis\, France
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:04b1ec6cbf0b406bae9c304288260fb0@zoho.eu
 TRANSP:OPAQUE
 CREATED:20260201T175835Z
-LAST-MODIFIED:20260201T180006Z
-DTSTAMP:20260201T180008Z
+LAST-MODIFIED:20260201T195153Z
+DTSTAMP:20260201T195155Z
 URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -317,21 +317,6 @@ DTSTAMP:20260123T175800Z
 URL:https://www.festival-ostara.fr/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:TEST
-DESCRIPTION:
-DTSTART;VALUE=DATE:20260204
-DTEND;VALUE=DATE:20260205
-LOCATION:
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:6c152508d52746458ffebcf381f9be89@zoho.eu
-TRANSP:TRANSPARENT
-CREATED:20260131T125208Z
-LAST-MODIFIED:20260131T125208Z
-DTSTAMP:20260131T125209Z
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Ponto Geek 2025
 DESCRIPTION:
 DTSTART;VALUE=DATE:20251004
@@ -375,8 +360,8 @@ STATUS:CONFIRMED
 UID:85cec1bb19ad497782e1dc33c9a044de@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260127T174605Z
-LAST-MODIFIED:20260127T175246Z
-DTSTAMP:20260127T175247Z
+LAST-MODIFIED:20260201T195314Z
+DTSTAMP:20260201T195315Z
 URL:https://halloweenbernay.fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -737,6 +722,23 @@ TRANSP:TRANSPARENT
 CREATED:20251204T123811Z
 LAST-MODIFIED:20251211T080124Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Paris Manga et Sci-Fi Show
+DESCRIPTION:39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.</div>
+DTSTART;VALUE=DATE:20260314
+DTEND;VALUE=DATE:20260316
+LOCATION:Parc des Expositions de Villepinte - Hall 7\, 93420 Villepinte
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:dfcffc74368c417a980ec12ff9a45297@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T194949Z
+LAST-MODIFIED:20260201T194949Z
+DTSTAMP:20260201T194950Z
+URL:https://www.parismanga.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Cidre & Dragon 2026
