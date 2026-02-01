@@ -6,23 +6,6 @@ X-WR-TIMEZONE:GMT
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
-SUMMARY:Furry Black Light 14
-DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Cette&nbsp\;année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4  Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.<br /></div><p class="framer-text framer-styles-preset-1gatu9o" dir="ltr">40  étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un  séjour exceptionnel et haut-de-gamme qui vous attend pour cette  prochaine édition. Et le centre de convention sera entièrement privatisé  pour notre évènement !<br /></p><div><br /></div>
-DTSTART;VALUE=DATE:20261028
-DTEND;VALUE=DATE:20261102
-LOCATION:H4 Hôtel Paris Pleyel\, 149 Boulevard Anatole France\, 93200 Saint-Denis\, France
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:04b1ec6cbf0b406bae9c304288260fb0@zoho.eu
-TRANSP:OPAQUE
-CREATED:20260201T175835Z
-LAST-MODIFIED:20260201T195153Z
-DTSTAMP:20260201T195155Z
-URL:https://fblacklight.org/fr/
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY: Japan Otaku Festival Lisieux
 DESCRIPTION:
 DTSTART:20251129T090000Z
@@ -37,6 +20,23 @@ CREATED:20250924T101344Z
 LAST-MODIFIED:20260123T172254Z
 DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Canthrofur 6
+DESCRIPTION:6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.<br /></div>
+DTSTART:20270114T090000Z
+DTEND:20270118T090000Z
+LOCATION:Village de vacances VTF Le domaine des Puys\, Guérinot\, 63950 Saint-Sauves-d'Auvergne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0c6c6be226594bd5aabd9bd07af43317@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T203943Z
+LAST-MODIFIED:20260201T203943Z
+DTSTAMP:20260201T203944Z
+URL:https://www.canthrofur.org/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Fête médiéval Jeanne d'Arc
@@ -218,8 +218,8 @@ DTSTAMP:20260122T193551Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
-DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.<br /></div>
+DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br /></div>
 DTSTART:20261107T080000Z
 DTEND:20261107T195900Z
 LOCATION:Gymnase Christian Gand Gymnaste Christian gand\, Rue Henri Matisse\, 76290 Montivilliers\, France
@@ -229,8 +229,8 @@ STATUS:CONFIRMED
 UID:43a9e7b0c0f5453ea5d01c8e3cbb462e@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T215221Z
-LAST-MODIFIED:20251210T215250Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260201T203325Z
+DTSTAMP:20260201T203326Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Angers Geekfest
@@ -754,6 +754,23 @@ TRANSP:TRANSPARENT
 CREATED:20250924T101444Z
 LAST-MODIFIED:20250924T101444Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Furry BlackLight 2026
+DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n\n\nNouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Cette&nbsp\;année\, la FBL vous accueille de nouveau dans le cadre  prestigieux du H4  Hotel Wyndham Paris Pleyel Resort\, un des plus grands  hôtels de Paris.<br /></div><p dir="ltr" class="framer-text framer-styles-preset-1gatu9o">40   étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un   séjour exceptionnel et haut-de-gamme qui vous attend pour cette   prochaine édition. Et le centre de convention sera entièrement privatisé   pour notre évènement !<br /></p><div dir="ltr"><br /></div><div dir="ltr">Nouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.</div>
+DTSTART;VALUE=DATE:20261028
+DTEND;VALUE=DATE:20261102
+LOCATION:H4 Wyndham Paris Pleyel\, 149 Boulevard Anatole France\, 93200 Saint-Denis
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e093e80240264c6093b00376da1fdbb1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T202354Z
+LAST-MODIFIED:20260201T202508Z
+DTSTAMP:20260201T202510Z
+URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Médiévales du château d’Harcourt
