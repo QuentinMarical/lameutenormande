@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kYdGNH"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kYdGNH" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=gZ6Vhp"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=gZ6Vhp" type="text/css">
 
   
   
@@ -139,8 +139,9 @@
 			CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
 			PAST_EVENTS_DAYS: 30,
 			FUTURE_EVENTS_DAYS: 90, // Afficher jusqu'à 90 jours dans le futur
-			IFRAME_MIN_HEIGHT: 200,
-			IFRAME_DEFAULT_HEIGHT: 350,
+			IFRAME_MIN_HEIGHT: 80,
+			IFRAME_DEFAULT_HEIGHT: 150, // Hauteur réduite pour ne montrer que le texte
+			IFRAME_MAX_HEIGHT: 250, // Limite max pour éviter les images trop grandes
 			RETRY_ATTEMPTS: 2,
 			RETRY_DELAY: 1000
 		};
@@ -163,7 +164,12 @@
 				for (const [iframeId, iframe] of iframeRegistry) {
 					try {
 						if (iframe.contentWindow === e.source && e.data.height) {
-							iframe.style.height = Math.max(e.data.height, CONFIG.IFRAME_MIN_HEIGHT) + 'px';
+							// Limiter entre min et max pour ne montrer que le texte
+							const clampedHeight = Math.min(
+								Math.max(e.data.height, CONFIG.IFRAME_MIN_HEIGHT),
+								CONFIG.IFRAME_MAX_HEIGHT
+							);
+							iframe.style.height = clampedHeight + 'px';
 							break;
 						}
 					} catch (err) { /* Cross-origin, ignorer */ }
@@ -305,7 +311,7 @@
 			return [];
 		}
 		
-		// Générer les posts Telegram (hybride: calendrier + fallback)
+		// Générer les posts Telegram (hybride: calendrier + fallback combinés)
 		function genererPostsTelegram() {
 			const feed = document.getElementById('telegram-feed');
 			if (!feed) return;
@@ -314,25 +320,41 @@
 			const maxPosts = parseInt(feed.dataset.count) || 5;
 			const latestPost = parseInt(feed.dataset.latest) || 10;
 			
-			// Mode 1: Posts depuis le calendrier
+			// Collecter les numéros de posts déjà utilisés (du calendrier)
+			const usedPostNums = new Set();
+			let postsAdded = 0;
+			
+			// 1. D'abord afficher les posts liés au calendrier
 			if (postsFromCalendar.length > 0) {
-				const postsToShow = postsFromCalendar.slice(0, maxPosts);
-				console.log('📨 Mode calendrier:', postsToShow.length, 'posts avec événements');
+				const calendarPosts = postsFromCalendar.slice(0, maxPosts);
+				console.log('📨 Posts calendrier:', calendarPosts.length);
 				
-				postsToShow.forEach(event => {
+				calendarPosts.forEach(event => {
 					creerArticleTelegram(feed, channel, event.postNum, event);
+					usedPostNums.add(parseInt(event.postNum));
+					postsAdded++;
 				});
-			} 
-			// Mode 2: Fallback - afficher les derniers posts du canal
-			else {
-				console.log('📨 Mode fallback: posts', latestPost, 'à', (latestPost - maxPosts + 1));
-				for (let i = 0; i < maxPosts; i++) {
-					const postNum = latestPost - i;
-					if (postNum > 0) {
-						creerArticleTelegram(feed, channel, postNum, null);
+			}
+			
+			// 2. Compléter avec les derniers posts du canal (fallback)
+			if (postsAdded < maxPosts) {
+				const remaining = maxPosts - postsAdded;
+				console.log('📨 Ajout fallback:', remaining, 'posts supplémentaires');
+				
+				let fallbackAdded = 0;
+				let currentPost = latestPost;
+				
+				while (fallbackAdded < remaining && currentPost > 0) {
+					// Éviter les doublons avec les posts du calendrier
+					if (!usedPostNums.has(currentPost)) {
+						creerArticleTelegram(feed, channel, currentPost, null);
+						fallbackAdded++;
 					}
+					currentPost--;
 				}
 			}
+			
+			console.log('📨 Total posts affichés:', postsAdded + (maxPosts - postsAdded));
 		}
 		
 		// Déterminer si un événement est passé, en cours ou à venir
@@ -387,14 +409,18 @@
 			// Enregistrer l'iframe pour le gestionnaire centralisé
 			iframeRegistry.set(iframeId, iframe);
 			
-			// Fallback si pas de message de resize après 3s
+			// Fallback si pas de message de resize après 2s
 			iframe.onload = function() {
 				setTimeout(() => {
 					const currentHeight = parseInt(iframe.style.height) || 0;
 					if (currentHeight < CONFIG.IFRAME_MIN_HEIGHT) {
 						iframe.style.height = CONFIG.IFRAME_DEFAULT_HEIGHT + 'px';
 					}
-				}, 3000);
+					// Limiter la hauteur max pour masquer les images
+					if (currentHeight > CONFIG.IFRAME_MAX_HEIGHT) {
+						iframe.style.height = CONFIG.IFRAME_MAX_HEIGHT + 'px';
+					}
+				}, 2000);
 			};
 			
 			// Gestion erreur iframe
