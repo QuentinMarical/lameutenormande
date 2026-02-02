@@ -25,7 +25,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=cvWdR0"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=cvWdR0" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=Dn6SNb"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=Dn6SNb" type="text/css">
 
   
   
@@ -363,7 +363,7 @@
 			
 			if (event.location) {
 				const loc = encodeURIComponent(event.location);
-				html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div><div class="event-location-buttons"><a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener" class="location-btn location-google">🗺️ Google</a><a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener" class="location-btn location-waze">🚗 Waze</a></div></div></div>`;
+				html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div><div class="event-location-buttons"><a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener" class="location-btn location-google">Google Maps</a><a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener" class="location-btn location-waze">Waze</a><a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener" class="location-btn location-apple">Apple Plans</a></div></div></div>`;
 			}
 			
 			html += '</div><div class="event-modal-right">';

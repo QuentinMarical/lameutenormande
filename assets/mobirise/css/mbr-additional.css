@@ -4163,7 +4163,7 @@ a {
 }
 @media (max-width: 992px) {
   .cid-v9TjcZb4qU .events-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 }
@@ -4463,43 +4463,51 @@ a {
 .cid-v9TjcZb4qU .event-location-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 .cid-v9TjcZb4qU .location-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  flex: 1;
+  min-width: 100px;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
-  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
 }
 .cid-v9TjcZb4qU .location-google {
-  background: rgba(66, 133, 244, 0.2);
-  color: #4285f4;
-  border: 1px solid rgba(66, 133, 244, 0.3);
+  background: rgba(66, 133, 244, 0.8);
+  border-color: #4285F4;
 }
 .cid-v9TjcZb4qU .location-google:hover {
-  background: rgba(66, 133, 244, 0.3);
+  background: #4285F4;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.5);
+  transform: translateY(-2px);
 }
 .cid-v9TjcZb4qU .location-waze {
-  background: rgba(51, 204, 255, 0.2);
-  color: #33ccff;
-  border: 1px solid rgba(51, 204, 255, 0.3);
+  background: rgba(0, 198, 219, 0.8);
+  border-color: #00C6DB;
 }
 .cid-v9TjcZb4qU .location-waze:hover {
-  background: rgba(51, 204, 255, 0.3);
+  background: #00C6DB;
+  box-shadow: 0 4px 12px rgba(0, 198, 219, 0.5);
+  transform: translateY(-2px);
 }
 .cid-v9TjcZb4qU .location-apple {
-  background: rgba(150, 150, 150, 0.2);
-  color: #aaa;
-  border: 1px solid rgba(150, 150, 150, 0.3);
+  background: rgba(155, 155, 155, 0.8);
+  border-color: #9B9B9B;
 }
 .cid-v9TjcZb4qU .location-apple:hover {
-  background: rgba(150, 150, 150, 0.3);
+  background: #9B9B9B;
+  box-shadow: 0 4px 12px rgba(155, 155, 155, 0.5);
+  transform: translateY(-2px);
 }
 .cid-v9TjcZb4qU .event-url-button {
   display: inline-block;
