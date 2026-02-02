@@ -4183,10 +4183,14 @@ a {
     border-radius: 16px 16px 0 0;
     order: 1;
   }
+  .cid-v9TjcZb4qU .event-modal.show {
+    padding: 0.5rem;
+  }
   .cid-v9TjcZb4qU .event-modal-content {
-    width: 95%;
+    width: 100%;
     padding: 1.5rem;
-    max-height: 90vh;
+    padding-top: 3.5rem;
+    max-height: calc(99vh);
     border-radius: 16px;
   }
   .cid-v9TjcZb4qU .event-modal-title {
@@ -4198,11 +4202,15 @@ a {
     gap: 1rem;
   }
   .cid-v9TjcZb4qU .event-modal-close {
-    width: 36px;
-    height: 36px;
+    position: fixed;
+    width: 40px;
+    height: 40px;
     font-size: 1.5rem;
-    top: 0.75rem;
+    top: 1rem;
     right: 1rem;
+    z-index: 10;
+    background: rgba(30, 20, 40, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
   .cid-v9TjcZb4qU .event-info-row {
     padding: 0.75rem;
@@ -4210,6 +4218,9 @@ a {
   .cid-v9TjcZb4qU .event-info-icon {
     font-size: 1.25rem;
     width: 32px;
+  }
+  .cid-v9TjcZb4qU .event-modal-body {
+    padding-bottom: 1rem;
   }
 }
 .cid-v9TjcZb4qU .btn-primary {
@@ -4257,9 +4268,11 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 .cid-v9TjcZb4qU .event-modal-overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -4271,16 +4284,33 @@ a {
 }
 .cid-v9TjcZb4qU .event-modal-content {
   position: relative;
+  z-index: 1;
   background: linear-gradient(135deg, rgba(30, 20, 40, 0.95), rgba(20, 15, 35, 0.98));
   border-radius: 24px;
   max-width: 900px;
-  width: 90%;
-  max-height: 85vh;
+  width: 100%;
+  max-height: calc(98vh);
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 2.5rem;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 100, 200, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: slideUp 0.3s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 110, 180, 0.5) transparent;
+}
+.cid-v9TjcZb4qU .event-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+.cid-v9TjcZb4qU .event-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cid-v9TjcZb4qU .event-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 110, 180, 0.5);
+  border-radius: 4px;
+}
+.cid-v9TjcZb4qU .event-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 110, 180, 0.7);
 }
 .cid-v9TjcZb4qU .event-modal.closing .event-modal-content {
   animation: slideDown 0.3s ease forwards;

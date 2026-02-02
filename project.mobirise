@@ -4423,10 +4423,14 @@
                 "border-radius": "16px 16px 0 0",
                 "order": "1"
               },
+              ".event-modal.show": {
+                "padding": "0.5rem"
+              },
               ".event-modal-content": {
-                "width": "95%",
+                "width": "100%",
                 "padding": "1.5rem",
-                "max-height": "90vh",
+                "padding-top": "3.5rem",
+                "max-height": "calc(100vh - 1rem)",
                 "border-radius": "16px"
               },
               ".event-modal-title": {
@@ -4438,11 +4442,15 @@
                 "gap": "1rem"
               },
               ".event-modal-close": {
-                "width": "36px",
-                "height": "36px",
+                "position": "fixed",
+                "width": "40px",
+                "height": "40px",
                 "font-size": "1.5rem",
-                "top": "0.75rem",
-                "right": "1rem"
+                "top": "1rem",
+                "right": "1rem",
+                "z-index": "10",
+                "background": "rgba(30, 20, 40, 0.9)",
+                "box-shadow": "0 2px 10px rgba(0, 0, 0, 0.3)"
               },
               ".event-info-row": {
                 "padding": "0.75rem"
@@ -4450,6 +4458,9 @@
               ".event-info-icon": {
                 "font-size": "1.25rem",
                 "width": "32px"
+              },
+              ".event-modal-body": {
+                "padding-bottom": "1rem"
               }
             },
             ".btn-primary": {
@@ -4496,10 +4507,12 @@
             ".event-modal.show": {
               "display": "flex",
               "align-items": "center",
-              "justify-content": "center"
+              "justify-content": "center",
+              "padding": "1rem",
+              "box-sizing": "border-box"
             },
             ".event-modal-overlay": {
-              "position": "absolute",
+              "position": "fixed",
               "top": "0",
               "left": "0",
               "width": "100%",
@@ -4511,16 +4524,33 @@
             },
             ".event-modal-content": {
               "position": "relative",
+              "z-index": "1",
               "background": "linear-gradient(135deg, rgba(30, 20, 40, 0.95), rgba(20, 15, 35, 0.98))",
               "border-radius": "24px",
               "max-width": "900px",
-              "width": "90%",
-              "max-height": "85vh",
+              "width": "100%",
+              "max-height": "calc(100vh - 2rem)",
               "overflow-y": "auto",
+              "overflow-x": "hidden",
               "padding": "2.5rem",
               "box-shadow": "0 25px 80px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 100, 200, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
               "border": "1px solid rgba(255, 255, 255, 0.1)",
-              "animation": "slideUp 0.3s ease"
+              "animation": "slideUp 0.3s ease",
+              "scrollbar-width": "thin",
+              "scrollbar-color": "rgba(255, 110, 180, 0.5) transparent"
+            },
+            ".event-modal-content::-webkit-scrollbar": {
+              "width": "8px"
+            },
+            ".event-modal-content::-webkit-scrollbar-track": {
+              "background": "transparent"
+            },
+            ".event-modal-content::-webkit-scrollbar-thumb": {
+              "background": "rgba(255, 110, 180, 0.5)",
+              "border-radius": "4px"
+            },
+            ".event-modal-content::-webkit-scrollbar-thumb:hover": {
+              "background": "rgba(255, 110, 180, 0.7)"
             },
             ".event-modal.closing .event-modal-content": {
               "animation": "slideDown 0.3s ease forwards"
@@ -4707,7 +4737,7 @@
           },
           "_name": "header09",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\" class=\"telegram-actus startm5\" group=\"Content\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"10\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\t\t<header>Telegram Widget</header>\n\t\t<input type=\"text\" title=\"Canal Telegram\" name=\"telegramChannel\" value=\"Annonces_Meute_Normande\">\n\t\t<input type=\"range\" inline title=\"Nombre de posts\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"3\">\n\t\t<input type=\"range\" inline title=\"Dernier post n°\" name=\"latestPost\" min=\"1\" max=\"100\" step=\"1\" value=\"3\">\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.7\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row justify-content-center\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>📢 Les actus de la Meute!</b></h1>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">\n\t\t\t\t\tRetrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !\n\t\t\t\t</p>\n\t\t\t\t\n\t\t\t\t<!-- Telegram Channel Widget - Chargement dynamique depuis le calendrier -->\n\t\t\t\t<div class=\"telegram-feed-vertical\" id=\"telegram-feed\"\n\t\t\t\t\tdata-channel=\"{{telegramChannel}}\"\n\t\t\t\t\tdata-count=\"{{postsCount}}\"\n\t\t\t\t\tdata-latest=\"{{latestPost}}\">\n\t\t\t\t\t<!-- Les posts sont générés automatiquement depuis le calendrier (post@#.telegram) -->\n\t\t\t\t\t<!-- Sinon, affiche les derniers posts du canal (fallback) -->\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://t.me/Annonces_Meute_Normande\" target=\"_blank\" data-app-placeholder=\"Type Text\">\n\t\t\t\t\t\t<span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Modal Événement -->\n\t<div class=\"event-modal\">\n\t\t<div class=\"event-modal-overlay\"></div>\n\t\t<div class=\"event-modal-content\">\n\t\t\t<button class=\"event-modal-close\">×</button>\n\t\t\t<h3 class=\"event-modal-title\"></h3>\n\t\t\t<div class=\"event-modal-body\"></div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Script pour charger dynamiquement les posts Telegram depuis le calendrier -->\n\t[JS_CODE_0]\n</section>",
+          "_customHTML": "<section data-bs-version=\"5.1\" class=\"telegram-actus startm5\" group=\"Content\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"4\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"10\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\t\t<header>Telegram Widget</header>\n\t\t<input type=\"text\" title=\"Canal Telegram\" name=\"telegramChannel\" value=\"Annonces_Meute_Normande\">\n\t\t<input type=\"range\" inline title=\"Nombre de posts\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"3\">\n\t\t<input type=\"range\" inline title=\"Dernier post n°\" name=\"latestPost\" min=\"1\" max=\"100\" step=\"1\" value=\"3\">\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.7\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row justify-content-center\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>📢 Les actus de la Meute!</b></h1>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">\n\t\t\t\t\tRetrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !\n\t\t\t\t</p>\n\t\t\t\t\n\t\t\t\t<!-- Telegram Channel Widget - Chargement dynamique depuis le calendrier -->\n\t\t\t\t<div class=\"telegram-feed-vertical\" id=\"telegram-feed\"\n\t\t\t\t\tdata-channel=\"{{telegramChannel}}\"\n\t\t\t\t\tdata-count=\"{{postsCount}}\"\n\t\t\t\t\tdata-latest=\"{{latestPost}}\">\n\t\t\t\t\t<!-- Les posts sont générés automatiquement depuis le calendrier (post@#.telegram) -->\n\t\t\t\t\t<!-- Sinon, affiche les derniers posts du canal (fallback) -->\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<div class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://t.me/Annonces_Meute_Normande\" target=\"_blank\" data-app-placeholder=\"Type Text\">\n\t\t\t\t\t\t<span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Modal Événement -->\n\t<div class=\"event-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"event-modal-title\">\n\t\t<div class=\"event-modal-overlay\"></div>\n\t\t<div class=\"event-modal-content\">\n\t\t\t<button class=\"event-modal-close\" aria-label=\"Fermer\">×</button>\n\t\t\t<h3 class=\"event-modal-title\" id=\"event-modal-title\"></h3>\n\t\t\t<div class=\"event-modal-body\"></div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Script pour charger dynamiquement les posts Telegram depuis le calendrier -->\n\t[JS_CODE_0]\n</section>",
           "_cid": "v9TjcZb4qU",
           "_anchor": "header09-p",
           "_PHPplaceholders": [],
