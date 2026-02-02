@@ -22,6 +22,23 @@ DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Canthrofur 6
+DESCRIPTION:6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.<br /></div>
+DTSTART:20270114T090000Z
+DTEND:20270118T090000Z
+LOCATION:Village de vacances VTF Le domaine des Puys\, Guérinot\, 63950 Saint-Sauves-d'Auvergne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0c6c6be226594bd5aabd9bd07af43317@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T203943Z
+LAST-MODIFIED:20260201T203943Z
+DTSTAMP:20260201T203944Z
+URL:https://www.canthrofur.org/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Fête médiéval Jeanne d'Arc
 DESCRIPTION:
 DTSTART;VALUE=DATE:20260514
@@ -146,8 +163,10 @@ STATUS:CONFIRMED
 UID:37b26d6eecec42c48c4c3d126fb29325@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260121T184713Z
-LAST-MODIFIED:20260131T170311Z
-DTSTAMP:20260131T170313Z
+LAST-MODIFIED:20260131T172520Z
+DTSTAMP:20260131T172521Z
+ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:post@8.telegram
+ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://yvetot.chorus-game.fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -199,8 +218,8 @@ DTSTAMP:20260122T193551Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
-DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivillers.<br /></div>
+DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br /></div>
 DTSTART:20261107T080000Z
 DTEND:20261107T195900Z
 LOCATION:Gymnase Christian Gand Gymnaste Christian gand\, Rue Henri Matisse\, 76290 Montivilliers\, France
@@ -210,8 +229,8 @@ STATUS:CONFIRMED
 UID:43a9e7b0c0f5453ea5d01c8e3cbb462e@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T215221Z
-LAST-MODIFIED:20251210T215250Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260201T203325Z
+DTSTAMP:20260201T203326Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Angers Geekfest
@@ -298,21 +317,6 @@ DTSTAMP:20260123T175800Z
 URL:https://www.festival-ostara.fr/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:TEST
-DESCRIPTION:
-DTSTART;VALUE=DATE:20260204
-DTEND;VALUE=DATE:20260205
-LOCATION:
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:6c152508d52746458ffebcf381f9be89@zoho.eu
-TRANSP:TRANSPARENT
-CREATED:20260131T125208Z
-LAST-MODIFIED:20260131T125208Z
-DTSTAMP:20260131T125209Z
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Ponto Geek 2025
 DESCRIPTION:
 DTSTART;VALUE=DATE:20251004
@@ -356,8 +360,8 @@ STATUS:CONFIRMED
 UID:85cec1bb19ad497782e1dc33c9a044de@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260127T174605Z
-LAST-MODIFIED:20260127T175246Z
-DTSTAMP:20260127T175247Z
+LAST-MODIFIED:20260201T195314Z
+DTSTAMP:20260201T195315Z
 URL:https://halloweenbernay.fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -458,6 +462,21 @@ CREATED:20250924T102233Z
 LAST-MODIFIED:20260123T171826Z
 DTSTAMP:20260123T171829Z
 URL:https://www.canthrofur.org
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Génération Multivers Salon Pop Culture 5ème édition
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260516
+DTEND;VALUE=DATE:20260518
+LOCATION:Espace Pierre Lanson - Salle des fêtes\, 165 Rue du Bourgneuf\, 45560 Saint-Denis-en-Val
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:943759ee6dc64c678147d93f060b24d7@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T211408Z
+LAST-MODIFIED:20260201T211408Z
+DTSTAMP:20260201T211408Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Tours Festival
@@ -720,6 +739,23 @@ LAST-MODIFIED:20251211T080124Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Paris Manga et Sci-Fi Show
+DESCRIPTION:39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.</div>
+DTSTART;VALUE=DATE:20260314
+DTEND;VALUE=DATE:20260316
+LOCATION:Parc des Expositions de Villepinte - Hall 7\, 93420 Villepinte
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:dfcffc74368c417a980ec12ff9a45297@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T194949Z
+LAST-MODIFIED:20260201T194949Z
+DTSTAMP:20260201T194950Z
+URL:https://www.parismanga.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Cidre & Dragon 2026
 DESCRIPTION:
 DTSTART;VALUE=DATE:20260919
@@ -733,6 +769,23 @@ TRANSP:TRANSPARENT
 CREATED:20250924T101444Z
 LAST-MODIFIED:20250924T101444Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Furry BlackLight 2026
+DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n\n\nNouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Cette&nbsp\;année\, la FBL vous accueille de nouveau dans le cadre  prestigieux du H4  Hotel Wyndham Paris Pleyel Resort\, un des plus grands  hôtels de Paris.<br /></div><p dir="ltr" class="framer-text framer-styles-preset-1gatu9o">40   étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un   séjour exceptionnel et haut-de-gamme qui vous attend pour cette   prochaine édition. Et le centre de convention sera entièrement privatisé   pour notre évènement !<br /></p><div dir="ltr"><br /></div><div dir="ltr">Nouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.</div>
+DTSTART;VALUE=DATE:20261028
+DTEND;VALUE=DATE:20261102
+LOCATION:H4 Wyndham Paris Pleyel\, 149 Boulevard Anatole France\, 93200 Saint-Denis
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e093e80240264c6093b00376da1fdbb1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260201T202354Z
+LAST-MODIFIED:20260201T202508Z
+DTSTAMP:20260201T202510Z
+URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Médiévales du château d’Harcourt
