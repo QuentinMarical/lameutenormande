@@ -3939,8 +3939,8 @@ a {
   display: flex;
   position: relative;
   min-height: auto;
-  padding-top: 4rem;
-  padding-bottom: 4rem;
+  padding-top: 7rem;
+  padding-bottom: 12rem;
   background-image: url("../../../assets/images/img-2921-2000x1186.webp");
   background-attachment: fixed;
   background-size: cover;
