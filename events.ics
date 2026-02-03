@@ -256,6 +256,21 @@ LAST-MODIFIED:20251210T214122Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Avignon Geek Expo
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260207
+DTEND;VALUE=DATE:20260209
+LOCATION:Parc des Expositions\, Chemin des Felons\, 84140 Avignon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:52153cf0a3c04bd59b2d9c0f9c58e33f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260203T113723Z
+LAST-MODIFIED:20260203T113723Z
+DTSTAMP:20260203T113725Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Lille 2026
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n \n\n \n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<table style="border-spacing:0px\; border-collapse:collapse\; padding:0px\; margin:0px\; width:320px\; color:rgb(0\, 0\, 0)\; font-family:Roboto\, Arial\, sans-serif\; font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; background-color:rgb(255\, 255\, 255)"><tbody><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><div style="min-height:21px\; min-width:150px\; max-width:287px\; text-align:left">Le samedi de 10h à 19h\, le dimanche de 10h à 18h<br /></div></td></tr><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><br /></td></tr></tbody></table><div><br /></div>
