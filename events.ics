@@ -139,6 +139,22 @@ DTSTAMP:20260123T174510Z
 URL:https://www.facebook.com/profile.php?id=61555903979503
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Anthropolis
+DESCRIPTION:
+DTSTART:20260318T230100Z
+DTEND:20260322T225900Z
+LOCATION:Village vacances Bussang - AZUREVA\, 2 Rue de Larcenaire\, 88540 Bussang
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2dd166a9823d424892d2d9abf3fb8e9c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T152949Z
+LAST-MODIFIED:20260207T152949Z
+DTSTAMP:20260207T152950Z
+URL:https://furagora.com/anthropolis
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🎡Foire St-Romain
 DESCRIPTION:Sortie à la foire St-Romain\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">Sortie à la foire St-Romain<br /></p></div>
