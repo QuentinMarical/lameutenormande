@@ -336,6 +336,38 @@ LAST-MODIFIED:20260207T113458Z
 DTSTAMP:20260207T113500Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan Day (Luxembourg)
+DESCRIPTION:
+DTSTART:20260327T230100Z
+DTEND:20260329T215900Z
+LOCATION:Luxexpo\, 20 Rue Hugo Gernsback\, 1855 Kirchberg Luxembourg
+CLASS:PRIVATE
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:52898937e64342ebbbf97d49da690d4f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T155040Z
+LAST-MODIFIED:20260208T155040Z
+DTSTAMP:20260208T155041Z
+URL:https://japan-day.com/accueil-luxembourg/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Magic Odyssey
+DESCRIPTION:
+DTSTART:20260702T220100Z
+DTEND:20260705T215900Z
+LOCATION:Centre Culturel Yves Furet\, 1 Avenue de la Liberté\, 23300 La Souterraine
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:587d47ed69b44492a4178a72cdae4f32@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T160105Z
+LAST-MODIFIED:20260208T160105Z
+DTSTAMP:20260208T160106Z
+URL:https://magic-odyssey.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Lille 2026
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n \n\n \n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<table style="border-spacing:0px\; border-collapse:collapse\; padding:0px\; margin:0px\; width:320px\; color:rgb(0\, 0\, 0)\; font-family:Roboto\, Arial\, sans-serif\; font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; background-color:rgb(255\, 255\, 255)"><tbody><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><div style="min-height:21px\; min-width:150px\; max-width:287px\; text-align:left">Le samedi de 10h à 19h\, le dimanche de 10h à 18h<br /></div></td></tr><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><br /></td></tr></tbody></table><div><br /></div>
@@ -981,6 +1013,22 @@ DTSTAMP:20260202T170843Z
 ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://www.harcourt-normandie.fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Asian Pop Culture Festival
+DESCRIPTION:1ère édition de cette convention à Paris Montreuil.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>1ère édition de cette convention à Paris Montreuil.</p></div>
+DTSTART:20260529T220100Z
+DTEND:20260531T215900Z
+LOCATION:Paris Montreuil Expo\, 128 Rue de Paris\, 93100 Montreuil
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:eac9363649e14fa3af2ad71eb4607db6@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T155525Z
+LAST-MODIFIED:20260208T155525Z
+DTSTAMP:20260208T155526Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Châlons-en-Champagne
