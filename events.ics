@@ -38,6 +38,22 @@ DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Le salon fantastique
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260523
+DTEND;VALUE=DATE:20260526
+LOCATION:Hall de la Pinède (Parc Floral de Paris)\, Route du Champ de Manoeuvre\, 75012 Paris
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:09a348a3f2c14d5ca90bea20f70c1e3c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T170052Z
+LAST-MODIFIED:20260220T170052Z
+DTSTAMP:20260220T170052Z
+URL:https://event.imagin-con.org/registration/billetterie-achat
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Canthrofur 6
 DESCRIPTION:6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.<br /></div>
@@ -86,6 +102,22 @@ TRANSP:TRANSPARENT
 CREATED:20251210T214451Z
 LAST-MODIFIED:20251210T214509Z
 DTSTAMP:20260104T042141Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Spinatorii
+DESCRIPTION:
+DTSTART:20260228T083000Z
+DTEND:20260301T170000Z
+LOCATION:Centre Des Congrès\, 7 Avenue de Saint-Dié\, 88000 Épinal
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1f2dc1e9f039468d9bbcfb5b5817fcdf@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T165532Z
+LAST-MODIFIED:20260220T165532Z
+DTSTAMP:20260220T165532Z
+URL:https://billetterie.spinatorii.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival La Roche-sur-Yon
