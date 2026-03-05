@@ -71,7 +71,7 @@ DTSTAMP:20260220T170052Z
 URL:https://event.imagin-con.org/registration/billetterie-achat
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:🦊 Canthrofur 6
+SUMMARY:🦊 Canthrofur 6 : Veillée des mystères
 DESCRIPTION:6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.<br /></div>
 DTSTART:20270114T090000Z
@@ -83,8 +83,8 @@ STATUS:CONFIRMED
 UID:0c6c6be226594bd5aabd9bd07af43317@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260201T203943Z
-LAST-MODIFIED:20260201T203943Z
-DTSTAMP:20260201T203944Z
+LAST-MODIFIED:20260305T205244Z
+DTSTAMP:20260305T205245Z
 URL:https://www.canthrofur.org/
 END:VEVENT
 BEGIN:VEVENT
