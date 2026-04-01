@@ -1375,6 +1375,21 @@ DTSTAMP:20260207T110203Z
 URL:https://www.kamopolis.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Pontogeek 2026
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261010
+DTEND;VALUE=DATE:20261012
+LOCATION:Complexe Sportif Alexis Vastine\, 27500 Avenue des Sports\, 27500 Pont-Audemer\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:df3d05b9b5454e95955384367f50d300@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260401T181400Z
+LAST-MODIFIED:20260401T181400Z
+DTSTAMP:20260401T181401Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Paris Manga et Sci-Fi Show
 DESCRIPTION:39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.\n
 X-ALT-DESC;FMTTYPE=text/html:<div>39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.</div>
