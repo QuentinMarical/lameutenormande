@@ -19,13 +19,14 @@
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+  <link rel="stylesheet" href="assets/parallax/jarallax.css">
   <link rel="stylesheet" href="assets/dropdown/css/style.css">
   <link rel="stylesheet" href="assets/socicon/css/styles.css">
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=csvgMC"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=csvgMC" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pp3QiK"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pp3QiK" type="text/css">
 
   
   
@@ -78,379 +79,368 @@
 	</nav>
 </section>
 
-<section data-bs-version="5.1" class="telegram-actus startm5 cid-v9TjcZb4qU" id="header09-p">	
+<section data-bs-version="5.1" class="header-actus-fullscreen startm5 cid-vfPilZdu2W mbr-fullscreen mbr-parallax-background" id="header09-1l">
+
     
-	<div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);"></div>
-	
-	<div class="container-fluid">
-		<div class="row justify-content-center">
-			<div class="content-wrap col-12 col-md-10">
-				<h1 class="mbr-section-title mbr-fonts-style mbr-white mb-3 display-2">
-					<strong>📢 Les actus de la Meute!</strong></h1>
-				<p class="mbr-fonts-style mbr-text mbr-white mb-4 display-7">Découvrez les prochains événements auxquels notre groupe participe.</p>
-				
-				<!-- Grille des prochains événements/conventions -->
-				<div class="events-grid" id="events-grid">
-					<!-- Les 3 prochaines conventions sont générées automatiquement -->
-					<!-- Filtre: participant go@events.lameutenormande -->
-				</div>
-				
-				<p class="mbr-fonts-style mbr-white mt-4 mb-2 display-7" style="text-align: center; opacity: 0.85;"><em>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</em></p>
-				
-				<div class="mbr-section-btn">
-					<a class="btn btn-primary display-7" href="https://t.me/Annonces_Meute_Normande" target="_blank">
-						<span class="telegram-icon">✈️</span> Rejoindre le canal Telegram
-					</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Modal Événement -->
-	<div class="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
-		<div class="event-modal-overlay"></div>
-		<div class="event-modal-content">
-			<button class="event-modal-close" aria-label="Fermer">×</button>
-			<h3 class="event-modal-title"></h3>
-			<div class="event-modal-body"></div>
-		</div>
-	</div>
-	
-	<!-- Script pour charger les conventions depuis le calendrier -->
-	<script>
-	(function() {
-		'use strict';
-		
-		// ╔════════════════════════════════════════════════════════════╗
-		// ║  CONVENTIONS TILES - v3.0                                  ║
-		// ║                                                            ║
-		// ║  Affiche les 3 prochaines conventions où va la Meute      ║
-		// ║  Filtre: participant go@events.lameutenormande            ║
-		// ║                                                            ║
-		// ║  3 tuiles côte-à-côte (desktop) / empilées (mobile)       ║
-		// ╚════════════════════════════════════════════════════════════╝
-		
-		const CONFIG = {
-			ICAL_CDN: 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js',
-			FUTURE_EVENTS_DAYS: 365, // Chercher jusqu'à 1 an dans le futur
-			MAX_EVENTS: 3,
-			EVENT_FILTER: 'go@events.lameutenormande', // Filtre participant
-			RETRY_ATTEMPTS: 2,
-			RETRY_DELAY: 1000
-		};
-		
-		let conventions = [];
-		let currentKeyHandler = null;
-		let lastFocusedElement = null;
-		
-		// Afficher un état de chargement
-		function afficherChargement(grid) {
-			grid.innerHTML = `
-				<div class="events-loading">
-					<div class="loading-spinner"></div>
-					<p>Chargement des conventions...</p>
-				</div>
-			`;
-		}
-		
-		// Afficher un message (erreur ou info)
-		function afficherMessage(grid, message, isError = false) {
-			grid.innerHTML = `
-				<div class="events-message ${isError ? 'error' : 'info'}">
-					<span>${isError ? '⚠️' : 'ℹ️'}</span>
-					<p>${escapeHtml(message)}</p>
-				</div>
-			`;
-		}
-		
-		// Charger ICAL.js
-		async function chargerICAL() {
-			if (typeof ICAL !== 'undefined') return true;
-			
-			try {
-				await new Promise((resolve, reject) => {
-					const s = document.createElement('script');
-					s.src = CONFIG.ICAL_CDN;
-					s.crossOrigin = 'anonymous';
-					s.onload = () => typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL non défini'));
-					s.onerror = () => reject(new Error('Échec chargement ICAL.js'));
-					document.head.appendChild(s);
-				});
-				return true;
-			} catch (e) {
-				console.warn('⚠️ ICAL.js:', e.message);
-				return false;
-			}
-		}
-		
-		// Charger et filtrer les conventions
-		async function chargerConventions() {
-			if (!await chargerICAL()) return [];
-			
-			const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
-			const cacheBuster = '?v=' + Date.now();
-			const urls = [
-				'events.ics' + cacheBuster,
-				'/events.ics' + cacheBuster,
-				baseUrl + '/events.ics' + cacheBuster
-			];
-			
-			for (const url of urls) {
-				try {
-					const r = await fetch(url, { cache: 'no-store' });
-					if (!r.ok) continue;
-					const data = await r.text();
-					if (!data.includes('BEGIN:VCALENDAR')) continue;
-					
-					const comp = new ICAL.Component(ICAL.parse(data));
-					const now = new Date();
-					const futureCutoff = new Date(now.getTime() + CONFIG.FUTURE_EVENTS_DAYS * 24 * 60 * 60 * 1000);
-					
-					conventions = comp.getAllSubcomponents('vevent')
-						.map(v => {
-							const e = new ICAL.Event(v);
-							
-							// Vérifier si go@events.lameutenormande est participant
-							let isGoEvent = false;
-							const attendees = v.getAllProperties('attendee');
-							for (const att of attendees) {
-								const val = (att.getFirstValue() || '').toLowerCase();
-								const cn = (att.getParameter('cn') || '').toLowerCase();
-								if (val.includes(CONFIG.EVENT_FILTER) || cn.includes(CONFIG.EVENT_FILTER)) {
-									isGoEvent = true;
-									break;
-								}
-							}
-							
-							if (!isGoEvent) return null;
-							
-							return {
-								title: e.summary || 'Convention',
-								description: e.description || '',
-								location: e.location || '',
-								startDate: e.startDate ? e.startDate.toJSDate() : null,
-								endDate: e.endDate ? e.endDate.toJSDate() : null,
-								url: v.getFirstPropertyValue('url') || ''
-							};
-						})
-						.filter(e => e && e.startDate && e.startDate >= now && e.startDate <= futureCutoff)
-						.sort((a, b) => a.startDate - b.startDate)
-						.slice(0, CONFIG.MAX_EVENTS);
-					
-					console.log('🎪 Conventions chargées:', conventions.length);
-					conventions.forEach(e => console.log('   ✅', e.title, '-', e.startDate.toLocaleDateString('fr-FR')));
-					return conventions;
-				} catch (e) {
-					console.warn('⚠️ Erreur:', e.message);
-				}
-			}
-			return [];
-		}
-		
-		// Formater la date pour affichage
-		function formatDate(date) {
-			if (!date) return { jour: '?', mois: '???', annee: '' };
-			const d = new Date(date);
-			return {
-				jour: d.getDate(),
-				mois: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),
-				annee: d.getFullYear(),
-				complet: d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
-			};
-		}
-		
-		// Calculer le nombre de jours restants
-		function joursRestants(date) {
-			if (!date) return null;
-			const now = new Date();
-			const diff = Math.ceil((new Date(date) - now) / (1000 * 60 * 60 * 24));
-			if (diff === 0) return "Aujourd'hui !";
-			if (diff === 1) return "Demain !";
-			if (diff < 0) return "Passé";
-			return `Dans ${diff} jours`;
-		}
-		
-		// Générer les tuiles
-		function genererTuiles(grid) {
-			if (conventions.length === 0) {
-				afficherMessage(grid, 'Aucune convention prévue pour le moment');
-				return;
-			}
-			
-			grid.innerHTML = '';
-			
-			conventions.forEach((event, index) => {
-				const date = formatDate(event.startDate);
-				const countdown = joursRestants(event.startDate);
-				
-				const tile = document.createElement('article');
-				tile.className = 'event-tile';
-				tile.setAttribute('tabindex', '0');
-				tile.setAttribute('role', 'button');
-				tile.setAttribute('aria-label', `Voir les détails de ${event.title}`);
-				
-				tile.innerHTML = `
-					<div class="event-tile-date">
-						<span class="event-tile-day">${date.jour}</span>
-						<span class="event-tile-month">${date.mois}</span>
-					</div>
-					<div class="event-tile-content">
-						<h3 class="event-tile-title">${escapeHtml(event.title)}</h3>
-						${event.location ? `<p class="event-tile-location"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}
-						<p class="event-tile-countdown">${escapeHtml(countdown)}</p>
-					</div>
-					<div class="event-tile-arrow">▶</div>
-				`;
-				
-				// Ouvrir popup au clic ou touche Entrée
-				const openPopup = () => {
-					lastFocusedElement = tile;
-					ouvrirPopup(event);
-				};
-				tile.addEventListener('click', openPopup);
-				tile.addEventListener('keydown', (e) => {
-					if (e.key === 'Enter' || e.key === ' ') {
-						e.preventDefault();
-						openPopup();
-					}
-				});
-				
-				grid.appendChild(tile);
-			});
-		}
-		
-		// Échapper le HTML
-		function escapeHtml(text) {
-			if (!text) return '';
-			const div = document.createElement('div');
-			div.textContent = text;
-			return div.innerHTML;
-		}
-		
-		// Convertir URLs en liens
-		function linkifyText(text) {
-			if (!text) return '';
-			return escapeHtml(text)
-				.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
-				.replace(/\n/g, '<br>');
-		}
-		
-		// Ouvrir la popup détail
-		function ouvrirPopup(event) {
-			const modal = document.querySelector('.event-modal');
-			const titre = document.querySelector('.event-modal-title');
-			const corps = document.querySelector('.event-modal-body');
-			if (!modal || !titre || !corps) return;
-			
-			titre.textContent = event.title || 'Convention';
-			
-			const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-			let dateStr = 'Date non définie';
-			let dateRange = '';
-			
-			if (event.startDate) {
-				const start = new Date(event.startDate);
-				const end = event.endDate ? new Date(event.endDate) : null;
-				dateStr = start.toLocaleDateString('fr-FR', dateOpts);
-				
-				if (end && start.toDateString() !== end.toDateString()) {
-					dateRange = ' au ' + end.toLocaleDateString('fr-FR', dateOpts);
-				}
-			}
-			
-			let html = '<div class="event-modal-body-grid"><div class="event-modal-left">';
-			html += `<div class="event-info-row"><span class="event-info-icon">📅</span><div class="event-info-content"><div class="event-info-label">Date</div><div class="event-info-text">${escapeHtml(dateStr + dateRange)}</div></div></div>`;
-			
-			if (event.location) {
-				const loc = encodeURIComponent(event.location);
-				html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div><div class="event-location-buttons"><a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener" class="location-btn location-google">Google Maps</a><a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener" class="location-btn location-waze">Waze</a><a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener" class="location-btn location-apple">Apple Plans</a></div></div></div>`;
-			}
-			
-			html += '</div><div class="event-modal-right">';
-			
-			if (event.description) {
-				html += `<div class="event-info-row"><span class="event-info-icon">📝</span><div class="event-info-content"><div class="event-info-label">Description</div><div class="event-info-text">${linkifyText(event.description)}</div></div></div>`;
-			}
-			
-			if (event.url) {
-				try {
-					const urlObj = new URL(event.url);
-					if (urlObj.protocol.startsWith('http')) {
-						html += `<div class="event-info-row"><span class="event-info-icon">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${escapeHtml(event.url)}" target="_blank" rel="noopener" class="event-url-button">Visiter le site</a></div></div>`;
-					}
-				} catch (e) {}
-			}
-			
-			html += '</div></div>';
-			corps.innerHTML = html;
-			
-			document.body.classList.add('modal-open');
-			modal.classList.add('show');
-			
-			const closeBtn = modal.querySelector('.event-modal-close');
-			const overlay = modal.querySelector('.event-modal-overlay');
-			
-			if (closeBtn) {
-				closeBtn.onclick = fermerPopup;
-				closeBtn.focus();
-			}
-			if (overlay) overlay.onclick = fermerPopup;
-			
-			// Gestion clavier
-			if (currentKeyHandler) document.removeEventListener('keydown', currentKeyHandler);
-			currentKeyHandler = (e) => {
-				if (e.key === 'Escape') fermerPopup();
-			};
-			document.addEventListener('keydown', currentKeyHandler);
-		}
-		
-		// Fermer la popup
-		function fermerPopup() {
-			const modal = document.querySelector('.event-modal');
-			if (modal && modal.classList.contains('show')) {
-				modal.classList.add('closing');
-				document.body.classList.remove('modal-open');
-				setTimeout(() => modal.classList.remove('show', 'closing'), 300);
-				
-				if (currentKeyHandler) {
-					document.removeEventListener('keydown', currentKeyHandler);
-					currentKeyHandler = null;
-				}
-				
-				if (lastFocusedElement) {
-					lastFocusedElement.focus();
-					lastFocusedElement = null;
-				}
-			}
-		}
-		
-		// Charger avec retry
-		async function chargerAvecRetry() {
-			for (let i = 0; i <= CONFIG.RETRY_ATTEMPTS; i++) {
-				const result = await chargerConventions();
-				if (result.length > 0 || i === CONFIG.RETRY_ATTEMPTS) return result;
-				await new Promise(r => setTimeout(r, CONFIG.RETRY_DELAY));
-			}
-			return [];
-		}
-		
-		// Initialisation
-		document.addEventListener('DOMContentLoaded', async () => {
-			const grid = document.getElementById('events-grid');
-			if (!grid) return;
-			
-			try {
-				afficherChargement(grid);
-				await chargerAvecRetry();
-				genererTuiles(grid);
-				console.log('🎉 Module Conventions initialisé');
-			} catch (e) {
-				console.error('❌ Erreur:', e);
-				afficherMessage(grid, 'Erreur de chargement', true);
-			}
-		});
-	})();
-	</script>
+
+    <div class="mbr-overlay" style="opacity: 0.8; background-color: rgb(26, 26, 46);"></div>
+
+    
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="content-wrap col-12 col-md-12">
+                <h1 class="mbr-section-title mbr-fonts-style mbr-white mb-3 display-2">
+                    <strong>📢 Les actus de la Meute !</strong>
+                </h1>
+
+                <p class="mbr-fonts-style mbr-text mbr-white mb-4 display-7">
+                    Découvrez les prochains événements auxquels notre groupe participe.
+                </p>
+
+                <div class="events-grid" id="events-grid">
+                    <!-- Les prochains événements sont injectés ici -->
+                </div>
+
+                <p class="mbr-fonts-style mbr-white mt-4 mb-2 telegram-note display-7">
+                    <em>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</em>
+                </p>
+
+                <div class="mbr-section-btn">
+                    <a class="btn btn-primary display-7" href="https://t.me/{{telegramChannel}}" target="_blank" rel="noopener">
+                        <span class="telegram-icon">✈️</span> Rejoindre le canal Telegram
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-modal-title">
+        <div class="event-modal-overlay"></div>
+        <div class="event-modal-content">
+            <button class="event-modal-close" aria-label="Fermer">×</button>
+            <h3 class="event-modal-title"></h3>
+            <div class="event-modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        const CONFIG = {
+            ICAL_CDN: 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js',
+            FUTURE_EVENTS_DAYS: 365,
+            MAX_EVENTS: parseInt('{{maxEvents}}', 10) || 3,
+            EVENT_FILTER: ('{{eventFilter}}' || 'go@events.lameutenormande').toLowerCase(),
+            RETRY_ATTEMPTS: 2,
+            RETRY_DELAY: 1000
+        };
+
+        let conventions = [];
+        let currentKeyHandler = null;
+        let lastFocusedElement = null;
+
+        function afficherChargement(grid) {
+            grid.innerHTML = `
+                <div class="events-loading">
+                    <div class="loading-spinner"></div>
+                    <p>Chargement des conventions...</p>
+                </div>
+            `;
+        }
+
+        function afficherMessage(grid, message, isError = false) {
+            grid.innerHTML = `
+                <div class="events-message ${isError ? 'error' : 'info'}">
+                    <span>${isError ? '⚠️' : 'ℹ️'}</span>
+                    <p>${escapeHtml(message)}</p>
+                </div>
+            `;
+        }
+
+        async function chargerICAL() {
+            if (typeof ICAL !== 'undefined') return true;
+
+            try {
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = CONFIG.ICAL_CDN;
+                    s.crossOrigin = 'anonymous';
+                    s.onload = () => typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL non défini'));
+                    s.onerror = () => reject(new Error('Échec chargement ICAL.js'));
+                    document.head.appendChild(s);
+                });
+                return true;
+            } catch (e) {
+                console.warn('⚠️ ICAL.js:', e.message);
+                return false;
+            }
+        }
+
+        async function chargerConventions() {
+            if (!await chargerICAL()) return [];
+
+            const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+            const cacheBuster = '?v=' + Date.now();
+            const urls = [
+                'events.ics' + cacheBuster,
+                '/events.ics' + cacheBuster,
+                baseUrl + '/events.ics' + cacheBuster
+            ];
+
+            for (const url of urls) {
+                try {
+                    const r = await fetch(url, { cache: 'no-store' });
+                    if (!r.ok) continue;
+
+                    const data = await r.text();
+                    if (!data.includes('BEGIN:VCALENDAR')) continue;
+
+                    const comp = new ICAL.Component(ICAL.parse(data));
+                    const now = new Date();
+                    const futureCutoff = new Date(now.getTime() + CONFIG.FUTURE_EVENTS_DAYS * 24 * 60 * 60 * 1000);
+
+                    conventions = comp.getAllSubcomponents('vevent')
+                        .map(v => {
+                            const e = new ICAL.Event(v);
+
+                            let isGoEvent = false;
+                            const attendees = v.getAllProperties('attendee');
+
+                            for (const att of attendees) {
+                                const val = String(att.getFirstValue() || '').toLowerCase();
+                                const cn = String(att.getParameter('cn') || '').toLowerCase();
+                                if (val.includes(CONFIG.EVENT_FILTER) || cn.includes(CONFIG.EVENT_FILTER)) {
+                                    isGoEvent = true;
+                                    break;
+                                }
+                            }
+
+                            if (!isGoEvent) return null;
+
+                            return {
+                                title: e.summary || 'Convention',
+                                description: e.description || '',
+                                location: e.location || '',
+                                startDate: e.startDate ? e.startDate.toJSDate() : null,
+                                endDate: e.endDate ? e.endDate.toJSDate() : null,
+                                url: v.getFirstPropertyValue('url') || ''
+                            };
+                        })
+                        .filter(e => e && e.startDate && e.startDate >= now && e.startDate <= futureCutoff)
+                        .sort((a, b) => a.startDate - b.startDate)
+                        .slice(0, CONFIG.MAX_EVENTS);
+
+                    return conventions;
+                } catch (e) {
+                    console.warn('⚠️ Erreur:', e.message);
+                }
+            }
+
+            return [];
+        }
+
+        function formatDate(date) {
+            if (!date) return { jour: '?', mois: '???', annee: '' };
+            const d = new Date(date);
+            return {
+                jour: d.getDate(),
+                mois: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),
+                annee: d.getFullYear(),
+                complet: d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+            };
+        }
+
+        function joursRestants(date) {
+            if (!date) return null;
+            const now = new Date();
+            const diff = Math.ceil((new Date(date) - now) / (1000 * 60 * 60 * 24));
+            if (diff === 0) return "Aujourd'hui !";
+            if (diff === 1) return "Demain !";
+            if (diff < 0) return "Passé";
+            return `Dans ${diff} jours`;
+        }
+
+        function genererTuiles(grid) {
+            if (conventions.length === 0) {
+                afficherMessage(grid, 'Aucune convention prévue pour le moment');
+                return;
+            }
+
+            grid.innerHTML = '';
+
+            conventions.forEach((event) => {
+                const date = formatDate(event.startDate);
+                const countdown = joursRestants(event.startDate);
+
+                const tile = document.createElement('article');
+                tile.className = 'event-tile';
+                tile.setAttribute('tabindex', '0');
+                tile.setAttribute('role', 'button');
+                tile.setAttribute('aria-label', `Voir les détails de ${event.title}`);
+
+                tile.innerHTML = `
+                    <div class="event-tile-date">
+                        <span class="event-tile-day">${date.jour}</span>
+                        <span class="event-tile-month">${date.mois}</span>
+                    </div>
+                    <div class="event-tile-content">
+                        <h3 class="event-tile-title">${escapeHtml(event.title)}</h3>
+                        ${event.location ? `<p class="event-tile-location"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}
+                        <p class="event-tile-countdown">${escapeHtml(countdown)}</p>
+                    </div>
+                    <div class="event-tile-arrow">▶</div>
+                `;
+
+                const openPopup = () => {
+                    lastFocusedElement = tile;
+                    ouvrirPopup(event);
+                };
+
+                tile.addEventListener('click', openPopup);
+                tile.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openPopup();
+                    }
+                });
+
+                grid.appendChild(tile);
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function linkifyText(text) {
+            if (!text) return '';
+            return escapeHtml(text)
+                .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function ouvrirPopup(event) {
+            const modal = document.querySelector('.event-modal');
+            const titre = document.querySelector('.event-modal-title');
+            const corps = document.querySelector('.event-modal-body');
+            if (!modal || !titre || !corps) return;
+
+            titre.textContent = event.title || 'Convention';
+
+            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            let dateStr = 'Date non définie';
+            let dateRange = '';
+
+            if (event.startDate) {
+                const start = new Date(event.startDate);
+                const end = event.endDate ? new Date(event.endDate) : null;
+                dateStr = start.toLocaleDateString('fr-FR', dateOpts);
+
+                if (end && start.toDateString() !== end.toDateString()) {
+                    dateRange = ' au ' + end.toLocaleDateString('fr-FR', dateOpts);
+                }
+            }
+
+            let html = '<div class="event-modal-body-grid"><div class="event-modal-left">';
+            html += `<div class="event-info-row"><span class="event-info-icon">📅</span><div class="event-info-content"><div class="event-info-label">Date</div><div class="event-info-text">${escapeHtml(dateStr + dateRange)}</div></div></div>`;
+
+            if (event.location) {
+                const loc = encodeURIComponent(event.location);
+                html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div><div class="event-location-buttons"><a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener" class="location-btn location-google">Google Maps</a><a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener" class="location-btn location-waze">Waze</a><a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener" class="location-btn location-apple">Apple Plans</a></div></div></div>`;
+            }
+
+            html += '</div><div class="event-modal-right">';
+
+            if (event.description) {
+                html += `<div class="event-info-row"><span class="event-info-icon">📝</span><div class="event-info-content"><div class="event-info-label">Description</div><div class="event-info-text">${linkifyText(event.description)}</div></div></div>`;
+            }
+
+            if (event.url) {
+                try {
+                    const urlObj = new URL(event.url);
+                    if (urlObj.protocol.startsWith('http')) {
+                        html += `<div class="event-info-row"><span class="event-info-icon">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${escapeHtml(event.url)}" target="_blank" rel="noopener" class="event-url-button">Visiter le site</a></div></div>`;
+                    }
+                } catch (e) {}
+            }
+
+            html += '</div></div>';
+            corps.innerHTML = html;
+
+            document.body.classList.add('modal-open');
+            modal.classList.add('show');
+
+            const closeBtn = modal.querySelector('.event-modal-close');
+            const overlay = modal.querySelector('.event-modal-overlay');
+
+            if (closeBtn) {
+                closeBtn.onclick = fermerPopup;
+                closeBtn.focus();
+            }
+
+            if (overlay) overlay.onclick = fermerPopup;
+
+            if (currentKeyHandler) {
+                document.removeEventListener('keydown', currentKeyHandler);
+            }
+
+            currentKeyHandler = (e) => {
+                if (e.key === 'Escape') fermerPopup();
+            };
+            document.addEventListener('keydown', currentKeyHandler);
+        }
+
+        function fermerPopup() {
+            const modal = document.querySelector('.event-modal');
+            if (modal && modal.classList.contains('show')) {
+                modal.classList.add('closing');
+                document.body.classList.remove('modal-open');
+
+                setTimeout(() => {
+                    modal.classList.remove('show', 'closing');
+                }, 300);
+
+                if (currentKeyHandler) {
+                    document.removeEventListener('keydown', currentKeyHandler);
+                    currentKeyHandler = null;
+                }
+
+                if (lastFocusedElement) {
+                    lastFocusedElement.focus();
+                    lastFocusedElement = null;
+                }
+            }
+        }
+
+        async function chargerAvecRetry() {
+            for (let i = 0; i <= CONFIG.RETRY_ATTEMPTS; i++) {
+                const result = await chargerConventions();
+                if (result.length > 0 || i === CONFIG.RETRY_ATTEMPTS) return result;
+                await new Promise(r => setTimeout(r, CONFIG.RETRY_DELAY));
+            }
+            return [];
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const grid = document.getElementById('events-grid');
+            if (!grid) return;
+
+            try {
+                afficherChargement(grid);
+                await chargerAvecRetry();
+                genererTuiles(grid);
+            } catch (e) {
+                console.error('❌ Erreur:', e);
+                afficherMessage(grid, 'Erreur de chargement', true);
+            }
+        });
+    })();
+    </script>
 </section>
 
 <section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-o">
@@ -467,7 +457,7 @@
             </div>
         </div>
     </div>
-</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
 </body>

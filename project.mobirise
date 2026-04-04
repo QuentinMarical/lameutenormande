@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "La Meute Normande",
-    "currentPage": "formulaire.html",
+    "currentPage": "actus.html",
     "theme": {
       "name": "startm5",
       "title": "StartM5",
@@ -62,12 +62,12 @@
         "file": "@PROJECT_PATH@/fonts/PR%20Viking/font.ttf"
       }
     ],
-    "uniqCompNum": 57,
+    "uniqCompNum": 58,
     "versionPublish": "6.0.6",
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "walajdetez",
+    "mbrsiteDomain": "pamivj33a0",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
@@ -1063,7 +1063,7 @@
     "contact.html": {
       "settings": {
         "title": "Contact - La Meute Normande",
-        "order": "5",
+        "order": "4",
         "meta_image": "@PROJECT_PATH@/assets/images/logo-2000x837.png"
       },
       "components": [
@@ -2087,7 +2087,7 @@
     "events.html": {
       "settings": {
         "title": "Les événements - La Meute Normande",
-        "order": "2",
+        "order": "1",
         "meta_image": "@PROJECT_PATH@/assets/images/logo-2000x837.png"
       },
       "components": [
@@ -3577,7 +3577,7 @@
     "actus.html": {
       "settings": {
         "title": "Les actualités - La Meute Normande",
-        "order": "3",
+        "order": "2",
         "meta_image": "@PROJECT_PATH@/assets/images/logo-2000x837.png"
       },
       "components": [
@@ -4335,9 +4335,12 @@
           "_styles": {
             "display": "flex",
             "position": "relative",
-            "min-height": "auto",
-            "padding-top": "(@paddingTop * 1rem)",
-            "padding-bottom": "(@paddingBottom * 1rem)",
+            "min-height": "100vh",
+            "overflow": "hidden",
+            "& when not (@fullScreen)": {
+              "padding-top": "(@paddingTop * 1rem)",
+              "padding-bottom": "(@paddingBottom * 1rem)"
+            },
             "& when (@bg-type = \"color\")": {
               "background-color": "@bg-value"
             },
@@ -4350,10 +4353,7 @@
                 "background-color": "@overlayColor",
                 "opacity": "@overlayOpacity",
                 "position": "absolute",
-                "top": "0",
-                "left": "0",
-                "width": "100%",
-                "height": "100%",
+                "inset": "0",
                 "pointer-events": "none"
               }
             },
@@ -4368,61 +4368,157 @@
               "height": "100%",
               "position": "absolute",
               "top": "0",
+              "left": "0",
               "& when (@bg-type = \"video\")": {
                 "background-image": "url(@fallBackImage)"
               }
             },
-            ".content-wrap": {
-              "padding": "2rem 1rem",
-              "@media (min-width: 992px)": {
-                "padding": "3rem 2rem"
-              }
+            ".container, .container-fluid": {
+              "position": "relative",
+              "z-index": "2",
+              "display": "flex",
+              "align-items": "center",
+              "min-height": "100vh"
+            },
+            ".row": {
+              "width": "100%"
             },
             "@media (min-width: 768px)": {
+              "align-items": "~\"@{verticalAlign}\"",
               ".row": {
-                "justify-content": "center"
-              }
-            },
-            "@media (max-width: 991px) and (min-width: 768px)": {
-              ".content-wrap": {
-                "min-width": "60%"
+                "justify-content": "~\"@{horizontalAlign}\""
               }
             },
             "@media (max-width: 767px)": {
               "-webkit-align-items": "center",
               "align-items": "center",
-              ".mbr-row": {
+              ".row": {
                 "-webkit-justify-content": "center",
                 "justify-content": "center"
+              },
+              ".events-grid": {
+                "grid-template-columns": "1fr",
+                "gap": "0.9rem",
+                "padding-top": "0.8rem"
               },
               ".content-wrap": {
                 "width": "100%",
                 "padding": "1.5rem 0.75rem"
+              },
+              ".events-loading, .events-message": {
+                "max-width": "100%",
+                "padding": "1rem 1rem"
+              },
+              ".events-message": {
+                "flex-direction": "column",
+                "gap": "0.5rem"
+              },
+              ".event-tile": {
+                "border-radius": "12px",
+                "min-height": "120px"
+              },
+              ".event-tile-date": {
+                "min-width": "70px",
+                "padding": "0.75rem"
+              },
+              ".event-tile-day": {
+                "font-size": "1.7rem"
+              },
+              ".event-tile-month": {
+                "font-size": "0.74rem"
+              },
+              ".event-tile-content": {
+                "padding": "0.75rem 0.9rem"
+              },
+              ".event-tile-title": {
+                "font-size": "0.92rem"
+              },
+              ".event-tile-location": {
+                "font-size": "0.8rem"
+              },
+              ".event-tile-arrow": {
+                "min-width": "34px",
+                "padding": "0 0.5rem"
               }
             },
-            ".mbr-section-title": {
+            ".content-wrap": {
+              "width": "100%",
+              "max-width": "1400px",
+              "margin": "0 auto",
+              "padding": "2rem 1rem"
+            },
+            "@media (min-width: 992px)": {
+              ".content-wrap": {
+                "padding": "2.5rem 2rem"
+              }
+            },
+            "@media (max-width: 991px) and (min-width: 768px)": {
+              ".content-wrap": {
+                "min-width": "70%"
+              }
+            },
+            ".mbr-section-title, .mbr-text, .mbr-section-btn, .telegram-note": {
               "text-align": "center"
             },
-            ".mbr-text, .mbr-section-btn": {
-              "text-align": "center"
+            ".telegram-note": {
+              "opacity": "0.9"
             },
             ".events-grid": {
               "display": "grid",
-              "grid-template-columns": "repeat(3, 1fr)",
-              "gap": "1.5rem",
-              "padding": "1rem 0",
+              "grid-template-columns": "repeat(3, minmax(0, 1fr))",
+              "gap": "1rem",
+              "padding": "1rem 0 0",
               "width": "100%",
-              "margin": "0"
+              "margin": "0 auto",
+              "justify-items": "stretch"
             },
             ".events-loading, .events-message": {
-              "grid-column": "(1 / -1)",
+              "grid-column": "~\"1 / -1\"",
+              "width": "100%",
+              "max-width": "900px",
+              "margin": "0 auto",
+              "justify-self": "center",
+              "align-self": "center",
+              "display": "flex",
+              "align-items": "center",
+              "justify-content": "center",
+              "padding": "1.25rem 1.5rem",
+              "text-align": "center",
+              "color": "rgba(255, 255, 255, 0.75)"
+            },
+            ".events-loading": {
+              "flex-direction": "column",
+              "min-height": "140px"
+            },
+            ".events-message": {
+              "flex-direction": "row",
+              "gap": "0.75rem",
+              "min-height": "72px",
+              "border-radius": "12px"
+            },
+            ".events-message.info": {
+              "grid-column": "~\"1 / -1\"",
+              "justify-self": "stretch",
+              "align-self": "center",
+              "width": "100%",
+              "max-width": "none",
+              "margin": "0.5rem 0",
+              "padding": "1.25rem 1.5rem",
               "display": "flex",
               "flex-direction": "column",
               "align-items": "center",
               "justify-content": "center",
-              "padding": "3rem",
+              "text-align": "center",
               "color": "rgba(255, 255, 255, 0.7)",
-              "text-align": "center"
+              "background": "rgba(255, 255, 255, 0.05)",
+              "border-radius": "12px"
+            },
+            ".events-message.info span": {
+              "font-size": "1.5rem",
+              "margin-bottom": "0.5rem"
+            },
+            ".events-message.info p": {
+              "margin": "0"
             },
             ".events-loading .loading-spinner": {
               "width": "48px",
@@ -4438,41 +4534,38 @@
                 "transform": "rotate(360deg)"
               }
             },
-            ".events-message": {
-              "flex-direction": "row",
-              "gap": "0.75rem"
-            },
             ".events-message.error": {
               "color": "#ff6b6b",
               "background": "rgba(255, 107, 107, 0.1)",
-              "border": "1px solid rgba(255, 107, 107, 0.2)",
-              "border-radius": "12px"
-            },
-            ".events-message.info": {
-              "color": "rgba(255, 255, 255, 0.6)",
-              "background": "rgba(255, 255, 255, 0.05)",
-              "border-radius": "12px"
+              "border": "1px solid rgba(255, 107, 107, 0.2)"
             },
             ".events-message span": {
-              "font-size": "1.5rem"
+              "font-size": "1.5rem",
+              "flex-shrink": "0"
+            },
+            ".events-message p, .events-loading p": {
+              "margin": "0",
+              "width": "100%",
+              "text-align": "center"
             },
             ".event-tile": {
               "display": "flex",
               "align-items": "stretch",
-              "background": "linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))",
-              "border": "1px solid rgba(255, 255, 255, 0.1)",
+              "min-height": "130px",
+              "background": "linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.04))",
+              "border": "1px solid rgba(255, 255, 255, 0.12)",
               "border-radius": "16px",
               "overflow": "hidden",
               "cursor": "pointer",
               "transition": "all 0.3s ease",
-              "box-shadow": "0 4px 20px rgba(0, 0, 0, 0.3)",
+              "box-shadow": "0 4px 20px rgba(0, 0, 0, 0.28)",
               "backdrop-filter": "blur(10px)",
               "-webkit-backdrop-filter": "blur(10px)"
             },
             ".event-tile:hover": {
               "transform": "translateY(-4px)",
               "box-shadow": "0 8px 30px rgba(233, 30, 99, 0.25)",
-              "border-color": "rgba(233, 30, 99, 0.3)"
+              "border-color": "rgba(233, 30, 99, 0.35)"
             },
             ".event-tile:focus": {
               "outline": "none",
@@ -4487,18 +4580,18 @@
               "flex-direction": "column",
               "align-items": "center",
               "justify-content": "center",
-              "min-width": "80px",
-              "padding": "1rem",
+              "min-width": "78px",
+              "padding": "0.9rem",
               "background": "linear-gradient(180deg, #e91e63 0%, #9c27b0 100%)",
               "color": "#fff"
             },
             ".event-tile-day": {
-              "font-size": "2rem",
+              "font-size": "1.9rem",
               "font-weight": "800",
               "line-height": "1"
             },
             ".event-tile-month": {
-              "font-size": "0.85rem",
+              "font-size": "0.8rem",
               "font-weight": "600",
               "text-transform": "uppercase",
               "letter-spacing": "0.05em",
@@ -4510,14 +4603,14 @@
               "display": "flex",
               "flex-direction": "column",
               "justify-content": "center",
-              "padding": "1rem 1.25rem",
+              "padding": "0.85rem 1rem",
               "min-width": "0"
             },
             ".event-tile-title": {
-              "font-size": "1rem",
+              "font-size": "0.95rem",
               "font-weight": "700",
               "color": "#fff",
-              "margin": "0 0 0.5rem 0",
+              "margin": "0 0 0.45rem 0",
               "line-height": "1.3",
               "overflow": "hidden",
               "text-overflow": "ellipsis",
@@ -4529,18 +4622,18 @@
               "display": "flex",
               "align-items": "flex-start",
               "gap": "0.4rem",
-              "font-size": "0.85rem",
-              "color": "rgba(255, 255, 255, 0.6)",
-              "margin": "0 0 0.5rem 0",
+              "font-size": "0.84rem",
+              "color": "rgba(255, 255, 255, 0.68)",
+              "margin": "0 0 0.45rem 0",
               "line-height": "1.3"
             },
             ".event-tile-location span": {
               "flex-shrink": "0"
             },
             ".event-tile-countdown": {
-              "font-size": "0.8rem",
-              "font-weight": "600",
-              "color": "#4CAF50",
+              "font-size": "0.78rem",
+              "font-weight": "700",
+              "color": "#66d17a",
               "margin": "0",
               "text-transform": "uppercase",
               "letter-spacing": "0.03em"
@@ -4549,9 +4642,9 @@
               "display": "flex",
               "align-items": "center",
               "justify-content": "center",
-              "min-width": "40px",
-              "padding": "0 0.75rem",
-              "color": "rgba(255, 255, 255, 0.4)",
+              "min-width": "38px",
+              "padding": "0 0.65rem",
+              "color": "rgba(255, 255, 255, 0.45)",
               "font-size": "1rem",
               "transition": "all 0.3s ease"
             },
@@ -4559,43 +4652,9 @@
               "color": "#E91E63",
               "transform": "translateX(3px)"
             },
-            "@media (max-width: 992px)": {
+            "@media (max-width: 991px)": {
               ".events-grid": {
-                "grid-template-columns": "1fr",
-                "gap": "1rem"
-              }
-            },
-            "@media (max-width: 768px)": {
-              ".events-grid": {
-                "grid-template-columns": "1fr",
-                "gap": "1rem",
-                "padding": "1rem 0"
-              },
-              ".event-tile": {
-                "border-radius": "12px"
-              },
-              ".event-tile-date": {
-                "min-width": "70px",
-                "padding": "0.75rem"
-              },
-              ".event-tile-day": {
-                "font-size": "1.75rem"
-              },
-              ".event-tile-month": {
-                "font-size": "0.75rem"
-              },
-              ".event-tile-content": {
-                "padding": "0.75rem 1rem"
-              },
-              ".event-tile-title": {
-                "font-size": "0.95rem"
-              },
-              ".event-tile-location": {
-                "font-size": "0.8rem"
-              },
-              ".event-tile-arrow": {
-                "min-width": "35px",
-                "padding": "0 0.5rem"
+                "grid-template-columns": "repeat(2, minmax(0, 1fr))"
               }
             },
             ".btn-primary": {
@@ -4615,9 +4674,6 @@
             ".telegram-icon": {
               "margin-right": "8px"
             },
-            ".mt-3": {
-              "margin-top": "1rem"
-            },
             ".mt-4": {
               "margin-top": "1.25rem"
             },
@@ -4629,9 +4685,6 @@
             },
             ".mb-4": {
               "margin-bottom": "1.25rem"
-            },
-            ".btn-icon": {
-              "font-size": "1rem"
             },
             "body.modal-open": {
               "overflow": "hidden"
@@ -4671,10 +4724,7 @@
             },
             ".event-modal-overlay": {
               "position": "absolute",
-              "top": "0",
-              "left": "0",
-              "width": "100%",
-              "height": "100%",
+              "inset": "0",
               "background": "rgba(0, 0, 0, 0.85)",
               "z-index": "-1",
               "cursor": "pointer"
@@ -4903,12 +4953,12 @@
           },
           "_name": "header09",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\" class=\"telegram-actus startm5\" group=\"Content\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"7\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"12\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"10\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\t\t<header>Telegram Widget</header>\n\t\t<input type=\"text\" title=\"Canal Telegram\" name=\"telegramChannel\" value=\"Annonces_Meute_Normande\">\n\t\t<input type=\"range\" inline title=\"Nombre de posts\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"3\">\n\t\t<input type=\"range\" inline title=\"Dernier post n°\" name=\"latestPost\" min=\"1\" max=\"100\" step=\"1\" value=\"3\">\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row justify-content-center\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>📢 Les actus de la Meute!</b></h1>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">Découvrez les prochains événements auxquels notre groupe participe.</p>\n\t\t\t\t\n\t\t\t\t<!-- Grille des prochains événements/conventions -->\n\t\t\t\t<div class=\"events-grid\" id=\"events-grid\">\n\t\t\t\t\t<!-- Les 3 prochaines conventions sont générées automatiquement -->\n\t\t\t\t\t<!-- Filtre: participant go@events.lameutenormande -->\n\t\t\t\t</div>\n\t\t\t\t\n\t\t\t\t<p class=\"mbr-fonts-style mbr-white mt-4 mb-2\" mbr-theme-style=\"display-7\" style=\"text-align: center; opacity: 0.85;\"><i>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</i></p>\n\t\t\t\t\n\t\t\t\t<div class=\"mbr-section-btn\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://t.me/Annonces_Meute_Normande\" target=\"_blank\" data-app-placeholder=\"Type Text\">\n\t\t\t\t\t\t<span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Modal Événement -->\n\t<div class=\"event-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"event-modal-title\">\n\t\t<div class=\"event-modal-overlay\"></div>\n\t\t<div class=\"event-modal-content\">\n\t\t\t<button class=\"event-modal-close\" aria-label=\"Fermer\">×</button>\n\t\t\t<h3 class=\"event-modal-title\" id=\"event-modal-title\"></h3>\n\t\t\t<div class=\"event-modal-body\"></div>\n\t\t</div>\n\t</div>\n\t\n\t<!-- Script pour charger les conventions depuis le calendrier -->\n\t[JS_CODE_0]\n</section>",
-          "_cid": "v9TjcZb4qU",
-          "_anchor": "header09-p",
+          "_customHTML": "<section data-bs-version=\"5.1\" class=\"header-actus-fullscreen startm5\" group=\"Headers\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\n\n    <mbr-parameters>\n        <header>Size</header>\n        <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\" checked>\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"12\">\n\n        <header>Show / Hide</header>\n        <input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n        <input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\n        <select title=\"Vertical Align\" name=\"verticalAlign\" condition=\"fullScreen\">\n            <option value=\"flex-start\">Top</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Bottom</option>\n        </select>\n\n        <select title=\"Horizontal Align\" name=\"horizontalAlign\">\n            <option value=\"flex-start\">Left</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Right</option>\n        </select>\n\n        <header>Telegram Widget</header>\n        <input type=\"text\" title=\"Canal Telegram\" name=\"telegramChannel\" value=\"Annonces_Meute_Normande\">\n        <input type=\"range\" inline title=\"Nombre de posts\" name=\"postsCount\" min=\"1\" max=\"10\" step=\"1\" value=\"3\">\n        <input type=\"range\" inline title=\"Dernier post n°\" name=\"latestPost\" min=\"1\" max=\"100\" step=\"1\" value=\"3\">\n\n        <header>Events</header>\n        <input type=\"range\" inline title=\"Nombre d'événements\" name=\"maxEvents\" min=\"1\" max=\"6\" step=\"1\" value=\"3\">\n        <input type=\"text\" title=\"Filtre participant\" name=\"eventFilter\" value=\"go@events.lameutenormande\">\n\n        <header>Background</header>\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected parallax>\n            <input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n            <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n        </fieldset>\n\n        <header condition=\"bg.type === 'video'\">Fallback Image</header>\n        <input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\n        <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n    </mbr-parameters>\n\n    <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\n    <div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n        <div class=\"row\">\n            <div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n                <h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n                    <b>📢 Les actus de la Meute !</b>\n                </h1>\n\n                <p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showSubtitle\" data-app-selector=\".mbr-text\">\n                    Découvrez les prochains événements auxquels notre groupe participe.\n                </p>\n\n                <div class=\"events-grid\" id=\"events-grid\">\n                    <!-- Les prochains événements sont injectés ici -->\n                </div>\n\n                <p class=\"mbr-fonts-style mbr-white mt-4 mb-2 telegram-note\" mbr-theme-style=\"display-7\">\n                    <i>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</i>\n                </p>\n\n                <div class=\"mbr-section-btn\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\">\n                    <a class=\"btn btn-primary\" href=\"https://t.me/{{telegramChannel}}\" target=\"_blank\" rel=\"noopener\">\n                        <span class=\"telegram-icon\">✈️</span> Rejoindre le canal Telegram\n                    </a>\n                </div>\n            </div>\n        </div>\n    </div>\n\n    <div class=\"event-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"event-modal-title\">\n        <div class=\"event-modal-overlay\"></div>\n        <div class=\"event-modal-content\">\n            <button class=\"event-modal-close\" aria-label=\"Fermer\">×</button>\n            <h3 class=\"event-modal-title\" id=\"event-modal-title\"></h3>\n            <div class=\"event-modal-body\"></div>\n        </div>\n    </div>\n\n    [JS_CODE_0]\n</section>",
+          "_cid": "vfPilZdu2W",
+          "_anchor": "header09-1l",
           "_PHPplaceholders": [],
           "_JSplaceholders": [
-            "<script>\n\t(function() {\n\t\t'use strict';\n\t\t\n\t\t// ╔════════════════════════════════════════════════════════════╗\n\t\t// ║  CONVENTIONS TILES - v3.0                                  ║\n\t\t// ║                                                            ║\n\t\t// ║  Affiche les 3 prochaines conventions où va la Meute      ║\n\t\t// ║  Filtre: participant go@events.lameutenormande            ║\n\t\t// ║                                                            ║\n\t\t// ║  3 tuiles côte-à-côte (desktop) / empilées (mobile)       ║\n\t\t// ╚════════════════════════════════════════════════════════════╝\n\t\t\n\t\tconst CONFIG = {\n\t\t\tICAL_CDN: 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js',\n\t\t\tFUTURE_EVENTS_DAYS: 365, // Chercher jusqu'à 1 an dans le futur\n\t\t\tMAX_EVENTS: 3,\n\t\t\tEVENT_FILTER: 'go@events.lameutenormande', // Filtre participant\n\t\t\tRETRY_ATTEMPTS: 2,\n\t\t\tRETRY_DELAY: 1000\n\t\t};\n\t\t\n\t\tlet conventions = [];\n\t\tlet currentKeyHandler = null;\n\t\tlet lastFocusedElement = null;\n\t\t\n\t\t// Afficher un état de chargement\n\t\tfunction afficherChargement(grid) {\n\t\t\tgrid.innerHTML = `\n\t\t\t\t<div class=\"events-loading\">\n\t\t\t\t\t<div class=\"loading-spinner\"></div>\n\t\t\t\t\t<p>Chargement des conventions...</p>\n\t\t\t\t</div>\n\t\t\t`;\n\t\t}\n\t\t\n\t\t// Afficher un message (erreur ou info)\n\t\tfunction afficherMessage(grid, message, isError = false) {\n\t\t\tgrid.innerHTML = `\n\t\t\t\t<div class=\"events-message ${isError ? 'error' : 'info'}\">\n\t\t\t\t\t<span>${isError ? '⚠️' : 'ℹ️'}</span>\n\t\t\t\t\t<p>${escapeHtml(message)}</p>\n\t\t\t\t</div>\n\t\t\t`;\n\t\t}\n\t\t\n\t\t// Charger ICAL.js\n\t\tasync function chargerICAL() {\n\t\t\tif (typeof ICAL !== 'undefined') return true;\n\t\t\t\n\t\t\ttry {\n\t\t\t\tawait new Promise((resolve, reject) => {\n\t\t\t\t\tconst s = document.createElement('script');\n\t\t\t\t\ts.src = CONFIG.ICAL_CDN;\n\t\t\t\t\ts.crossOrigin = 'anonymous';\n\t\t\t\t\ts.onload = () => typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL non défini'));\n\t\t\t\t\ts.onerror = () => reject(new Error('Échec chargement ICAL.js'));\n\t\t\t\t\tdocument.head.appendChild(s);\n\t\t\t\t});\n\t\t\t\treturn true;\n\t\t\t} catch (e) {\n\t\t\t\tconsole.warn('⚠️ ICAL.js:', e.message);\n\t\t\t\treturn false;\n\t\t\t}\n\t\t}\n\t\t\n\t\t// Charger et filtrer les conventions\n\t\tasync function chargerConventions() {\n\t\t\tif (!await chargerICAL()) return [];\n\t\t\t\n\t\t\tconst baseUrl = window.location.origin + window.location.pathname.replace(/\\/[^\\/]*$/, '');\n\t\t\tconst cacheBuster = '?v=' + Date.now();\n\t\t\tconst urls = [\n\t\t\t\t'events.ics' + cacheBuster,\n\t\t\t\t'/events.ics' + cacheBuster,\n\t\t\t\tbaseUrl + '/events.ics' + cacheBuster\n\t\t\t];\n\t\t\t\n\t\t\tfor (const url of urls) {\n\t\t\t\ttry {\n\t\t\t\t\tconst r = await fetch(url, { cache: 'no-store' });\n\t\t\t\t\tif (!r.ok) continue;\n\t\t\t\t\tconst data = await r.text();\n\t\t\t\t\tif (!data.includes('BEGIN:VCALENDAR')) continue;\n\t\t\t\t\t\n\t\t\t\t\tconst comp = new ICAL.Component(ICAL.parse(data));\n\t\t\t\t\tconst now = new Date();\n\t\t\t\t\tconst futureCutoff = new Date(now.getTime() + CONFIG.FUTURE_EVENTS_DAYS * 24 * 60 * 60 * 1000);\n\t\t\t\t\t\n\t\t\t\t\tconventions = comp.getAllSubcomponents('vevent')\n\t\t\t\t\t\t.map(v => {\n\t\t\t\t\t\t\tconst e = new ICAL.Event(v);\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t// Vérifier si go@events.lameutenormande est participant\n\t\t\t\t\t\t\tlet isGoEvent = false;\n\t\t\t\t\t\t\tconst attendees = v.getAllProperties('attendee');\n\t\t\t\t\t\t\tfor (const att of attendees) {\n\t\t\t\t\t\t\t\tconst val = (att.getFirstValue() || '').toLowerCase();\n\t\t\t\t\t\t\t\tconst cn = (att.getParameter('cn') || '').toLowerCase();\n\t\t\t\t\t\t\t\tif (val.includes(CONFIG.EVENT_FILTER) || cn.includes(CONFIG.EVENT_FILTER)) {\n\t\t\t\t\t\t\t\t\tisGoEvent = true;\n\t\t\t\t\t\t\t\t\tbreak;\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tif (!isGoEvent) return null;\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\treturn {\n\t\t\t\t\t\t\t\ttitle: e.summary || 'Convention',\n\t\t\t\t\t\t\t\tdescription: e.description || '',\n\t\t\t\t\t\t\t\tlocation: e.location || '',\n\t\t\t\t\t\t\t\tstartDate: e.startDate ? e.startDate.toJSDate() : null,\n\t\t\t\t\t\t\t\tendDate: e.endDate ? e.endDate.toJSDate() : null,\n\t\t\t\t\t\t\t\turl: v.getFirstPropertyValue('url') || ''\n\t\t\t\t\t\t\t};\n\t\t\t\t\t\t})\n\t\t\t\t\t\t.filter(e => e && e.startDate && e.startDate >= now && e.startDate <= futureCutoff)\n\t\t\t\t\t\t.sort((a, b) => a.startDate - b.startDate)\n\t\t\t\t\t\t.slice(0, CONFIG.MAX_EVENTS);\n\t\t\t\t\t\n\t\t\t\t\tconsole.log('🎪 Conventions chargées:', conventions.length);\n\t\t\t\t\tconventions.forEach(e => console.log('   ✅', e.title, '-', e.startDate.toLocaleDateString('fr-FR')));\n\t\t\t\t\treturn conventions;\n\t\t\t\t} catch (e) {\n\t\t\t\t\tconsole.warn('⚠️ Erreur:', e.message);\n\t\t\t\t}\n\t\t\t}\n\t\t\treturn [];\n\t\t}\n\t\t\n\t\t// Formater la date pour affichage\n\t\tfunction formatDate(date) {\n\t\t\tif (!date) return { jour: '?', mois: '???', annee: '' };\n\t\t\tconst d = new Date(date);\n\t\t\treturn {\n\t\t\t\tjour: d.getDate(),\n\t\t\t\tmois: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),\n\t\t\t\tannee: d.getFullYear(),\n\t\t\t\tcomplet: d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })\n\t\t\t};\n\t\t}\n\t\t\n\t\t// Calculer le nombre de jours restants\n\t\tfunction joursRestants(date) {\n\t\t\tif (!date) return null;\n\t\t\tconst now = new Date();\n\t\t\tconst diff = Math.ceil((new Date(date) - now) / (1000 * 60 * 60 * 24));\n\t\t\tif (diff === 0) return \"Aujourd'hui !\";\n\t\t\tif (diff === 1) return \"Demain !\";\n\t\t\tif (diff < 0) return \"Passé\";\n\t\t\treturn `Dans ${diff} jours`;\n\t\t}\n\t\t\n\t\t// Générer les tuiles\n\t\tfunction genererTuiles(grid) {\n\t\t\tif (conventions.length === 0) {\n\t\t\t\tafficherMessage(grid, 'Aucune convention prévue pour le moment');\n\t\t\t\treturn;\n\t\t\t}\n\t\t\t\n\t\t\tgrid.innerHTML = '';\n\t\t\t\n\t\t\tconventions.forEach((event, index) => {\n\t\t\t\tconst date = formatDate(event.startDate);\n\t\t\t\tconst countdown = joursRestants(event.startDate);\n\t\t\t\t\n\t\t\t\tconst tile = document.createElement('article');\n\t\t\t\ttile.className = 'event-tile';\n\t\t\t\ttile.setAttribute('tabindex', '0');\n\t\t\t\ttile.setAttribute('role', 'button');\n\t\t\t\ttile.setAttribute('aria-label', `Voir les détails de ${event.title}`);\n\t\t\t\t\n\t\t\t\ttile.innerHTML = `\n\t\t\t\t\t<div class=\"event-tile-date\">\n\t\t\t\t\t\t<span class=\"event-tile-day\">${date.jour}</span>\n\t\t\t\t\t\t<span class=\"event-tile-month\">${date.mois}</span>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"event-tile-content\">\n\t\t\t\t\t\t<h3 class=\"event-tile-title\">${escapeHtml(event.title)}</h3>\n\t\t\t\t\t\t${event.location ? `<p class=\"event-tile-location\"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}\n\t\t\t\t\t\t<p class=\"event-tile-countdown\">${escapeHtml(countdown)}</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"event-tile-arrow\">▶</div>\n\t\t\t\t`;\n\t\t\t\t\n\t\t\t\t// Ouvrir popup au clic ou touche Entrée\n\t\t\t\tconst openPopup = () => {\n\t\t\t\t\tlastFocusedElement = tile;\n\t\t\t\t\touvrirPopup(event);\n\t\t\t\t};\n\t\t\t\ttile.addEventListener('click', openPopup);\n\t\t\t\ttile.addEventListener('keydown', (e) => {\n\t\t\t\t\tif (e.key === 'Enter' || e.key === ' ') {\n\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\topenPopup();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t\t\n\t\t\t\tgrid.appendChild(tile);\n\t\t\t});\n\t\t}\n\t\t\n\t\t// Échapper le HTML\n\t\tfunction escapeHtml(text) {\n\t\t\tif (!text) return '';\n\t\t\tconst div = document.createElement('div');\n\t\t\tdiv.textContent = text;\n\t\t\treturn div.innerHTML;\n\t\t}\n\t\t\n\t\t// Convertir URLs en liens\n\t\tfunction linkifyText(text) {\n\t\t\tif (!text) return '';\n\t\t\treturn escapeHtml(text)\n\t\t\t\t.replace(/(https?:\\/\\/[^\\s<]+)/g, '<a href=\"$1\" target=\"_blank\" rel=\"noopener\">$1</a>')\n\t\t\t\t.replace(/\\n/g, '<br>');\n\t\t}\n\t\t\n\t\t// Ouvrir la popup détail\n\t\tfunction ouvrirPopup(event) {\n\t\t\tconst modal = document.querySelector('.event-modal');\n\t\t\tconst titre = document.querySelector('.event-modal-title');\n\t\t\tconst corps = document.querySelector('.event-modal-body');\n\t\t\tif (!modal || !titre || !corps) return;\n\t\t\t\n\t\t\ttitre.textContent = event.title || 'Convention';\n\t\t\t\n\t\t\tconst dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };\n\t\t\tlet dateStr = 'Date non définie';\n\t\t\tlet dateRange = '';\n\t\t\t\n\t\t\tif (event.startDate) {\n\t\t\t\tconst start = new Date(event.startDate);\n\t\t\t\tconst end = event.endDate ? new Date(event.endDate) : null;\n\t\t\t\tdateStr = start.toLocaleDateString('fr-FR', dateOpts);\n\t\t\t\t\n\t\t\t\tif (end && start.toDateString() !== end.toDateString()) {\n\t\t\t\t\tdateRange = ' au ' + end.toLocaleDateString('fr-FR', dateOpts);\n\t\t\t\t}\n\t\t\t}\n\t\t\t\n\t\t\tlet html = '<div class=\"event-modal-body-grid\"><div class=\"event-modal-left\">';\n\t\t\thtml += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📅</span><div class=\"event-info-content\"><div class=\"event-info-label\">Date</div><div class=\"event-info-text\">${escapeHtml(dateStr + dateRange)}</div></div></div>`;\n\t\t\t\n\t\t\tif (event.location) {\n\t\t\t\tconst loc = encodeURIComponent(event.location);\n\t\t\t\thtml += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📍</span><div class=\"event-info-content\"><div class=\"event-info-label\">Lieu</div><div class=\"event-info-text\">${escapeHtml(event.location)}</div><div class=\"event-location-buttons\"><a href=\"https://www.google.com/maps/search/?api=1&query=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-google\">Google Maps</a><a href=\"https://waze.com/ul?q=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-waze\">Waze</a><a href=\"https://maps.apple.com/?q=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-apple\">Apple Plans</a></div></div></div>`;\n\t\t\t}\n\t\t\t\n\t\t\thtml += '</div><div class=\"event-modal-right\">';\n\t\t\t\n\t\t\tif (event.description) {\n\t\t\t\thtml += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📝</span><div class=\"event-info-content\"><div class=\"event-info-label\">Description</div><div class=\"event-info-text\">${linkifyText(event.description)}</div></div></div>`;\n\t\t\t}\n\t\t\t\n\t\t\tif (event.url) {\n\t\t\t\ttry {\n\t\t\t\t\tconst urlObj = new URL(event.url);\n\t\t\t\t\tif (urlObj.protocol.startsWith('http')) {\n\t\t\t\t\t\thtml += `<div class=\"event-info-row\"><span class=\"event-info-icon\">🔗</span><div class=\"event-info-content\"><div class=\"event-info-label\">Site officiel</div><a href=\"${escapeHtml(event.url)}\" target=\"_blank\" rel=\"noopener\" class=\"event-url-button\">Visiter le site</a></div></div>`;\n\t\t\t\t\t}\n\t\t\t\t} catch (e) {}\n\t\t\t}\n\t\t\t\n\t\t\thtml += '</div></div>';\n\t\t\tcorps.innerHTML = html;\n\t\t\t\n\t\t\tdocument.body.classList.add('modal-open');\n\t\t\tmodal.classList.add('show');\n\t\t\t\n\t\t\tconst closeBtn = modal.querySelector('.event-modal-close');\n\t\t\tconst overlay = modal.querySelector('.event-modal-overlay');\n\t\t\t\n\t\t\tif (closeBtn) {\n\t\t\t\tcloseBtn.onclick = fermerPopup;\n\t\t\t\tcloseBtn.focus();\n\t\t\t}\n\t\t\tif (overlay) overlay.onclick = fermerPopup;\n\t\t\t\n\t\t\t// Gestion clavier\n\t\t\tif (currentKeyHandler) document.removeEventListener('keydown', currentKeyHandler);\n\t\t\tcurrentKeyHandler = (e) => {\n\t\t\t\tif (e.key === 'Escape') fermerPopup();\n\t\t\t};\n\t\t\tdocument.addEventListener('keydown', currentKeyHandler);\n\t\t}\n\t\t\n\t\t// Fermer la popup\n\t\tfunction fermerPopup() {\n\t\t\tconst modal = document.querySelector('.event-modal');\n\t\t\tif (modal && modal.classList.contains('show')) {\n\t\t\t\tmodal.classList.add('closing');\n\t\t\t\tdocument.body.classList.remove('modal-open');\n\t\t\t\tsetTimeout(() => modal.classList.remove('show', 'closing'), 300);\n\t\t\t\t\n\t\t\t\tif (currentKeyHandler) {\n\t\t\t\t\tdocument.removeEventListener('keydown', currentKeyHandler);\n\t\t\t\t\tcurrentKeyHandler = null;\n\t\t\t\t}\n\t\t\t\t\n\t\t\t\tif (lastFocusedElement) {\n\t\t\t\t\tlastFocusedElement.focus();\n\t\t\t\t\tlastFocusedElement = null;\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\t\n\t\t// Charger avec retry\n\t\tasync function chargerAvecRetry() {\n\t\t\tfor (let i = 0; i <= CONFIG.RETRY_ATTEMPTS; i++) {\n\t\t\t\tconst result = await chargerConventions();\n\t\t\t\tif (result.length > 0 || i === CONFIG.RETRY_ATTEMPTS) return result;\n\t\t\t\tawait new Promise(r => setTimeout(r, CONFIG.RETRY_DELAY));\n\t\t\t}\n\t\t\treturn [];\n\t\t}\n\t\t\n\t\t// Initialisation\n\t\tdocument.addEventListener('DOMContentLoaded', async () => {\n\t\t\tconst grid = document.getElementById('events-grid');\n\t\t\tif (!grid) return;\n\t\t\t\n\t\t\ttry {\n\t\t\t\tafficherChargement(grid);\n\t\t\t\tawait chargerAvecRetry();\n\t\t\t\tgenererTuiles(grid);\n\t\t\t\tconsole.log('🎉 Module Conventions initialisé');\n\t\t\t} catch (e) {\n\t\t\t\tconsole.error('❌ Erreur:', e);\n\t\t\t\tafficherMessage(grid, 'Erreur de chargement', true);\n\t\t\t}\n\t\t});\n\t})();\n\t</script>"
+            "<script>\n    (function() {\n        'use strict';\n\n        const CONFIG = {\n            ICAL_CDN: 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js',\n            FUTURE_EVENTS_DAYS: 365,\n            MAX_EVENTS: parseInt('{{maxEvents}}', 10) || 3,\n            EVENT_FILTER: ('{{eventFilter}}' || 'go@events.lameutenormande').toLowerCase(),\n            RETRY_ATTEMPTS: 2,\n            RETRY_DELAY: 1000\n        };\n\n        let conventions = [];\n        let currentKeyHandler = null;\n        let lastFocusedElement = null;\n\n        function afficherChargement(grid) {\n            grid.innerHTML = `\n                <div class=\"events-loading\">\n                    <div class=\"loading-spinner\"></div>\n                    <p>Chargement des conventions...</p>\n                </div>\n            `;\n        }\n\n        function afficherMessage(grid, message, isError = false) {\n            grid.innerHTML = `\n                <div class=\"events-message ${isError ? 'error' : 'info'}\">\n                    <span>${isError ? '⚠️' : 'ℹ️'}</span>\n                    <p>${escapeHtml(message)}</p>\n                </div>\n            `;\n        }\n\n        async function chargerICAL() {\n            if (typeof ICAL !== 'undefined') return true;\n\n            try {\n                await new Promise((resolve, reject) => {\n                    const s = document.createElement('script');\n                    s.src = CONFIG.ICAL_CDN;\n                    s.crossOrigin = 'anonymous';\n                    s.onload = () => typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL non défini'));\n                    s.onerror = () => reject(new Error('Échec chargement ICAL.js'));\n                    document.head.appendChild(s);\n                });\n                return true;\n            } catch (e) {\n                console.warn('⚠️ ICAL.js:', e.message);\n                return false;\n            }\n        }\n\n        async function chargerConventions() {\n            if (!await chargerICAL()) return [];\n\n            const baseUrl = window.location.origin + window.location.pathname.replace(/\\/[^\\/]*$/, '');\n            const cacheBuster = '?v=' + Date.now();\n            const urls = [\n                'events.ics' + cacheBuster,\n                '/events.ics' + cacheBuster,\n                baseUrl + '/events.ics' + cacheBuster\n            ];\n\n            for (const url of urls) {\n                try {\n                    const r = await fetch(url, { cache: 'no-store' });\n                    if (!r.ok) continue;\n\n                    const data = await r.text();\n                    if (!data.includes('BEGIN:VCALENDAR')) continue;\n\n                    const comp = new ICAL.Component(ICAL.parse(data));\n                    const now = new Date();\n                    const futureCutoff = new Date(now.getTime() + CONFIG.FUTURE_EVENTS_DAYS * 24 * 60 * 60 * 1000);\n\n                    conventions = comp.getAllSubcomponents('vevent')\n                        .map(v => {\n                            const e = new ICAL.Event(v);\n\n                            let isGoEvent = false;\n                            const attendees = v.getAllProperties('attendee');\n\n                            for (const att of attendees) {\n                                const val = String(att.getFirstValue() || '').toLowerCase();\n                                const cn = String(att.getParameter('cn') || '').toLowerCase();\n                                if (val.includes(CONFIG.EVENT_FILTER) || cn.includes(CONFIG.EVENT_FILTER)) {\n                                    isGoEvent = true;\n                                    break;\n                                }\n                            }\n\n                            if (!isGoEvent) return null;\n\n                            return {\n                                title: e.summary || 'Convention',\n                                description: e.description || '',\n                                location: e.location || '',\n                                startDate: e.startDate ? e.startDate.toJSDate() : null,\n                                endDate: e.endDate ? e.endDate.toJSDate() : null,\n                                url: v.getFirstPropertyValue('url') || ''\n                            };\n                        })\n                        .filter(e => e && e.startDate && e.startDate >= now && e.startDate <= futureCutoff)\n                        .sort((a, b) => a.startDate - b.startDate)\n                        .slice(0, CONFIG.MAX_EVENTS);\n\n                    return conventions;\n                } catch (e) {\n                    console.warn('⚠️ Erreur:', e.message);\n                }\n            }\n\n            return [];\n        }\n\n        function formatDate(date) {\n            if (!date) return { jour: '?', mois: '???', annee: '' };\n            const d = new Date(date);\n            return {\n                jour: d.getDate(),\n                mois: d.toLocaleDateString('fr-FR', { month: 'short' }).toUpperCase(),\n                annee: d.getFullYear(),\n                complet: d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })\n            };\n        }\n\n        function joursRestants(date) {\n            if (!date) return null;\n            const now = new Date();\n            const diff = Math.ceil((new Date(date) - now) / (1000 * 60 * 60 * 24));\n            if (diff === 0) return \"Aujourd'hui !\";\n            if (diff === 1) return \"Demain !\";\n            if (diff < 0) return \"Passé\";\n            return `Dans ${diff} jours`;\n        }\n\n        function genererTuiles(grid) {\n            if (conventions.length === 0) {\n                afficherMessage(grid, 'Aucune convention prévue pour le moment');\n                return;\n            }\n\n            grid.innerHTML = '';\n\n            conventions.forEach((event) => {\n                const date = formatDate(event.startDate);\n                const countdown = joursRestants(event.startDate);\n\n                const tile = document.createElement('article');\n                tile.className = 'event-tile';\n                tile.setAttribute('tabindex', '0');\n                tile.setAttribute('role', 'button');\n                tile.setAttribute('aria-label', `Voir les détails de ${event.title}`);\n\n                tile.innerHTML = `\n                    <div class=\"event-tile-date\">\n                        <span class=\"event-tile-day\">${date.jour}</span>\n                        <span class=\"event-tile-month\">${date.mois}</span>\n                    </div>\n                    <div class=\"event-tile-content\">\n                        <h3 class=\"event-tile-title\">${escapeHtml(event.title)}</h3>\n                        ${event.location ? `<p class=\"event-tile-location\"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}\n                        <p class=\"event-tile-countdown\">${escapeHtml(countdown)}</p>\n                    </div>\n                    <div class=\"event-tile-arrow\">▶</div>\n                `;\n\n                const openPopup = () => {\n                    lastFocusedElement = tile;\n                    ouvrirPopup(event);\n                };\n\n                tile.addEventListener('click', openPopup);\n                tile.addEventListener('keydown', (e) => {\n                    if (e.key === 'Enter' || e.key === ' ') {\n                        e.preventDefault();\n                        openPopup();\n                    }\n                });\n\n                grid.appendChild(tile);\n            });\n        }\n\n        function escapeHtml(text) {\n            if (!text) return '';\n            const div = document.createElement('div');\n            div.textContent = text;\n            return div.innerHTML;\n        }\n\n        function linkifyText(text) {\n            if (!text) return '';\n            return escapeHtml(text)\n                .replace(/(https?:\\/\\/[^\\s<]+)/g, '<a href=\"$1\" target=\"_blank\" rel=\"noopener\">$1</a>')\n                .replace(/\\n/g, '<br>');\n        }\n\n        function ouvrirPopup(event) {\n            const modal = document.querySelector('.event-modal');\n            const titre = document.querySelector('.event-modal-title');\n            const corps = document.querySelector('.event-modal-body');\n            if (!modal || !titre || !corps) return;\n\n            titre.textContent = event.title || 'Convention';\n\n            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };\n            let dateStr = 'Date non définie';\n            let dateRange = '';\n\n            if (event.startDate) {\n                const start = new Date(event.startDate);\n                const end = event.endDate ? new Date(event.endDate) : null;\n                dateStr = start.toLocaleDateString('fr-FR', dateOpts);\n\n                if (end && start.toDateString() !== end.toDateString()) {\n                    dateRange = ' au ' + end.toLocaleDateString('fr-FR', dateOpts);\n                }\n            }\n\n            let html = '<div class=\"event-modal-body-grid\"><div class=\"event-modal-left\">';\n            html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📅</span><div class=\"event-info-content\"><div class=\"event-info-label\">Date</div><div class=\"event-info-text\">${escapeHtml(dateStr + dateRange)}</div></div></div>`;\n\n            if (event.location) {\n                const loc = encodeURIComponent(event.location);\n                html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📍</span><div class=\"event-info-content\"><div class=\"event-info-label\">Lieu</div><div class=\"event-info-text\">${escapeHtml(event.location)}</div><div class=\"event-location-buttons\"><a href=\"https://www.google.com/maps/search/?api=1&query=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-google\">Google Maps</a><a href=\"https://waze.com/ul?q=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-waze\">Waze</a><a href=\"https://maps.apple.com/?q=${loc}\" target=\"_blank\" rel=\"noopener\" class=\"location-btn location-apple\">Apple Plans</a></div></div></div>`;\n            }\n\n            html += '</div><div class=\"event-modal-right\">';\n\n            if (event.description) {\n                html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📝</span><div class=\"event-info-content\"><div class=\"event-info-label\">Description</div><div class=\"event-info-text\">${linkifyText(event.description)}</div></div></div>`;\n            }\n\n            if (event.url) {\n                try {\n                    const urlObj = new URL(event.url);\n                    if (urlObj.protocol.startsWith('http')) {\n                        html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">🔗</span><div class=\"event-info-content\"><div class=\"event-info-label\">Site officiel</div><a href=\"${escapeHtml(event.url)}\" target=\"_blank\" rel=\"noopener\" class=\"event-url-button\">Visiter le site</a></div></div>`;\n                    }\n                } catch (e) {}\n            }\n\n            html += '</div></div>';\n            corps.innerHTML = html;\n\n            document.body.classList.add('modal-open');\n            modal.classList.add('show');\n\n            const closeBtn = modal.querySelector('.event-modal-close');\n            const overlay = modal.querySelector('.event-modal-overlay');\n\n            if (closeBtn) {\n                closeBtn.onclick = fermerPopup;\n                closeBtn.focus();\n            }\n\n            if (overlay) overlay.onclick = fermerPopup;\n\n            if (currentKeyHandler) {\n                document.removeEventListener('keydown', currentKeyHandler);\n            }\n\n            currentKeyHandler = (e) => {\n                if (e.key === 'Escape') fermerPopup();\n            };\n            document.addEventListener('keydown', currentKeyHandler);\n        }\n\n        function fermerPopup() {\n            const modal = document.querySelector('.event-modal');\n            if (modal && modal.classList.contains('show')) {\n                modal.classList.add('closing');\n                document.body.classList.remove('modal-open');\n\n                setTimeout(() => {\n                    modal.classList.remove('show', 'closing');\n                }, 300);\n\n                if (currentKeyHandler) {\n                    document.removeEventListener('keydown', currentKeyHandler);\n                    currentKeyHandler = null;\n                }\n\n                if (lastFocusedElement) {\n                    lastFocusedElement.focus();\n                    lastFocusedElement = null;\n                }\n            }\n        }\n\n        async function chargerAvecRetry() {\n            for (let i = 0; i <= CONFIG.RETRY_ATTEMPTS; i++) {\n                const result = await chargerConventions();\n                if (result.length > 0 || i === CONFIG.RETRY_ATTEMPTS) return result;\n                await new Promise(r => setTimeout(r, CONFIG.RETRY_DELAY));\n            }\n            return [];\n        }\n\n        document.addEventListener('DOMContentLoaded', async () => {\n            const grid = document.getElementById('events-grid');\n            if (!grid) return;\n\n            try {\n                afficherChargement(grid);\n                await chargerAvecRetry();\n                genererTuiles(grid);\n            } catch (e) {\n                console.error('❌ Erreur:', e);\n                afficherMessage(grid, 'Erreur de chargement', true);\n            }\n        });\n    })();\n    </script>"
           ],
           "_protectedParams": [],
           "_global": false,
@@ -4946,7 +4996,7 @@
     "artistes.html": {
       "settings": {
         "title": "Les artistes - La Meute Normande",
-        "order": "4",
+        "order": "3",
         "meta_image": "@PROJECT_PATH@/assets/images/logo-2000x837.png"
       },
       "components": [
@@ -8699,7 +8749,7 @@
     "formulaire.html": {
       "settings": {
         "title": "Formulaire envoyé - La Meute Normande",
-        "order": "1",
+        "order": "5",
         "meta_image": "@PROJECT_PATH@/assets/images/logo-2000x837.png"
       },
       "components": [
@@ -9446,11 +9496,11 @@
           "_sourceTheme": "startm5",
           "_customHTML": "<section data-bs-version=\"5.1\" class=\"menu menu2\" group=\"Menu\" plugins=\"DropDown, TouchSwipe\" always-top global once=\"menu\" not-draggable position-absolute>\n\t<mbr-parameters>\n\t\t<header>Show/Hide</header>\n\t\t<input type=\"checkbox\" title=\"Logo\" name=\"showLogo\" checked>\n\t\t<input type=\"range\" title=\"Logo Size\" inline name=\"logoSize\" min=\"1\" max=\"5\" step=\"0.1\" value=\"3.7\" condition=\"showLogo\">\n\t\t<input type=\"checkbox\" title=\"Brand Name\" name=\"showBrand\">\n\t\t<input type=\"checkbox\" title=\"Menu Items\" name=\"showItems\" checked>\n\t\t<select title=\"Menu Items Align\" name=\"contentAlign\" condition=\"showItems\">\n\t\t\t<option value=\"1\">Left</option>\n\t\t\t<option value=\"2\" selected>Center</option>\n\t\t\t<option value=\"3\">Right</option>\n\t\t</select>\n\t\t<input type=\"checkbox\" title=\"Icons\" name=\"showIcons\" checked>\n\t\t<select title=\"Amount\" name=\"iconsAmount\" condition=\"showIcons\">\n\t\t\t<option value=\"1\">1</option>\n\t\t\t<option value=\"2\" selected>2</option>\n\t\t\t<option value=\"3\">3</option>\n\t\t\t<option value=\"4\">4</option>\n\t\t</select>\n\t\t<input type=\"color\" title=\"Icons Color\" name=\"iconsColor\" value=\"#000000\" condition=\"showIcons\">\n\t\t<input type=\"checkbox\" title=\"Button\" name=\"showButtons\">\n\t\t<header>Styles</header>\n\t\t<input type=\"checkbox\" title=\"Collapsed\" name=\"collapsed\" condition=\"none\">\n\t\t<input type=\"checkbox\" title=\"Transparent\" name=\"transparent\" checked>\n\t\t<input type=\"checkbox\" title=\"Sticky\" name=\"sticky\" checked>\n\t\t<input type=\"range\" title=\"Opacity\" name=\"opacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"transparent\">\n\t\t<input type=\"color\" title=\"Color\" name=\"menuBgColor\" value=\"#9edfdf\">\n\t\t<input type=\"color\" title=\"Hamburger\" name=\"hamburgerColor\" value=\"#ff0202\">\n\t</mbr-parameters>\n\n\t<nav class=\"navbar navbar-dropdown\" mbr-class=\"{'navbar-fixed-top':sticky,\n                     'navbar-expand-lg':!collapsed,\n                     'collapsed':collapsed}\">\n\t\t<div class=\"container\">\n\t\t\t<div class=\"navbar-brand\">\n\t\t\t\t<span mbr-if=\"showLogo\" class=\"navbar-logo\">\n\t\t\t\t\t<a href=\"https://lameutenormande.fr\">\n\t\t\t\t\t\t<img src=\"@PROJECT_PATH@/assets/images/logo-2000x837.png\" alt=\"La Meute Normande\" mbr-style=\"{'height': logoSize + 'rem'}\">\n\t\t\t\t\t</a>\n\t\t\t\t</span>\n\t\t\t\t<span mbr-if=\"showBrand\" mbr-buttons mbr-theme-style=\"display-4\" class=\"navbar-caption-wrap\" data-toolbar=\"-mbrBtnMove,-mbrBtnAdd,-mbrBtnRemove,-iconFont\"><a class=\"navbar-caption text-black\" data-app-selector=\".navbar-caption\" href=\"https://mobiri.se\" data-app-placeholder=\"Type Text\">La Meute Normande</a></span>\n\t\t\t</div>\n\t\t\t<button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-bs-toggle=\"collapse\" data-target=\"#navbarSupportedContent\" data-bs-target=\"#navbarSupportedContent\" aria-controls=\"navbarNavAltMarkup\" aria-expanded=\"false\" aria-label=\"Toggle navigation\" mbr-if=\"showItems || showIcons || showButtons\">\n\t\t\t\t<div class=\"hamburger\">\n\t\t\t\t\t<span></span>\n\t\t\t\t\t<span></span>\n\t\t\t\t\t<span></span>\n\t\t\t\t\t<span></span>\n\t\t\t\t</div>\n\t\t\t</button>\n\t\t\t<div class=\"collapse navbar-collapse\" id=\"navbarSupportedContent\" mbr-if=\"showItems || showIcons || showButtons\">\n\t\t\t\t<ul mbr-menu class=\"navbar-nav nav-dropdown\" mbr-theme-style=\"display-4\" mbr-if=\"showItems\" mbr-class=\"{'nav-right': !showButtons,'navbar-nav-top-padding': isPublish && !showBrand && !showLogo}\"><li class=\"nav-item\">\n\t\t\t\t\t\t<a class=\"nav-link link text-danger\" href=\"events.html\" data-app-selector=\".nav-link,.dropdown-item\" data-app-placeholder=\"Type Text\">&nbsp;Événements&nbsp;</a>\n\t\t\t\t\t</li><li class=\"nav-item\"><a class=\"nav-link link text-danger\" href=\"actus.html\" data-app-selector=\".nav-link,.dropdown-item\" data-app-placeholder=\"Type Text\">&nbsp;Actus&nbsp;</a></li><li class=\"nav-item\"><a class=\"nav-link link text-danger text-primary\" href=\"artistes.html\" data-app-selector=\".nav-link,.dropdown-item\" data-app-placeholder=\"Type Text\">&nbsp;LES Artistes&nbsp;</a></li>\n\t\t\t\t\t\n\t\t\t\t\t<li class=\"nav-item\">\n\t\t\t\t\t\t<a class=\"nav-link link text-danger\" href=\"contact.html\" data-app-selector=\".nav-link,.dropdown-item\" data-app-placeholder=\"Type Text\">&nbsp;Contact&nbsp;</a>\n\t\t\t\t\t</li></ul>\n\t\t\t\t<div class=\"icons-menu\" mbr-if=\"showIcons\">\n\t\t\t\t\t<a class=\"iconfont-wrapper\" href=\"http://t.me/Annonces_Meute_Normande\">\n\t\t\t\t\t\t<span mbr-icon class=\"p-2 mbr-iconfont socicon-telegram socicon\" style=\"color: rgb(0, 110, 255); fill: rgb(0, 110, 255);\"></span>\n\t\t\t\t\t</a>\n\t\t\t\t\t<a class=\"iconfont-wrapper\" href=\"https://www.instagram.com/la.meute_normande\" mbr-if=\"iconsAmount > 1\">\n\t\t\t\t\t\t<span mbr-icon class=\"p-2 mbr-iconfont socicon-instagram socicon\" style=\"color: rgb(249, 44, 80); fill: rgb(249, 44, 80);\"></span>\n\t\t\t\t\t</a>\n\t\t\t\t\t<a class=\"iconfont-wrapper\" href=\"https://mobiri.se\" mbr-if=\"iconsAmount > 2\">\n\t\t\t\t\t\t<span mbr-icon class=\"p-2 mbr-iconfont mobi-mbri-map-pin mobi-mbri\"></span>\n\t\t\t\t\t</a>\n\t\t\t\t\t<a class=\"iconfont-wrapper\" href=\"https://mobiri.se\" mbr-if=\"iconsAmount > 3\">\n\t\t\t\t\t\t<span mbr-icon class=\"p-2 mbr-iconfont mobi-mbri-shopping-cart mobi-mbri\"></span>\n\t\t\t\t\t</a>\n\t\t\t\t</div>\n\t\t\t\t<div mbr-if=\"showButtons\" mbr-buttons mbr-theme-style=\"display-4\" class=\"navbar-buttons mbr-section-btn\">\n\t\t\t\t\t<a class=\"btn btn-primary\" href=\"https://mobiri.se\" data-app-placeholder=\"Type Text\"> Start Now!</a>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</nav>\n</section>",
           "_cid": "v2JjpkmvsV",
+          "_anchor": "menu02-1i",
           "_protectedParams": [],
           "_global": true,
           "_once": "menu",
-          "_params": {},
-          "_anchor": "menu02-1i"
+          "_params": {}
         },
         {
           "alias": false,
@@ -9526,11 +9576,11 @@
           "_sourceTheme": "startm5",
           "_customHTML": "<section data-bs-version=\"5.1\" class=\"header09 startm5\" group=\"Headers\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\t\n    <mbr-parameters>\n\t\t<header>Size</header>\n\t\t<input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\" checked>\n\t\t<input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n\t\t<input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n\t\t<input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n\t\t<input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"4\" max=\"12\" step=\"1\" value=\"8\">\n\t\t<header>Show / Hide</header>\n\t\t<input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n\t\t<input type=\"checkbox\" title=\"Text\" name=\"showText\">\n\t\t<input type=\"checkbox\" title=\"Buttons\" name=\"showButtons\" checked>\n\t\t<select title=\"Vertical Align\" name=\"verticalAlign\" condition=\"fullScreen\">\n\t\t\t<option value=\"flex-start\">Top</option>\n\t\t\t<option value=\"center\" selected>Center</option>\n\t\t\t<option value=\"flex-end\">Bottom</option>\n\t\t</select>\n\t\t<select title=\"Horizontal Align\" name=\"horizontalAlign\">\n\t\t\t<option value=\"flex-start\">Left</option>\n\t\t\t<option value=\"center\" selected>Center</option>\n\t\t\t<option value=\"flex-end\">Right</option>\n\t\t</select>\n\t\t<header>Background</header>\n\t\t<fieldset type=\"background\" name=\"bg\" parallax>\n\t\t\t<input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/pxl-20251004-121259128-2000x1506.webp\" selected parallax>\n\t\t\t<input type=\"color\" title=\"Color\" value=\"#393193\">\n\t\t\t<input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n\t\t</fieldset>\n\t\t<header condition=\"bg.type === 'video'\">Fallback Image</header>\n\t\t<input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\t\t<input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n\t\t<input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#404040\" condition=\"overlay && bg.type !== 'color'\">\n\t\t<input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.7\" condition=\"overlay && bg.type !== 'color'\">\n\t</mbr-parameters>\n\t<div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\t<div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\t<div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n\t\t<div class=\"row\">\n\t\t\t<div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\t\t\t\t<h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-4\" mbr-theme-style=\"display-2\" data-app-selector=\".mbr-section-title\" mbr-if=\"showTitle\">\n\t\t\t\t\t<b>Merci pour ton message</b></h1>\n\t\t\t\t<h2 class=\"mbr-section-title mbr-fonts-style mbr-white mb-4\" data-app-selector=\".mbr-section-title\" mbr-theme-style=\"display-2\" mbr-if=\"showSubtitle\">Nous reviendrons vers toi bientôt ! 😼</h2>\n\t\t\t\t<p class=\"mbr-fonts-style mbr-text mbr-white mb-4\" mbr-theme-style=\"display-7\" mbr-if=\"showText\" data-app-selector=\".mbr-text, .mbr-section-btn\"></p>\n\t\t\t\t<div class=\"mbr-section-btn\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\" mbr-buttons mbr-theme-style=\"display-7\"><a class=\"btn btn-secondary\" href=\"https://lameutenormande.fr\" data-app-placeholder=\"Type Text\">◀️ Retour vers la page d'accueil</a></div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</section>",
           "_cid": "vfPbt3RllZ",
+          "_anchor": "header09-1k",
           "_protectedParams": [],
           "_global": false,
           "_once": false,
-          "_params": {},
-          "_anchor": "header09-1k"
+          "_params": {}
         },
         {
           "alias": false,
@@ -9552,11 +9602,11 @@
           "_sourceTheme": "startm5",
           "_customHTML": "<section data-bs-version=\"5.1\" class=\"footer4\" group=\"Footers\" global once=\"footers\" mbr-class=\"{'mbr-reveal': reveal, 'mbr-parallax-background': bg.parallax}\">\n\n    <mbr-parameters>\n        <!-- Block parameters controls (Blue \"Gear\" panel) -->\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"8\" step=\"1\" value=\"0\">\n        <input type=\"checkbox\" title=\"Reveal effect\" name=\"reveal\">\n        <header>Background</header>\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Image\" value=\"../_images/background1.jpg\">\n            <input type=\"color\" title=\"Color\" value=\"#1b1b23\" selected>\n        </fieldset>\n        <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#2e481a\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.6\" condition=\"overlay && bg.type !== 'color'\">\n        <!-- End block parameters -->\n    </mbr-parameters>\n\n    <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"container\">\n        <div class=\"media-container-row align-center mbr-white\">\n            <div class=\"col-12\">\n                <p class=\"mbr-text mb-0 mbr-fonts-style\" mbr-theme-style=\"display-7\" data-app-selector=\".media-container-row .mbr-text\" data-app-placeholder=\"Type Text\">\n                    Site réalisé par <a href=\"tg://resolve?domain=NitraFox\" class=\"text-primary\">Nitra🦊</a>&nbsp;et calendrier alimenté par <a href=\"tg://resolve?domain=Spyro_The_Bat\" class=\"text-info\">Spyro the bat🦇</a></p>\n            </div>\n        </div>\n    </div>\n</section>",
           "_cid": "v4N9BybemT",
+          "_anchor": "footer04-1j",
           "_protectedParams": [],
           "_global": true,
           "_once": "footers",
-          "_params": {},
-          "_anchor": "footer04-1j"
+          "_params": {}
         }
       ]
     }
