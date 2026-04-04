@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pp3QiK"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pp3QiK" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=WCySgP"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=WCySgP" type="text/css">
 
   
   
@@ -161,7 +161,6 @@
 
         async function chargerICAL() {
             if (typeof ICAL !== 'undefined') return true;
-
             try {
                 await new Promise((resolve, reject) => {
                     const s = document.createElement('script');
@@ -204,10 +203,8 @@
                     conventions = comp.getAllSubcomponents('vevent')
                         .map(v => {
                             const e = new ICAL.Event(v);
-
                             let isGoEvent = false;
                             const attendees = v.getAllProperties('attendee');
-
                             for (const att of attendees) {
                                 const val = String(att.getFirstValue() || '').toLowerCase();
                                 const cn = String(att.getParameter('cn') || '').toLowerCase();
@@ -216,9 +213,7 @@
                                     break;
                                 }
                             }
-
                             if (!isGoEvent) return null;
-
                             return {
                                 title: e.summary || 'Convention',
                                 description: e.description || '',
@@ -237,7 +232,6 @@
                     console.warn('⚠️ Erreur:', e.message);
                 }
             }
-
             return [];
         }
 
@@ -267,9 +261,7 @@
                 afficherMessage(grid, 'Aucune convention prévue pour le moment');
                 return;
             }
-
             grid.innerHTML = '';
-
             conventions.forEach((event) => {
                 const date = formatDate(event.startDate);
                 const countdown = joursRestants(event.startDate);
@@ -293,19 +285,11 @@
                     <div class="event-tile-arrow">▶</div>
                 `;
 
-                const openPopup = () => {
-                    lastFocusedElement = tile;
-                    ouvrirPopup(event);
-                };
-
+                const openPopup = () => { lastFocusedElement = tile; ouvrirPopup(event); };
                 tile.addEventListener('click', openPopup);
                 tile.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        openPopup();
-                    }
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPopup(); }
                 });
-
                 grid.appendChild(tile);
             });
         }
@@ -340,7 +324,6 @@
                 const start = new Date(event.startDate);
                 const end = event.endDate ? new Date(event.endDate) : null;
                 dateStr = start.toLocaleDateString('fr-FR', dateOpts);
-
                 if (end && start.toDateString() !== end.toDateString()) {
                     dateRange = ' au ' + end.toLocaleDateString('fr-FR', dateOpts);
                 }
@@ -377,21 +360,11 @@
 
             const closeBtn = modal.querySelector('.event-modal-close');
             const overlay = modal.querySelector('.event-modal-overlay');
-
-            if (closeBtn) {
-                closeBtn.onclick = fermerPopup;
-                closeBtn.focus();
-            }
-
+            if (closeBtn) { closeBtn.onclick = fermerPopup; closeBtn.focus(); }
             if (overlay) overlay.onclick = fermerPopup;
 
-            if (currentKeyHandler) {
-                document.removeEventListener('keydown', currentKeyHandler);
-            }
-
-            currentKeyHandler = (e) => {
-                if (e.key === 'Escape') fermerPopup();
-            };
+            if (currentKeyHandler) document.removeEventListener('keydown', currentKeyHandler);
+            currentKeyHandler = (e) => { if (e.key === 'Escape') fermerPopup(); };
             document.addEventListener('keydown', currentKeyHandler);
         }
 
@@ -400,20 +373,9 @@
             if (modal && modal.classList.contains('show')) {
                 modal.classList.add('closing');
                 document.body.classList.remove('modal-open');
-
-                setTimeout(() => {
-                    modal.classList.remove('show', 'closing');
-                }, 300);
-
-                if (currentKeyHandler) {
-                    document.removeEventListener('keydown', currentKeyHandler);
-                    currentKeyHandler = null;
-                }
-
-                if (lastFocusedElement) {
-                    lastFocusedElement.focus();
-                    lastFocusedElement = null;
-                }
+                setTimeout(() => { modal.classList.remove('show', 'closing'); }, 300);
+                if (currentKeyHandler) { document.removeEventListener('keydown', currentKeyHandler); currentKeyHandler = null; }
+                if (lastFocusedElement) { lastFocusedElement.focus(); lastFocusedElement = null; }
             }
         }
 
@@ -429,7 +391,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const grid = document.getElementById('events-grid');
             if (!grid) return;
-
             try {
                 afficherChargement(grid);
                 await chargerAvecRetry();

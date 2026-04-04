@@ -4165,7 +4165,7 @@ a {
   .cid-vfPilZdu2W .events-loading,
   .cid-vfPilZdu2W .events-message {
     max-width: 100%;
-    padding: 1rem 1rem;
+    padding: 1rem;
   }
   .cid-vfPilZdu2W .events-message {
     flex-direction: column;
@@ -4237,7 +4237,6 @@ a {
 .cid-vfPilZdu2W .events-message {
   grid-column: 1 / -1;
   width: 100%;
-  max-width: 900px;
   margin: 0 auto;
   justify-self: center;
   align-self: center;
@@ -4281,6 +4280,7 @@ a {
 }
 .cid-vfPilZdu2W .events-message.info p {
   margin: 0;
+  text-align: center;
 }
 .cid-vfPilZdu2W .events-loading .loading-spinner {
   width: 48px;
