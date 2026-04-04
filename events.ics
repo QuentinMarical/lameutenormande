@@ -6,6 +6,39 @@ X-WR-TIMEZONE:GMT
 CALSCALE:GREGORIAN
 METHOD:PUBLISH
 BEGIN:VEVENT
+SUMMARY:L'Escale du Dragon
+DESCRIPTION:Festival médiéval.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Festival médiéval.</div>
+DTSTART;VALUE=DATE:20260822
+DTEND;VALUE=DATE:20260824
+LOCATION:Espace Culturel L'Escale\, 1 Rue du Stade\, 25500 Morteau
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:045e656726ef41e4b0bfc5accfdee09f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260301T001140Z
+LAST-MODIFIED:20260301T001140Z
+DTSTAMP:20260301T001142Z
+URL:https://escaledudragon.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Chambéry
+DESCRIPTION:
+DTSTART:20260228T090000Z
+DTEND:20260301T170000Z
+LOCATION:Savoiexpo\, 1725 Avenue du Grand Arietaz\, 73000 Chambéry
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:08c3e65ec97f4d74b0bf066cc8979e0b@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T135640Z
+LAST-MODIFIED:20260207T140200Z
+DTSTAMP:20260207T140202Z
+URL:https://japanotakufestival.com/event/chambery-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY: Japan Otaku Festival Lisieux
 DESCRIPTION:
 DTSTART:20251129T090000Z
@@ -22,7 +55,23 @@ DTSTAMP:20260123T172255Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:🦊 Canthrofur 6
+SUMMARY:Le salon fantastique
+DESCRIPTION:
+DTSTART;VALUE=DATE:20260523
+DTEND;VALUE=DATE:20260526
+LOCATION:Hall de la Pinède (Parc Floral de Paris)\, Route du Champ de Manoeuvre\, 75012 Paris
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:09a348a3f2c14d5ca90bea20f70c1e3c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T170052Z
+LAST-MODIFIED:20260220T170052Z
+DTSTAMP:20260220T170052Z
+URL:https://event.imagin-con.org/registration/billetterie-achat
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Canthrofur 6 : Veillée des mystères
 DESCRIPTION:6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>6ème édition pour la Canthrofur toujours au VTF de Saint-Sauves-d'Auvergne\, non loin de la Bourboule en voiture à une dizaine de minutes.<br /></div>
 DTSTART:20270114T090000Z
@@ -34,8 +83,8 @@ STATUS:CONFIRMED
 UID:0c6c6be226594bd5aabd9bd07af43317@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260201T203943Z
-LAST-MODIFIED:20260201T203943Z
-DTSTAMP:20260201T203944Z
+LAST-MODIFIED:20260305T205244Z
+DTSTAMP:20260305T205245Z
 URL:https://www.canthrofur.org/
 END:VEVENT
 BEGIN:VEVENT
@@ -72,6 +121,38 @@ LAST-MODIFIED:20251210T214509Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Spinatorii
+DESCRIPTION:
+DTSTART:20260228T083000Z
+DTEND:20260301T170000Z
+LOCATION:Centre Des Congrès\, 7 Avenue de Saint-Dié\, 88000 Épinal
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1f2dc1e9f039468d9bbcfb5b5817fcdf@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T165532Z
+LAST-MODIFIED:20260220T165532Z
+DTSTAMP:20260220T165532Z
+URL:https://billetterie.spinatorii.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival La Roche-sur-Yon
+DESCRIPTION:
+DTSTART:20260328T090000Z
+DTEND:20260329T160000Z
+LOCATION:Parc Expo Les Oudairies\, Rue Giotto\, 85000 La Roche-sur-Yon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:20ba1d6c083942a58178ea073237e7fc@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T140810Z
+LAST-MODIFIED:20260207T140810Z
+DTSTAMP:20260207T140812Z
+URL:https://japanotakufestival.com/event/la-roche-sur-yon-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Le Havre Japan North'Con
 DESCRIPTION:
 DTSTART:20260307T090000Z
@@ -83,11 +164,42 @@ STATUS:CONFIRMED
 UID:2224cf75541243aabba9419c538e9469@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101036Z
-LAST-MODIFIED:20260202T170716Z
-DTSTAMP:20260202T170717Z
+LAST-MODIFIED:20260213T180347Z
+DTSTAMP:20260213T180348Z
 ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
-URL:https://breizhcon.bzh/le-havre/
+URL:https://www.billetweb.fr/3e-le-havre-japan-north-con
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest
+DESCRIPTION:
+DTSTART:20260509T073000Z
+DTEND:20260510T150000Z
+LOCATION:9 Rue Pierre Lathuilière\, 71600 Paray-le-Monial
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:24637f87efee44fcb02bfe5016f3ef02@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260325T085051Z
+LAST-MODIFIED:20260325T085051Z
+DTSTAMP:20260325T085053Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:EDN Fest
+DESCRIPTION:
+DTSTART:20260502T080000Z
+DTEND:20260503T170000Z
+LOCATION:Salle des Congrès - Esplanade du Châtelard\, Avenue du Châtelard\, 87200 Saint-Junien
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:285889ae5e6c462dbb601cb42216f425@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260228T234855Z
+LAST-MODIFIED:20260228T234855Z
+DTSTAMP:20260228T234856Z
+URL:https://www.halloasso.com/associations/l-echo-des-nagas/evenements/edn-fest-2026
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Migennes Collection
@@ -105,6 +217,22 @@ CREATED:20251210T212831Z
 LAST-MODIFIED:20260123T174508Z
 DTSTAMP:20260123T174510Z
 URL:https://www.facebook.com/profile.php?id=61555903979503
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Anthropolis
+DESCRIPTION:
+DTSTART:20260318T230100Z
+DTEND:20260322T225900Z
+LOCATION:Village vacances Bussang - AZUREVA\, 2 Rue de Larcenaire\, 88540 Bussang
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2dd166a9823d424892d2d9abf3fb8e9c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T152949Z
+LAST-MODIFIED:20260214T093456Z
+DTSTAMP:20260214T093459Z
+URL:https://furagora.com/anthropolis
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🎡Foire St-Romain
@@ -126,8 +254,8 @@ BEGIN:VEVENT
 SUMMARY:Game Fest Charleville
 DESCRIPTION:Game Fest Charleville à Charleville-Mézières.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Game Fest Charleville à Charleville-Mézières.<br /></div>
-DTSTART;VALUE=DATE:20260411
-DTEND;VALUE=DATE:20260413
+DTSTART:20260410T220100Z
+DTEND:20260412T215900Z
 LOCATION:Parc des Expositions Rue de la Vieille Meuse\, 08000 Charleville-Mézières\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -135,8 +263,9 @@ STATUS:CONFIRMED
 UID:373f01ac51424cf08de276f88c285fba@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214144Z
-LAST-MODIFIED:20251210T214204Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260207T121402Z
+DTSTAMP:20260207T121403Z
+URL:https://www.gamefest-charleville-mezieres.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Rencontre La Légion du Sud x ABV Brocante
@@ -189,11 +318,27 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 URL:https://www.abbaye-de-mortemer.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan Impact (Suisse)
+DESCRIPTION:
+DTSTART:20260214T090000Z
+DTEND:20260215T170000Z
+LOCATION:EPFL\, 1015 Lausanne\, Suisse
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:3af16e8b43e54482aceca3b977fad059@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260211T063821Z
+LAST-MODIFIED:20260213T230340Z
+DTSTAMP:20260213T230341Z
+URL:https://shop.japan-impact.ch/fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Touch Haru & Geek Touch
 DESCRIPTION:Japan Touch Haru & Geek Touch à Lyon.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Japan Touch Haru &amp\; Geek Touch à Lyon.<br /></div>
-DTSTART;VALUE=DATE:20260425
-DTEND;VALUE=DATE:20260427
+DTSTART:20260424T220100Z
+DTEND:20260426T215900Z
 LOCATION:Eurexpo Lyon Boulevard de l'Europe\, 69680 Chassieu\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -201,8 +346,8 @@ STATUS:CONFIRMED
 UID:3fac162200284a438b28bacfd5f48d8a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214249Z
-LAST-MODIFIED:20251210T214307Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260207T121435Z
+DTSTAMP:20260207T121437Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Yvetot Cosgames Show 7
@@ -240,11 +385,43 @@ ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACT
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Chibi Kamo
+DESCRIPTION:
+DTSTART:20260605T220000Z
+DTEND:20260607T215900Z
+LOCATION:Parc Des Expositions L'Eduen\, 1 Avenue André Frenaud\, 71400 Autun
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:494e30fa5bf546a781c2c0a39b7963aa@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T110549Z
+LAST-MODIFIED:20260207T110549Z
+DTSTAMP:20260207T110550Z
+URL:https://www.kamopolis.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Y/CON Garden Party
+DESCRIPTION:
+DTSTART:20260410T220100Z
+DTEND:20260412T215900Z
+LOCATION:Paris Montreuil Expo\, 128 Rue de Paris\, 93100 Montreuil
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:4b186d154e454c85be5867cf71dc1ba2@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260315T081040Z
+LAST-MODIFIED:20260315T081040Z
+DTSTAMP:20260315T081042Z
+URL:https://y-con-france.com/ycon-garden-party/billetterie/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Angers Geekfest
 DESCRIPTION:Angers Geekfest à Angers.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Angers Geekfest à Angers.<br /></div>
-DTSTART;VALUE=DATE:20260411
-DTEND;VALUE=DATE:20260413
+DTSTART:20260410T220100Z
+DTEND:20260412T215900Z
 LOCATION:Parc des expositions - Destination Angers Route de Paris\, 49000 Angers\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -252,8 +429,88 @@ STATUS:CONFIRMED
 UID:4c227486f866488daa2faf572637b99a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214055Z
-LAST-MODIFIED:20251210T214122Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260207T113549Z
+DTSTAMP:20260207T113551Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Ze Next Convention 7
+DESCRIPTION:
+DTSTART:20260515T220100Z
+DTEND:20260517T215900Z
+LOCATION:Ferme du Bois Briard\, 91080 Évry-Courcouronnes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:5047d56a012a4fa283e42ca24d6895f4@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260313T223127Z
+LAST-MODIFIED:20260313T223127Z
+DTSTAMP:20260313T223129Z
+URL:https://zenextconvention.fr/tarifs-et-option/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Avignon Geek Expo
+DESCRIPTION:
+DTSTART:20260206T230100Z
+DTEND:20260208T225900Z
+LOCATION:Parc des Expositions\, Chemin des Felons\, 84140 Avignon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:52153cf0a3c04bd59b2d9c0f9c58e33f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260203T113723Z
+LAST-MODIFIED:20260207T113458Z
+DTSTAMP:20260207T113500Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Day (Luxembourg)
+DESCRIPTION:
+DTSTART:20260327T230100Z
+DTEND:20260329T215900Z
+LOCATION:Luxexpo\, 20 Rue Hugo Gernsback\, 1855 Kirchberg Luxembourg
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:52898937e64342ebbbf97d49da690d4f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T155040Z
+LAST-MODIFIED:20260313T080228Z
+DTSTAMP:20260313T080229Z
+URL:https://japan-day.com/accueil-luxembourg/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Magic Odyssey
+DESCRIPTION:
+DTSTART:20260702T220100Z
+DTEND:20260705T215900Z
+LOCATION:Centre Culturel Yves Furet\, 1 Avenue de la Liberté\, 23300 La Souterraine
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:587d47ed69b44492a4178a72cdae4f32@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T160105Z
+LAST-MODIFIED:20260208T160105Z
+DTSTAMP:20260208T160106Z
+URL:https://magic-odyssey.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:FurBar de Rouen
+DESCRIPTION:LA SOIRÉE : ON TRINQUE AUX BEAUX JOURS ! 🍻 À partir de 19h00\, direction notre QG pour fêter le retour de la douceur !\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>LA SOIRÉE : ON TRINQUE AUX BEAUX JOURS ! 🍻 À partir de 19h00\, direction notre QG pour fêter le retour de la douceur !<br /></div>
+DTSTART:20260411T170000Z
+DTEND:20260411T213000Z
+LOCATION:L'ANTRE DU MALT 14 Place Martin Luther King\, 76000 Rouen
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:59e840e502b54eceb1bbea9e3c5e1348@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260326T145525Z
+LAST-MODIFIED:20260326T145625Z
+DTSTAMP:20260326T145627Z
+URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Lille 2026
@@ -271,6 +528,21 @@ CREATED:20250924T101716Z
 LAST-MODIFIED:20250924T101716Z
 DTSTAMP:20260104T042141Z
 URL:http://www.lillegrandpalais.com/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:CSFO 2026
+DESCRIPTION:
+DTSTART:20260425T080000Z
+DTEND:20260426T160000Z
+LOCATION:Hall des Expositions\, Avenue Charles Dardun\, 84100 Orange
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:5ac1cbdad14b4242b5d34583d171cbfb@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260214T105755Z
+LAST-MODIFIED:20260214T105755Z
+DTSTAMP:20260214T105757Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Limoges Japan Geek Festival
@@ -307,6 +579,53 @@ DTSTAMP:20260202T170707Z
 URL:https://www.gameureassociation.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Troyes
+DESCRIPTION:
+DTSTART:20260214T090000Z
+DTEND:20260215T170000Z
+LOCATION:Le Cube - Troyes\, 1 Boulevard du Général Charles Delestraint\, 10000 Troyes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:6431d85b3abb492fae279cd69a76ce7e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T140041Z
+LAST-MODIFIED:20260207T140041Z
+DTSTAMP:20260207T140043Z
+URL:https://japanotakufestival.com/event/troyes-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Family Pop Festival
+DESCRIPTION:
+DTSTART:20260425T080000Z
+DTEND:20260426T160000Z
+LOCATION:Salle Polyvalente - Samer\, Rue Jean Moulin\, 62830 Samer
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:6557df4b04f74b68b03af81bac7695f1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T151956Z
+LAST-MODIFIED:20260326T151956Z
+DTSTAMP:20260326T151957Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Marseille
+DESCRIPTION:
+DTSTART:20260501T080000Z
+DTEND:20260503T160000Z
+LOCATION:Palais des Sports\, 81 Rue Raymond Teisseire\, 13009 Marseille
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:687319130f01474882f3607961388517@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T142208Z
+LAST-MODIFIED:20260207T142208Z
+DTSTAMP:20260207T142209Z
+URL:https://japanotakufestival.com/event/marseille-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Festival Ostara
 DESCRIPTION:Horaires:\n\nSamedi\, de 10h à 18h\n\nDimanche\, de 10h à 17h\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Horaires:<br /></div><div>Samedi\, de 10h à 18h<br /></div><div>Dimanche\, de 10h à 17h</div>
@@ -340,6 +659,38 @@ DTSTAMP:20260104T042141Z
 URL:https://waze.com/ul/hu0b2u0j5n
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 NordicFuzzCon (Suède)
+DESCRIPTION:
+DTSTART:20260218T080000Z
+DTEND:20260222T220000Z
+LOCATION:Clarion Hotel Malmö Live\,Dag Hammarskjölds Torg 2\, 211 18 Malmö\, Sverige
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:7344f291375544f49af96892e9ebf553@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260213T220322Z
+LAST-MODIFIED:20260214T093423Z
+DTSTAMP:20260214T093424Z
+URL:https://nordicfuzzcon.org
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Manga Expo
+DESCRIPTION:
+DTSTART:20260424T220100Z
+DTEND:20260426T215900Z
+LOCATION:Stade Marcel Picot\, 90 Boulevard Jean Jaurès\, 54510 Tomblaine
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:790817560c2e475889e8a35ef8c77397@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260315T075726Z
+LAST-MODIFIED:20260315T075726Z
+DTSTAMP:20260315T075727Z
+URL:https://www.helloasso.com/associations/japan-bushi/evenements/manga-expo-2026
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Évreux
 DESCRIPTION:
 DTSTART:20251122T090000Z
@@ -354,6 +705,54 @@ CREATED:20250924T101321Z
 LAST-MODIFIED:20260123T172233Z
 DTSTAMP:20260123T172234Z
 URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Pix'Ailes Jungle Edition
+DESCRIPTION:
+DTSTART:20260606T080000Z
+DTEND:20260607T160000Z
+LOCATION:Complexe Colette Besson\, Rue de la Gare\, 78440 Issou
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:7c4102f68ca946df8b73fd4000e5c459@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260217T195335Z
+LAST-MODIFIED:20260217T195335Z
+DTSTAMP:20260217T195336Z
+URL:https://www.facebook.com/pixxailes
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Manga Wave Caen
+DESCRIPTION:
+DTSTART:20260425T083000Z
+DTEND:20260426T160000Z
+LOCATION:Parc des Expositions de Caen\, 17 Rue Joseph Philippon\, 14000 Caen
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:7f4e5428b386496bbdf9bb347c104e1a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260315T075150Z
+LAST-MODIFIED:20260315T075859Z
+DTSTAMP:20260315T075901Z
+URL:https://www.billetweb.fr/caen-japan-manga-wave1
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Carnaval Arnage
+DESCRIPTION:
+DTSTART:20260329T120000Z
+DTEND:20260329T215900Z
+LOCATION:
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:81078cd7d52549dda74adb05076fd894@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260215T102210Z
+LAST-MODIFIED:20260215T102210Z
+DTSTAMP:20260215T102213Z
+URL:https://www.arnage.fr/evenement/defile_carnaval-de-la-sorciere/defile-carnaval-2026/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Samhain 2026
@@ -520,6 +919,37 @@ LAST-MODIFIED:20260131T113310Z
 DTSTAMP:20260131T113311Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Comic Con France
+DESCRIPTION:
+DTSTART:20260418T080000Z
+DTEND:20260419T150000Z
+LOCATION:Parc des Expositions de Villepinte\, ZAC Paris Nord 2\, 93420 Villepinte
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:954e159872224ade91d2913b84cd9a6e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260301T000430Z
+LAST-MODIFIED:20260301T000430Z
+DTSTAMP:20260301T000432Z
+URL:https://comiccon.fr/billets/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:TGS Montpellier
+DESCRIPTION:
+DTSTART:20260410T220100Z
+DTEND:20260412T215900Z
+LOCATION:Parc des Expositions de Montpellier\, Pérols\, Route de la Foire\, 34470 Pérols 
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:98f8934aa9294c5e88c9eded286b5bbc@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T171552Z
+LAST-MODIFIED:20260326T171552Z
+DTSTAMP:20260326T171553Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:La Fête de la Scie Harfleur
 DESCRIPTION:
 DTSTART:20260411T120000Z
@@ -536,6 +966,21 @@ DTSTAMP:20260202T170741Z
 ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://www.harfleur.fr/la_fete_de_la_scie.html
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Le Havre Japan NorthCon'
+DESCRIPTION:
+DTSTART;VALUE=DATE:20270313
+DTEND;VALUE=DATE:20270315
+LOCATION:
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a246b942fc3e498a95cbe40a43e0097a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260319T105025Z
+LAST-MODIFIED:20260319T105025Z
+DTSTAMP:20260319T105027Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Brest 2025
@@ -571,6 +1016,23 @@ DTSTAMP:20260127T174819Z
 URL:https://vexin-normand-tourisme.com/sejourner/les-temps-forts/gisors-la-legendaire/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:FurBar de Rouen- Sortie escalade
+DESCRIPTION:ON SORT LES GRIFFES ! 🧗 \n\nRDV à 14h30\, on vient tester ses réflexes et son agilité pour défier la gravité! \n\n(Prévoyez une tenue de sport pour être à l'aise !)\n\nINSCRIPTION AVANT LE 8 AVRIL POUR POUVOIR AVOIR DE LA PLACE !!!!!\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>ON SORT LES GRIFFES ! 🧗 <br /></div><div>RDV à 14h30\, on vient tester ses réflexes et son agilité pour défier la gravité!&nbsp\;<br /></div><div>(Prévoyez une tenue de sport pour être à l'aise !)<br /></div><div>INSCRIPTION AVANT LE 8 AVRIL POUR POUVOIR AVOIR DE LA PLACE !!!!!<br /></div>
+DTSTART:20260411T123000Z
+DTEND:20260411T163000Z
+LOCATION:GRAVITY - PARC DES DÉFIS 735A Rue aux Thuilliers\, 76320 Saint-Pierre-lès-Elbeuf
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a64c668248834dd1acdeb5a8f9f4472e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T145100Z
+LAST-MODIFIED:20260326T145123Z
+DTSTAMP:20260326T145124Z
+URL:https://t.me/furbarderouen
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Caen 2025
 DESCRIPTION:
 DTSTART;VALUE=DATE:20251011
@@ -587,19 +1049,67 @@ DTSTAMP:20260104T042141Z
 URL:https://ticketevent.fr/gdc25/public-1
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Turretot Geek Convention
+DESCRIPTION:
+DTSTART:20261107T090000Z
+DTEND:20261108T170000Z
+LOCATION:Salle des fêtes\, 7 Place des Loisirs\, 76280 Turretot
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b151db5aff834a2badd1e477ba09d51c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T172603Z
+LAST-MODIFIED:20260220T193155Z
+DTSTAMP:20260220T193155Z
+ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.instagram.com/tgc76280?igsh=cDR6dndpZmJ0Y3Aw
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:D-CON (Belgique)
+DESCRIPTION:
+DTSTART:20260404T080000Z
+DTEND:20260405T160000Z
+LOCATION:CampusUCharleroi\, Boulevard Solvay 31\, 6000 Charleroi\, Belgique
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b2d9bed26db144f090ef75a72fcb6481@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T152319Z
+LAST-MODIFIED:20260326T152319Z
+DTSTAMP:20260326T152321Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Lisieux
+DESCRIPTION:
+DTSTART:20260522T220100Z
+DTEND:20260524T215900Z
+LOCATION:Parc des Expositions de Lisieux\, 1055 Rue Édouard Branly\, 14100 Lisieux
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b41ce120f65c4fa4ad7f7b2cdf8ce226@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260325T084738Z
+LAST-MODIFIED:20260325T084738Z
+DTSTAMP:20260325T084738Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Fauntastic 6
 DESCRIPTION:
 DTSTART:20260403T120000Z
 DTEND:20260407T090000Z
-LOCATION:260 Av. Jean Monnet\, 69500 Bron
+LOCATION:260 Avenue Jean Monnet\, 69500 Bron
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:b695fe5290614ab5ababb33eacc60fc2@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T102059Z
-LAST-MODIFIED:20260123T180222Z
-DTSTAMP:20260123T180222Z
+LAST-MODIFIED:20260304T192948Z
+DTSTAMP:20260304T192949Z
 URL:https://www.fauntastic.eu
 END:VEVENT
 BEGIN:VEVENT
@@ -625,15 +1135,15 @@ DESCRIPTION:Horaires\n\n- Samedi 14 février de 10h à 23h\n\n- Dimanche 15 fév
 X-ALT-DESC;FMTTYPE=text/html:<p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; text-shadow:rgb(255\, 255\, 255) 0px 0px 6px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">Horaires</span></span></span></span><br /></p><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Samedi 14 février de 10h à 23h</span></span></span><br /></p><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Dimanche 15 février de 10h à 18h</span></span></span><br /></p><div><br /></div><div><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; text-shadow:rgb(255\, 255\, 255) 0px 0px 6px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">Tarifs</span></span></span></span><br /></div><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Gratuit pour les -3 ans</span></span></span><br /></p><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Pass 2 jours : 12€</span></span></span><br /></p><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Plein tarif : 9€ (8€ en e-billet)</span></span></span><br /></p><p class="font_8 wixui-rich-text__text" style="background-size:initial\; border:0px\; outline:0px\; padding:0px\; vertical-align:baseline\; font-size-adjust:none\; font-stretch:normal\; line-height:26px\; margin:0px"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline"><span class="wixui-rich-text__text" style="background-size:initial\; border:0px\; margin:0px\; outline:0px\; padding:0px\; vertical-align:baseline">- Tarif réduit* : 6€</span></span></span><br /></p><div><span style="orphans:2\; text-indent:0px\; widows:2\; float:none\; display:inline !important">*Le tarif réduit est accessible pour les visiteurs costumés\, enfants -12 ans\, PMR +1 accompagnant et personnes en recherche d'emploi.</span><br /></div>
 DTSTART:20260214T090000Z
 DTEND:20260215T170000Z
-LOCATION:Parc Expo Rouen Rouen Congrès Evénements\, 46 Av. des Canadiens\, 76120 Le Grand-Quevilly
+LOCATION:Parc Exposition de Rouen\, Parc Expo Rouen Rouen Congrès Evénements\, 46 Avenue des Canadiens\, 76120 Le Grand-Quevilly
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:bd0ce45102bf4b258b2dcfbc872dad6d@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101247Z
-LAST-MODIFIED:20260202T170559Z
-DTSTAMP:20260202T170601Z
+LAST-MODIFIED:20260208T134456Z
+DTSTAMP:20260208T134458Z
 ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://www.federation-francaise-medievale.fr/normannia
@@ -651,8 +1161,9 @@ STATUS:CONFIRMED
 UID:bdfa546aae17499e9318d7cb2033a515@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T220815Z
-LAST-MODIFIED:20251210T220952Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260403T152214Z
+DTSTAMP:20260403T152217Z
+URL:https://furfurieux.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Rennes
@@ -670,6 +1181,22 @@ CREATED:20251210T213611Z
 LAST-MODIFIED:20260123T172454Z
 DTSTAMP:20260123T172454Z
 URL:https://www.geek-days.com/rennes/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:The Mang'Arras Festival
+DESCRIPTION:
+DTSTART:20260502T080000Z
+DTEND:20260503T160000Z
+LOCATION:Artois Expo\, 50 Avenue Roger Salengro\, 62223 Saint-Laurent-Blangy
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c73c639c098943629e4ab82e5b9b5588@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260220T171230Z
+LAST-MODIFIED:20260220T171230Z
+DTSTAMP:20260220T171231Z
+URL:https://www.billetweb.fr/the-mangarras-festival-2026
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Fenrir
@@ -707,11 +1234,11 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 URL:https://www.facebook.com/events/1171477725040718/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Japan Expo Paris 2025
+SUMMARY:Japan Expo Paris 2026
 DESCRIPTION:Billets Zen+ Confort\n 08h15\n \nBillets Zen\n 08h30\n \nFastPass\n 09h00\n \nBillets prévente et en ligne le jour même\n 09h30\n \nDernière entrée\n 18h00\n \nfermeture du festival\n 18h30\n \n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<table style="border-collapse:collapse\; width:275pt" width="366" cellspacing="0" cellpadding="0" border="1"><colgroup><col style="width:181pt" width="241"><col style="width:94pt" width="125"></colgroup><tbody><tr style="height:18.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="25"><td style="height:18.75pt\; width:181pt\; border-style:none solid solid\; border-top-color:initial\; border-left-color:rgb(202\, 202\, 202)\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; border-left-width:1pt\; white-space:normal\; padding-left:9px" width="241" height="25">Billets Zen+ Confort<br /></td><td style="width:94pt\; border-style:none solid solid none\; border-top-color:initial\; border-left-color:initial\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; white-space:normal\; padding-left:9px" width="125">08h15<br /></td></tr><tr style="height:18.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="25"><td style="height:18.75pt\; width:181pt\; border-style:none solid solid\; border-top-color:initial\; border-left-color:rgb(202\, 202\, 202)\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; border-left-width:1pt\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="241" height="25">Billets Zen<br /></td><td style="width:94pt\; border-style:none solid solid none\; border-top-color:initial\; border-left-color:initial\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="125">08h30<br /></td></tr><tr style="height:18.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="25"><td style="height:18.75pt\; width:181pt\; border-style:none solid solid\; border-top-color:initial\; border-left-color:rgb(202\, 202\, 202)\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; border-left-width:1pt\; white-space:normal\; padding-left:9px" width="241" height="25">FastPass<br /></td><td style="width:94pt\; border-style:none solid solid none\; border-top-color:initial\; border-left-color:initial\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; white-space:normal\; padding-left:9px" width="125">09h00<br /></td></tr><tr style="height:36.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="49"><td style="height:36.75pt\; width:181pt\; border-style:none solid solid\; border-top-color:initial\; border-left-color:rgb(202\, 202\, 202)\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; border-left-width:1pt\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="241" height="49">Billets prévente et en ligne le jour même<br /></td><td style="width:94pt\; border-style:none solid solid none\; border-top-color:initial\; border-left-color:initial\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="125">09h30<br /></td></tr><tr style="height:18.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="25"><td style="height:18.75pt\; width:181pt\; border-style:none solid solid\; border-top-color:initial\; border-left-color:rgb(202\, 202\, 202)\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; border-left-width:1pt\; white-space:normal\; padding-left:9px" width="241" height="25">Dernière entrée<br /></td><td style="width:94pt\; border-style:none solid solid none\; border-top-color:initial\; border-left-color:initial\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-right-width:1pt\; border-right-color:rgb(202\, 202\, 202)\; border-bottom-width:1pt\; border-bottom-color:rgb(202\, 202\, 202)\; white-space:normal\; padding-left:9px" width="125">18h00<br /></td></tr><tr style="height:18.75pt\; font-style:inherit\; font-variant:inherit\; font-weight:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit" height="25"><td style="height:18.75pt\; width:181pt\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-top:none\; border-right:1pt solid rgb(202\, 202\, 202)\; border-bottom:1pt solid rgb(202\, 202\, 202)\; border-left:1pt solid rgb(202\, 202\, 202)\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="241" height="25">fermeture   du festival<br /></td><td style="width:94pt\; font-style:inherit\; font-variant:inherit\; font-stretch:inherit\; line-height:inherit\; font-size-adjust:inherit\; color:rgb(52\, 52\, 52)\; font-size:14pt\; font-family:inherit\; text-align:left\; vertical-align:middle\; border-top:none\; border-right:1pt solid rgb(202\, 202\, 202)\; border-bottom:1pt solid rgb(202\, 202\, 202)\; border-left:none\; background:rgb(241\, 242\, 242)\; white-space:normal\; padding-left:9px" width="125">18h30<br /></td></tr></tbody></table><div><br /></div>
-DTSTART;VALUE=DATE:20260709
-DTEND;VALUE=DATE:20260713
+DTSTART:20260708T220100Z
+DTEND:20260712T215900Z
 LOCATION:Parc des Expositions de Villepinte\, ZAC Paris Nord 2\, 93420 Villepinte
 CLASS:PUBLIC
 IMPORTANT:0
@@ -719,9 +1246,25 @@ STATUS:CONFIRMED
 UID:d23804e6fb5a4a708c661b50ccb80be1@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T103244Z
-LAST-MODIFIED:20250924T103244Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260315T151315Z
+DTSTAMP:20260315T151317Z
 URL:https://www.japan-expo-paris.com/fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Metz'Torii
+DESCRIPTION:
+DTSTART:20260530T073000Z
+DTEND:20260531T170000Z
+LOCATION:Parc des Expositions de Metz\, Rue de la Grange aux Bois\, 57070 Metz
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d31ef02e350642cebe885ba22a6b9e44@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260215T115436Z
+LAST-MODIFIED:20260215T115748Z
+DTSTAMP:20260215T115750Z
+URL:https://billetterie.metztorii.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Gravenchon Geek’Fest 2025
@@ -739,6 +1282,22 @@ LAST-MODIFIED:20251012T142638Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Cavaillon Geek Festival
+DESCRIPTION:
+DTSTART:20260529T220100Z
+DTEND:20260531T215900Z
+LOCATION:M.I.N Cavaillon\, 92 Avenue Pierre Grand\, 84300 Cavaillon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d4ca61e424464301989550e807026609@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260304T192733Z
+LAST-MODIFIED:20260304T192806Z
+DTSTAMP:20260304T192808Z
+URL:https://www.facebook.com/people/Cavaillon-Geek-festival/61583974634002/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Winter Geek Festival
 DESCRIPTION:
 DTSTART:20251213T090000Z
@@ -754,11 +1313,89 @@ LAST-MODIFIED:20251211T080124Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Les univers du fantastique
+DESCRIPTION:
+DTSTART:20260410T220100Z
+DTEND:20260412T215900Z
+LOCATION:Salle de la Concorde\, 281 Chemin du Banc Vert\, 59640 Dunkerque
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d8647c67e48c43a490d769cf57c4f17c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T151612Z
+LAST-MODIFIED:20260326T151612Z
+DTSTAMP:20260326T151612Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Made In Asia (Belgique)
+DESCRIPTION:
+DTSTART:20260226T230100Z
+DTEND:20260301T225900Z
+LOCATION:Brussels Expo\, Place de Belgique 1\, 1020 Bruxelles\, Belgique
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:daf2e32b9ebb491fa0dec0060164235b@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T114036Z
+LAST-MODIFIED:20260208T114052Z
+DTSTAMP:20260208T114053Z
+URL:https://www.madeinasia.be/fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Kamopolis
+DESCRIPTION:
+DTSTART:20260206T230100Z
+DTEND:20260208T225900Z
+LOCATION:Micropolis\, 3 Boulevard Ouest\, 25000 Besançon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:dc2f83d818f94530ade6fbe2439ddfdf@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T105830Z
+LAST-MODIFIED:20260207T113105Z
+DTSTAMP:20260207T113106Z
+URL:https://www.kamopolis.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:KamoCon
+DESCRIPTION:
+DTSTART:20260327T230000Z
+DTEND:20260329T215900Z
+LOCATION:Parc des Expositions de Dijon\, 12 Avenue des Grands Ducs d'Occident\, 21000 Dijon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:dcebf9034c9e40c6a58940d124074623@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T110202Z
+LAST-MODIFIED:20260207T110202Z
+DTSTAMP:20260207T110203Z
+URL:https://www.kamopolis.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Pontogeek 2026
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261010
+DTEND;VALUE=DATE:20261012
+LOCATION:Complexe Sportif Alexis Vastine\, 27500 Avenue des Sports\, 27500 Pont-Audemer\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:df3d05b9b5454e95955384367f50d300@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260401T181400Z
+LAST-MODIFIED:20260401T181400Z
+DTSTAMP:20260401T181401Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Paris Manga et Sci-Fi Show
 DESCRIPTION:39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.\n
 X-ALT-DESC;FMTTYPE=text/html:<div>39ème édition pour Paris Manga et Sci-Fi Show. Et pour cette année\, nouveau hall et nouvelle version.</div>
-DTSTART;VALUE=DATE:20260314
-DTEND;VALUE=DATE:20260316
+DTSTART:20260313T230100Z
+DTEND:20260315T225900Z
 LOCATION:Parc des Expositions de Villepinte - Hall 7\, 93420 Villepinte
 CLASS:PUBLIC
 IMPORTANT:0
@@ -766,9 +1403,25 @@ STATUS:CONFIRMED
 UID:dfcffc74368c417a980ec12ff9a45297@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260201T194949Z
-LAST-MODIFIED:20260201T194949Z
-DTSTAMP:20260201T194950Z
+LAST-MODIFIED:20260207T113315Z
+DTSTAMP:20260207T113317Z
 URL:https://www.parismanga.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan'antes
+DESCRIPTION:
+DTSTART:20260417T220100Z
+DTEND:20260419T215900Z
+LOCATION:Salle de la Carrière\, 2 bis Rue du Souvenir Français\, 44800 Saint-Herblain
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e0407ff76f7141829864f9359dedf487@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260328T003302Z
+LAST-MODIFIED:20260328T003404Z
+DTSTAMP:20260328T003405Z
+URL:https://www.helloasso.com/associations/japanantes/evenements/japanantes-15eme-edition
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Cidre & Dragon 2026
@@ -805,6 +1458,37 @@ DTSTAMP:20260201T202510Z
 URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Liévin
+DESCRIPTION:
+DTSTART:20260529T220100Z
+DTEND:20260531T215900Z
+LOCATION:Arena Stade Couvert de Liévin\, Chemin des Manufactures\, 62800 Liévin
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e0eb6c22972b4dd4b129350a76f7164a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T170904Z
+LAST-MODIFIED:20260326T170904Z
+DTSTAMP:20260326T170905Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Mang'animes
+DESCRIPTION:
+DTSTART:20260417T220100Z
+DTEND:20260419T215900Z
+LOCATION:Parc Expo Nîmes\, 230 Avenue du Languedoc\, 30900 Nîmes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e46d550fe55942a6aef04455c7a82da8@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260326T150013Z
+LAST-MODIFIED:20260326T150013Z
+DTSTAMP:20260326T150015Z
+URL:https://manganimes.fr/shop
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Médiévales du château d’Harcourt
 DESCRIPTION:
 DTSTART;VALUE=DATE:20260414
@@ -821,6 +1505,86 @@ DTSTAMP:20260202T170843Z
 ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://www.harcourt-normandie.fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Asian Pop Culture Festival
+DESCRIPTION:1ère édition de cette convention à Paris Montreuil.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>1ère édition de cette convention à Paris Montreuil.</p></div>
+DTSTART:20260529T220100Z
+DTEND:20260531T215900Z
+LOCATION:Paris Montreuil Expo\, 128 Rue de Paris\, 93100 Montreuil
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:eac9363649e14fa3af2ad71eb4607db6@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260208T155525Z
+LAST-MODIFIED:20260208T155525Z
+DTSTAMP:20260208T155526Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Châlons-en-Champagne
+DESCRIPTION:
+DTSTART:20260404T080000Z
+DTEND:20260405T160000Z
+LOCATION:Le Capitole en Champagne\, 68 Avenue du Président Roosevelt\, 51000 Châlons-en-Champagne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ec3d31c65f034688a8463d8ae7a35e90@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260207T141235Z
+LAST-MODIFIED:20260207T141235Z
+DTSTAMP:20260207T141235Z
+URL:https://japanotakufestival.com/event/chalons-en-champagne-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Clermont Geek Convention
+DESCRIPTION:
+DTSTART:20260313T230100Z
+DTEND:20260315T225900Z
+LOCATION:Grande Halle d'Auvergne\, 3 boulevard Danielle Mitterrand\, 63800 Cournon-d'Auvergne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f008616803734e139a08928d49804783@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260214T080338Z
+LAST-MODIFIED:20260214T080338Z
+DTSTAMP:20260214T080340Z
+URL:https://www.clermontgeek.com/content/billetterie
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Eurofurence 30 (Allemagne)
+DESCRIPTION:
+DTSTART:20260818T220100Z
+DTEND:20260823T215900Z
+LOCATION:CCH - Congress Center Hamburg\, Congresspl. 1\, 20355 Hamburg\, Allemagne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f146bbdc4c7f428983cad2cd63abd02d@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260301T001939Z
+LAST-MODIFIED:20260301T001939Z
+DTSTAMP:20260301T001941Z
+URL:https://www.eurofurence.org/EF30/home
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Carnaval Rouen
+DESCRIPTION:
+DTSTART:20260328T230100Z
+DTEND:20260329T215900Z
+LOCATION:
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f4eb105a61d641d2b36e8c0c2b1d8f9d@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260215T101623Z
+LAST-MODIFIED:20260215T102251Z
+DTSTAMP:20260215T102254Z
+URL:https://rouen-bouge.fr/rouen-va-vibrer-le-carnaval-da-rouen-revient-le-29-mars-2026/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Festival de Samhain
@@ -851,7 +1615,24 @@ STATUS:CONFIRMED
 UID:f9f5d6e0a055460da5b18414b0ecdd3d@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214914Z
-LAST-MODIFIED:20251210T214947Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260403T152729Z
+DTSTAMP:20260403T152729Z
+URL:https://normandifurs.fr
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Hashtag Festival
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261017
+DTEND;VALUE=DATE:20261019
+LOCATION:AINTEREXPO - Centre de congrès & d'expositions\, 25 Avenue du Maréchal Juin\, 01000 Bourg-en-Bresse
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ffab1ce70b70402383143e7d017c59ff@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260228T235133Z
+LAST-MODIFIED:20260228T235133Z
+DTSTAMP:20260228T235134Z
+URL:https://hashtag-festival.com/billetterie
 END:VEVENT
 END:VCALENDAR
