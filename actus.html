@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=EDWRsu"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=EDWRsu" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=2yH1HL"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=2yH1HL" type="text/css">
 
   
   
@@ -132,6 +132,13 @@
     <script>
     (function() {
         'use strict';
+
+        // Fix z-index navbar : injection globale dans <head> (le CSS module est scopé par LESS, donc body.modal-open > * ne marche pas dans le .css)
+        (function() {
+            var s = document.createElement('style');
+            s.textContent = 'body.modal-open{overflow:hidden}body.modal-open>*{z-index:0!important;position:relative}body.modal-open>:has(.event-modal){z-index:2147483647!important}body.modal-open>:has(.legal-modal){z-index:2147483647!important}';
+            document.head.appendChild(s);
+        })();
 
         const CONFIG = {
             ICAL_URL: 'https://lameutenormande.fr/events.ics',
@@ -479,9 +486,9 @@
                 const loc = encodeURIComponent(event.location);
                 html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div>
                     <div class="event-location-buttons">
-                        <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-google">Google Maps</a>
-                        <a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-waze">Waze</a>
-                        <a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-apple">Apple Plans</a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-google"><svg viewBox="0 0 32 32" class="location-btn-logo" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 11.9556C2 8.47078 2 6.7284 2.67818 5.39739C3.27473 4.22661 4.22661 3.27473 5.39739 2.67818C6.7284 2 8.47078 2 11.9556 2H20.0444C23.5292 2 25.2716 2 26.6026 2.67818C27.7734 3.27473 28.7253 4.22661 29.3218 5.39739C30 6.7284 30 8.47078 30 11.9556V20.0444C30 23.5292 30 25.2716 29.3218 26.6026C28.7253 27.7734 27.7734 28.7253 26.6026 29.3218C25.2716 30 23.5292 30 20.0444 30H11.9556C8.47078 30 6.7284 30 5.39739 29.3218C4.22661 28.7253 3.27473 27.7734 2.67818 26.6026C2 25.2716 2 23.5292 2 20.0444V11.9556Z" fill="white" fill-opacity="0.15"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 12.8116L23.9999 12.8541C23.9998 12.872 23.9996 12.8899 23.9994 12.9078C23.9998 12.9287 24 12.9498 24 12.971C24 16.3073 21.4007 19.2604 19.6614 21.2367C19.1567 21.8101 18.7244 22.3013 18.449 22.6957C17.4694 24.0986 16.9524 25.6184 16.8163 26.2029C16.8163 26.6431 16.4509 27 16 27C15.5491 27 15.1837 26.6431 15.1837 26.2029C15.0476 25.6184 14.5306 24.0986 13.551 22.6957C13.2756 22.3013 12.8433 21.8101 12.3386 21.2367C10.5993 19.2604 8 16.3073 8 12.971C8 12.9498 8.0002 12.9287 8.0006 12.9078C8.0002 12.8758 8 12.8437 8 12.8116C8 8.49736 11.5817 5 16 5C20.4183 5 24 8.49736 24 12.8116ZM16 15.6812C17.7132 15.6812 19.102 14.325 19.102 12.6522C19.102 10.9793 17.7132 9.62319 16 9.62319C14.2868 9.62319 12.898 10.9793 12.898 12.6522C12.898 14.325 14.2868 15.6812 16 15.6812Z" fill="white"/><path d="M23.1054 9.21856C22.1258 7.37546 20.4161 5.96177 18.3504 5.34277L13.7559 10.5615C14.3208 9.98352 15.1174 9.62346 16.0002 9.62346C17.7134 9.62346 19.1022 10.9796 19.1022 12.6524C19.1022 13.3349 18.8711 13.9646 18.4811 14.4711L23.1054 9.21856Z" fill="white" fill-opacity="0.8"/><path d="M12.4311 21.3425C12.4004 21.3076 12.3695 21.2725 12.3383 21.2371C11.1918 19.9344 9.67162 18.2073 8.76855 16.2257L13.5439 10.8018C13.1387 11.3136 12.8976 11.9556 12.8976 12.6526C12.8976 14.3254 14.2865 15.6816 15.9997 15.6816C16.8675 15.6816 17.6521 15.3336 18.2151 14.7727L12.4311 21.3425Z" fill="white" fill-opacity="0.7"/><path d="M9.89288 7.76562C8.71207 9.12685 8 10.8881 8 12.8117C8 12.8438 8.0002 12.8759 8.0006 12.9079C8.0002 12.9288 8 12.9499 8 12.9711C8 14.1082 8.30196 15.2009 8.76889 16.2254L13.5362 10.8106L9.89288 7.76562Z" fill="white" fill-opacity="0.6"/><path d="M18.3499 5.34254C17.6068 5.11988 16.8176 5 15.9997 5C13.5514 5 11.36 6.07387 9.89258 7.76553L13.5359 10.8105L13.5438 10.8015C13.6101 10.7178 13.6807 10.6375 13.7554 10.5611L18.3499 5.34254Z" fill="white" fill-opacity="0.9"/></svg><span class="location-btn-label">Google Maps</span></a>
+                        <a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-waze"><svg viewBox="0 0 14 14" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="m 12.937649,5.689685 c -0.11625,-0.68661 -0.388914,-1.33016 -0.810638,-1.91282 -0.476314,-0.65811 -1.127922,-1.20761 -1.884324,-1.58903 -0.7645339,-0.38552 -1.6178829,-0.58938 -2.4678369,-0.58938 -0.239783,0 -0.481475,0.0163 -0.71843,0.0482 -0.992367,0.13407 -1.968118,0.54689 -2.747572,1.16243 -0.878239,0.69354 -1.444993,1.58521 -1.638884,2.57878 -0.05777,0.29537 -0.08238,0.62212 -0.106209,0.93806 -0.03734,0.49456 -0.07594,1.00595 -0.233207,1.34013 -0.107482,0.2284 -0.267856,0.3805 -0.701389,0.3805 -0.238581,0 -0.456585,0.13492 -0.563077,0.34847 -0.10642098,0.21355 -0.08294,0.46889 0.0606,0.65931 0.653164,0.8665 1.505522,1.39133 2.402923,1.70755 -0.04087,0.12346 -0.06385,0.25491 -0.06385,0.39209 0,0.68902 0.558551,1.24757 1.247566,1.24757 0.671972,0 1.218291,-0.53161 1.244949,-1.19701 0.292534,0.0159 1.685483,0.0197 1.840836,0.0153 0.03444,0.65825 0.577502,1.18166 1.244243,1.18166 0.688943,0 1.2474949,-0.55848 1.2474949,-1.24757 0,-0.15705 -0.03026,-0.30674 -0.08316,-0.44513 0.489183,-0.23794 0.95093,-0.55904 1.353845,-0.94576 0.561875,-0.53918 0.974265,-1.1753 1.192764,-1.83964 0.245865,-0.7477 0.307667,-1.4993 0.183355,-2.23378 m -8.2243299,5.876 c -0.227338,0 -0.411684,-0.18421 -0.411684,-0.41169 0,-0.22733 0.184346,-0.41168 0.411684,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 0,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 4.330028,0 c -0.227409,0 -0.411754,-0.18421 -0.411754,-0.41169 0,-0.22733 0.184345,-0.41168 0.411754,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 7.1e-5,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 3.1132919,-3.83873 c -0.360276,1.09533 -1.309862,1.9998 -2.3218169,2.46289 -0.215458,-0.17706 -0.490951,-0.28327 -0.791405,-0.28327 -0.484233,0 -0.903058,0.2762 -1.109748,0.67933 -0.210438,0.009 -1.777338,0.003 -2.120219,-0.0202 -0.210155,-0.39223 -0.623818,-0.65917 -1.100061,-0.65917 -0.316788,0 -0.605221,0.11894 -0.825134,0.31354 -0.852358,-0.27543 -1.65734,-0.74608 -2.259025,-1.54449 1.779176,0 1.428092,-1.98827 1.658259,-3.16731 0.350659,-1.79693 2.12835,-3.00518 3.853148,-3.23817 0.212135,-0.0286 0.42427,-0.0426 0.634213,-0.0426 2.8347599,7e-5 5.3581049,2.53098 4.3817889,5.49938 m -4.4056189,0.87435 c -1.023692,0 -1.945914,-0.67119 -2.115056,-1.54978 -0.03281,-0.17056 0.07891,-0.33553 0.249471,-0.36834 0.170627,-0.0329 0.335527,0.0789 0.368337,0.24947 0.09942,0.51648 0.717865,1.06039 1.542221,1.03882 0.858722,-0.0225 1.4259,-0.53599 1.542433,-1.03154 0.03981,-0.16907 0.209378,-0.27379 0.378308,-0.23419 0.169213,0.0398 0.274007,0.20916 0.234197,0.37823 -0.09518,0.40454 -0.35568,0.77932 -0.733634,1.05545 -0.393652,0.28779 -0.879511,0.44718 -1.404757,0.46104 -0.02051,6.3e-4 -0.04108,8.4e-4 -0.06152,8.4e-4 m 2.037132,-3.23958 c 0,0.33369 -0.270542,0.60423 -0.604231,0.60423 -0.333617,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270543,-0.60409 0.60416,-0.60409 0.333689,0 0.604231,0.27033 0.604231,0.60409 m -2.822597,0 c 0,0.33369 -0.270472,0.60423 -0.60416,0.60423 -0.333618,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270542,-0.60409 0.60416,-0.60409 0.333688,0 0.60416,0.27033 0.60416,0.60409"/></svg><span class="location-btn-label">Waze</span></a>
+                        <a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-apple"><svg viewBox="0 0 30 30" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M 9 4 C 8.657 4 8.323 4.0355625 8 4.1015625 L 8 13.275391 C 7.646263 13.401511 7.3068564 13.555772 7 13.761719 L 7 4.421875 C 5.755 4.966875 4.7873594 6.0089688 4.3183594 7.2929688 L 6 8.4707031 L 6 14.611328 L 4 13.210938 L 4 21 C 4 23.049 5.236 24.806125 7 25.578125 L 7 21.238281 C 7.7157567 21.718662 8.5752393 22 9.5 22 C 10.424761 22 11.284243 21.718662 12 21.238281 L 12 26 L 21 26 C 21.369 26 21.726266 25.954906 22.072266 25.878906 L 13.361328 19.773438 C 13.757438 19.103628 14 18.332818 14 17.5 C 14 16.439688 13.615994 15.47704 13 14.707031 L 13 13.376953 L 25.794922 22.345703 C 25.915922 21.914703 26 21.469 26 21 L 26 15.974609 C 19.497 15.716609 14.283391 10.503 14.025391 4 L 12 4 L 12 13.761719 C 11.693144 13.555772 11.353737 13.401511 11 13.275391 L 11 4 L 9 4 z M 18.025391 4 C 18.275391 8.294 21.706 11.723609 26 11.974609 L 26 9 C 26 6.239 23.761 4 21 4 L 18.025391 4 z M 9.5 14 C 10.480989 14 11.364517 14.406452 12 15.056641 C 12.15425 15.214391 12.293344 15.385984 12.416016 15.570312 C 12.538687 15.754641 12.644031 15.951641 12.730469 16.158203 C 12.816906 16.364766 12.884141 16.580234 12.929688 16.804688 C 12.975072 17.029622 13 17.261689 13 17.5 C 13 17.738 12.975234 17.970859 12.929688 18.195312 C 12.884141 18.419766 12.816906 18.635234 12.730469 18.841797 C 12.644031 19.048359 12.538687 19.245359 12.416016 19.429688 C 12.293344 19.614016 12.15425 19.785609 12 19.943359 C 11.364517 20.593548 10.480989 21 9.5 21 C 8.5195528 21 7.6354091 20.59487 7 19.945312 C 6.9818906 19.926763 6.9688744 19.903706 6.9511719 19.884766 C 6.8180905 19.742375 6.6922542 19.592499 6.5839844 19.429688 C 6.4613125 19.245219 6.3559687 19.048422 6.2695312 18.841797 C 6.1830938 18.635172 6.1158594 18.419781 6.0703125 18.195312 C 6.0247656 17.970844 6 17.738 6 17.5 C 6 17.261689 6.0249282 17.029622 6.0703125 16.804688 C 6.1158594 16.580234 6.1830938 16.364766 6.2695312 16.158203 C 6.3559687 15.951641 6.4613125 15.754641 6.5839844 15.570312 C 6.7066562 15.385984 6.84575 15.214391 7 15.056641 C 7.6354827 14.406452 8.519011 14 9.5 14 z M 9.5253906 15.216797 C 9.4297656 15.216297 9.333875 15.271359 9.296875 15.380859 L 8.0136719 19.181641 C 7.9286719 19.436641 8.2455938 19.631453 8.4335938 19.439453 L 9.5273438 18.320312 L 10.5625 19.414062 C 10.7475 19.609063 11.070328 19.418109 10.986328 19.162109 L 9.7519531 15.382812 C 9.7164531 15.273312 9.6210156 15.217297 9.5253906 15.216797 z"/></svg><span class="location-btn-label">Apple Plans</span></a>
                     </div></div></div>`;
             }
 
@@ -572,20 +579,245 @@
     </script>
 </section>
 
-<section data-bs-version="5.1" class="footer4 cid-v4N9BybemT" once="footers" id="footer04-o">
+<section data-bs-version="5.1" class="footer-modern cid-v4N9BybemT" once="footers" id="footer04-1j">
 
     
 
     
 
     <div class="container">
-        <div class="media-container-row align-center mbr-white">
-            <div class="col-12">
-                <p class="mbr-text mb-0 mbr-fonts-style display-7">
-                    Site réalisé par <a href="tg://resolve?domain=NitraFox" class="text-primary">Nitra🦊</a>&nbsp;et calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="text-info">Spyro the bat🦇</a></p>
+
+        <!-- Séparateur -->
+        <div class="footer-divider"></div>
+
+        <!-- Crédits -->
+        <div class="footer-credits">
+            <p class="mbr-text mbr-fonts-style display-7">
+                Site réalisé par <a href="tg://resolve?domain=NitraFox" class="footer-link footer-link-nitra">Nitra🦊</a>
+                &amp; calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="footer-link footer-link-spyro">Spyro the bat🦇</a>
+            </p>
+        </div>
+
+        <!-- Liens légaux -->
+        <div class="footer-legal-links">
+            <button class="footer-legal-btn" data-legal="mentions">Mentions légales</button>
+            <span class="footer-legal-sep" aria-hidden="true">•</span>
+            <button class="footer-legal-btn" data-legal="confidentialite">Politique de confidentialité</button>
+            <span class="footer-legal-sep" aria-hidden="true">•</span>
+            <button class="footer-legal-btn" data-legal="cookies">Politique de cookies</button>
+        </div>
+
+    </div>
+
+    <!-- Modale légale -->
+    <div class="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title" aria-hidden="true">
+        <div class="legal-modal-overlay"></div>
+        <div class="legal-modal-content" tabindex="-1">
+            <div class="legal-modal-header">
+                <h3 class="legal-modal-title"></h3>
+                <button class="legal-modal-close" aria-label="Fermer">×</button>
             </div>
+            <div class="legal-modal-body"></div>
         </div>
     </div>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // Fix z-index navbar : injection globale dans <head> (le CSS module est scopé par LESS)
+        (function() {
+            var s = document.createElement('style');
+            s.textContent = 'body.modal-open{overflow:hidden}body.modal-open>*{z-index:0!important;position:relative}body.modal-open>:has(.event-modal){z-index:2147483647!important}body.modal-open>:has(.legal-modal){z-index:2147483647!important}';
+            document.head.appendChild(s);
+        })();
+
+        /* ---------- Année dynamique ---------- */
+        var yearEl = document.querySelector('.footer-modern .footer-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+        /* ---------- Contenus légaux ---------- */
+        var legalContents = {
+            mentions: {
+                title: 'Mentions légales',
+                body: '<h4>Éditeur du site</h4>'
+                    + '<p>Ce site est édité par <strong>La Meute Normande</strong>, groupe informel à but non lucratif, basé en Haute-Normandie.</p>'
+                    + '<p>Responsable de la publication : <strong>Nitra</strong></p>'
+                    + '<p>Contact : via Telegram <a href="tg://resolve?domain=NitraFox" target="_blank" rel="noopener">@NitraFox</a></p>'
+                    + '<h4>Hébergement</h4>'
+                    + '<p>Ce site est hébergé par <strong>GitHub Pages</strong> — GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p>'
+                    + '<p>Le nom de domaine <strong>lameutenormande.fr</strong> est enregistré auprès d\'<strong>OVH</strong> — OVHcloud, 2 rue Kellermann, 59100 Roubaix, France.</p>'
+                    + '<h4>Conception du site</h4>'
+                    + '<p>Site conçu avec <strong>Mobirise</strong> (générateur de sites statiques).</p>'
+                    + '<p>Développement et intégration : <strong>Nitra</strong> — calendrier des événements : <strong>Spyro the bat</strong>.</p>'
+                    + '<h4>Propriété intellectuelle</h4>'
+                    + '<p>L\'ensemble du contenu de ce site (textes, images, logos, illustrations) est la propriété de La Meute Normande ou de ses contributeurs respectifs (artistes référencés sur la page Artistes). Toute reproduction sans autorisation préalable est interdite.</p>'
+                    + '<p>Les logos et marques de services tiers (Telegram, Discord, Instagram, Google Maps, Waze, Apple Plans, FurAffinity, Furzo) restent la propriété de leurs détenteurs respectifs.</p>'
+                    + '<h4>Responsabilité</h4>'
+                    + '<p>La Meute Normande s\'efforce de fournir des informations à jour mais ne saurait être tenue responsable d\'éventuelles erreurs, omissions ou indisponibilités. Les liens externes (sites d\'événements, réseaux sociaux, cartes) sont fournis à titre indicatif et n\'engagent pas la responsabilité de La Meute Normande quant à leur contenu.</p>'
+                    + '<h4>Formulaire de contact</h4>'
+                    + '<p>Les données saisies dans le formulaire de contact (nom/pseudo, identifiant ou e-mail, préférence de contact, message et pièce jointe éventuelle) sont transmises via le service <strong>UseBasin</strong> et reçues uniquement par le responsable de la publication. Elles ne sont utilisées que pour répondre à votre demande et ne sont jamais revendues ni partagées avec des tiers.</p>'
+            },
+            confidentialite: {
+                title: 'Politique de confidentialité (RGPD)',
+                body: '<h4>Introduction</h4>'
+                    + '<p>La Meute Normande s\'engage à protéger la vie privée de ses visiteurs, conformément au <strong>Règlement Général sur la Protection des Données (RGPD — UE 2016/679)</strong> et à la <strong>loi Informatique et Libertés</strong>.</p>'
+                    + '<h4>Responsable du traitement</h4>'
+                    + '<p>Responsable : <strong>Nitra</strong> — Contact : <a href="tg://resolve?domain=NitraFox" target="_blank" rel="noopener">@NitraFox sur Telegram</a></p>'
+                    + '<h4>Données collectées via le formulaire de contact</h4>'
+                    + '<p>Le formulaire de la page Contact collecte les données suivantes :</p>'
+                    + '<ul>'
+                    + '<li><strong>Nom / Prénom / Pseudo</strong> (obligatoire)</li>'
+                    + '<li><strong>Identifiant ou e-mail</strong> (obligatoire)</li>'
+                    + '<li><strong>Préférence de contact</strong> : Discord, Telegram, Twitter/X ou Email (obligatoire)</li>'
+                    + '<li><strong>Message</strong> (obligatoire)</li>'
+                    + '<li><strong>Pièce jointe</strong> (optionnel — formats : jpg, png, gif, webp, pdf, doc, docx, zip, txt)</li>'
+                    + '</ul>'
+                    + '<p>Ces données sont transmises via <strong>UseBasin</strong> (sous-traitant, basé aux États-Unis — <a href="https://usebasin.com/privacy" target="_blank" rel="noopener">politique de confidentialité UseBasin</a>). Le consentement explicite est recueilli avant l\'envoi via une case à cocher obligatoire.</p>'
+                    + '<p><strong>Base légale :</strong> consentement de l\'utilisateur (article 6.1.a du RGPD).</p>'
+                    + '<p><strong>Finalité :</strong> répondre à votre demande de contact uniquement.</p>'
+                    + '<p><strong>Durée de conservation :</strong> les données sont conservées le temps nécessaire au traitement de la demande, puis supprimées.</p>'
+                    + '<h4>Données NON collectées</h4>'
+                    + '<p>En dehors du formulaire de contact, ce site <strong>ne collecte aucune donnée personnelle</strong>. Il n\'y a pas de compte utilisateur, pas de newsletter, pas de base de données, pas de système de commentaires.</p>'
+                    + '<h4>Stockage local (localStorage)</h4>'
+                    + '<p>Le site utilise le <strong>localStorage</strong> de votre navigateur pour :</p>'
+                    + '<ul>'
+                    + '<li>Sauvegarder vos préférences de filtres du calendrier (type d\'événement, région, département)</li>'
+                    + '<li>Mémoriser si vous avez activé la sauvegarde automatique des filtres</li>'
+                    + '</ul>'
+                    + '<p>Ces données restent <strong>exclusivement sur votre appareil</strong> et ne sont jamais transmises à un serveur. Vous pouvez les supprimer à tout moment via les paramètres de votre navigateur.</p>'
+                    + '<h4>Données de navigation (hébergeur)</h4>'
+                    + '<p><strong>GitHub Pages</strong> peut collecter automatiquement des données techniques de connexion (adresse IP, type de navigateur, pages visitées) conformément à sa propre <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">politique de confidentialité</a>. La Meute Normande n\'a pas accès à ces données.</p>'
+                    + '<h4>Services tiers</h4>'
+                    + '<p>Le site fait appel aux services tiers suivants, qui peuvent recevoir des données techniques (adresse IP, en-têtes de requête) :</p>'
+                    + '<table class="legal-table">'
+                    + '<thead><tr><th>Service</th><th>Usage</th><th>Données potentielles</th></tr></thead>'
+                    + '<tbody>'
+                    + '<tr><td><strong>Google Fonts</strong></td><td>Chargement de la police Inter Tight (toutes les pages)</td><td>Adresse IP, en-tête Referer</td></tr>'
+                    + '<tr><td><strong>cdnjs (Cloudflare)</strong></td><td>Chargement de FullCalendar et ical.js (page Événements)</td><td>Adresse IP</td></tr>'
+                    + '<tr><td><strong>jsDelivr</strong></td><td>Chargement de ical.js (page Actus)</td><td>Adresse IP</td></tr>'
+                    + '<tr><td><strong>UseBasin</strong></td><td>Traitement du formulaire de contact</td><td>Données du formulaire (voir ci-dessus)</td></tr>'
+                    + '<tr><td><strong>GitHub Raw</strong></td><td>Récupération du fichier calendrier ICS</td><td>Adresse IP</td></tr>'
+                    + '<tr><td><strong>api-adresse.data.gouv.fr</strong></td><td>Géocodage pour les filtres du calendrier (page Événements)</td><td>Nom de ville recherché, adresse IP</td></tr>'
+                    + '</tbody></table>'
+                    + '<h4>Tracking et publicité</h4>'
+                    + '<p>Ce site <strong>n\'utilise aucun outil de tracking, d\'analyse ou de publicité</strong> (pas de Google Analytics, pas de Facebook Pixel, pas de Matomo, pas de publicité ciblée).</p>'
+                    + '<h4>Vos droits</h4>'
+                    + '<p>Conformément au RGPD, vous disposez des droits suivants :</p>'
+                    + '<ul>'
+                    + '<li><strong>Droit d\'accès</strong> — obtenir une copie de vos données</li>'
+                    + '<li><strong>Droit de rectification</strong> — corriger des données inexactes</li>'
+                    + '<li><strong>Droit à l\'effacement</strong> — demander la suppression de vos données</li>'
+                    + '<li><strong>Droit d\'opposition</strong> — vous opposer au traitement</li>'
+                    + '<li><strong>Droit à la portabilité</strong> — récupérer vos données dans un format structuré</li>'
+                    + '</ul>'
+                    + '<p>Vous pouvez également introduire une réclamation auprès de la <strong>CNIL</strong> (<a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a>).</p>'
+                    + '<h4>Mise à jour</h4>'
+                    + '<p>Cette politique peut être modifiée à tout moment. La date de dernière mise à jour est indiquée ci-dessous.</p>'
+                    + '<p><em>Dernière mise à jour : avril 2026</em></p>'
+            },
+            cookies: {
+                title: 'Politique de cookies',
+                body: '<h4>Qu\'est-ce qu\'un cookie ?</h4>'
+                    + '<p>Un cookie est un petit fichier texte déposé sur votre appareil lors de la visite d\'un site web. Il permet de stocker des informations relatives à votre navigation. Le <strong>localStorage</strong> est un mécanisme similaire, propre à votre navigateur, qui stocke des données localement sans les transmettre automatiquement aux serveurs.</p>'
+                    + '<h4>Stockage utilisé par ce site</h4>'
+                    + '<table class="legal-table">'
+                    + '<thead><tr><th>Type</th><th>Origine</th><th>Finalité</th><th>Durée</th></tr></thead>'
+                    + '<tbody>'
+                    + '<tr><td>localStorage<br><code>calendarFilterSettings</code></td><td>Ce site (lameutenormande.fr)</td><td>Sauvegarde de vos filtres du calendrier (type, région, département)</td><td>Jusqu\'à suppression manuelle</td></tr>'
+                    + '<tr><td>localStorage<br><code>calendarFilterSave</code></td><td>Ce site (lameutenormande.fr)</td><td>Mémorise si vous avez activé la sauvegarde des filtres</td><td>Jusqu\'à suppression manuelle</td></tr>'
+                    + '</tbody></table>'
+                    + '<h4>Cookies pouvant être déposés par des tiers</h4>'
+                    + '<table class="legal-table">'
+                    + '<thead><tr><th>Service</th><th>Type</th><th>Finalité</th><th>Durée</th></tr></thead>'
+                    + '<tbody>'
+                    + '<tr><td>GitHub Pages</td><td>Cookie technique</td><td>Fonctionnement de l\'hébergement</td><td>Session</td></tr>'
+                    + '<tr><td>Google Fonts (fonts.googleapis.com)</td><td>Cookie technique</td><td>Chargement de la police Inter Tight</td><td>Variable</td></tr>'
+                    + '<tr><td>Cloudflare CDN (cdnjs.cloudflare.com)</td><td>Cookie technique</td><td>Chargement de FullCalendar et ical.js</td><td>Variable</td></tr>'
+                    + '<tr><td>jsDelivr (cdn.jsdelivr.net)</td><td>Cookie technique</td><td>Chargement de ical.js</td><td>Variable</td></tr>'
+                    + '<tr><td>UseBasin (usebasin.com)</td><td>Cookie technique</td><td>Traitement du formulaire de contact</td><td>Session</td></tr>'
+                    + '</tbody></table>'
+                    + '<h4>Cookies analytiques ou publicitaires</h4>'
+                    + '<p>Ce site <strong>n\'utilise aucun cookie publicitaire, de tracking ou d\'analyse</strong> (pas de Google Analytics, pas de Facebook Pixel, pas de Matomo, pas de publicité ciblée).</p>'
+                    + '<h4>Gérer vos cookies</h4>'
+                    + '<p>Vous pouvez à tout moment configurer votre navigateur pour refuser les cookies ou supprimer ceux déjà déposés :</p>'
+                    + '<ul>'
+                    + '<li><strong>Chrome :</strong> Paramètres → Confidentialité et sécurité → Cookies et autres données de site</li>'
+                    + '<li><strong>Firefox :</strong> Paramètres → Vie privée et sécurité → Cookies et données de sites</li>'
+                    + '<li><strong>Safari :</strong> Préférences → Confidentialité → Gérer les données de site web</li>'
+                    + '<li><strong>Edge :</strong> Paramètres → Cookies et autorisations de site</li>'
+                    + '</ul>'
+                    + '<h4>Effacer le localStorage</h4>'
+                    + '<p>Pour supprimer les préférences enregistrées par ce site :</p>'
+                    + '<ul>'
+                    + '<li>Ouvrez les outils développeur de votre navigateur (<strong>F12</strong>)</li>'
+                    + '<li>Allez dans l\'onglet <strong>Application</strong> (Chrome/Edge) ou <strong>Stockage</strong> (Firefox)</li>'
+                    + '<li>Sélectionnez <strong>localStorage</strong> → <strong>lameutenormande.fr</strong></li>'
+                    + '<li>Supprimez les entrées souhaitées ou cliquez sur « Tout effacer »</li>'
+                    + '</ul>'
+                    + '<p>Vous pouvez aussi effacer les données de navigation de votre navigateur, ce qui supprimera à la fois les cookies et le localStorage.</p>'
+                    + '<p><em>Dernière mise à jour : avril 2026</em></p>'
+            }
+        };
+
+        /* ---------- Modale ---------- */
+        var modal = document.querySelector('.footer-modern .legal-modal');
+        var modalTitle = modal ? modal.querySelector('.legal-modal-title') : null;
+        var modalBody = modal ? modal.querySelector('.legal-modal-body') : null;
+        var modalClose = modal ? modal.querySelector('.legal-modal-close') : null;
+        var modalOverlay = modal ? modal.querySelector('.legal-modal-overlay') : null;
+        var keyHandler = null;
+
+        function openLegal(key) {
+            var data = legalContents[key];
+            if (!data || !modal) return;
+
+            modalTitle.textContent = data.title;
+            modalBody.innerHTML = data.body;
+
+            document.body.classList.add('modal-open');
+            modal.classList.add('show');
+            modal.classList.remove('closing');
+            modal.setAttribute('aria-hidden', 'false');
+
+            if (keyHandler) document.removeEventListener('keydown', keyHandler);
+            keyHandler = function(e) { if (e.key === 'Escape') closeLegal(); };
+            document.addEventListener('keydown', keyHandler);
+
+            setTimeout(function() {
+                if (modalClose) modalClose.focus();
+            }, 50);
+        }
+
+        function closeLegal() {
+            if (!modal || !modal.classList.contains('show')) return;
+
+            modal.classList.add('closing');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('modal-open');
+
+            setTimeout(function() {
+                modal.classList.remove('show', 'closing');
+            }, 250);
+
+            if (keyHandler) {
+                document.removeEventListener('keydown', keyHandler);
+                keyHandler = null;
+            }
+        }
+
+        if (modalClose) modalClose.addEventListener('click', closeLegal);
+        if (modalOverlay) modalOverlay.addEventListener('click', closeLegal);
+
+        /* ---------- Boutons légaux ---------- */
+        var btns = document.querySelectorAll('.footer-modern .footer-legal-btn');
+        for (var i = 0; i < btns.length; i++) {
+            btns[i].addEventListener('click', function() {
+                openLegal(this.getAttribute('data-legal'));
+            });
+        }
+    })();
+    </script>
 </section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
