@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=kGVN2n"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=kGVN2n" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pLTIow"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pLTIow" type="text/css">
 
   
   
@@ -338,6 +338,10 @@
             color: #a855f7;
         }
 
+        .event-description {
+            white-space: pre-line;
+        }
+
         .event-location-buttons {
             display: flex;
             flex-wrap: wrap;
@@ -483,14 +487,7 @@
                 background: rgba(30, 30, 46, 0.5) !important;
             }
 
-        body.modal-open {
-            overflow: hidden;
-        }
-
-        body.modal-open > *:not(.event-modal) {
-            z-index: 0 !important;
-            position: relative;
-        }
+        /* z-index modal-open : règles injectées via JS (LESS peut scoper le style inline) */
 
         body.scroll-locked,
         html.scroll-locked {
@@ -592,6 +589,13 @@
 
     <script>
         'use strict';
+
+        // Fix z-index navbar : injection globale dans <head> (contourne le scope LESS)
+        (function() {
+            var s = document.createElement('style');
+            s.textContent = 'body.modal-open{overflow:hidden}body.modal-open>*{z-index:0!important;position:relative}body.modal-open>:has(.event-modal){z-index:2147483647!important}body.modal-open>.event-modal{z-index:2147483647!important}body.modal-open>:has(.legal-modal){z-index:2147483647!important}';
+            document.head.appendChild(s);
+        })();
 
         (function () {
             const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -923,12 +927,15 @@
                     region: document.getElementById('filter-region')?.value || 'all',
                     detail: document.getElementById('filter-detail')?.value || 'all'
                 };
-                localStorage.setItem('calendarFilterSettings', JSON.stringify(settings));
-                localStorage.setItem('calendarFilterSave', 'true');
+                try {
+                    localStorage.setItem('calendarFilterSettings', JSON.stringify(settings));
+                    localStorage.setItem('calendarFilterSave', 'true');
+                } catch(e) { /* storage blocked */ }
             }
 
             function restoreFilterSettings() {
-                const saved = localStorage.getItem('calendarFilterSave');
+                let saved = null;
+                try { saved = localStorage.getItem('calendarFilterSave'); } catch(e) { /* storage blocked */ }
                 const saveCheckbox = document.getElementById('filter-save');
                 if (!saved || saved !== 'true' || !saveCheckbox) return false;
                 saveCheckbox.checked = true;
@@ -1067,7 +1074,7 @@
                   <div class="event-info-icon">📝</div>
                   <div class="event-info-content">
                     <div class="event-info-label">Description</div>
-                    <div class="event-info-text">${props.description}</div>
+                    <div class="event-info-text event-description">${props.description}</div>
                   </div>
                 </div>`;
                     }
@@ -1422,8 +1429,10 @@
                         if (filterSave.checked) {
                             saveFilterSettings();
                         } else {
-                            localStorage.removeItem('calendarFilterSettings');
-                            localStorage.removeItem('calendarFilterSave');
+                            try {
+                                localStorage.removeItem('calendarFilterSettings');
+                                localStorage.removeItem('calendarFilterSave');
+                            } catch(e) { /* storage blocked */ }
                         }
                     };
                 }
@@ -1450,9 +1459,11 @@
                         subscribeModal.setAttribute('aria-modal', 'true');
                         subscribeModal.innerHTML = `
                   <div class="event-modal-overlay"></div>
-                  <div class="event-modal-content">
-                    <button class="event-modal-close">×</button>
-                    <h3 class="event-modal-title">📅 S'abonner au calendrier</h3>
+                  <div class="event-modal-content" tabindex="-1">
+                    <div class="event-modal-header">
+                      <h3 class="event-modal-title">📅 S'abonner au calendrier</h3>
+                      <button class="event-modal-close" aria-label="Fermer">×</button>
+                    </div>
                     <div class="event-modal-body">
                       <div class="event-info-row">
                         <div class="event-info-icon">🔗</div>
@@ -1518,17 +1529,28 @@
                   </div>
                 `;
 
-                        document.body.appendChild(subscribeModal);
+                        const sectionEl = btnSubscribe.closest('section') || document.body;
+                        sectionEl.appendChild(subscribeModal);
+                        document.body.classList.add('modal-open');
 
                         const closeBtn = subscribeModal.querySelector('.event-modal-close');
                         const overlay = subscribeModal.querySelector('.event-modal-overlay');
 
                         const closeSubscribe = () => {
                             subscribeModal.remove();
+                            document.body.classList.remove('modal-open');
                         };
 
                         if (closeBtn) closeBtn.onclick = closeSubscribe;
                         if (overlay) overlay.onclick = closeSubscribe;
+
+                        const handleEscape = (e) => {
+                            if (e.key === 'Escape') {
+                                closeSubscribe();
+                                document.removeEventListener('keydown', handleEscape);
+                            }
+                        };
+                        document.addEventListener('keydown', handleEscape);
                     };
                 }
 
