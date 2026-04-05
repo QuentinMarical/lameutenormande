@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=New1Wo"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=New1Wo" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=1t5Qk6"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=1t5Qk6" type="text/css">
 
   
   
@@ -34,7 +34,7 @@
 </head>
 <body>
   
-  <section data-bs-version="5.1" class="menu menu2 cid-v2D2HLImen" once="menu" id="menu02-g">
+  <section data-bs-version="5.1" class="menu menu2 cid-veCgXANUp1" once="menu" id="menu02-1i">
 	
 
 	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
@@ -58,7 +58,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
 						<a class="nav-link link text-danger display-4" href="events.html">&nbsp;Événements&nbsp;</a>
-					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">&nbsp;Actus&nbsp;</a></li><li class="nav-item"><a class="nav-link link text-danger text-primary display-4" href="artistes.html">&nbsp;LES Artistes&nbsp;</a></li>
+					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">&nbsp;Actus&nbsp;</a></li><li class="nav-item"><a class="nav-link link text-danger display-4" href="artistes.html">&nbsp;LES Artistes&nbsp;</a></li>
 					
 					<li class="nav-item">
 						<a class="nav-link link text-danger display-4" href="contact.html">&nbsp;Contact&nbsp;</a>
@@ -432,8 +432,8 @@
                     </div>
                 </div>
             </div>
-            <div class="calendar-wrapper" id="calendar-wrapper" style="display:none;">
-                <div class="calendar-header">
+            <div class="calendar-header" id="calendar-header" style="display:none;">
+                <div class="calendar-header-row">
                     <button class="calendar-arrow-btn calendar-prev">‹</button>
                     <div class="calendar-controls-center">
                         <button class="calendar-btn calendar-today">Aujourd'hui</button>
@@ -443,6 +443,36 @@
                     </div>
                     <button class="calendar-arrow-btn calendar-next">›</button>
                 </div>
+                <div class="calendar-filters-row">
+                    <div class="calendar-filter-save">
+                        <label class="calendar-save-label" title="Conserver les filtres au prochain chargement">
+                            <input type="checkbox" id="filter-save" class="calendar-save-checkbox">
+                            <span class="calendar-save-text">Conserver le filtrage</span>
+                        </label>
+                    </div>
+                    <div class="calendar-filter-group">
+                        <label class="calendar-filter-label">Type</label>
+                        <select class="calendar-filter-select" id="filter-type">
+                            <option value="all" selected="">Tous</option>
+                            <option value="standard">Standard</option>
+                            <option value="furry">Furry 🦊</option>
+                        </select>
+                    </div>
+                    <div class="calendar-filter-group calendar-filter-group-location">
+                        <label class="calendar-filter-label">Région</label>
+                        <select class="calendar-filter-select" id="filter-region">
+                            <option value="all" selected="">Partout</option>
+                        </select>
+                    </div>
+                    <div class="calendar-filter-group calendar-filter-group-location calendar-filter-detail-wrap" id="filter-detail-wrap">
+                        <label class="calendar-filter-label">Zone</label>
+                        <select class="calendar-filter-select" id="filter-detail">
+                            <option value="all" selected="">Toute la région</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="calendar-wrapper" id="calendar-wrapper" style="display:none;">
                 <div class="fullcalendar-container"></div>
             </div>
         </div>
@@ -497,8 +527,356 @@
             let updateTimeout = null;
             let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
             let loadedEvents = [];
+            let allLoadedEvents = [];
             const isMobile = () => window.innerWidth <= 768;
             const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
+
+            const REGIONS_DEPARTMENTS = {
+                'Auvergne-Rhône-Alpes': ['01 Ain','03 Allier','07 Ardèche','15 Cantal','26 Drôme','38 Isère','42 Loire','43 Haute-Loire','63 Puy-de-Dôme','69 Rhône','73 Savoie','74 Haute-Savoie'],
+                'Bourgogne-Franche-Comté': ['21 Côte-d\'Or','25 Doubs','39 Jura','58 Nièvre','70 Haute-Saône','71 Saône-et-Loire','89 Yonne','90 Territoire de Belfort'],
+                'Bretagne': ['22 Côtes-d\'Armor','29 Finistère','35 Ille-et-Vilaine','56 Morbihan'],
+                'Centre-Val de Loire': ['18 Cher','28 Eure-et-Loir','36 Indre','37 Indre-et-Loire','41 Loir-et-Cher','45 Loiret'],
+                'Corse': ['2A Corse-du-Sud','2B Haute-Corse'],
+                'Grand Est': ['08 Ardennes','10 Aube','51 Marne','52 Haute-Marne','54 Meurthe-et-Moselle','55 Meuse','57 Moselle','67 Bas-Rhin','68 Haut-Rhin','88 Vosges'],
+                'Hauts-de-France': ['02 Aisne','59 Nord','60 Oise','62 Pas-de-Calais','80 Somme'],
+                'Île-de-France': ['75 Paris','77 Seine-et-Marne','78 Yvelines','91 Essonne','92 Hauts-de-Seine','93 Seine-Saint-Denis','94 Val-de-Marne','95 Val-d\'Oise'],
+                'Normandie': ['14 Calvados','27 Eure','50 Manche','61 Orne','76 Seine-Maritime'],
+                'Nouvelle-Aquitaine': ['16 Charente','17 Charente-Maritime','19 Corrèze','23 Creuse','24 Dordogne','33 Gironde','40 Landes','47 Lot-et-Garonne','64 Pyrénées-Atlantiques','79 Deux-Sèvres','86 Vienne','87 Haute-Vienne'],
+                'Occitanie': ['09 Ariège','11 Aude','12 Aveyron','30 Gard','31 Haute-Garonne','32 Gers','34 Hérault','46 Lot','48 Lozère','65 Hautes-Pyrénées','66 Pyrénées-Orientales','81 Tarn','82 Tarn-et-Garonne'],
+                'Pays de la Loire': ['44 Loire-Atlantique','49 Maine-et-Loire','53 Mayenne','72 Sarthe','85 Vendée'],
+                'Provence-Alpes-Côte d\'Azur': ['04 Alpes-de-Haute-Provence','05 Hautes-Alpes','06 Alpes-Maritimes','13 Bouches-du-Rhône','83 Var','84 Vaucluse']
+            };
+
+            function getDeptCode(deptStr) {
+                return deptStr.split(' ')[0];
+            }
+
+            function getDeptName(deptStr) {
+                return deptStr.substring(deptStr.indexOf(' ') + 1);
+            }
+
+            // Old regions (before 2016 reform) mapped to their department codes
+            const OLD_REGIONS = {
+                'Auvergne-Rhône-Alpes': {
+                    'Auvergne': ['03','15','43','63'],
+                    'Rhône-Alpes': ['01','07','26','38','42','69','73','74']
+                },
+                'Bourgogne-Franche-Comté': {
+                    'Bourgogne': ['21','58','71','89'],
+                    'Franche-Comté': ['25','39','70','90']
+                },
+                'Grand Est': {
+                    'Alsace': ['67','68'],
+                    'Champagne-Ardenne': ['08','10','51','52'],
+                    'Lorraine': ['54','55','57','88']
+                },
+                'Hauts-de-France': {
+                    'Nord-Pas-de-Calais': ['59','62'],
+                    'Picardie': ['02','60','80']
+                },
+                'Normandie': {
+                    'Basse-Normandie': ['14','50','61'],
+                    'Haute-Normandie': ['27','76']
+                },
+                'Nouvelle-Aquitaine': {
+                    'Aquitaine': ['24','33','40','47','64'],
+                    'Limousin': ['19','23','87'],
+                    'Poitou-Charentes': ['16','17','79','86']
+                },
+                'Occitanie': {
+                    'Languedoc-Roussillon': ['11','30','34','48','66'],
+                    'Midi-Pyrénées': ['09','12','31','32','46','65','81','82']
+                }
+            };
+
+            // Build reverse lookup: dept code -> region name
+            const DEPT_CODE_TO_REGION = {};
+            Object.entries(REGIONS_DEPARTMENTS).forEach(([region, depts]) => {
+                depts.forEach(d => {
+                    const code = getDeptCode(d);
+                    DEPT_CODE_TO_REGION[code] = region;
+                });
+            });
+
+            // Build reverse lookup: dept code -> old region name
+            const DEPT_CODE_TO_OLD_REGION = {};
+            Object.entries(OLD_REGIONS).forEach(([newRegion, oldRegions]) => {
+                Object.entries(oldRegions).forEach(([oldName, codes]) => {
+                    codes.forEach(code => {
+                        DEPT_CODE_TO_OLD_REGION[code] = oldName;
+                    });
+                });
+            });
+
+            function extractDeptCodeFromLocation(location) {
+                if (!location) return null;
+                // Match a 5-digit French postal code
+                const match = location.match(/\b(\d{5})\b/);
+                if (match) {
+                    const postal = match[1];
+                    // Handle Corsica: 20000-20999 -> 2A or 2B
+                    if (postal.startsWith('20')) {
+                        const num = parseInt(postal, 10);
+                        return num < 20200 ? '2A' : '2B';
+                    }
+                    // DOM-TOM: 97x
+                    if (postal.startsWith('97')) {
+                        return postal.substring(0, 3);
+                    }
+                    return postal.substring(0, 2);
+                }
+                return null;
+            }
+
+            // Geocoding cache: city name -> dept code
+            const geocodeCache = {};
+
+            async function geocodeCityToDept(query) {
+                if (!query || query.length < 2) return null;
+                const cacheKey = query.toLowerCase().trim();
+                if (geocodeCache[cacheKey] !== undefined) return geocodeCache[cacheKey];
+                try {
+                    const resp = await fetch('https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(query) + '&limit=1&type=municipality');
+                    if (!resp.ok) { geocodeCache[cacheKey] = null; return null; }
+                    const data = await resp.json();
+                    if (data.features && data.features.length > 0) {
+                        const props = data.features[0].properties;
+                        const postcode = props.postcode || '';
+                        if (postcode.length >= 5) {
+                            const code = extractDeptCodeFromPostal(postcode);
+                            geocodeCache[cacheKey] = code;
+                            return code;
+                        }
+                        // Fallback: use citycode (INSEE code, first 2 digits = dept)
+                        const citycode = props.citycode || '';
+                        if (citycode.length >= 2) {
+                            let code;
+                            if (citycode.startsWith('2A') || citycode.startsWith('2B')) {
+                                code = citycode.substring(0, 2);
+                            } else if (citycode.startsWith('97')) {
+                                code = citycode.substring(0, 3);
+                            } else {
+                                code = citycode.substring(0, 2);
+                            }
+                            geocodeCache[cacheKey] = code;
+                            return code;
+                        }
+                    }
+                    geocodeCache[cacheKey] = null;
+                    return null;
+                } catch (e) {
+                    console.warn('Geocoding error for "' + query + '":', e.message);
+                    geocodeCache[cacheKey] = null;
+                    return null;
+                }
+            }
+
+            function extractDeptCodeFromPostal(postal) {
+                if (postal.startsWith('20')) {
+                    const num = parseInt(postal, 10);
+                    return num < 20200 ? '2A' : '2B';
+                }
+                if (postal.startsWith('97')) return postal.substring(0, 3);
+                return postal.substring(0, 2);
+            }
+
+            function extractCityFromLocation(location) {
+                if (!location) return null;
+                // Remove postal codes, country names, street numbers, common noise
+                let cleaned = location
+                    .replace(/\b\d{5}\b/g, '')
+                    .replace(/\b(France|FR)\b/gi, '')
+                    .replace(/\b\d{1,4}\s*(rue|avenue|boulevard|allée|chemin|route|place|impasse|bd|av)\b/gi, '')
+                    .replace(/\b(rue|avenue|boulevard|allée|chemin|route|place|impasse|bd|av)\s+[^\s,]+/gi, '')
+                    .replace(/[,;]/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+                // Take the last meaningful word group (often the city)
+                const parts = cleaned.split(/\s{2,}|\s+-\s+/).map(s => s.trim()).filter(s => s.length > 1);
+                if (parts.length > 0) return parts[parts.length - 1];
+                if (cleaned.length > 1) return cleaned;
+                return null;
+            }
+
+            async function resolveAllEventLocations(events) {
+                const toResolve = [];
+                events.forEach(ev => {
+                    const loc = ev.extendedProps?.location || '';
+                    const deptFromPostal = extractDeptCodeFromLocation(loc);
+                    if (deptFromPostal) {
+                        ev.extendedProps.resolvedDeptCode = deptFromPostal;
+                    } else if (loc.trim()) {
+                        toResolve.push(ev);
+                    }
+                });
+                // Batch geocode events without postal codes (throttled, max 5 at a time)
+                const batchSize = 5;
+                for (let i = 0; i < toResolve.length; i += batchSize) {
+                    const batch = toResolve.slice(i, i + batchSize);
+                    await Promise.all(batch.map(async ev => {
+                        const loc = ev.extendedProps?.location || '';
+                        const city = extractCityFromLocation(loc);
+                        if (city) {
+                            const code = await geocodeCityToDept(city);
+                            if (code) {
+                                ev.extendedProps.resolvedDeptCode = code;
+                            } else {
+                                // Try with full location string as fallback
+                                const code2 = await geocodeCityToDept(loc);
+                                if (code2) ev.extendedProps.resolvedDeptCode = code2;
+                            }
+                        }
+                    }));
+                }
+            }
+
+            function getEventDeptCode(ev) {
+                // Use pre-resolved code if available
+                if (ev.extendedProps?.resolvedDeptCode) return ev.extendedProps.resolvedDeptCode;
+                return extractDeptCodeFromLocation(ev.extendedProps?.location || '');
+            }
+
+            function populateRegionSelect() {
+                const regSelect = document.getElementById('filter-region');
+                if (!regSelect) return;
+                regSelect.innerHTML = '<option value="all" selected>Partout</option>';
+                Object.keys(REGIONS_DEPARTMENTS).forEach(region => {
+                    const opt = document.createElement('option');
+                    opt.value = 'region:' + region;
+                    opt.textContent = region;
+                    opt.className = 'filter-option-region';
+                    regSelect.appendChild(opt);
+                });
+            }
+
+            function populateDetailSelect(region) {
+                const detailSelect = document.getElementById('filter-detail');
+                const detailWrap = document.getElementById('filter-detail-wrap');
+                if (!detailSelect || !detailWrap) return;
+                if (!region || region === 'all') {
+                    detailWrap.classList.remove('visible');
+                    setTimeout(() => {
+                        detailSelect.innerHTML = '<option value="all" selected>Toute la région</option>';
+                    }, 400);
+                    return;
+                }
+                detailSelect.innerHTML = '<option value="all" selected>Toute la région</option>';
+                const depts = REGIONS_DEPARTMENTS[region];
+                if (!depts) return;
+                const oldRegs = OLD_REGIONS[region];
+                if (oldRegs) {
+                    Object.entries(oldRegs).forEach(([oldName, oldCodes]) => {
+                        // Old region header
+                        const oldOpt = document.createElement('option');
+                        oldOpt.value = 'oldregion:' + oldName;
+                        oldOpt.textContent = '\u25b9 ' + oldName;
+                        oldOpt.className = 'filter-option-oldregion';
+                        detailSelect.appendChild(oldOpt);
+                        // Departments belonging to this old region
+                        depts.filter(d => oldCodes.includes(getDeptCode(d))).forEach(d => {
+                            const opt = document.createElement('option');
+                            opt.value = 'dept:' + getDeptCode(d);
+                            opt.textContent = '\u00A0\u00A0\u00A0' + d;
+                            opt.className = 'filter-option-dept';
+                            detailSelect.appendChild(opt);
+                        });
+                    });
+                } else {
+                    depts.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = 'dept:' + getDeptCode(d);
+                        opt.textContent = d;
+                        opt.className = 'filter-option-dept';
+                        detailSelect.appendChild(opt);
+                    });
+                }
+                requestAnimationFrame(() => { detailWrap.classList.add('visible'); });
+            }
+
+            function getFilteredEvents() {
+                const typeFilter = document.getElementById('filter-type')?.value || 'all';
+                const regionFilter = document.getElementById('filter-region')?.value || 'all';
+                const detailFilter = document.getElementById('filter-detail')?.value || 'all';
+
+                return allLoadedEvents.filter(ev => {
+                    // Type filter
+                    const foxEmojiRegex = /\u{1F98A}/u;
+                    const isFurry = typeof ev.title === 'string' && foxEmojiRegex.test(ev.title);
+                    if (typeFilter === 'furry' && !isFurry) return false;
+                    if (typeFilter === 'standard' && isFurry) return false;
+
+                    // Region filter
+                    if (regionFilter !== 'all') {
+                        const eventDeptCode = getEventDeptCode(ev);
+                        if (!eventDeptCode) return false;
+                        const filterRegion = regionFilter.substring(7);
+                        const eventRegion = DEPT_CODE_TO_REGION[eventDeptCode];
+                        if (eventRegion !== filterRegion) return false;
+
+                        // Detail filter (old region or department)
+                        if (detailFilter !== 'all') {
+                            if (detailFilter.startsWith('dept:')) {
+                                if (eventDeptCode !== detailFilter.substring(5)) return false;
+                            } else if (detailFilter.startsWith('oldregion:')) {
+                                const eventOldRegion = DEPT_CODE_TO_OLD_REGION[eventDeptCode];
+                                if (eventOldRegion !== detailFilter.substring(10)) return false;
+                            }
+                        }
+                    }
+
+                    return true;
+                });
+            }
+
+            function saveFilterSettings() {
+                const saveCheckbox = document.getElementById('filter-save');
+                if (!saveCheckbox || !saveCheckbox.checked) return;
+                const settings = {
+                    type: document.getElementById('filter-type')?.value || 'all',
+                    region: document.getElementById('filter-region')?.value || 'all',
+                    detail: document.getElementById('filter-detail')?.value || 'all'
+                };
+                localStorage.setItem('calendarFilterSettings', JSON.stringify(settings));
+                localStorage.setItem('calendarFilterSave', 'true');
+            }
+
+            function restoreFilterSettings() {
+                const saved = localStorage.getItem('calendarFilterSave');
+                const saveCheckbox = document.getElementById('filter-save');
+                if (!saved || saved !== 'true' || !saveCheckbox) return false;
+                saveCheckbox.checked = true;
+                try {
+                    const settings = JSON.parse(localStorage.getItem('calendarFilterSettings'));
+                    if (!settings) return false;
+                    const filterType = document.getElementById('filter-type');
+                    const filterRegion = document.getElementById('filter-region');
+                    if (filterType && settings.type) filterType.value = settings.type;
+                    if (filterRegion && settings.region) {
+                        filterRegion.value = settings.region;
+                        if (settings.region !== 'all') {
+                            const regionName = settings.region.substring(7);
+                            populateDetailSelect(regionName);
+                            const filterDetail = document.getElementById('filter-detail');
+                            if (filterDetail && settings.detail) filterDetail.value = settings.detail;
+                        }
+                    }
+                    return true;
+                } catch (e) { return false; }
+            }
+
+            function applyFilters() {
+                saveFilterSettings();
+                const wrapper = document.getElementById('calendar-wrapper');
+                if (wrapper) wrapper.classList.add('calendar-filtering');
+                setTimeout(() => {
+                    loadedEvents = consolidateMultiDayEvents(getFilteredEvents());
+                    if (calendar) {
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(loadedEvents);
+                    }
+                    if (wrapper) wrapper.classList.remove('calendar-filtering');
+                }, 250);
+            }
 
             function closeEventModal() {
                 const modal = document.querySelector('.event-modal');
@@ -718,6 +1096,8 @@
                 if (calendar !== null) calendar.destroy();
                 resizeWrapperHeight();
 
+                const listRenderedIds = new Set();
+
                 calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: viewName,
                     initialDate: currentDate,
@@ -737,6 +1117,7 @@
                     slotMaxTime: '23:00:00',
                     slotLabelInterval: '01:00:00',
                     events: loadedEvents,
+                    noEventsContent: '',
                     eventClick: function (info) {
                         info.jsEvent.preventDefault();
                         openEventModal(info.event, info.event.extendedProps);
@@ -749,14 +1130,6 @@
                             let nbJours = 1;
                             let isAllDay = arg.event.allDay;
                             const hideStart = arg.event.extendedProps && arg.event.extendedProps.hideStartTime;
-                            try {
-                                const orig = arg.event.extendedProps && arg.event.extendedProps.origStart;
-                                if (orig && start) {
-                                    const sDay = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
-                                    const oDay = new Date(orig.getFullYear(), orig.getMonth(), orig.getDate()).getTime();
-                                    if (sDay !== oDay) return { html: '' };
-                                }
-                            } catch (e) { }
                             if (start && end && end - start >= 24 * 60 * 60 * 1000) {
                                 const options = { day: '2-digit', month: 'short', year: 'numeric' };
                                 let displayEnd = end;
@@ -792,19 +1165,15 @@
                             }
                         } catch (e) { }
 
+                        // Hide duplicate multi-day events in list view
                         try {
-                            if (info.view && info.view.type && info.view.type.startsWith('list') && info.el && info.event && info.event.start) {
-                                const eventStartDate = info.event.start.toISOString().slice(0, 10);
-                                const cellDate = info.el.getAttribute('data-date') || (info.el.closest && info.el.closest('[data-date]') && info.el.closest('[data-date]').getAttribute('data-date')) || (info.el.closest && info.el.closest('tr') && info.el.closest('tr').getAttribute('data-date'));
-                                if (cellDate && cellDate !== eventStartDate) {
+                            if (info.view && info.view.type.startsWith('list') && info.event) {
+                                const evId = info.event.id || info.event.title;
+                                if (listRenderedIds.has(evId)) {
                                     info.el.style.display = 'none';
+                                } else {
+                                    listRenderedIds.add(evId);
                                 }
-                            }
-                        } catch (e) { }
-
-                        try {
-                            if (info.el && info.el.innerHTML.trim().length === 0) {
-                                info.el.style.display = 'none';
                             }
                         } catch (e) { }
                     },
@@ -814,6 +1183,7 @@
                             const displayDate = info.view.currentStart || info.start;
                             updateMonthLabel(displayDate);
                             pruneOuterMonthRows();
+                            listRenderedIds.clear();
                         }, 50);
                     }
                 });
@@ -932,6 +1302,41 @@
                 });
 
                 if (btnToggleView) btnToggleView.onclick = toggleView;
+
+                // Filter event listeners
+                const filterType = document.getElementById('filter-type');
+                const filterRegion = document.getElementById('filter-region');
+                const filterDetail = document.getElementById('filter-detail');
+
+                if (filterType) filterType.onchange = applyFilters;
+                if (filterRegion) {
+                    filterRegion.onchange = function() {
+                        const val = filterRegion.value;
+                        const regionName = val === 'all' ? null : val.substring(7);
+                        populateDetailSelect(regionName);
+                        applyFilters();
+                    };
+                    populateRegionSelect();
+                }
+                if (filterDetail) filterDetail.onchange = applyFilters;
+
+                // Save checkbox toggle
+                const filterSave = document.getElementById('filter-save');
+                if (filterSave) {
+                    filterSave.onchange = function() {
+                        if (filterSave.checked) {
+                            saveFilterSettings();
+                        } else {
+                            localStorage.removeItem('calendarFilterSettings');
+                            localStorage.removeItem('calendarFilterSave');
+                        }
+                    };
+                }
+
+                // Restore saved settings
+                if (restoreFilterSettings()) {
+                    applyFilters();
+                }
 
                 const btnSubscribe = document.getElementById('btn-subscribe');
                 if (btnSubscribe) {
@@ -1358,7 +1763,23 @@
                             }
                         });
 
-                        loadedEvents = consolidateMultiDayEvents(loadedEvents);
+                        allLoadedEvents = loadedEvents.slice();
+
+                        // Resolve locations without postal codes via geocoding API
+                        try {
+                            await resolveAllEventLocations(allLoadedEvents);
+                            // Copy resolved codes back to loadedEvents
+                            allLoadedEvents.forEach(ev => {
+                                const match = loadedEvents.find(le => le.id === ev.id);
+                                if (match && ev.extendedProps?.resolvedDeptCode) {
+                                    match.extendedProps.resolvedDeptCode = ev.extendedProps.resolvedDeptCode;
+                                }
+                            });
+                        } catch (e) {
+                            console.warn('Geocoding resolution failed, filtering may be limited:', e.message);
+                        }
+
+                        loadedEvents = consolidateMultiDayEvents(getFilteredEvents());
 
                         let startView = 'dayGridMonth';
                         if (!allowCalendarView && allowListView) {
@@ -1371,6 +1792,7 @@
 
                         document.getElementById('calendar-loader').style.display = 'none';
                         document.getElementById('calendar-wrapper').style.display = '';
+                        document.getElementById('calendar-header').style.display = '';
 
                         initCalendar(startView);
 
@@ -1384,15 +1806,6 @@
                             if (btnToggleView) btnToggleView.textContent = "Vue Liste";
                             if (calendarZone) calendarZone.classList.remove('list-view-active');
                         }
-
-                        setTimeout(() => {
-                            if (loadedEvents.length === 0) {
-                                const calendarEl = document.querySelector('.fullcalendar-container');
-                                if (calendarEl) {
-                                    calendarEl.innerHTML = `<div style="padding:2rem;text-align:center;color:#fff;background:rgba(102,126,234,0.1);border-radius:12px;max-width:600px;margin:0 auto;">Aucun événement à afficher pour cette période.</div>`;
-                                }
-                            }
-                        }, 500);
 
                         if (prevBtn) {
                             prevBtn.onclick = () => calendar && calendar.prev();
