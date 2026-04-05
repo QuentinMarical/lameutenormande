@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=pLTIow"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=pLTIow" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=thOT5v"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=thOT5v" type="text/css">
 
   
   
@@ -1114,6 +1114,7 @@
             }
 
             function consolidateMultiDayEvents(events) {
+                // Regroupe les événements par id ou titre+date
                 const map = {};
                 events.forEach(ev => {
                     const key = ev.id || (ev.title + '_' + (ev.start ? ev.start.toISOString() : Math.random()));
@@ -1125,6 +1126,7 @@
                     }
                 });
 
+                // Pour chaque multi-jour, ne garder qu'une seule case en vue liste
                 const now = new Date();
                 return Object.values(map).map(ev => {
                     const startDate = ev.start || (ev.extendedProps && ev.extendedProps.startDate) || null;
@@ -1147,6 +1149,10 @@
                         } else {
                             classes.push('fc-event-future');
                         }
+                    }
+                    // Ajoute un flag pour masquer les duplicatas en vue liste
+                    if (ev.extendedProps && ev.extendedProps.listIgnore) {
+                        ev.extendedProps.listIgnore = true;
                     }
                     return {
                         ...ev,
@@ -1197,13 +1203,15 @@
                 // For list view, flatten multi-day events to single-day to avoid duplicates
                 let viewEvents = loadedEvents;
                 if (viewName.startsWith('list')) {
+                    // Pour chaque multi-jour, ne garder qu'une seule case en vue liste
                     viewEvents = loadedEvents.map(ev => {
                         const start = ev.start;
                         const end = ev.end;
                         if (start && end && (end - start) >= 24 * 60 * 60 * 1000) {
-                            return { ...ev, end: ev.allDay ? new Date(start.getTime() + 24 * 60 * 60 * 1000) : start };
+                            // Ne garder que le premier jour, masquer les autres
+                            return { ...ev, end: ev.allDay ? new Date(start.getTime() + 24 * 60 * 60 * 1000) : start, extendedProps: { ...(ev.extendedProps || {}), listIgnore: false } };
                         }
-                        return ev;
+                        return { ...ev, extendedProps: { ...(ev.extendedProps || {}), listIgnore: false } };
                     });
                 }
 
@@ -1236,6 +1244,7 @@
                         const logoHtml = isFCD ? `<img src="${NORMANDIFURS_LOGO}" class="event-logo-normandifurs" alt="" title="Événement organisé par NormandiFurs">` : '';
                         if (arg.view.type.startsWith('list')) {
                             const props = arg.event.extendedProps || {};
+                            if (props.listIgnore) return { domNodes: [] };
                             const start = props.startDate || arg.event.start;
                             const end = props.endDate || arg.event.end;
                             let html = '';
