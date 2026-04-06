@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=9Hox5x"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=9Hox5x" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=dmYRXH"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=dmYRXH" type="text/css">
 
   
   
@@ -1162,19 +1162,21 @@
             }
 
             function consolidateMultiDayEvents(events) {
-                // Regroupe les événements par id ou titre+date
+                // Regroupe les événements par id
                 const map = {};
                 events.forEach(ev => {
+                    // Utiliser l'ID unique comme clé (pas start qui peut varier)
                     const key = ev.id || (ev.title + '_' + (ev.start ? ev.start.toISOString() : Math.random()));
-                    if (!map[key]) map[key] = { ...ev };
-                    else {
+                    if (!map[key]) {
+                        map[key] = { ...ev };
+                    } else {
+                        // Fusionner les dates si besoin
                         if (ev.start && (!map[key].start || ev.start < map[key].start)) map[key].start = ev.start;
                         if (ev.end && (!map[key].end || ev.end > map[key].end)) map[key].end = ev.end;
                         map[key].extendedProps = { ...(map[key].extendedProps || {}), ...(ev.extendedProps || {}) };
                     }
                 });
 
-                // Pour chaque multi-jour, ne garder qu'une seule case en vue liste
                 const now = new Date();
                 return Object.values(map).map(ev => {
                     const startDate = ev.start || (ev.extendedProps && ev.extendedProps.startDate) || null;
@@ -1206,10 +1208,7 @@
                             classes.push('fc-event-future');
                         }
                     }
-                    // Ajoute un flag pour masquer les duplicatas en vue liste
-                    if (ev.extendedProps && ev.extendedProps.listIgnore) {
-                        ev.extendedProps.listIgnore = true;
-                    }
+                    // NE PAS réinitialiser listIgnore ici — c'est initCalendar qui le fait
                     return {
                         ...ev,
                         classNames: classes,
@@ -1259,14 +1258,28 @@
                 // For list view, flatten multi-day events to single-day to avoid duplicates
                 let viewEvents = loadedEvents;
                 if (viewName.startsWith('list')) {
-                    // Pour chaque multi-jour, ne garder qu'une seule case en vue liste
+                    // Pour chaque multi-jour, ne garder que le premier jour, marquer les autres comme ignorés
+                    const seen = {};
                     viewEvents = loadedEvents.map(ev => {
-                        const start = ev.start;
-                        const end = ev.end;
-                        if (start && end && (end - start) >= 24 * 60 * 60 * 1000) {
-                            // Ne garder que le premier jour, masquer les autres
-                            return { ...ev, end: ev.allDay ? new Date(start.getTime() + 24 * 60 * 60 * 1000) : start, extendedProps: { ...(ev.extendedProps || {}), listIgnore: false } };
+                        const key = ev.id || ev.title;
+                        const start = ev.start || (ev.extendedProps && ev.extendedProps.startDate);
+                        const end = ev.end || (ev.extendedProps && ev.extendedProps.endDate);
+                        const isMultiDay = start && end && (end - start) >= 24 * 60 * 60 * 1000;
+
+                        if (isMultiDay) {
+                            if (seen[key]) {
+                                // Déjà vu → marquer comme ignoré
+                                return { ...ev, extendedProps: { ...(ev.extendedProps || {}), listIgnore: true } };
+                            }
+                            seen[key] = true;
+                            // Premier jour → ajuster la fin pour n'afficher qu'un seul jour
+                            return {
+                                ...ev,
+                                end: ev.allDay ? new Date(start.getTime() + 24 * 60 * 60 * 1000) : start,
+                                extendedProps: { ...(ev.extendedProps || {}), listIgnore: false }
+                            };
                         }
+                        // Pas multi-jour → afficher normalement
                         return { ...ev, extendedProps: { ...(ev.extendedProps || {}), listIgnore: false } };
                     });
                 }
@@ -1329,6 +1342,13 @@
                         return true;
                     },
                     eventDidMount: function (info) {
+                        // Cacher les événements marqués comme ignorés (doublons vue liste)
+                        const listIgnore = info.event.extendedProps && info.event.extendedProps.listIgnore;
+                        if (listIgnore && info.el) {
+                            info.el.style.display = 'none';
+                            return;
+                        }
+
                         const bg = info.event.extendedProps && info.event.extendedProps.backgroundColor;
                         const border = info.event.extendedProps && info.event.extendedProps.borderColor;
                         const txt = info.event.extendedProps && info.event.extendedProps.textColor;
