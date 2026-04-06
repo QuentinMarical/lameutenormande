@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=0uyTmB"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=0uyTmB" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=AANiby"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=AANiby" type="text/css">
 
   
   
@@ -142,10 +142,57 @@
     (function() {
         'use strict';
 
-        // Fix z-index navbar : injection globale dans <head> (le CSS module est scopé par LESS)
+        // Fix z-index navbar + modal fullscreen mobile : injection globale dans <head>
+        // ⚠️ EXCLUT les modules artistes (.module-artiste) et leurs modales (.artist-modal)
+        // EXCLUT aussi les modales gallery bloc (.artistgallery1) et leurs modales (.ag-modal)
         (function() {
             var s = document.createElement('style');
-            s.textContent = 'body.modal-open{overflow:hidden}body.modal-open>*{z-index:0!important;position:relative}body.modal-open>:has(.event-modal){z-index:2147483647!important}body.modal-open>:has(.legal-modal){z-index:2147483647!important}';
+            s.textContent = ''
+                /* --- z-index global quand modal ouverte --- */
+                + 'body.modal-open{overflow:hidden}'
+                + 'body.modal-open>*:not(.module-artiste):not(.artistgallery1):not(.carousel-fullscreen):not(.pricing-fullscreen){z-index:0!important;position:relative}'
+                + 'body.modal-open>.module-artiste{z-index:0!important;position:relative}'
+                + 'body.modal-open>.artistgallery1{z-index:0!important;position:relative}'
+                + 'body.modal-open>.module-artiste:has(.artist-modal.show){z-index:2147483647!important}'
+                + 'body.modal-open>.artistgallery1:has(.ag-modal.show){z-index:2147483647!important}'
+                + 'body.modal-open>:has(.event-modal){z-index:2147483647!important}'
+                + 'body.modal-open>:has(.legal-modal){z-index:2147483647!important}'
+
+                /* --- Fullscreen overlays toujours au-dessus de tout --- */
+                + '.carousel-fullscreen,.pricing-fullscreen{position:fixed!important;z-index:2147483648!important}'
+
+                /* --- Legal modal fullscreen sur mobile --- */
+                + '@media(max-width:767px){'
+                    + '.legal-modal{padding:0!important;align-items:stretch!important}'
+                    + '.legal-modal-overlay{position:fixed!important;inset:0!important}'
+                    + '.legal-modal-content{position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;margin:0!important;border-radius:0!important;box-shadow:none!important;animation:legalSheetUp .32s cubic-bezier(.25,.46,.45,.94)}'
+                    + '.legal-modal.closing .legal-modal-content{animation:legalSheetDown .25s ease forwards}'
+                    + '.legal-modal-header{padding:1.5rem 1.25rem 1rem!important;position:sticky!important;top:0!important;z-index:10;background:linear-gradient(155deg,#1e1430 0%,#120d22 60%,#0d0a1c 100%)}'
+                    + '.legal-modal-body{padding:1rem 1.25rem 2rem!important;flex:1;overflow-y:auto}'
+                    + '.legal-modal-title{font-size:1.2rem!important}'
+                + '}'
+
+                /* --- Artist modal (.module-artiste) fullscreen mobile --- */
+                + '@media(max-width:767px){'
+                    + '.artist-modal{padding:0!important;align-items:stretch!important}'
+                    + '.artist-modal-overlay{position:fixed!important;inset:0!important}'
+                    + '.artist-modal-content{position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;margin:0!important;border-radius:0!important;box-shadow:none!important;animation:artistSheetUp .32s cubic-bezier(.25,.46,.45,.94)}'
+                    + '.artist-modal.closing .artist-modal-content{animation:artistSheetDown .25s ease forwards}'
+                    + '.artist-modal-header{padding:1.5rem 1.25rem 1rem!important;position:sticky!important;top:0!important;z-index:10;background:linear-gradient(155deg,#1e1430 0%,#120d22 60%,#0d0a1c 100%)}'
+                    + '.artist-modal-body{padding:1rem 1.25rem 2rem!important;flex:1;overflow-y:auto}'
+                    + '.artist-modal-title{font-size:1.3rem!important}'
+                + '}'
+
+                /* --- AG modal (.artistgallery1) fullscreen mobile --- */
+                + '@media(max-width:767px){'
+                    + '.ag-modal{padding:0!important;align-items:stretch!important}'
+                    + '.ag-modal-overlay{position:fixed!important;inset:0!important}'
+                    + '.ag-modal-content{position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;margin:0!important;border-radius:0!important;box-shadow:none!important;animation:agSheetUp .32s cubic-bezier(.25,.46,.45,.94)}'
+                    + '.ag-modal.closing .ag-modal-content{animation:agSheetDown .25s ease forwards}'
+                    + '.ag-modal-header{padding:1.5rem 1.25rem 1rem!important;position:sticky!important;top:0!important;z-index:10;background:linear-gradient(155deg,#1e1430 0%,#120d22 60%,#0d0a1c 100%)}'
+                    + '.ag-modal-body{padding:1rem 1.25rem 2rem!important;flex:1;overflow-y:auto}'
+                    + '.ag-modal-title{font-size:1.3rem!important}'
+                + '}';
             document.head.appendChild(s);
         })();
 
