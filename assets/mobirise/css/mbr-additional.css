@@ -4139,6 +4139,16 @@ a {
 .cid-v5QUnVSVmZ .fc-list-event.fc-event-future.fc-event-fox:hover {
   filter: brightness(1.08) drop-shadow(0 4px 12px rgba(38, 198, 218, 0.6));
 }
+.cid-v5QUnVSVmZ .fc-event.fc-event-future.fc-event-globe,
+.cid-v5QUnVSVmZ .fc-list-event.fc-event-future.fc-event-globe {
+  background: linear-gradient(135deg, #2196f3, #03a9f4) !important;
+  border-color: #2196f3 !important;
+  color: #fff !important;
+}
+.cid-v5QUnVSVmZ .fc-event.fc-event-future.fc-event-globe:hover,
+.cid-v5QUnVSVmZ .fc-list-event.fc-event-future.fc-event-globe:hover {
+  filter: brightness(1.08) drop-shadow(0 4px 12px rgba(33, 150, 243, 0.6));
+}
 .cid-v5QUnVSVmZ .container-calendar {
   max-width: 1200px;
   margin: 0 auto;

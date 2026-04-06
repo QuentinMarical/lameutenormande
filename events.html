@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=BLNOGs"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=BLNOGs" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=9Hox5x"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=9Hox5x" type="text/css">
 
   
   
@@ -558,6 +558,7 @@
                         <label class="calendar-filter-label">Région</label>
                         <select class="calendar-filter-select" id="filter-region">
                             <option value="all" selected="">Partout</option>
+                            <option value="hors-france">Hors France 🌍</option>
                         </select>
                     </div>
                     <div class="calendar-filter-group calendar-filter-group-location calendar-filter-detail-wrap" id="filter-detail-wrap">
@@ -870,7 +871,7 @@
             function populateRegionSelect() {
                 const regSelect = document.getElementById('filter-region');
                 if (!regSelect) return;
-                regSelect.innerHTML = '<option value="all" selected>Partout</option>';
+                regSelect.innerHTML = '<option value="all" selected>Partout</option><option value="hors-france">Hors France 🌍</option>';
                 Object.keys(REGIONS_DEPARTMENTS).forEach(region => {
                     const opt = document.createElement('option');
                     opt.value = 'region:' + region;
@@ -937,6 +938,13 @@
                     if (typeFilter === 'standard' && isFurry) return false;
 
                     // Region filter
+                    if (regionFilter === 'hors-france') {
+                        // Hors France : événements SANS code postal français
+                        const eventDeptCode = getEventDeptCode(ev);
+                        if (eventDeptCode) return false; // A un dept français → exclu
+                        return true;
+                    }
+
                     if (regionFilter !== 'all') {
                         const eventDeptCode = getEventDeptCode(ev);
                         if (!eventDeptCode) return false;
@@ -1176,7 +1184,9 @@
                     const isFuture = startDate && startDate > now;
                     const classes = [];
                     const foxEmojiRegex = /\u{1F98A}/u;
+                    const globeEmojiRegex = /\u{1F30D}/u;
                     const hasFox = typeof ev.title === 'string' && foxEmojiRegex.test(ev.title);
+                    const hasGlobe = typeof ev.title === 'string' && globeEmojiRegex.test(ev.title);
                     if (isPast) classes.push('fc-event-past');
                     else if (isNow) classes.push('fc-event-now');
                     else if (isFuture) {
@@ -1185,6 +1195,12 @@
                             ev.extendedProps = ev.extendedProps || {};
                             ev.extendedProps.backgroundColor = ev.extendedProps.backgroundColor || 'linear-gradient(135deg, #ff9800, #ff3d00)';
                             ev.extendedProps.borderColor = ev.extendedProps.borderColor || '#ff9800';
+                            ev.extendedProps.textColor = ev.extendedProps.textColor || '#fff';
+                        } else if (hasGlobe) {
+                            classes.push('fc-event-future', 'fc-event-globe');
+                            ev.extendedProps = ev.extendedProps || {};
+                            ev.extendedProps.backgroundColor = ev.extendedProps.backgroundColor || 'linear-gradient(135deg, #2196f3, #03a9f4)';
+                            ev.extendedProps.borderColor = ev.extendedProps.borderColor || '#2196f3';
                             ev.extendedProps.textColor = ev.extendedProps.textColor || '#fff';
                         } else {
                             classes.push('fc-event-future');
@@ -1463,9 +1479,16 @@
                 if (filterRegion) {
                     filterRegion.onchange = function() {
                         const val = filterRegion.value;
-                        const regionName = val === 'all' ? null : val.substring(7);
-                        populateDetailSelect(regionName);
-                        applyFilters();
+                        if (val === 'hors-france') {
+                            // Cacher le select détail pour Hors France
+                            const detailWrap = document.getElementById('filter-detail-wrap');
+                            if (detailWrap) detailWrap.classList.remove('visible');
+                            applyFilters();
+                        } else {
+                            const regionName = val === 'all' ? null : val.substring(7);
+                            populateDetailSelect(regionName);
+                            applyFilters();
+                        }
                     };
                     populateRegionSelect();
                 }
@@ -1809,6 +1832,9 @@
                                 function getEventColors(title, start, now) {
                                     if (title.includes('🦊') && start > now) {
                                         return { backgroundColor: '#ff9800', borderColor: '#ff9800' };
+                                    }
+                                    if (title.includes('🌍') && start > now) {
+                                        return { backgroundColor: '#2196f3', borderColor: '#2196f3' };
                                     }
                                     return { backgroundColor: '#667eea', borderColor: '#667eea' };
                                 }
