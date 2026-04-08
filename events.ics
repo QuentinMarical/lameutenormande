@@ -496,7 +496,7 @@ DTSTAMP:20260208T160106Z
 URL:https://magic-odyssey.fr/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:FurBar de Rouen
+SUMMARY:🦊 FurBar de Rouen
 DESCRIPTION:LA SOIRÉE : ON TRINQUE AUX BEAUX JOURS ! 🍻 À partir de 19h00\, direction notre QG pour fêter le retour de la douceur !\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>LA SOIRÉE : ON TRINQUE AUX BEAUX JOURS ! 🍻 À partir de 19h00\, direction notre QG pour fêter le retour de la douceur !<br /></div>
 DTSTART:20260411T170000Z
@@ -508,8 +508,8 @@ STATUS:CONFIRMED
 UID:59e840e502b54eceb1bbea9e3c5e1348@zoho.eu
 TRANSP:OPAQUE
 CREATED:20260326T145525Z
-LAST-MODIFIED:20260326T145625Z
-DTSTAMP:20260326T145627Z
+LAST-MODIFIED:20260408T131017Z
+DTSTAMP:20260408T131018Z
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
@@ -1016,7 +1016,7 @@ DTSTAMP:20260127T174819Z
 URL:https://vexin-normand-tourisme.com/sejourner/les-temps-forts/gisors-la-legendaire/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:FurBar de Rouen- Sortie escalade
+SUMMARY:🦊 FurBar de Rouen- Sortie escalade
 DESCRIPTION:ON SORT LES GRIFFES ! 🧗 \n\nRDV à 14h30\, on vient tester ses réflexes et son agilité pour défier la gravité! \n\n(Prévoyez une tenue de sport pour être à l'aise !)\n\nINSCRIPTION AVANT LE 8 AVRIL POUR POUVOIR AVOIR DE LA PLACE !!!!!\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>ON SORT LES GRIFFES ! 🧗 <br /></div><div>RDV à 14h30\, on vient tester ses réflexes et son agilité pour défier la gravité!&nbsp\;<br /></div><div>(Prévoyez une tenue de sport pour être à l'aise !)<br /></div><div>INSCRIPTION AVANT LE 8 AVRIL POUR POUVOIR AVOIR DE LA PLACE !!!!!<br /></div>
 DTSTART:20260411T123000Z
@@ -1028,8 +1028,8 @@ STATUS:CONFIRMED
 UID:a64c668248834dd1acdeb5a8f9f4472e@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260326T145100Z
-LAST-MODIFIED:20260326T145123Z
-DTSTAMP:20260326T145124Z
+LAST-MODIFIED:20260408T131009Z
+DTSTAMP:20260408T131010Z
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
@@ -1181,6 +1181,21 @@ CREATED:20251210T213611Z
 LAST-MODIFIED:20260123T172454Z
 DTSTAMP:20260123T172454Z
 URL:https://www.geek-days.com/rennes/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Fête médiévale Saint-Wrandrille-Rançon
+DESCRIPTION:
+DTSTART:20260502T070000Z
+DTEND:20260503T170000Z
+LOCATION:Saint-Wandrille-Rançon\,76490 Rives-en-Seine\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c54675bdb17c474482bbc82ec996118e@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260408T131132Z
+LAST-MODIFIED:20260408T131132Z
+DTSTAMP:20260408T131133Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:The Mang'Arras Festival
