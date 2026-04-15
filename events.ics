@@ -154,6 +154,22 @@ DTSTAMP:20260409T082750Z
 URL:https://www.echosetmerveilles.com/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Geek Days Lille
+DESCRIPTION:
+DTSTART:20260508T220100Z
+DTEND:20260510T215900Z
+LOCATION:Lille Grand Palais\, 1 Boulevard des Cités Unies\, 59777 Lille
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:133
+TRANSP:TRANSPARENT
+CREATED:20260415T113049Z
+LAST-MODIFIED:20260415T113209Z
+DTSTAMP:20260415T113209Z
+URL:https://www.geek-days.com/lille/billetterie/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Spinatorii
 DESCRIPTION:
 DTSTART:20260228T083000Z
@@ -544,23 +560,6 @@ CREATED:20260326T145525Z
 LAST-MODIFIED:20260408T131017Z
 DTSTAMP:20260408T131018Z
 URL:https://t.me/furbarderouen
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Geek Days Lille 2026
-DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n \n\n \n\n\n
-X-ALT-DESC;FMTTYPE=text/html:<table style="border-spacing:0px\; border-collapse:collapse\; padding:0px\; margin:0px\; width:320px\; color:rgb(0\, 0\, 0)\; font-family:Roboto\, Arial\, sans-serif\; font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; background-color:rgb(255\, 255\, 255)"><tbody><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><div style="min-height:21px\; min-width:150px\; max-width:287px\; text-align:left">Le samedi de 10h à 19h\, le dimanche de 10h à 18h<br /></div></td></tr><tr><td style="border-width:0px\; padding:0px 0px 2px\; margin:0px\; vertical-align:top"><br /></td></tr></tbody></table><div><br /></div>
-DTSTART;VALUE=DATE:20260516
-DTEND;VALUE=DATE:20260518
-LOCATION:1 Bd des Cités Unies\, 59777 Lille
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:5a36f21988874d7b9179f77e6134f18c@zoho.eu
-TRANSP:TRANSPARENT
-CREATED:20250924T101716Z
-LAST-MODIFIED:20250924T101716Z
-DTSTAMP:20260104T042141Z
-URL:http://www.lillegrandpalais.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:CSFO 2026
@@ -1652,8 +1651,8 @@ BEGIN:VEVENT
 SUMMARY:🦊 FCD 7 (Fur Calva Dance 7)
 DESCRIPTION:La Normandi'Furs organise la 7ème édition de la FCD au Village Vacances de Blainville-sur-Mer.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>La Normandi'Furs organise la 7ème édition de la FCD au Village Vacances de Blainville-sur-Mer.<br /></div>
-DTSTART;VALUE=DATE:20260925
-DTEND;VALUE=DATE:20260930
+DTSTART:20260924T220000Z
+DTEND:20260929T215500Z
 LOCATION:Village de vacances VTF Le Sénéquet Rue de la Vieille Digue\, 50560 Blainville-sur-Mer\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -1661,8 +1660,8 @@ STATUS:CONFIRMED
 UID:f9f5d6e0a055460da5b18414b0ecdd3d@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214914Z
-LAST-MODIFIED:20260403T152729Z
-DTSTAMP:20260403T152729Z
+LAST-MODIFIED:20260415T114238Z
+DTSTAMP:20260415T114239Z
 URL:https://normandifurs.fr
 END:VEVENT
 BEGIN:VEVENT
