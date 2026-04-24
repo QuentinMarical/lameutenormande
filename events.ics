@@ -126,8 +126,8 @@ URL:https://www.visiterouen.com/patrimoines/histoire/fetes-jeanne-darc/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Margny-Compiègne Geek Convention
-DESCRIPTION:Margny-Compiègne Geek Convention à Margny-lès-Compiègne.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Margny-Compiègne Geek Convention à Margny-lès-Compiègne.<br /></div>
+DESCRIPTION:La Margny-Compiègne Geek Convention\, organisée par l'association Ultimate Sci-Fi\, revient pour sa 8ème édition les 6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.) à Le Tigre\, 2 Rue Jean Mermoz\, Margny-lès-Compiègne (60280).\n\nAu programme : pop culture\, gaming\, cosplay et science-fiction dans un univers entièrement immersif : exposants\, boutiques spécialisées\, espace gaming\, défilé cosplay\, animations en continu et rencontres avec des invités exclusifs issus de l'univers geek. Buvette et restauration sur place tout le week-end.\n\nTarifs 1 jour : gratuit pour les moins de 6 ans\, 8€ pour les 6-14 ans\, PMR\, demandeurs d'emploi et cosplayeurs\, 10€ pour les +14 ans. Pass 2 jours : 12€ et 16€ respectivement. Billetterie ouverte sur compiegne-geek-convention.fr !\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Margny-Compiègne Geek Convention</b>\, organisée par l'association Ultimate Sci-Fi\, revient pour sa<span>&nbsp\;</span><b>8ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.)</b><span>&nbsp\;</span>à<span>&nbsp\;</span><b>Le Tigre</b>\, 2 Rue Jean Mermoz\,<span>&nbsp\;</span><b>Margny-lès-Compiègne</b><span>&nbsp\;</span>(60280).<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : pop culture\, gaming\, cosplay et science-fiction dans un univers entièrement immersif : exposants\, boutiques spécialisées\, espace gaming\, défilé cosplay\, animations en continu et rencontres avec des invités exclusifs issus de l'univers geek. Buvette et restauration sur place tout le week-end.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Tarifs 1 jour :<span>&nbsp\;</span><b>gratuit pour les moins de 6 ans</b>\,<span>&nbsp\;</span><b>8€ pour les 6-14 ans\, PMR\, demandeurs d'emploi et cosplayeurs</b>\,<span>&nbsp\;</span><b>10€ pour les +14 ans</b>. Pass 2 jours :<span>&nbsp\;</span><b>12€ et 16€</b><span>&nbsp\;</span>respectivement. Billetterie ouverte sur compiegne-geek-convention.fr !<br /></p><div><br /></div>
 DTSTART;VALUE=DATE:20260606
 DTEND;VALUE=DATE:20260608
 LOCATION:Le Tigre 2 Rue Jean Mermoz\, 60280 Margny-lès-Compiègne\, France
@@ -137,8 +137,9 @@ STATUS:CONFIRMED
 UID:11606e4015ec410c8916ebf3d8043b3f@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214451Z
-LAST-MODIFIED:20251210T214509Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260424T120333Z
+DTSTAMP:20260424T120334Z
+URL:https://compiegne-geek-convention.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Mang'eek
@@ -457,7 +458,8 @@ URL:https://www.moulinsgeek.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Yvetot Cosgames Show 7
-DESCRIPTION:
+DESCRIPTION:Le Yvetot Cosgames Show\, rendez-vous incontournable des passionnés de cosplay\, jeux vidéo et pop culture de Normandie\, revient pour sa 7ème édition à la Salle du Vieux-Moulin\, 49 Rue de l'Étang\, Yvetot (76190 — Seine-Maritime)\, à seulement 40 km de Rouen !\n\nAu programme : concours et défilé cosplay\, consoles et rétrogaming en libre accès\, tournois\, ateliers\, flippers et bornes d'arcade\, et des invités exclusifs comme des comédiens de doublage issus des animes et séries cultes. La 6ème édition avait accueilli la voix française de Tanjiro Kamado (Demon Slayer) !\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Le<span>&nbsp\;</span><b>Yvetot Cosgames Show</b>\, rendez-vous incontournable des passionnés de cosplay\, jeux vidéo et pop culture de Normandie\, revient pour sa<span>&nbsp\;</span><b>7ème édition</b><span>&nbsp\;</span>à la<span>&nbsp\;</span><b>Salle du Vieux-Moulin</b>\, 49 Rue de l'Étang\,<span>&nbsp\;</span><b>Yvetot</b><span>&nbsp\;</span>(76190 — Seine-Maritime)\, à seulement 40 km de Rouen !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Au programme : concours et défilé cosplay\, consoles et rétrogaming en libre accès\, tournois\, ateliers\, flippers et bornes d'arcade\, et des invités exclusifs comme des comédiens de doublage issus des animes et séries cultes. La 6ème édition avait accueilli la voix française de Tanjiro Kamado (<i>Demon Slayer</i>) !<br /></p><div><br /></div>
 DTSTART:20260606T080000Z
 DTEND:20260607T170000Z
 LOCATION:Salle du Vieux Moulin\, 49 Rue de l'Étang\, 76190 Yvetot\, France
@@ -467,10 +469,11 @@ STATUS:CONFIRMED
 UID:42f48ef54dfd4350804b1725f8b922f8@zoho.eu
 TRANSP:OPAQUE
 CREATED:20260122T154104Z
-LAST-MODIFIED:20260202T170926Z
-DTSTAMP:20260202T170927Z
-ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
-ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260424T120222Z
+DTSTAMP:20260424T120223Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.facebook.com/yvetotcosgamesshowoff
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
@@ -492,7 +495,8 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Chibi Kamo
-DESCRIPTION:
+DESCRIPTION:Le Chibi Kamo\, salon dédié à la culture asiatique et geek organisé par Kamo Event\, revient pour une nouvelle édition les 6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.) au Parc des Expositions L'Eduen\, 1 Avenue André Frenaud\, Autun (71400)\, sur 3 000 m².\n\nAu programme : stands d'artistes\, créateurs et boutiques spécialisées manga\, anime\, BD\, comics\, jeux vidéo et jeux de rôle. Sur la scène principale se succèdent défilés\, concerts\, concours de danse et de cosplay\, foires aux questions et animations pour toute la famille.\n\nEntrée à 8€ pour les adultes\, 4€ pour les enfants (9-18 ans)\, et gratuit pour les moins de 9 ans et les accompagnateurs de personnes en situation de handicap.\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Le<span>&nbsp\;</span><b>Chibi Kamo</b>\, salon dédié à la culture asiatique et geek organisé par<span>&nbsp\;</span><b>Kamo Event</b>\, revient pour une nouvelle édition les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.)</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc des Expositions L'Eduen</b>\, 1 Avenue André Frenaud\,<span>&nbsp\;</span><b>Autun</b><span>&nbsp\;</span>(71400)\, sur<span>&nbsp\;</span><b>3 000 m²</b>.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Au programme : stands d'artistes\, créateurs et boutiques spécialisées manga\, anime\, BD\, comics\, jeux vidéo et jeux de rôle. Sur la scène principale se succèdent défilés\, concerts\, concours de danse et de cosplay\, foires aux questions et animations pour toute la famille.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Entrée à<span>&nbsp\;</span><b>8€ pour les adultes</b>\,<span>&nbsp\;</span><b>4€ pour les enfants (9-18 ans)</b>\, et<span>&nbsp\;</span><b>gratuit pour les moins de 9 ans</b><span>&nbsp\;</span>et les accompagnateurs de personnes en situation de handicap.<br /></p><div><br /></div>
 DTSTART:20260605T220000Z
 DTEND:20260607T215900Z
 LOCATION:Parc Des Expositions L'Eduen\, 1 Avenue André Frenaud\, 71400 Autun
@@ -502,8 +506,8 @@ STATUS:CONFIRMED
 UID:494e30fa5bf546a781c2c0a39b7963aa@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260207T110549Z
-LAST-MODIFIED:20260207T110549Z
-DTSTAMP:20260207T110550Z
+LAST-MODIFIED:20260424T120109Z
+DTSTAMP:20260424T120111Z
 URL:https://www.kamopolis.fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -605,7 +609,8 @@ URL:https://bordeauxgeekfest.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Magic Odyssey
-DESCRIPTION:
+DESCRIPTION:Magic Odyssey\, premier festival immersif nouvelle génération de France\, lance sa 1ère édition du 3 au 5 juillet 2026 de 10h à 23h30 sur 49 000 m² répartis sur plusieurs lieux emblématiques de La Souterraine (23300\, Creuse) : Le Loft (Avenue de la Liberté)\, la Tour de Bridiers et la Salle Yves Furet.\n\nCe n'est pas un salon\, c'est une expérience : deux mondes coexistent sur le même festival — un Pôle Pop Culture (gaming\, esport\, tournois de cartes Magic: The Gathering et Yu-Gi-Oh!\, showcases\, cosplay) et un Pôle Médiéval Fantasy (village médiéval vivant\, chevaliers\, jeux de rôle grandeur nature\, artisans\, spectacles scénarisés). Le tout ponctué de shows vivants immersifs et d'un Grand Tournoi Cosplay. À la clef : un voyage au Japon à gagner ! 🎌\n\nBilletterie ouverte sur Weezevent et la Fnac : pass 1 jour à partir de 16€\, pass 3 jours également disponible\, avec déjà plus de 1 000 billets réservés !\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2"><b>Magic Odyssey</b>\, premier festival immersif nouvelle génération de France\, lance sa<span>&nbsp\;</span><b>1ère édition</b><span>&nbsp\;</span>du<span>&nbsp\;</span><b>3 au 5 juillet 2026 de 10h à 23h30</b><span>&nbsp\;</span>sur<span>&nbsp\;</span><b>49 000 m²</b><span>&nbsp\;</span>répartis sur plusieurs lieux emblématiques de<span>&nbsp\;</span><b>La Souterraine</b><span>&nbsp\;</span>(23300\, Creuse) : Le Loft (Avenue de la Liberté)\, la Tour de Bridiers et la Salle Yves Furet.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Ce n'est pas un salon\, c'est une<span>&nbsp\;</span><b>expérience</b><span>&nbsp\;</span>: deux mondes coexistent sur le même festival — un<span>&nbsp\;</span><b>Pôle Pop Culture</b><span>&nbsp\;</span>(gaming\, esport\, tournois de cartes<span>&nbsp\;</span><i>Magic: The Gathering</i><span>&nbsp\;</span>et<span>&nbsp\;</span><i>Yu-Gi-Oh!</i>\, showcases\, cosplay) et un<span>&nbsp\;</span><b>Pôle Médiéval Fantasy</b><span>&nbsp\;</span>(village médiéval vivant\, chevaliers\, jeux de rôle grandeur nature\, artisans\, spectacles scénarisés). Le tout ponctué de shows vivants immersifs et d'un<span>&nbsp\;</span><b>Grand Tournoi Cosplay</b>. À la clef : un<span>&nbsp\;</span><b>voyage au Japon</b><span>&nbsp\;</span>à gagner ! 🎌<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Billetterie ouverte sur Weezevent et la Fnac :<span>&nbsp\;</span><b>pass 1 jour à partir de 16€</b>\,<span>&nbsp\;</span><b>pass 3 jours</b><span>&nbsp\;</span>également disponible\, avec déjà plus de<span>&nbsp\;</span><b>1 000 billets réservés</b><span>&nbsp\;</span>!<br /></p><div><br /></div>
 DTSTART:20260702T220100Z
 DTEND:20260705T215900Z
 LOCATION:Centre Culturel Yves Furet\, 1 Avenue de la Liberté\, 23300 La Souterraine
@@ -615,8 +620,8 @@ STATUS:CONFIRMED
 UID:587d47ed69b44492a4178a72cdae4f32@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260208T160105Z
-LAST-MODIFIED:20260208T160105Z
-DTSTAMP:20260208T160106Z
+LAST-MODIFIED:20260424T120654Z
+DTSTAMP:20260424T120656Z
 URL:https://magic-odyssey.fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -820,7 +825,8 @@ URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Pix'Ailes Jungle Edition
-DESCRIPTION:
+DESCRIPTION:La Pix'ailes Convention\, organisée par l'association Pix'ailes\, revient pour sa 3ème édition les 6 et 7 juin 2026 de 10h à 18h à la Salle Maurice Ravel\, Rue de la Gare\, Issou (78440 — Yvelines). Cette édition est placée sous le thème de la Jungle 🌿 — sortez votre plus beau pagne et préparez-vous à sauter de liane en liane !\n\nAu programme : jeux vidéo\, rétrogaming\, tournois\, dédicaces avec des invités exclusifs (dont le YouTubeur spécialiste du rétro gaming Edward)\, animations en continu\, cadeaux à gagner\, et une ambiance conviviale et passionnée entre fans de pop culture. Une DeLorean DMC-12 (oui\, celle de Retour vers le Futur !) sera également de la partie pour les amateurs de voitures légendaires 🚗⚡ !\n\nTarifs : 10€ à 15€ selon la formule\, avec billetterie disponible sur les réseaux officiels de l'association.\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Pix'ailes Convention</b>\, organisée par l'association Pix'ailes\, revient pour sa<span>&nbsp\;</span><b>3ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 18h</b><span>&nbsp\;</span>à la<span>&nbsp\;</span><b>Salle Maurice Ravel</b>\, Rue de la Gare\,<span>&nbsp\;</span><b>Issou</b><span>&nbsp\;</span>(78440 — Yvelines). Cette édition est placée sous le thème de la<span>&nbsp\;</span><b>Jungle</b><span>&nbsp\;</span>🌿 — sortez votre plus beau pagne et préparez-vous à sauter de liane en liane !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : jeux vidéo\, rétrogaming\, tournois\, dédicaces avec des invités exclusifs (dont le YouTubeur spécialiste du rétro gaming<span>&nbsp\;</span><b>Edward</b>)\, animations en continu\, cadeaux à gagner\, et une ambiance conviviale et passionnée entre fans de pop culture. Une DeLorean DMC-12 (oui\, celle de<span>&nbsp\;</span><i>Retour vers le Futur</i><span>&nbsp\;</span>!) sera également de la partie pour les amateurs de voitures légendaires 🚗⚡ !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Tarifs :<span>&nbsp\;</span><b>10€ à 15€</b><span>&nbsp\;</span>selon la formule\, avec billetterie disponible sur les réseaux officiels de l'association.<br /></p><div><br /></div>
 DTSTART:20260606T080000Z
 DTEND:20260607T160000Z
 LOCATION:Complexe Colette Besson\, Rue de la Gare\, 78440 Issou
@@ -830,8 +836,8 @@ STATUS:CONFIRMED
 UID:7c4102f68ca946df8b73fd4000e5c459@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260217T195335Z
-LAST-MODIFIED:20260217T195335Z
-DTSTAMP:20260217T195336Z
+LAST-MODIFIED:20260424T120430Z
+DTSTAMP:20260424T120432Z
 URL:https://www.facebook.com/pixxailes
 END:VEVENT
 BEGIN:VEVENT
@@ -1002,8 +1008,8 @@ URL:https://generationmultivers.wixsite.com/generation-multivers/convention-gene
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Tours Festival
-DESCRIPTION:Japan Tours Festival à Tours.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Japan Tours Festival à Tours.<br /></div>
+DESCRIPTION:\n\nLe Japan Tours Festival\, l'une des plus grandes conventions pop culture et japonaise de France\, fête sa 11ème édition du 3 au 5 juillet 2026 de 10h à 18h au Parc des Expositions de Tours\, Avenue Camille Chautemps\, Tours (37). L'événement avait rassemblé plus de 25 000 visiteurs lors de l'édition précédente !\n\nPendant 3 jours\, plongez dans la culture du Soleil Levant : 350+ exposants\, 187 invités\, 746 animations\, ateliers sur les traditions japonaises\, concerts\, cosplay\, jeux vidéo\, jeux de société\, dédicaces avec des mangakas et guest stars internationaux — dont la mangaka Shinn Uchida déjà confirmée pour 2026.\n\nBilletterie ouverte en prévente sur japantoursfestival.com : pass 1 jour à 17€\, pass 3 jours à 37€\, pack famille à 55€ (2 adultes + 2 enfants)\, et entrée anticipée dès 9h30 pour les préventes.\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div><a href="https://www.japantoursfestival.com/" target="_blank"></a><br /></div><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le<span>&nbsp\;</span><b>Japan Tours Festival</b>\, l'une des plus grandes conventions pop culture et japonaise de France\, fête sa<span>&nbsp\;</span><b>11ème édition</b><span>&nbsp\;</span>du<span>&nbsp\;</span><b>3 au 5 juillet 2026 de 10h à 18h</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc des Expositions de Tours</b>\, Avenue Camille Chautemps\,<span>&nbsp\;</span><b>Tours</b><span>&nbsp\;</span>(37). L'événement avait rassemblé plus de<span>&nbsp\;</span><b>25 000 visiteurs</b><span>&nbsp\;</span>lors de l'édition précédente !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Pendant 3 jours\, plongez dans la culture du Soleil Levant :<span>&nbsp\;</span><b>350+ exposants</b>\,<span>&nbsp\;</span><b>187 invités</b>\,<span>&nbsp\;</span><b>746 animations</b>\, ateliers sur les traditions japonaises\, concerts\, cosplay\, jeux vidéo\, jeux de société\, dédicaces avec des mangakas et guest stars internationaux — dont la mangaka<span>&nbsp\;</span><b>Shinn Uchida</b><span>&nbsp\;</span>déjà confirmée pour 2026.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Billetterie ouverte en prévente sur japantoursfestival.com :<span>&nbsp\;</span><b>pass 1 jour à 17€</b>\,<span>&nbsp\;</span><b>pass 3 jours à 37€</b>\,<span>&nbsp\;</span><b>pack famille à 55€</b><span>&nbsp\;</span>(2 adultes + 2 enfants)\, et<span>&nbsp\;</span><b>entrée anticipée dès 9h30</b><span>&nbsp\;</span>pour les préventes.<br /></p><div><a href="https://www.japantoursfestival.com/" target="_blank"></a><br /></div>
 DTSTART;VALUE=DATE:20260703
 DTEND;VALUE=DATE:20260706
 LOCATION:Parc des expositions de Tours - Grand Hall 13 Avenue Camille Chautemps\, 37000 Tours\, France
@@ -1013,8 +1019,9 @@ STATUS:CONFIRMED
 UID:9492ddc9cae14053980cfa4fdcf63b03@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T214535Z
-LAST-MODIFIED:20251210T214554Z
-DTSTAMP:20260104T042141Z
+LAST-MODIFIED:20260424T120543Z
+DTSTAMP:20260424T120543Z
+URL:https://www.japantoursfestival.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Otaku Night
@@ -1439,7 +1446,8 @@ DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Cavaillon Geek Festival
-DESCRIPTION:
+DESCRIPTION:Le Cavaillon Geek Festival\, toute nouvelle convention pop culture du Vaucluse\, voit le jour pour sa 1ère édition les 30 et 31 mai 2026 à Cavaillon (84). Un événement entièrement dédié à la culture geek qui s'implante dans le Sud de la France !\n\nAu programme : bornes arcade\, jeux vidéo\, danse\, stands et animations pour tous les passionnés de culture geek et pop culture. Une atmosphère conviviale et festive pour deux jours de découvertes et de retrouvailles entre fans.\n\nLes détails complets (horaires\, tarifs et lieu exact) sont disponibles sur la page Facebook officielle de l'événement. 🎮\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le<span>&nbsp\;</span><b>Cavaillon Geek Festival</b>\, toute nouvelle convention pop culture du Vaucluse\, voit le jour pour sa<span>&nbsp\;</span><b>1ère édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>30 et 31 mai 2026</b><span>&nbsp\;</span>à<span>&nbsp\;</span><b>Cavaillon</b><span>&nbsp\;</span>(84). Un événement entièrement dédié à la culture geek qui s'implante dans le Sud de la France !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : bornes arcade\, jeux vidéo\, danse\, stands et animations pour tous les passionnés de culture geek et pop culture. Une atmosphère conviviale et festive pour deux jours de découvertes et de retrouvailles entre fans.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Les détails complets (horaires\, tarifs et lieu exact) sont disponibles sur la page Facebook officielle de l'événement. 🎮<br /></p><div><br /></div>
 DTSTART:20260529T220100Z
 DTEND:20260531T215900Z
 LOCATION:M.I.N Cavaillon\, 92 Avenue Pierre Grand\, 84300 Cavaillon
@@ -1449,9 +1457,9 @@ STATUS:CONFIRMED
 UID:d4ca61e424464301989550e807026609@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260304T192733Z
-LAST-MODIFIED:20260304T192806Z
-DTSTAMP:20260304T192808Z
-URL:https://www.facebook.com/people/Cavaillon-Geek-festival/61583974634002/
+LAST-MODIFIED:20260424T115824Z
+DTSTAMP:20260424T115825Z
+URL:https://www.facebook.com/profile.php/?id=61583974634002
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Winter Geek Festival
@@ -1614,8 +1622,9 @@ DTSTAMP:20260201T202510Z
 URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:Japan Otaku Festival Liévin
-DESCRIPTION:
+SUMMARY:Le Liévin Japan Otaku Festival
+DESCRIPTION:Le Liévin Japan Otaku Festival\, organisé par Japan Otaku Festival\, se tiendra les 30 et 31 mai 2026 de 10h30 à 18h30 à l'Arena de Liévin (Chemin des Manufactures\, 62800 Liévin). Un événement 100% manga\, anime et culture japonaise dans les Hauts-de-France !\n\nAu programme : concerts et rencontres avec des artistes\, concours et défilés cosplay sur trois scènes non-stop\, espace gaming (rétro-gaming\, bornes arcade en illimité et tournois eSport Mario Bros et LoL)\, ateliers créatifs (calligraphie japonaise\, dessin manga\, cuisine\, Pokéball\, peinture sur figurines\, terrariums…)\, tatouages inspirés du Japon\, et gastronomie nippone (sushis\, ramen\, bubble tea).\n\nEntrée à 12€\, avec pass week-end au prix d'une journée en prévente disponible jusqu'au 29 mai 2026\, et entrée gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR.\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2" style="box-sizing:border-box\; border-style:solid\; border-width:0px"><span class="highlight" style=""><span class="colour" style="color:rgb(214\, 213\, 212)"><span class="font" style="font-family:pplxSerif\, pplxSerif\, ui-serif\, Georgia\, Cambria\, &quot\;Hiragino Mincho ProN&quot\;\, &quot\;Yu Mincho&quot\;\, &quot\;Songti SC&quot\;\, SimSun\, &quot\;Songti TC&quot\;\, PMingLiU\, &quot\;Songti TC&quot\;\, MingLiU_HKSCS\, &quot\;Songti TC&quot\;\, PMingLiU\, AppleMyungjo\, Batang\, serif"><span class="size" style="font-size:16px\; box-sizing:border-box\; border-style:solid\; border-width:0px\; font-style:normal\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal">Le<span>&nbsp\;</span><b>Liévin Japan Otaku Festival</b>\, organisé par Japan Otaku Festival\, se tiendra les<span>&nbsp\;</span><b>30 et 31 mai 2026 de 10h30 à 18h30</b><span>&nbsp\;</span>à l'<b>Arena de Liévin</b><span>&nbsp\;</span>(Chemin des Manufactures\, 62800 Liévin). Un événement 100% manga\, anime et culture japonaise dans les Hauts-de-France !<br /></span></span></span></span></p><p class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2" style="box-sizing:border-box\; border-style:solid\; border-width:0px"><span class="highlight" style=""><span class="colour" style="color:rgb(214\, 213\, 212)"><span class="font" style="font-family:pplxSerif\, pplxSerif\, ui-serif\, Georgia\, Cambria\, &quot\;Hiragino Mincho ProN&quot\;\, &quot\;Yu Mincho&quot\;\, &quot\;Songti SC&quot\;\, SimSun\, &quot\;Songti TC&quot\;\, PMingLiU\, &quot\;Songti TC&quot\;\, MingLiU_HKSCS\, &quot\;Songti TC&quot\;\, PMingLiU\, AppleMyungjo\, Batang\, serif"><span class="size" style="font-size:16px\; box-sizing:border-box\; border-style:solid\; border-width:0px\; font-style:normal\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal">Au programme : concerts et rencontres avec des artistes\, concours et défilés cosplay sur trois scènes non-stop\, espace gaming (rétro-gaming\, bornes arcade en illimité et tournois eSport Mario Bros et LoL)\, ateliers créatifs (calligraphie japonaise\, dessin manga\, cuisine\, Pokéball\, peinture sur figurines\, terrariums…)\, tatouages inspirés du Japon\, et gastronomie nippone (sushis\, ramen\, bubble tea).<br /></span></span></span></span></p><p class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2" style="box-sizing:border-box\; border-style:solid\; border-width:0px"><span class="highlight" style=""><span class="colour" style="color:rgb(214\, 213\, 212)"><span class="font" style="font-family:pplxSerif\, pplxSerif\, ui-serif\, Georgia\, Cambria\, &quot\;Hiragino Mincho ProN&quot\;\, &quot\;Yu Mincho&quot\;\, &quot\;Songti SC&quot\;\, SimSun\, &quot\;Songti TC&quot\;\, PMingLiU\, &quot\;Songti TC&quot\;\, MingLiU_HKSCS\, &quot\;Songti TC&quot\;\, PMingLiU\, AppleMyungjo\, Batang\, serif"><span class="size" style="font-size:16px\; box-sizing:border-box\; border-style:solid\; border-width:0px\; font-style:normal\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal">Entrée à<span>&nbsp\;</span><b>12€</b>\, avec<span>&nbsp\;</span><b>pass week-end au prix d'une journée en prévente</b><span>&nbsp\;</span>disponible jusqu'au 29 mai 2026\, et<span>&nbsp\;</span><b>entrée gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR</b>.<br /></span></span></span></span></p><div><br /></div>
 DTSTART:20260529T220100Z
 DTEND:20260531T215900Z
 LOCATION:Arena Stade Couvert de Liévin\, Chemin des Manufactures\, 62800 Liévin
@@ -1625,8 +1634,9 @@ STATUS:CONFIRMED
 UID:e0eb6c22972b4dd4b129350a76f7164a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260326T170904Z
-LAST-MODIFIED:20260326T170904Z
-DTSTAMP:20260326T170905Z
+LAST-MODIFIED:20260424T115737Z
+DTSTAMP:20260424T115738Z
+URL:https://japanotakufestival.com/event/lievin-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Mang'animes
@@ -1662,8 +1672,8 @@ URL:https://www.harcourt-normandie.fr/billetterie
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Asian Pop Culture Festival
-DESCRIPTION:1ère édition de cette convention à Paris Montreuil.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>1ère édition de cette convention à Paris Montreuil.</p></div>
+DESCRIPTION:L'Asian Pop Culture Festival\, tout premier festival pan-asiatique à Paris\, fait ses débuts pour une 1ère édition les 30 et 31 mai 2026 de 9h à 20h au Paris Montreuil Expo\, 128 Rue de Paris\, Montreuil (93).\n\nPendant deux jours\, partez en voyage à travers 14 pays asiatiques réunis en 8 zones culturelles thématiques : musique (K-pop\, anime)\, mode\, gastronomie\, arts\, technologie\, cosplay et bien plus encore. Un Passeport du Festival vous guidera à travers cette immersion unique dans la diversité et la richesse des cultures d'Asie au cœur de la capitale européenne.\n\nLa billetterie est disponible sur asianpopparis.com\, avec des tarifs early bird encore accessibles pour profiter de cette toute première édition incontournable !\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">L'<b>Asian Pop Culture Festival</b>\, tout premier festival pan-asiatique à Paris\, fait ses débuts pour une<span>&nbsp\;</span><b>1ère édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>30 et 31 mai 2026 de 9h à 20h</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Paris Montreuil Expo</b>\, 128 Rue de Paris\, Montreuil (93).<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Pendant deux jours\, partez en voyage à travers<span>&nbsp\;</span><b>14 pays asiatiques</b><span>&nbsp\;</span>réunis en<span>&nbsp\;</span><b>8 zones culturelles thématiques</b><span>&nbsp\;</span>: musique (K-pop\, anime)\, mode\, gastronomie\, arts\, technologie\, cosplay et bien plus encore. Un<span>&nbsp\;</span><b>Passeport du Festival</b><span>&nbsp\;</span>vous guidera à travers cette immersion unique dans la diversité et la richesse des cultures d'Asie au cœur de la capitale européenne.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La billetterie est disponible sur asianpopparis.com\, avec des<span>&nbsp\;</span><b>tarifs early bird</b><span>&nbsp\;</span>encore accessibles pour profiter de cette toute première édition incontournable !<br /></p><div><br /></div>
 DTSTART:20260529T220100Z
 DTEND:20260531T215900Z
 LOCATION:Paris Montreuil Expo\, 128 Rue de Paris\, 93100 Montreuil
@@ -1673,8 +1683,9 @@ STATUS:CONFIRMED
 UID:eac9363649e14fa3af2ad71eb4607db6@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260208T155525Z
-LAST-MODIFIED:20260208T155525Z
-DTSTAMP:20260208T155526Z
+LAST-MODIFIED:20260424T115922Z
+DTSTAMP:20260424T115923Z
+URL:https://www.asianpopparis.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Châlons-en-Champagne
