@@ -1,0 +1,805 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Bienvenue dans la Meute! </title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <style>
+    :root{
+      --bg-outer:#0d0d1a;
+      --bg-gradient-start: rgba(20,24,44,0.6);
+      --card-surface:#131427;
+      --card-surface-2:#16162a;
+      --text:#e6e6ff;
+      --muted:#a0a8cc;
+      --accent:#7aa2ff;
+      --accent-2:#5865F2;
+      --radius:20px;
+      --shadow:0 12px 40px rgba(2,6,23,0.6);
+      --glass-1:linear-gradient(135deg, rgba(122,162,255,0.06), rgba(88,101,242,0.03));
+      --border-color: rgba(255,255,255,0.03);
+      --icon-bg: linear-gradient(135deg,#1f2847,#23284a);
+      }
+      *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg-outer);
+      background-image: radial-gradient(1200px 800px at 10% 0%, var(--bg-gradient-start), transparent 60%), 
+                        radial-gradient(800px 600px at 90% 100%, rgba(88,101,242,0.15), transparent 50%);
+      background-attachment: fixed;
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      padding:24px 16px;
+      min-height: 100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .container{
+      width:720px;
+      max-width:100%;
+      border-radius:24px;
+      overflow:hidden;
+      background: linear-gradient(180deg, var(--card-surface), var(--card-surface-2));
+      box-shadow: var(--shadow);
+      border:1px solid var(--border-color);
+      animation: fadeIn 0.4s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .header{
+      text-align:center;
+      padding:34px 28px 18px;
+      background: linear-gradient(180deg, rgba(122,162,255,0.03), transparent);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .logo{
+      width:140px;
+      height:auto;
+      margin:0 auto 10px;
+      display:block;
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.35));
+      transition: filter 0.3s ease;
+    }
+    
+    h1{
+      margin:0;
+      font-size:20px;
+      font-weight:700;
+      line-height:1.2;
+      color: var(--text);
+    }
+    .subtle-sep{
+      height:1px;
+      background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+      margin:14px 24px;
+    }
+    .content{padding:22px 24px 28px}
+    
+    .card{
+      background: var(--glass-1);
+      border-radius:16px;
+      padding:16px;
+      border:1px solid var(--border-color);
+      margin-bottom:12px;
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(2,6,23,0.4);
+      border-color: rgba(122,162,255,0.2);
+    }
+    .card.no-hover:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      border-color: var(--border-color) !important;
+    }
+    .card.no-hover:hover .chev {
+      transform: none !important;
+      opacity: 0.7 !important;
+    }
+    .card.accepted.no-hover,
+    .card.accepted.no-hover:hover {
+      transform: none !important;
+      box-shadow: none !important;
+      border-color: var(--border-color) !important;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 12px;
+    }
+    .card.accepted.no-hover .body {
+      width: 100%;
+      text-align: center;
+    }
+    .card.accepted.no-hover .icon {
+      margin: 0 auto;
+      flex: none;
+    }
+    .card.accepted.no-hover .btn {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .card.accepted.no-hover .btn:hover {
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .card.accepted.no-hover * {
+      transition: none !important;
+    }
+    
+    .card .icon{
+      width:48px;
+      height:48px;
+      border-radius:12px;
+      background: var(--icon-bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 48px;
+      font-size: 20px;
+      box-shadow: inset 0 -4px 12px rgba(0,0,0,0.15);
+    }
+    .card .icon img{
+      width:28px;
+      height:28px;
+      display:block;
+      border-radius: 6px;
+    }
+    .card .body{flex:1;min-width:0}
+    .card .title{
+      font-size:15px;
+      font-weight:700;
+      margin-bottom:4px;
+      color:var(--text);
+      line-height: 1.3;
+    }
+    .card .desc{
+      font-size:13px;
+      color:var(--muted);
+      line-height: 1.4;
+    }
+    .chev{
+      width:32px;
+      flex:0 0 32px;
+      text-align:right;
+      color:var(--accent);
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      opacity: 0.7;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .card:hover .chev {
+      opacity: 1;
+      transform: translateX(2px);
+    }
+    .chev svg{
+      width:14px;
+      height:14px;
+      display:block;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .btn{
+      display:inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding:12px 20px;
+      border-radius:12px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      color:#fff !important;
+      text-decoration:none !important;
+      font-weight:700;
+      font-size: 14px;
+      margin-top:12px;
+      box-shadow: 0 8px 26px rgba(88,101,242,0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow: 0 12px 32px rgba(88,101,242,0.35);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    
+    .section-title{
+      margin:20px 0 10px;
+      font-size:13px;
+      color:var(--accent);
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+      font-weight:700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::before {
+      content: '';
+      width: 20px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      border-radius: 2px;
+    }
+    
+    .list{margin-top:4px; display: flex; flex-direction: column; gap: 8px;}
+    .item-body{flex:1; min-width:0}
+    .group-title{margin:6px 0 6px;font-weight:700;color:var(--text)}
+    .spacer-8{height:8px}
+    .mt-18{margin-top:18px}
+    
+    .list .item{
+      background: var(--card-surface);
+      border-radius:14px;
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      border:1px solid var(--border-color);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      text-decoration:none !important;
+      color:inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .list .item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, transparent, rgba(122,162,255,0.03), transparent);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+    .list .item:hover{
+      transform:translateY(-4px);
+      box-shadow: 0 16px 36px rgba(2,6,23,0.35);
+      border-color: rgba(122,162,255,0.15);
+    }
+    .list .item:hover::before {
+      opacity: 1;
+    }
+    
+
+    .list.members .item {
+      background: linear-gradient(135deg, rgba(255,140,0,0.12), rgba(255,180,75,0.06));
+      border-color: rgba(255,140,0,0.12);
+    }
+    .list.members .item:hover {
+      border-color: rgba(255,120,0,0.28);
+      box-shadow: 0 20px 48px rgba(255,140,0,0.12);
+    }
+
+    .list.networks .item {
+      background: linear-gradient(135deg, rgba(255,200,0,0.12), rgba(255,150,0,0.06));
+      border-color: rgba(255,200,0,0.12);
+    }
+    .list.networks .item:hover {
+      border-color: rgba(255,150,0,0.28);
+      box-shadow: 0 20px 48px rgba(255,200,0,0.12);
+    }
+
+    .list.staff .item {
+      background: linear-gradient(135deg, rgba(255,80,80,0.10), rgba(220,40,40,0.06));
+      border-color: rgba(255,80,80,0.12);
+    }
+    .list.staff .item:hover {
+      border-color: rgba(255,60,60,0.28);
+      box-shadow: 0 20px 48px rgba(255,80,80,0.12);
+    }
+
+    .list.staff .two-cols {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .list.staff .two-cols .item {
+      flex: 1 1 0;
+    }
+    @media (max-width:520px){
+      .list.staff .two-cols { flex-direction: column; }
+    }
+    
+    .list.staff .item.centered {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+    }
+    .list.staff .item.centered .item-body {
+      text-align: center;
+      flex: 0 0 auto;
+      width: auto;
+    }
+
+    .list.staff .responsables-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+      align-items: start;
+    }
+    .list.staff .responsables-grid .item.centered {
+      grid-column: 1 / -1;
+      justify-content: center;
+      text-align: center;
+    }
+    @media (max-width:520px){
+      .list.staff .responsables-grid { grid-template-columns: 1fr; }
+    }
+
+    .list.staff .mods-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .list.staff .mods-grid .item {
+      align-items: center;
+    }
+    @media (max-width:520px){
+      .list.staff .mods-grid { grid-template-columns: 1fr; }
+    }
+
+    .card.share {
+      background: linear-gradient(135deg, rgba(60,185,100,0.14), rgba(120,215,150,0.05));
+      border-color: rgba(60,185,100,0.12);
+      box-shadow: 0 20px 48px rgba(60,185,100,0.06);
+      margin-bottom: 12px;
+    }
+    .card.share .icon{ background: linear-gradient(135deg,#3bb874,#76d996); }
+
+    .card.accepted {
+      background: linear-gradient(135deg, rgba(122,162,255,0.16), rgba(180,210,255,0.06));
+      border-color: rgba(122,162,255,0.12);
+      box-shadow: 0 20px 48px rgba(122,162,255,0.08);
+    }
+    .card.accepted .icon{ background: linear-gradient(135deg,#7aa2ff,#b4d2ff); }
+    
+    .icon-circle{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background: var(--icon-bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      flex:0 0 42px;
+      box-shadow: inset 0 -3px 10px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .icon-circle img.avatar{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:inherit;
+      display:none;
+    }
+    .icon-circle img.avatar.loaded{ display:block; }
+    .icon-circle .initials{
+      position:relative;
+      z-index:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      height:100%;
+    }
+    .list .item:hover .icon-circle {
+      transform: scale(1.05);
+    }
+    
+    .footer{
+      padding:20px 24px 24px;
+      background: var(--card-surface-2);
+      text-align:center;
+      border-top:1px solid var(--border-color);
+      font-size:13px;
+      color:var(--muted);
+      line-height: 1.5;
+    }
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    
+    a:focus, .item:focus, .btn:focus {
+      outline: 3px solid rgba(122,162,255,0.3);
+      outline-offset: 2px;
+      border-radius: 12px;
+    }
+    
+    
+    
+    @media (max-width:680px){
+      body { padding: 16px 12px; }
+      .container{
+        width:100%;
+        margin:0;
+        border-radius: 20px;
+      }
+      .header{ padding:24px 20px 16px; }
+      .logo { width: 120px; }
+      h1 { font-size: 18px; }
+      .content{ padding:18px 18px 22px; }
+      .card{ padding:14px; gap: 12px; }
+      .card .icon, .icon-circle {
+        width:40px; height:40px; flex:0 0 40px;
+        font-size: 18px;
+      }
+      .card .title { font-size: 14px; }
+      .card .desc { font-size: 12px; }
+      .btn { padding: 10px 16px; font-size: 13px; width: 100%; justify-content: center; }
+      .chev { width: 28px; }
+      .footer { padding: 18px 20px 20px; font-size: 12px; }
+      
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  
+
+  <main class="container" role="main" aria-labelledby="mainTitle">
+    <header class="header">
+      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="140" height="58" loading="eager">
+      <h1 id="mainTitle">Bienvenue dans la Meute !</h1>
+    </header>
+
+    <div class="subtle-sep" role="separator" aria-hidden="true"></div>
+
+    <div class="content">
+      
+      <div class="card accepted no-hover">
+        <div class="body">
+          <div class="title">Ta demande a été acceptée</div>
+          <div class="desc">Suis les étapes ci-dessous pour rejoindre nos espaces et présente-toi une fois arrivé·e.</div>
+          <a class="btn" href="https://t.me/+ukmbtqMqWYU1ZWNk" target="_blank" rel="noopener noreferrer">
+            <span aria-hidden="true">✈</span>
+            Rejoindre le groupe principal
+          </a>
+        </div>
+      </div>
+
+      
+      <h2 class="section-title">Espaces membres</h2>
+      <div class="list members" role="list">
+        <a class="item" href="https://t.me/+NCghT6VbJw5jYTFk" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">✈</div>
+          <div class="item-body">
+            <div class="title">Canal Événements</div>
+            <div class="desc">Sorties, rassemblements et annonces</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+
+        <a class="item" href="https://t.me/+XIknrLZ3ZdgzMmVk" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">🛒</div>
+          <div class="item-body">
+            <div class="title">Dealers Den</div>
+            <div class="desc">Créations artistes & commissions</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+
+        <a class="item" href="https://t.me/+o0BQGEnKxudhZWM0" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">📷</div>
+          <div class="item-body">
+            <div class="title">Groupe Photos</div>
+            <div class="desc">Partage et archives de la meute</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+
+        <a class="item" href="https://discord.gg/9zF8nuq9X" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">🎧</div>
+          <div class="item-body">
+            <div class="title">Discord</div>
+            <div class="desc">Serveur vocal & textuel</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+      
+      <h2 class="section-title">À partager</h2>
+      <a class="card share" href="https://t.me/Annonces_Meute_Normande" target="_blank" rel="noopener noreferrer">
+        <div class="icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+            <path d="M22 3L2 12l6 2 2 6 12-17z" fill="#ffffff" />
+          </svg>
+        </div>
+        <div class="body">
+          <div class="title">Canal Événements public</div>
+          <div class="desc">Accessible sans être membre — partage ce lien !</div>
+        </div>
+        <div class="chev" aria-hidden="true">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+        </div>
+      </a>
+
+      
+      <h2 class="section-title">Site & réseaux</h2>
+      <div class="list networks" role="list">
+        <a class="item" href="https://lameutenormande.fr/events.html" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">📅</div>
+          <div class="item-body">
+            <div class="title">Calendrier</div>
+            <div class="desc">Tous les événements à venir</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+        <a class="item" href="https://lameutenormande.fr/actus.html" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">🎉</div>
+          <div class="item-body">
+            <div class="title">Conventions</div>
+            <div class="desc">Seine-Maritime & Eure</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+        <a class="item" href="https://lameutenormande.fr/artistes.html" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">🎭</div>
+          <div class="item-body">
+            <div class="title">Artistes</div>
+            <div class="desc">Membres créateurs</div>
+          </div>
+          <div class="chev" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+        <a class="item" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" role="listitem">
+          <div class="icon-circle" aria-hidden="true">📸</div>
+          <div class="item-body">
+            <div class="title">Instagram</div>
+            <div class="desc">@la.meute_normande</div>
+          </div>
+            <div class="chev" aria-hidden="true">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+            </div>
+          </a>
+        </div>
+
+        
+        <h2 class="section-title" id="staffTitle">L'équipe</h2>
+
+        <div class="list staff" aria-labelledby="staffTitle">
+          <div class="group-title" id="respTitle">Responsables du groupe</div>
+
+          <div class="responsables-grid" role="list" aria-labelledby="respTitle">
+            <a class="item centered" data-username="KITJUNE" href="https://t.me/KITJUNE" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Kitjune" src="" loading="eager" width="42" height="42" />
+                <span class="initials">K</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Kitjune</div>
+              </div>
+            </a>
+
+            <a class="item" data-username="Maxe_Lox" href="https://t.me/Maxe_Lox" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Maxe" src="" loading="eager" width="42" height="42" />
+                <span class="initials">M</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Maxe</div>
+              </div>
+            </a>
+
+            <a class="item" data-username="nitrafox" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Nitra" src="" loading="eager" width="42" height="42" />
+                <span class="initials">N</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Nitra</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="spacer-8"></div>
+          <div class="group-title" id="commTitle">Responsable communication</div>
+          <div class="comm-list" role="list" aria-labelledby="commTitle">
+            <a class="item" data-username="spyro_the_bat" href="https://t.me/spyro_the_bat" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Spyro" src="" loading="eager" width="42" height="42" />
+                <span class="initials">S</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Spyro</div>
+              </div>
+            </a>
+          </div>
+
+          <div class="spacer-8"></div>
+          <div class="group-title" id="modsTitle">Modérateurs</div>
+
+          <div class="mods-grid" role="list" aria-labelledby="modsTitle">
+            <a class="item" data-username="Dragos374" href="https://t.me/Dragos374" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Dragos" src="" loading="eager" width="42" height="42" />
+                <span class="initials">D</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Dragos</div>
+              </div>
+            </a>
+
+            <a class="item" data-username="TheFoxFurieFR" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Froxy" src="" loading="eager" width="42" height="42" />
+                <span class="initials">F</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Froxy</div>
+              </div>
+            </a>
+
+            <a class="item" data-username="AzOwO_Music" href="https://t.me/AzOwO_Music" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="AzOwO" src="" loading="eager" width="42" height="42" />
+                <span class="initials">A</span>
+              </div>
+              <div class="item-body">
+                <div class="title">AzOwO</div>
+              </div>
+            </a>
+
+            <a class="item" data-username="Yellowflash76" href="https://t.me/Yellowflash76" target="_blank" rel="noopener noreferrer" role="listitem">
+              <div class="icon-circle" aria-hidden="true">
+                <img class="avatar" alt="Yellow" src="" loading="eager" width="42" height="42" />
+                <span class="initials">Y</span>
+              </div>
+              <div class="item-body">
+                <div class="title">Yellow</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        
+        <div class="card no-hover mt-18">
+          <div class="icon" aria-hidden="true">💬</div>
+          <div class="body">
+            <div class="title">Présente-toi dans le groupe</div>
+            <div class="desc">N'hésite pas à te présenter dans le groupe ! Le staff est là pour t'accueillir et répondre à tes questions.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <footer class="footer">
+      </footer>
+    </main>
+
+  
+  <script>
+    (function generateLocalAvatars(){
+      const items = document.querySelectorAll('.list .item[data-username]');
+      if(!items.length) return;
+
+      function hashString(s){
+        let h = 2166136261 >>> 0;
+        for(let i=0;i<s.length;i++){
+          h ^= s.charCodeAt(i);
+          h = Math.imul(h, 16777619) >>> 0;
+        }
+        return h >>> 0;
+      }
+
+      const palette = [
+        '#7AA2FF','#5865F2','#FF8A65','#9CCC65','#FFB86B','#8E9AAF','#A8A29E','#F06292'
+      ];
+
+      function pickColor(seed){
+        return palette[seed % palette.length];
+      }
+
+      function textColor(bg){
+        const r = parseInt(bg.slice(1,3),16);
+        const g = parseInt(bg.slice(3,5),16);
+        const b = parseInt(bg.slice(5,7),16);
+        const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+        return lum > 150 ? '#1a1a2e' : '#ffffff';
+      }
+
+      function initialsFromNode(node, username){
+        if(node && node.textContent && node.textContent.trim()){
+          const t = node.textContent.trim().split(/\s+/);
+          if(t.length === 1) return t[0].slice(0,1).toUpperCase();
+          return (t[0][0] + (t[1] ? t[1][0] : '')).toUpperCase();
+        }
+        return username.slice(0,1).toUpperCase();
+      }
+
+      function svgDataUrl(username, label, size){
+        const seed = hashString(username.toLowerCase());
+        const bg = pickColor(seed);
+        const fg = textColor(bg);
+        const fontSize = Math.round(size * 0.48);
+        const rx = Math.round(size * 0.22);
+        const svg = `<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect rx="${rx}" width="${size}" height="${size}" fill="${bg}"/><text x="50%" y="50%" dy="${Math.round(fontSize*0.35)}" text-anchor="middle" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial" font-weight="700" font-size="${fontSize}" fill="${fg}">${label}</text></svg>`;
+        return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+      }
+
+      items.forEach(item => {
+        const username = (item.dataset.username || '').trim();
+        if(!username) return;
+        const icon = item.querySelector('.icon-circle');
+        if(!icon) return;
+        const img = icon.querySelector('img.avatar');
+        const initialsNode = icon.querySelector('.initials');
+        const label = initialsFromNode(initialsNode, username);
+        const size = Math.max(32, parseInt(img.getAttribute('width')||42, 10));
+        const dataUrl = svgDataUrl(username, label, size);
+        const provider = username.toLowerCase() === 'nitrafox' ? 'twitter' : 'telegram';
+        const unavatar = `https://unavatar.io/${provider}/${encodeURIComponent(username)}`;
+
+        img.loading = 'eager';
+        img.decoding = 'async';
+
+        img.onload = function(){
+          img.classList.add('loaded');
+          if(initialsNode) initialsNode.style.display = 'none';
+        };
+        img.onerror = function(){
+          img.onerror = function() { console.debug('Local avatar failed for', username); };
+          img.onload = function(){ img.classList.add('loaded'); if(initialsNode) initialsNode.style.display = 'none'; };
+          img.src = dataUrl;
+        };
+
+        img.src = unavatar;
+      });
+    })();
+  </script>
+</body>
+</html>
