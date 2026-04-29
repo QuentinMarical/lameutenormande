@@ -1344,6 +1344,23 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://www.facebook.com/FeteMedievaleSaintWandrilleRancon/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Journées Chibi - Chibi Rouen
+DESCRIPTION:La Chibi revient en petit format ! \nNous sommes très heureux de vous présenter les "journées Chibi"\, votre nouveau rendez-vous bimestriel dédié à la pop culture japonaise et geek !\n\n\nAu programme :\n- Rencontres \n- Cosplay \n- Exposants \n- Concert j-pop \n- Danse K-POP \n- Rétrogaming \n- Quiz\, blind tests et karaokés\n\n\nRendez-vous le samedi 30 mai 2026\, de 11h à 18h à L'Entrepôt Food Hall\, sur les quais de Rouen\n\n\nL'entrée est gratuite pour faire des rencontres\, et l'accès aux animations coûte 7€.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">La Chibi revient en petit format !  </p><p style="margin:0px\; box-sizing:border-box">Nous sommes très heureux de vous présenter les &quot\;journées Chibi&quot\;\, votre nouveau rendez-vous bimestriel dédié à la pop culture japonaise et geek !</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">Au programme :</p><p style="margin:0px\; box-sizing:border-box">- Rencontres </p><p style="margin:0px\; box-sizing:border-box">- Cosplay </p><p style="margin:0px\; box-sizing:border-box">- Exposants </p><p style="margin:0px\; box-sizing:border-box">- Concert j-pop </p><p style="margin:0px\; box-sizing:border-box">- Danse K-POP </p><p style="margin:0px\; box-sizing:border-box">- Rétrogaming </p><p style="margin:0px\; box-sizing:border-box">- Quiz\, blind tests et karaokés</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">Rendez-vous le samedi 30 mai 2026\, de 11h à 18h à L'Entrepôt Food Hall\, sur les quais de Rouen</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">L'entrée est gratuite pour faire des rencontres\, et l'accès aux animations coûte 7€.</p></div>
+DTSTART:20260529T220000Z
+DTEND:20260530T215500Z
+LOCATION:L'Entrepôt Food Hall\,5 Quai de Boisguilbert\, 76000 Rouen\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c582ed43cea64696b351efe211b5c128@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260429T163933Z
+LAST-MODIFIED:20260429T164005Z
+DTSTAMP:20260429T164007Z
+URL:https://chibirouen.fr
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:The Mang'Arras Festival
 DESCRIPTION:
 DTSTART:20260502T080000Z
