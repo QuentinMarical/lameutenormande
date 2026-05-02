@@ -1311,8 +1311,8 @@ BEGIN:VEVENT
 SUMMARY:🦊 Furfurieux
 DESCRIPTION:Les Furfurieux\, convention furry organisée par l'association Les Furfurieux\, fêtent leur 3ème édition du 7 au 10 mai 2026 à l'Hôtel Best Western Plus Metz Technopôle\, à Metz.\n\nCette édition est placée sous le signe des années 2000 💿 ! Au programme : panels\, fursuiting\, allée des artistes\, musique\, jeux en intérieur et en extérieur\, et une ambiance chaleureuse et déchaînée entre passionnés de la communauté furry. Un early check-in est disponible pour les participants souhaitant arriver plus tôt.\n\nDeux formules sont disponibles : un billet tout compris à 390€ (3 nuits d'hôtel\, petit-déjeuner\, badge et pack furieux)\, et un billet convention à 80€ pour profiter des activités à la journée sans hébergement.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Les<span>&nbsp\;</span><b>Furfurieux</b>\, convention furry organisée par l'association Les Furfurieux\, fêtent leur<span>&nbsp\;</span><b>3ème édition</b><span>&nbsp\;</span>du<span>&nbsp\;</span><b>7 au 10 mai 2026</b><span>&nbsp\;</span>à l'<b>Hôtel Best Western Plus Metz Technopôle</b>\, à Metz.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Cette édition est placée sous le signe des<span>&nbsp\;</span><b>années 2000</b><span>&nbsp\;</span>💿 ! Au programme : panels\, fursuiting\, allée des artistes\, musique\, jeux en intérieur et en extérieur\, et une ambiance chaleureuse et déchaînée entre passionnés de la communauté furry. Un early check-in est disponible pour les participants souhaitant arriver plus tôt.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Deux formules sont disponibles : un<span>&nbsp\;</span><b>billet tout compris à 390€</b><span>&nbsp\;</span>(3 nuits d'hôtel\, petit-déjeuner\, badge et pack furieux)\, et un<span>&nbsp\;</span><b>billet convention à 80€</b><span>&nbsp\;</span>pour profiter des activités à la journée sans hébergement.<br /></p><div><br /></div>
-DTSTART;VALUE=DATE:20260507
-DTEND;VALUE=DATE:20260511
+DTSTART:20260506T220000Z
+DTEND:20260510T215959Z
 LOCATION:Hotel Metz Technopole - Best Western Plus 1 Rue Félix Savart\, 57070 Metz\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -1320,8 +1320,8 @@ STATUS:CONFIRMED
 UID:bdfa546aae17499e9318d7cb2033a515@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T220815Z
-LAST-MODIFIED:20260424T113407Z
-DTSTAMP:20260424T113408Z
+LAST-MODIFIED:20260502T165920Z
+DTSTAMP:20260502T165920Z
 URL:https://furfurieux.com/
 END:VEVENT
 BEGIN:VEVENT
