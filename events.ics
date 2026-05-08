@@ -325,6 +325,21 @@ DTSTAMP:20260214T093459Z
 URL:https://furagora.com/anthropolis
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊La meet du dragon d'eau 🐉
+DESCRIPTION:
+DTSTART:20260613T090000Z
+DTEND:20260613T160000Z
+LOCATION:Lac de Léry-Poses\,27690 Val-de-Reuil\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:31eb6fd077084001bbfe8d34223af55f@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260508T150716Z
+LAST-MODIFIED:20260508T150716Z
+DTSTAMP:20260508T150717Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🎡Foire St-Romain
 DESCRIPTION:Sortie à la foire St-Romain\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">Sortie à la foire St-Romain<br /></p></div>
