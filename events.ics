@@ -1833,6 +1833,23 @@ DTSTAMP:20260104T042141Z
 URL:https://halloweenbernay.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Anthropolis 2
+DESCRIPTION:Anthropolis revient pour une 2ème édition.\n\nToujours au village vacances de Bussang\, environ 230 attendees ou plus vous accueillera du 18 au 21 mars 2027.\n\nConcernant les billets\, elles sont les suivantes :\n\n- Standard qui comprend l'accès à la convention pour les 4 jours\, l'hébergement 3 nuits\, le buffet à volonté le matin\, midi et soir\, l'accès à toutes les activités\, l'accès à la piscine et au toboggan\, les goodies et le conbook : 350€ par personne\n- Sponsor qui comprend en plus du standard\, le t-shirt ATP (Anthropolis) 2027\, l'autocollant sponsor et le fast-pass aux évènements qui inclut le Dealer's Den : 390€ par personne\n- Super Sponsor qui comprend en plus du standard et du sponsor\, l'autocollant super sponsor\, Enamel pins\, le fast-pass au restaurant chaque jour et des goodies mystère : 430€ par personne\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Anthropolis revient pour une 2ème édition.<br /></div><div>Toujours au village vacances de Bussang\, environ 230 attendees ou plus vous accueillera du 18 au 21 mars 2027.<br /></div><div>Concernant les billets\, elles sont les suivantes :<br /></div><div>- <b>Standard</b> qui comprend l'accès à la convention pour les 4 jours\, l'hébergement 3 nuits\, le buffet à volonté le matin\, midi et soir\, l'accès à toutes les activités\, l'accès à la piscine et au toboggan\, les goodies et le conbook : <u>350€</u> par personne<br />- <b>Sponsor</b> qui comprend en plus du standard\, le t-shirt ATP (Anthropolis) 2027\, l'autocollant sponsor et le fast-pass aux évènements qui inclut le Dealer's Den : <u>390€</u> par personne</div><div>- <b>Super Sponsor</b> qui comprend en plus du standard et du sponsor\, l'autocollant super sponsor\, Enamel pins\, le fast-pass au restaurant chaque jour et des goodies mystère : <u>430€</u> par personne<br /></div>
+DTSTART:20270317T230100Z
+DTEND:20270321T225900Z
+LOCATION:Village vacances Bussang - AZUREVA\, 2 Rue de Larcenaire\, 88540 Bussang
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f7efe78eb3e64860ab70c8eba0eb29cb@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260513T184347Z
+LAST-MODIFIED:20260513T184446Z
+DTSTAMP:20260513T184448Z
+URL:https://furagora.com/anthropolis
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 FCD 7 (Fur Calva Dance 7)
 DESCRIPTION:La Normandi'Furs organise la 7ème édition de la FCD au Village Vacances de Blainville-sur-Mer.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>La Normandi'Furs organise la 7ème édition de la FCD au Village Vacances de Blainville-sur-Mer.<br /></div>
