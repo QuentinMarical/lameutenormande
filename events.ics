@@ -493,7 +493,7 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
 DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br /></div>
+X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br/></div>
 DTSTART:20261107T080000Z
 DTEND:20261107T195900Z
 LOCATION:Gymnase Christian Gand Gymnaste Christian gand\, Rue Henri Matisse\, 76290 Montivilliers\, France
@@ -503,10 +503,11 @@ STATUS:CONFIRMED
 UID:43a9e7b0c0f5453ea5d01c8e3cbb462e@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T215221Z
-LAST-MODIFIED:20260202T171038Z
-DTSTAMP:20260202T171039Z
-ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
-ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260606T075202Z
+DTSTAMP:20260606T075204Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://amisc.fr/montigeek-2025/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 FurBar de Rouen
