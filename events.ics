@@ -1091,6 +1091,23 @@ DTSTAMP:20260424T120543Z
 URL:https://www.japantoursfestival.com/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Furbar de Rouen
+DESCRIPTION:Activités de l'après-midi :\n- Meet du Dragon d'Eau. Se rapprocher du groupe Telegram de la meet.\n- Jardin des plantes à partir de 14h30. Se rapprocher de Kerobero sur Telegram.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Activités de l'après-midi :</p><p>- Meet du Dragon d'Eau. Se rapprocher du groupe Telegram de la meet.</p><p>- Jardin des plantes à partir de 14h30. Se rapprocher de Kerobero sur Telegram.</p></div>
+DTSTART:20260613T170000Z
+DTEND:20260613T215900Z
+LOCATION:L'Antre du Malt - Craft Beer Pub\, 14 Place Martin Luther King\, 76000 Rouen\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:95273a31ec1748a38c9e53a24eec7fc4@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260606T181625Z
+LAST-MODIFIED:20260606T182153Z
+DTSTAMP:20260606T182154Z
+URL:https://t.me/furbarderouen
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Otaku Night
 DESCRIPTION:1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.<br /></div>
