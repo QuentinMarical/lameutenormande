@@ -40,6 +40,24 @@ DTSTAMP:20260301T001142Z
 URL:https://escaledudragon.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:PeriGeekAsia
+DESCRIPTION:
+DTSTART:20260627T080000Z
+DTEND:20260628T160000Z
+LOCATION:Parc des Expositions du Périgord\, Saltgourde\, ZAE de. 24430 Marsac-sur-l'Isle
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0582c10d309746f0bdd92385a46375ef@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260607T101746Z
+LAST-MODIFIED:20260607T101746Z
+DTSTAMP:20260607T101748Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.helloasso.com/associations/perigordgeek/evenements/perigeekasia-2026/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Chambéry
 DESCRIPTION:
 DTSTART:20260228T090000Z
@@ -594,6 +612,24 @@ LAST-MODIFIED:20260207T113549Z
 DTSTAMP:20260207T113551Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Juliobonales Festival Gallo-Romain
+DESCRIPTION:
+DTSTART:20260618T220000Z
+DTEND:20260621T215900Z
+LOCATION:76170 Lillebonne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:4c2b87a621f74e6ca74c677e0d4b9f5e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260607T094806Z
+LAST-MODIFIED:20260607T094948Z
+DTSTAMP:20260607T094950Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://lesjuliobonales.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Ze Next Convention 7
 DESCRIPTION:La Ze Next Convention\, festival pop culture geek de l'Essonne organisé par l'association Ze Prod Next Door\, fête sa 7ème édition les 16 et 17 mai 2026\, de 10h30 à 18h30\, à la Ferme du Bois Briard\, Évry-Courcouronnes (91). Cette édition inaugure un nouveau cycle thématique de 3 ans consacré à la japanimation\, sous le thème Pokéland ⚡ !\n\nAu programme : univers Pokémon grandeur nature\, cosplay\, gaming\, ateliers\, conférences\, et des invités exceptionnels comme Jean-Marc Kabeya (chanteur du générique Pokémon)\, les comédiens de doublage Aurélien Righeleim et Céline Monsarrat\, ainsi que les influenceurs Valouzz\, Doby et MissJirachi.\n\nLa billetterie est ouverte en prévente : 14€ la journée\, 24€ le pass 2 jours\, pack famille à 42€ (4 personnes)\, et gratuit pour les moins de 3 ans.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Ze Next Convention</b>\, festival pop culture geek de l'Essonne organisé par l'association Ze Prod Next Door\, fête sa<span>&nbsp\;</span><b>7ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>16 et 17 mai 2026\, de 10h30 à 18h30</b>\, à la<span>&nbsp\;</span><b>Ferme du Bois Briard\, Évry-Courcouronnes</b><span>&nbsp\;</span>(91). Cette édition inaugure un nouveau cycle thématique de 3 ans consacré à la<span>&nbsp\;</span><b>japanimation</b>\, sous le thème<span>&nbsp\;</span><b>Pokéland</b><span>&nbsp\;</span>⚡ !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : univers Pokémon grandeur nature\, cosplay\, gaming\, ateliers\, conférences\, et des invités exceptionnels comme<span>&nbsp\;</span><b>Jean-Marc Kabeya</b><span>&nbsp\;</span>(chanteur du générique Pokémon)\, les comédiens de doublage<span>&nbsp\;</span><b>Aurélien Righeleim</b><span>&nbsp\;</span>et<span>&nbsp\;</span><b>Céline Monsarrat</b>\, ainsi que les influenceurs<span>&nbsp\;</span><b>Valouzz</b>\,<span>&nbsp\;</span><b>Doby</b><span>&nbsp\;</span>et<span>&nbsp\;</span><b>MissJirachi</b>.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La billetterie est ouverte en prévente :<span>&nbsp\;</span><b>14€ la journée</b>\,<span>&nbsp\;</span><b>24€ le pass 2 jours</b>\,<span>&nbsp\;</span><b>pack famille à 42€</b><span>&nbsp\;</span>(4 personnes)\, et<span>&nbsp\;</span><b>gratuit pour les moins de 3 ans</b>.<br /></p><div><br /></div>
@@ -1103,8 +1139,10 @@ STATUS:CONFIRMED
 UID:95273a31ec1748a38c9e53a24eec7fc4@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260606T181625Z
-LAST-MODIFIED:20260606T182153Z
-DTSTAMP:20260606T182154Z
+LAST-MODIFIED:20260607T093913Z
+DTSTAMP:20260607T093914Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
@@ -1405,6 +1443,24 @@ CREATED:20251210T213611Z
 LAST-MODIFIED:20260123T172454Z
 DTSTAMP:20260123T172454Z
 URL:https://www.geek-days.com/rennes/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Manga Wave Amiens
+DESCRIPTION:
+DTSTART:20260912T080000Z
+DTEND:20260913T160000Z
+LOCATION:Zénith Amiens Métropole\, 99 bis Avenue de l'Hippodrome\, 80000 Amiens
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c43e8cf73be24c0a8ba076373f696e3b@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260607T101250Z
+LAST-MODIFIED:20260607T101250Z
+DTSTAMP:20260607T101251Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://japanmangawave.com/amiens/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Fête Médiévale de Saint-Wandrille-Rançon
@@ -1735,6 +1791,24 @@ CREATED:20260326T150013Z
 LAST-MODIFIED:20260326T150013Z
 DTSTAMP:20260326T150015Z
 URL:https://manganimes.fr/shop
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:1er festival Science-Fiction et Fantastique en Périgord
+DESCRIPTION:
+DTSTART:20260605T080000Z
+DTEND:20260607T160000Z
+LOCATION:Sîlot\, 68 bis Avenue du Maréchal de Lattre de Tassigny. 24660 Coulounieix-Chamiers
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:e80ee63629e8443a91161aae40ba6da2@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260607T095935Z
+LAST-MODIFIED:20260607T095935Z
+DTSTAMP:20260607T095937Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://sffp24.jimdofree.com/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Médiévales du château d’Harcourt
