@@ -84,8 +84,8 @@ STATUS:CONFIRMED
 UID:09a348a3f2c14d5ca90bea20f70c1e3c@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260220T170052Z
-LAST-MODIFIED:20260424T115049Z
-DTSTAMP:20260424T115050Z
+LAST-MODIFIED:20260518T094332Z
+DTSTAMP:20260518T094332Z
 URL:https://event.imagin-con.org/
 END:VEVENT
 BEGIN:VEVENT
@@ -222,6 +222,24 @@ CREATED:20260220T165532Z
 LAST-MODIFIED:20260220T165532Z
 DTSTAMP:20260220T165532Z
 URL:https://billetterie.spinatorii.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Japan Otaku Festival Evreux 2026
+DESCRIPTION:
+DTSTART:20261017T080000Z
+DTEND:20261018T160000Z
+LOCATION:Halle Des Expositions\,26 Avenue du Maréchal Foch\, 27000 Évreux\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1fe59d215bd14e019c1b642259f671b4@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260606T093529Z
+LAST-MODIFIED:20260606T093529Z
+DTSTAMP:20260606T093530Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.billetweb.fr/evreux-japan-otaku-festival?fbclid=IwdGRjcASQyShleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeH9ghU5azopHNwHoGqNZgmVcDtmuNak-4674lO9yfzags_uYTVbYWACZdOsg_aem_MEownf-P1Jh7X6Fuzjs_Ow
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival La Roche-sur-Yon
@@ -493,7 +511,7 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Monti'Geek Convention
 DESCRIPTION:La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br /></div>
+X-ALT-DESC;FMTTYPE=text/html:<div>La Monti'Geek Convention organise une nouvelle édition toujours au Gymnase Christian Gand à Montivilliers.<br/></div>
 DTSTART:20261107T080000Z
 DTEND:20261107T195900Z
 LOCATION:Gymnase Christian Gand Gymnaste Christian gand\, Rue Henri Matisse\, 76290 Montivilliers\, France
@@ -503,10 +521,11 @@ STATUS:CONFIRMED
 UID:43a9e7b0c0f5453ea5d01c8e3cbb462e@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20251210T215221Z
-LAST-MODIFIED:20260202T171038Z
-DTSTAMP:20260202T171039Z
-ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
-ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260606T075202Z
+DTSTAMP:20260606T075204Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://amisc.fr/montigeek-2025/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 FurBar de Rouen
@@ -1072,6 +1091,23 @@ DTSTAMP:20260424T120543Z
 URL:https://www.japantoursfestival.com/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Furbar de Rouen
+DESCRIPTION:Activités de l'après-midi :\n- Meet du Dragon d'Eau. Se rapprocher du groupe Telegram de la meet.\n- Jardin des plantes à partir de 14h30. Se rapprocher de Kerobero sur Telegram.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Activités de l'après-midi :</p><p>- Meet du Dragon d'Eau. Se rapprocher du groupe Telegram de la meet.</p><p>- Jardin des plantes à partir de 14h30. Se rapprocher de Kerobero sur Telegram.</p></div>
+DTSTART:20260613T170000Z
+DTEND:20260613T215900Z
+LOCATION:L'Antre du Malt - Craft Beer Pub\, 14 Place Martin Luther King\, 76000 Rouen\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:95273a31ec1748a38c9e53a24eec7fc4@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260606T181625Z
+LAST-MODIFIED:20260606T182153Z
+DTSTAMP:20260606T182154Z
+URL:https://t.me/furbarderouen
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Otaku Night
 DESCRIPTION:1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>1 semaine avant la Pop'Anim Festival qui se déroulera le 7 et 8 février 2026 à GODERVILLE à la salle culturelle La Ficelle\, l'événement (Pop'Anim Festival) nous propose Otaku Night qui aura lieu ce samedi 31 janvier de 20h à 2h du matin ce dimanche 1er février au Bubble Manga du HAVRE.<br /></div>
@@ -1269,8 +1305,8 @@ DTSTAMP:20260406T120623Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Lisieux
-DESCRIPTION:Le Lisieux Japan Otaku Festival\, organisé par Japan Otaku Festival\, se tiendra les 23 et 24 mai 2026 au Parc Expo de Lisieux (Rue Édouard Branly\, 14100 Hermival-les-Vaux)\, avec des horaires étendus : 10h à 18h30 le samedi et 10h à 18h le dimanche. Un événement normand à ne pas manquer\, à seulement 2h de Rouen !\n\nAu programme : concerts live\, spectacles sur scène\, concours et défilé cosplay\, espace gaming\, ateliers créatifs ouverts à tous (calligraphie japonaise\, dessin manga\, arts créatifs\, dessin numérique)\, karaoké\, cérémonie du thé japonaise\, et un espace marchand avec exposants\, artisans et restauration street food.\n\nTarif d'entrée à 10€\, avec entrée gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR.\n\n\n\n
-X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le<span>&nbsp\;</span><b>Lisieux Japan Otaku Festival</b>\, organisé par Japan Otaku Festival\, se tiendra les<span>&nbsp\;</span><b>23 et 24 mai 2026</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc Expo de Lisieux</b><span>&nbsp\;</span>(Rue Édouard Branly\, 14100 Hermival-les-Vaux)\, avec des horaires étendus :<span>&nbsp\;</span><b>10h à 18h30 le samedi</b><span>&nbsp\;</span>et<span>&nbsp\;</span><b>10h à 18h le dimanche</b>. Un événement normand à ne pas manquer\, à seulement 2h de Rouen !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : concerts live\, spectacles sur scène\, concours et défilé cosplay\, espace gaming\, ateliers créatifs ouverts à tous (calligraphie japonaise\, dessin manga\, arts créatifs\, dessin numérique)\, karaoké\, cérémonie du thé japonaise\, et un espace marchand avec exposants\, artisans et restauration street food.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Tarif d'entrée à<span>&nbsp\;</span><b>10€</b>\, avec entrée<span>&nbsp\;</span><b>gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR</b>.<br /></p><div><br /></div>
+DESCRIPTION:Le Lisieux Japan Otaku Festival\, organisé par Japan Otaku Festival\, se tiendra les 23 et 24 mai 2026 au Parc Expo de Lisieux (Rue Édouard Branly\, 14100 Hermival-les-Vaux)\, avec des horaires étendus : 10h à 18h30 le samedi et 10h à 18h le dimanche. Un événement normand à ne pas manquer\, à seulement 1h de Rouen !\n\nAu programme : concerts live\, spectacles sur scène\, concours et défilé cosplay\, espace gaming\, ateliers créatifs ouverts à tous (calligraphie japonaise\, dessin manga\, arts créatifs\, dessin numérique)\, karaoké\, cérémonie du thé japonaise\, et un espace marchand avec exposants\, artisans et restauration street food.\n\nTarif d'entrée à 10€\, avec entrée gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR.\n\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">Le&nbsp\;<strong>Lisieux Japan Otaku Festival</strong>\, organisé par Japan Otaku Festival\, se tiendra les&nbsp\;<strong>23 et 24 mai 2026</strong>&nbsp\;au&nbsp\;<strong>Parc Expo de Lisieux</strong>&nbsp\;(Rue Édouard Branly\, 14100 Hermival-les-Vaux)\, avec des horaires étendus :&nbsp\;<strong>10h à 18h30 le samedi</strong>&nbsp\;et&nbsp\;<strong>10h à 18h le dimanche</strong>. Un événement normand à ne pas manquer\, à seulement 1h de Rouen !<br /></p><p style="margin:0px\; box-sizing:border-box">Au programme : concerts live\, spectacles sur scène\, concours et défilé cosplay\, espace gaming\, ateliers créatifs ouverts à tous (calligraphie japonaise\, dessin manga\, arts créatifs\, dessin numérique)\, karaoké\, cérémonie du thé japonaise\, et un espace marchand avec exposants\, artisans et restauration street food.<br /></p><p style="margin:0px\; box-sizing:border-box">Tarif d'entrée à&nbsp\;<strong>10€</strong>\, avec entrée&nbsp\;<strong>gratuite pour les moins de 6 ans\, les plus de 65 ans et les PMR</strong>.<br /></p><p style="margin:0px\; box-sizing:border-box"><br /></p></div>
 DTSTART:20260522T220100Z
 DTEND:20260524T215900Z
 LOCATION:Parc des Expositions de Lisieux\, 1055 Rue Édouard Branly\, 14100 Lisieux
@@ -1280,10 +1316,8 @@ STATUS:CONFIRMED
 UID:b41ce120f65c4fa4ad7f7b2cdf8ce226@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260325T084738Z
-LAST-MODIFIED:20260424T115518Z
-DTSTAMP:20260424T115520Z
-ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
-ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260518T094316Z
+DTSTAMP:20260518T094318Z
 URL:https://japanotakufestival.com/event/lisieux/
 END:VEVENT
 BEGIN:VEVENT
@@ -1390,23 +1424,6 @@ DTSTAMP:20260424T113113Z
 ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://www.facebook.com/FeteMedievaleSaintWandrilleRancon/
-END:VEVENT
-BEGIN:VEVENT
-SUMMARY:Journées Chibi - Chibi Rouen
-DESCRIPTION:La Chibi revient en petit format ! \nNous sommes très heureux de vous présenter les "journées Chibi"\, votre nouveau rendez-vous bimestriel dédié à la pop culture japonaise et geek !\n\n\nAu programme :\n- Rencontres \n- Cosplay \n- Exposants \n- Concert j-pop \n- Danse K-POP \n- Rétrogaming \n- Quiz\, blind tests et karaokés\n\n\nRendez-vous le samedi 30 mai 2026\, de 11h à 18h à L'Entrepôt Food Hall\, sur les quais de Rouen\n\n\nL'entrée est gratuite pour faire des rencontres\, et l'accès aux animations coûte 7€.\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2"><p style="margin:0px\; box-sizing:border-box">La Chibi revient en petit format !  </p><p style="margin:0px\; box-sizing:border-box">Nous sommes très heureux de vous présenter les &quot\;journées Chibi&quot\;\, votre nouveau rendez-vous bimestriel dédié à la pop culture japonaise et geek !</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">Au programme :</p><p style="margin:0px\; box-sizing:border-box">- Rencontres </p><p style="margin:0px\; box-sizing:border-box">- Cosplay </p><p style="margin:0px\; box-sizing:border-box">- Exposants </p><p style="margin:0px\; box-sizing:border-box">- Concert j-pop </p><p style="margin:0px\; box-sizing:border-box">- Danse K-POP </p><p style="margin:0px\; box-sizing:border-box">- Rétrogaming </p><p style="margin:0px\; box-sizing:border-box">- Quiz\, blind tests et karaokés</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">Rendez-vous le samedi 30 mai 2026\, de 11h à 18h à L'Entrepôt Food Hall\, sur les quais de Rouen</p><p style="margin:0px\; box-sizing:border-box"><br class="rte-ignore-br" /></p><p style="margin:0px\; box-sizing:border-box">L'entrée est gratuite pour faire des rencontres\, et l'accès aux animations coûte 7€.</p></div>
-DTSTART:20260529T220000Z
-DTEND:20260530T215500Z
-LOCATION:L'Entrepôt Food Hall\,5 Quai de Boisguilbert\, 76000 Rouen\, France
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:c582ed43cea64696b351efe211b5c128@zoho.eu
-TRANSP:OPAQUE
-CREATED:20260429T163933Z
-LAST-MODIFIED:20260429T164005Z
-DTSTAMP:20260429T164007Z
-URL:https://chibirouen.fr
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:The Mang'Arras Festival
