@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=l4a4nL"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=l4a4nL" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=it8hHi"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=it8hHi" type="text/css">
 
   
   
@@ -629,6 +629,9 @@
             <div class="calendar-wrapper" id="calendar-wrapper" style="display:none;">
                 <div class="fullcalendar-container"></div>
             </div>
+            <div class="calendar-easter-view" id="calendar-easter-view" style="display:none;">
+                <div class="calendar-easter-grid" id="calendar-easter-grid"></div>
+            </div>
         </div>
     </div>
 
@@ -687,6 +690,8 @@
             let currentView = (!allowCalendarView && allowListView) ? 'listMonth' : 'dayGridMonth';
             let loadedEvents = [];
             let allLoadedEvents = [];
+            let easterViewActive = false;
+            let easterShowPastOnly = false;
             const isMobile = () => window.innerWidth <= 768;
             const isPortrait = () => window.matchMedia('(orientation: portrait)').matches;
 
@@ -1028,6 +1033,11 @@
                 const wrapper = document.getElementById('calendar-wrapper');
                 if (wrapper) wrapper.classList.add('calendar-filtering');
                 setTimeout(() => {
+                    if (easterViewActive) {
+                        renderEasterView();
+                        if (wrapper) wrapper.classList.remove('calendar-filtering');
+                        return;
+                    }
                     // Completely destroy and recreate calendar with fresh events to eliminate duplicates
                     if (calendar) {
                         calendar.destroy();
@@ -1275,6 +1285,182 @@
                 if (monthEl && date) {
                     monthEl.textContent = monthNames[date.getMonth()] + ' ' + date.getFullYear();
                 }
+            }
+
+            function formatEasterCountdown(startDate, endDate) {
+                if (!startDate) return 'Date inconnue';
+                const now = new Date();
+                const startMs = startDate.getTime();
+                const endMs = endDate ? endDate.getTime() : startMs;
+
+                if (startMs > now.getTime()) {
+                    const diffMs = startMs - now.getTime();
+                    const diffDays = Math.ceil(diffMs / 86400000);
+                    if (diffDays <= 1) {
+                        const diffHours = Math.max(1, Math.ceil(diffMs / 3600000));
+                        return 'Dans ' + diffHours + ' h';
+                    }
+                    return 'Dans ' + diffDays + ' jours';
+                }
+
+                if (endMs >= now.getTime()) {
+                    return 'En cours';
+                }
+
+                const sinceDays = Math.max(1, Math.ceil((now.getTime() - endMs) / 86400000));
+                return 'Terminé il y a ' + sinceDays + ' jours';
+            }
+
+            function renderEasterView() {
+                const easterGrid = document.getElementById('calendar-easter-grid');
+                if (!easterGrid) return;
+
+                const now = new Date();
+                const events = deduplicateEvents(getFilteredEvents())
+                    .slice()
+                    .sort((a, b) => {
+                        const aStart = a && a.start ? new Date(a.start).getTime() : Number.MAX_SAFE_INTEGER;
+                        const bStart = b && b.start ? new Date(b.start).getTime() : Number.MAX_SAFE_INTEGER;
+                        return aStart - bStart;
+                    });
+
+                const futureEvents = events.filter((ev) => {
+                    const startDate = ev.start ? new Date(ev.start) : (ev.extendedProps && ev.extendedProps.startDate ? new Date(ev.extendedProps.startDate) : null);
+                    const endDate = ev.end ? new Date(ev.end) : (ev.extendedProps && ev.extendedProps.endDate ? new Date(ev.extendedProps.endDate) : null);
+                    if (!startDate) return false;
+                    const endRef = endDate || startDate;
+                    const isNowEvent = startDate.getTime() <= now.getTime() && endRef.getTime() >= now.getTime();
+                    const isFutureEvent = startDate.getTime() > now.getTime();
+                    return isNowEvent || isFutureEvent;
+                });
+
+                const pastEvents = events
+                    .filter((ev) => {
+                        const endDate = ev.end ? new Date(ev.end) : (ev.extendedProps && ev.extendedProps.endDate ? new Date(ev.extendedProps.endDate) : null);
+                        return endDate && endDate.getTime() < now.getTime();
+                    })
+                    .sort((a, b) => {
+                        const aEnd = a && a.end ? new Date(a.end).getTime() : 0;
+                        const bEnd = b && b.end ? new Date(b.end).getTime() : 0;
+                        return bEnd - aEnd;
+                    });
+
+                const visibleEvents = easterShowPastOnly ? pastEvents : futureEvents;
+
+                let html = `
+                    <article class="easter-event-card easter-control-card" tabindex="0" role="button" data-control="toggle-ended" aria-label="${easterShowPastOnly ? 'Afficher les événements à venir' : 'Afficher les événements terminés'}">
+                        <div class="easter-event-date">
+                            <span class="easter-event-day">${easterShowPastOnly ? '↺' : '✓'}</span>
+                            <span class="easter-event-month">${easterShowPastOnly ? 'RETOUR' : 'FILTRE'}</span>
+                        </div>
+                        <div class="easter-event-content">
+                            <h3 class="easter-event-title">${easterShowPastOnly ? 'Afficher les événements à venir' : 'Afficher uniquement les événements terminés'}</h3>
+                            <p class="easter-event-location">${easterShowPastOnly ? 'Retour à la liste des prochains événements' : 'Filtrer la grille sur les événements déjà terminés'}</p>
+                            <p class="easter-event-countdown">${easterShowPastOnly ? pastEvents.length + ' événement(s) terminé(s)' : futureEvents.length + ' événement(s) à venir/en cours'}</p>
+                        </div>
+                    </article>`;
+
+                if (!visibleEvents.length) {
+                    html += '<p class="easter-empty">Aucun événement dans cette vue.</p>';
+                    easterGrid.innerHTML = html;
+                } else {
+                    html += visibleEvents.map(ev => {
+                    const startDate = ev.start ? new Date(ev.start) : (ev.extendedProps && ev.extendedProps.startDate ? new Date(ev.extendedProps.startDate) : null);
+                    const endDate = ev.end ? new Date(ev.end) : (ev.extendedProps && ev.extendedProps.endDate ? new Date(ev.extendedProps.endDate) : null);
+                    const foxEmojiRegex = /\u{1F98A}/u;
+                    const titleRaw = ev.title || (ev.extendedProps && ev.extendedProps.summary) || '';
+                    const isFurry = foxEmojiRegex.test(String(titleRaw));
+                    const isPastEvent = endDate && endDate.getTime() < now.getTime();
+                    const isNowEvent = startDate && endDate && startDate.getTime() <= now.getTime() && endDate.getTime() >= now.getTime();
+                    const stateClass = isPastEvent ? 'is-past' : (isNowEvent ? 'is-now' : (isFurry ? 'is-future is-furry' : 'is-future'));
+                    const countdown = formatEasterCountdown(startDate, endDate);
+                    const isPast = countdown.indexOf('Terminé') === 0;
+                    const day = startDate ? startDate.getDate() : '?';
+                    const month = startDate ? startDate.toLocaleDateString('fr-FR', { month: 'short' }).replace('.', '').toUpperCase() : '---';
+                    const title = escapeHtml(titleRaw || 'Événement');
+                    const location = escapeHtml((ev.extendedProps && ev.extendedProps.location) || 'Lieu non renseigné');
+
+                    return `
+                        <article class="easter-event-card ${stateClass}" tabindex="0" role="button" data-event-id="${escapeHtml(ev.id || '')}" aria-label="Ouvrir ${title}">
+                            <div class="easter-event-date">
+                                <span class="easter-event-day">${day}</span>
+                                <span class="easter-event-month">${month}</span>
+                            </div>
+                            <div class="easter-event-content">
+                                <h3 class="easter-event-title">${title}</h3>
+                                <p class="easter-event-location">📍 ${location}</p>
+                                <p class="easter-event-countdown ${isPast ? 'is-past' : ''}">${countdown}</p>
+                            </div>
+                        </article>`;
+                    }).join('');
+                    easterGrid.innerHTML = html;
+                }
+
+                const controlCard = easterGrid.querySelector('[data-control="toggle-ended"]');
+                if (controlCard) {
+                    const toggleControl = () => {
+                        easterShowPastOnly = !easterShowPastOnly;
+                        renderEasterView();
+                    };
+                    controlCard.addEventListener('click', toggleControl);
+                    controlCard.addEventListener('keydown', (ev) => {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            ev.preventDefault();
+                            toggleControl();
+                        }
+                    });
+                }
+
+                const cardNodes = easterGrid.querySelectorAll('.easter-event-card');
+                cardNodes.forEach((node) => {
+                    if (node.getAttribute('data-control')) return;
+                    const id = node.getAttribute('data-event-id');
+                    const eventData = visibleEvents.find(ev => String(ev.id || '') === String(id || ''));
+                    if (!eventData) return;
+                    const open = () => openEventModal(eventData, eventData.extendedProps || {});
+                    node.addEventListener('click', open);
+                    node.addEventListener('keydown', (ev) => {
+                        if (ev.key === 'Enter' || ev.key === ' ') {
+                            ev.preventDefault();
+                            open();
+                        }
+                    });
+                });
+            }
+
+            function setEasterButtonState(isActive) {
+                return isActive;
+            }
+
+            function toggleEasterView() {
+                const wrapper = document.getElementById('calendar-wrapper');
+                const easterView = document.getElementById('calendar-easter-view');
+                const calendarZone = document.querySelector('.calendar-zone');
+
+                if (!wrapper || !easterView) return;
+
+                if (!easterViewActive) {
+                    if (calendar) {
+                        currentDate = calendar.getDate();
+                        calendar.destroy();
+                        calendar = null;
+                    }
+                    easterViewActive = true;
+                    easterShowPastOnly = false;
+                    wrapper.style.display = 'none';
+                    easterView.style.display = 'block';
+                    if (calendarZone) calendarZone.classList.add('list-view-active');
+                    setEasterButtonState(true);
+                    renderEasterView();
+                    return;
+                }
+
+                easterViewActive = false;
+                easterView.style.display = 'none';
+                wrapper.style.display = '';
+                if (calendarZone && currentView === 'dayGridMonth') calendarZone.classList.remove('list-view-active');
+                setEasterButtonState(false);
+                initCalendar(currentView);
             }
 
             function consolidateMultiDayEvents(events) {
@@ -1628,6 +1814,9 @@
             }
 
             function toggleView() {
+                if (easterViewActive) {
+                    toggleEasterView();
+                }
                 const btnToggleView = document.getElementById('btn-toggle-view');
                 const calendarZone = document.querySelector('.calendar-zone');
 
@@ -1739,6 +1928,7 @@
                 const modalOverlay = document.querySelector('.event-modal-overlay');
                 const modalClose = document.querySelector('.event-modal-close');
                 const btnToggleView = document.getElementById('btn-toggle-view');
+                const monthLabel = document.querySelector('.calendar-month');
 
                 if (!calendarEl) return;
                 if (typeof FullCalendar === 'undefined' || !FullCalendar.Calendar) {
@@ -1757,6 +1947,14 @@
                 });
 
                 if (btnToggleView) btnToggleView.onclick = toggleView;
+                if (monthLabel) {
+                    monthLabel.title = 'Double-cliquez pour changer de vue';
+                    monthLabel.style.cursor = 'pointer';
+                    monthLabel.ondblclick = function (e) {
+                        e.preventDefault();
+                        toggleEasterView();
+                    };
+                }
 
                 // Filter event listeners
                 const filterType = document.getElementById('filter-type');
