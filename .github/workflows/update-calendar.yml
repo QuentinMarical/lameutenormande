@@ -2,33 +2,39 @@ name: Update Calendar Data
 
 on:
   schedule:
-    # Le robot se lance toutes les heures (tu peux ajuster)
+    # Run every hour
     - cron: '0 * * * *'
-  workflow_dispatch: # Permet de lancer le robot manuellement si besoin
+  workflow_dispatch: # Allow manual runs
 
 jobs:
   download-and-commit:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Donne le droit au robot d'écrire dans ton dossier
+      contents: write # Required to push changes
     
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download Calendar from Zoho
-        run: curl -L "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c" -o events.ics
+        run: |
+          set -euo pipefail
+          curl --fail --show-error --silent --location \
+            --retry 3 --retry-delay 5 \
+            "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c" \
+            --output events.ics
 
       - name: Commit and Push changes
         run: |
+          set -euo pipefail
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
           
-          # On vérifie s'il y a des changements avant de commit
-          if [[ -n $(git status -s events.ics) ]]; then
+          # Commit only if the target file changed
+          if ! git diff --quiet -- events.ics; then
             git add events.ics
-            git commit -m "?? Mise à jour auto du calendrier"
+            git commit -m "chore: auto-update calendar"
             git push
           else
-            echo "Pas de changement dans le calendrier."
+            echo "No calendar changes detected."
           fi
