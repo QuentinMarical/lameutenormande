@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=AEiAw7"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=AEiAw7" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=l4a4nL"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=l4a4nL" type="text/css">
 
   
   
@@ -111,25 +111,24 @@
             height: 100vh !important;
             align-items: center;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.65);
-            -webkit-backdrop-filter: blur(6px);
-            backdrop-filter: blur(6px);
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.26);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
             isolation: isolate !important;
         }
 
-            .event-modal[role="dialog"] {
-                animation: slideIn 0.3s ease-out;
-            }
+        .event-modal[role="dialog"] {
+            animation: fadeInModal 0.24s ease-out;
+        }
 
-        @keyframes slideIn {
+        @keyframes fadeInModal {
             from {
                 opacity: 0;
-                transform: translateY(100%);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
@@ -139,92 +138,195 @@
 
         .event-modal-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            inset: 0;
+            background: linear-gradient(120deg, rgba(7, 16, 27, 0.2), rgba(5, 13, 23, 0.38));
             z-index: -1;
             cursor: pointer;
         }
 
         .event-modal-content {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            max-height: 100vh;
-            border-radius: 0 !important;
+            width: min(980px, 100%);
+            max-height: min(88vh, 920px);
+            border-radius: 20px !important;
             margin: 0;
-            box-shadow: none;
-            padding: 0;
-            background: linear-gradient(135deg, rgba(30, 30, 46, 0.98) 0%, rgba(45, 45, 61, 0.98) 100%);
-            overflow-y: auto;
-            overflow-x: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 30px 80px rgba(2, 8, 14, 0.66);
+            background: linear-gradient(145deg, rgba(11, 30, 44, 0.96) 0%, rgba(23, 48, 66, 0.96) 55%, rgba(29, 39, 52, 0.96) 100%);
+            overflow: hidden;
             -webkit-overflow-scrolling: touch;
             display: flex;
             flex-direction: column;
-            animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            animation: modalRaise 0.3s cubic-bezier(0.2, 0.7, 0.25, 1);
         }
 
-        @keyframes slideUp {
+        @keyframes modalRaise {
             from {
-                transform: translateY(100%);
+                opacity: 0;
+                transform: translateY(18px) scale(0.985);
             }
 
             to {
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateY(0);
-            }
-
-            to {
-                transform: translateY(100%);
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
         .event-modal.closing .event-modal-content {
-            animation: slideDown 0.3s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+            animation: modalLeave 0.22s ease-in forwards;
+        }
+
+        @keyframes modalLeave {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(12px) scale(0.985);
+            }
+        }
+
+        .event-modal-header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            background: linear-gradient(120deg, rgba(255, 138, 61, 0.22), rgba(0, 160, 200, 0.18));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .event-modal-title {
             margin: 0;
-            padding: 2rem;
-            font-size: 1.8rem;
+            font-size: clamp(1.05rem, 3.3vw, 1.55rem);
             font-weight: 700;
-            color: #fff;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+            color: #f5fbff;
+            letter-spacing: 0.2px;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        .event-modal-header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .event-header-action {
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            border-radius: 999px;
+            padding: 0.45rem 0.72rem;
+            font-size: 0.74rem;
+            line-height: 1;
+            font-weight: 700;
+            color: #f5fbff;
+            background: rgba(255, 255, 255, 0.12);
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .event-header-action:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.42);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .event-header-action-download {
+            color: #072537;
+            border-color: rgba(255, 195, 104, 0.75);
+            background: linear-gradient(140deg, #ffc368, #ff9f47);
+        }
+
+        .event-modal-close {
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            color: #f1f8fd;
+            font-size: 1.25rem;
+            width: 2.1rem;
+            height: 2.1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            padding: 0;
+            background: rgba(6, 22, 34, 0.4);
+        }
+
+        .event-modal-close:hover {
+            background: rgba(255, 255, 255, 0.16);
+            transform: rotate(90deg);
+        }
+
+        .event-modal-content > .event-modal-close:first-child {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.85rem;
+            z-index: 3;
         }
 
         .event-modal-body {
-            padding: 2rem;
+            padding: 1rem 1.1rem 1.15rem;
             color: #fff;
+            overflow-y: auto;
         }
 
         .event-modal-body-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.25rem;
+            gap: 0.9rem;
         }
 
-        .event-modal-left, .event-modal-right {
+        .event-modal-left,
+        .event-modal-right {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         @media (min-width: 900px) {
             .event-modal-body-grid {
                 grid-template-columns: 1fr 1fr;
             }
+        }
+
+        @media (max-width: 760px) {
+            .event-modal {
+                padding: 0.5rem;
+            }
 
             .event-modal-content {
-                padding: 1rem 1.25rem 2rem 1.25rem;
+                max-height: 96vh;
+                border-radius: 16px !important;
+            }
+
+            .event-modal-header {
+                grid-template-columns: 1fr;
+                align-items: flex-start;
+                gap: 0.65rem;
+                padding-right: 3.25rem;
+            }
+
+            .event-modal-header-actions {
+                justify-content: flex-start;
+                width: 100%;
+            }
+
+            .event-modal-header-actions .event-modal-close {
+                position: absolute;
+                top: 0.9rem;
+                right: 0.9rem;
             }
         }
 
@@ -236,9 +338,10 @@
             display: flex;
             align-items: flex-start;
             gap: 1rem;
-            margin-bottom: 1.5rem;
             padding: 1rem;
+            margin-bottom: 0;
             background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 0.75rem;
         }
 
@@ -261,13 +364,36 @@
         }
 
         .event-info-text {
-            font-size: 1.1rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            line-height: 1.45;
             font-weight: 500;
             word-break: break-word;
             overflow-wrap: anywhere;
             white-space: pre-line;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0;
+        }
+
+        .event-date-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.55rem 0.95rem;
+            align-items: baseline;
+        }
+
+        .event-date-item {
+            min-width: 190px;
+        }
+
+        .event-date-label {
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.88);
+            margin-right: 0.3rem;
+        }
+
+        @media (max-width: 760px) {
+            .event-date-item {
+                min-width: 100%;
+            }
         }
 
             .event-info-text a {
@@ -335,46 +461,71 @@
 
         .event-url-button {
             display: inline-block;
-            padding: 0.75rem 1.5rem;
+            padding: 0.7rem 1rem;
             background: rgba(76, 175, 80, 0.9);
             color: #fff;
             text-decoration: none;
             border-radius: 0.5rem;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
             transition: all 0.3s;
-            margin-top: 0.5rem;
+            margin-top: 0.35rem;
+        }
+
+        .event-url-button-inline {
+            margin-top: 0.75rem;
+        }
+
+        .event-description-actions {
+            margin-top: 0.75rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .event-description {
+            position: relative;
+            transition: max-height 0.25s ease;
+        }
+
+        .event-description.event-description-collapsed {
+            max-height: 7.4em;
+            overflow: hidden;
+        }
+
+        .event-description.event-description-collapsed::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2.2em;
+            background: linear-gradient(to bottom, rgba(12, 21, 31, 0), rgba(12, 21, 31, 0.95));
+            pointer-events: none;
+        }
+
+        .event-description-toggle {
+            margin-top: 0.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #f4fbff;
+            font-size: 0.78rem;
+            font-weight: 700;
+            padding: 0.4rem 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .event-description-toggle:hover {
+            transform: translateY(-1px);
+            border-color: rgba(255, 255, 255, 0.45);
         }
 
             .event-url-button:hover {
                 background: #4CAF50;
                 box-shadow: 0 4px 12px rgba(76, 175, 80, 0.5);
                 transform: translateY(-2px);
-            }
-
-        .event-modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 2rem;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-            padding: 0;
-            z-index: 1;
-        }
-
-            .event-modal-close:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: rotate(90deg) scale(1.1);
             }
 
         body.scroll-locked {
@@ -384,8 +535,9 @@
             height: 100% !important;
         }
 
-        body.modal-open > *:not(.event-modal) {
-            visibility: hidden !important;
+        body.modal-open,
+        html.modal-open {
+            overflow: hidden !important;
         }
 
         body.modal-open .event-modal {
@@ -452,7 +604,7 @@
                             <span class="calendar-save-text">Conserver le filtrage</span>
                         </label>
                     </div>
-                    <div class="calendar-filter-group">
+                    <div class="calendar-filter-group calendar-filter-group-type">
                         <label class="calendar-filter-label">Type</label>
                         <select class="calendar-filter-select" id="filter-type">
                             <option value="all" selected="">Tous</option>
@@ -495,8 +647,13 @@
     <div class="event-modal">
         <div class="event-modal-overlay"></div>
         <div class="event-modal-content">
-            <button class="event-modal-close">×</button>
-            <h3 class="event-modal-title"></h3>
+            <div class="event-modal-header">
+                <h3 class="event-modal-title"></h3>
+                <div class="event-modal-header-actions">
+                    <button class="event-header-action event-header-action-download" data-modal-action="download-ics" type="button">Télécharger pour mon calendrier (.ics)</button>
+                    <button class="event-modal-close" type="button" aria-label="Fermer">×</button>
+                </div>
+            </div>
             <div class="event-modal-body"></div>
         </div>
     </div>
@@ -895,6 +1052,9 @@
                         modal.setAttribute('aria-hidden', 'true');
                         modal.removeAttribute('role');
                         document.body.classList.remove('modal-open');
+                        document.documentElement.classList.remove('modal-open');
+                        const calendarZone = document.querySelector('.calendar-zone');
+                        toggleScrollLock(!!(calendarZone && calendarZone.scrollTop > 0));
                     }, 300);
                 }
             }
@@ -919,141 +1079,128 @@
                 return '';
             }
 
-                        function openEventModal(event, props) {
-                                const modal = document.querySelector('.event-modal');
-                                const modalTitle = document.querySelector('.event-modal-title');
-                                const modalBody = document.querySelector('.event-modal-body');
+            function openEventModal(event, props) {
+                const modal = document.querySelector('.event-modal');
+                const modalTitle = document.querySelector('.event-modal-title');
+                const modalBody = document.querySelector('.event-modal-body');
+                const downloadBtn = modal ? modal.querySelector('[data-modal-action="download-ics"]') : null;
 
-                                if (!modal || !modalTitle || !modalBody) return;
+                if (!modal || !modalTitle || !modalBody) return;
 
-                                document.body.classList.add('modal-open');
-                                const safeLocation = formatMultilineText(props.location || '');
-                                const safeDescription = formatMultilineText(props.description || '');
-                                const safeUrl = sanitizeUrl(props.url || '');
+                scrollBlocked = false;
+                document.body.classList.remove('scroll-locked');
+                document.documentElement.classList.remove('scroll-locked');
+                document.body.classList.add('modal-open');
+                document.documentElement.classList.add('modal-open');
+                const safeLocation = formatMultilineText(props.location || '');
+                const safeDescription = formatMultilineText(props.description || '');
+                const safeUrl = sanitizeUrl(props.url || '');
 
-                                // Générateur de contenu iCal pour un événement
-                                function generateICS(props, event) {
-                                        function pad(n) { return n < 10 ? '0' + n : n; }
-                                        function formatDateICS(date, allDay) {
-                                                if (!date) return '';
-                                                if (allDay) {
-                                                        return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate());
-                                                } else {
-                                                        return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate()) + 'T' + pad(date.getUTCHours()) + pad(date.getUTCMinutes()) + pad(date.getUTCSeconds()) + 'Z';
-                                                }
-                                        }
-                                        const dtStart = formatDateICS(props.startDate, event.allDay);
-                                        let dtEnd = '';
-                                        if (props.endDate) {
-                                                dtEnd = formatDateICS(props.endDate, event.allDay);
-                                        }
-                                        const uid = 'event-' + Math.random().toString(36).substring(2, 15) + '@mobirise-calendar';
-                                        let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Mobirise Calendar//FR\r\n';
-                                        ics += 'BEGIN:VEVENT\r\n';
-                                        ics += 'UID:' + uid + '\r\n';
-                                        ics += 'SUMMARY:' + (props.summary || event.title || 'Événement') + '\r\n';
-                                        ics += 'DESCRIPTION:' + (props.description ? props.description.replace(/\n/g, '\\n') : '') + '\r\n';
-                                        ics += 'DTSTART' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtStart + '\r\n';
-                                        if (dtEnd) ics += 'DTEND' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtEnd + '\r\n';
-                                        if (props.location) ics += 'LOCATION:' + props.location.replace(/\n/g, ' ') + '\r\n';
-                                        if (props.url) ics += 'URL:' + props.url + '\r\n';
-                                        ics += 'END:VEVENT\r\nEND:VCALENDAR';
-                                        return ics;
-                                }
+                function pad(n) {
+                    return n < 10 ? '0' + n : n;
+                }
 
-                                // Ajoute le bouton iCal dans la popup
-                                function addICalButton() {
-                                        const grid = modalBody.querySelector('.event-modal-body-grid');
-                                        if (!grid) return;
-                                        let btnRow = document.createElement('div');
-                                        btnRow.className = 'event-info-row';
-                                        btnRow.innerHTML = `
-                                                <div class="event-info-icon">📥</div>
-                                                <div class="event-info-content">
-                                                        <div class="event-info-label">Ajouter à mon calendrier</div>
-                                                        <div class="event-info-text">
-                                                                <button class="event-url-button" id="btn-download-ics">Télécharger l'événement (.ics)</button>
-                                                        </div>
-                                                </div>
-                                        `;
-                                        // Ajoute le bouton en bas de la colonne de droite
-                                        const rightCol = grid.querySelector('.event-modal-right');
-                                        if (rightCol) rightCol.appendChild(btnRow);
+                function formatDateICS(date, allDay) {
+                    if (!date) return '';
+                    if (allDay) {
+                        return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate());
+                    }
+                    return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate()) + 'T' + pad(date.getUTCHours()) + pad(date.getUTCMinutes()) + pad(date.getUTCSeconds()) + 'Z';
+                }
 
-                                        // Ajoute l'action de téléchargement
-                                        const btn = btnRow.querySelector('#btn-download-ics');
-                                        if (btn) {
-                                                btn.onclick = function() {
-                                                        const icsContent = generateICS(props, event);
-                                                        const blob = new Blob([icsContent], { type: 'text/calendar' });
-                                                        const url = URL.createObjectURL(blob);
-                                                        const a = document.createElement('a');
-                                                        a.href = url;
-                                                        a.download = (props.summary || 'evenement') + '.ics';
-                                                        document.body.appendChild(a);
-                                                        a.click();
-                                                        setTimeout(() => {
-                                                                document.body.removeChild(a);
-                                                                URL.revokeObjectURL(url);
-                                                        }, 100);
-                                                };
-                                        }
-                                }
+                function generateICS() {
+                    const dtStart = formatDateICS(props.startDate, event.allDay);
+                    const dtEnd = props.endDate ? formatDateICS(props.endDate, event.allDay) : '';
+                    const uid = 'event-' + Math.random().toString(36).substring(2, 15) + '@mobirise-calendar';
+                    let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Mobirise Calendar//FR\r\n';
+                    ics += 'BEGIN:VEVENT\r\n';
+                    ics += 'UID:' + uid + '\r\n';
+                    ics += 'SUMMARY:' + (props.summary || event.title || 'Événement') + '\r\n';
+                    ics += 'DESCRIPTION:' + (props.description ? props.description.replace(/\n/g, '\\n') : '') + '\r\n';
+                    ics += 'DTSTART' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtStart + '\r\n';
+                    if (dtEnd) ics += 'DTEND' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtEnd + '\r\n';
+                    if (props.location) ics += 'LOCATION:' + props.location.replace(/\n/g, ' ') + '\r\n';
+                    if (props.url) ics += 'URL:' + props.url + '\r\n';
+                    ics += 'END:VEVENT\r\nEND:VCALENDAR';
+                    return ics;
+                }
 
-                                requestAnimationFrame(() => {
-                                        modal.setAttribute('role', 'dialog');
-                                        modal.setAttribute('aria-modal', 'true');
-                                        modal.setAttribute('aria-hidden', 'false');
-                                        modalTitle.id = 'modal-title';
-                                        modal.setAttribute('aria-labelledby', 'modal-title');
+                function getIcsPayload() {
+                    const rawName = (props.summary || event.title || 'evenement').toLowerCase();
+                    const safeName = rawName.replace(/[^a-z0-9\-\s]/g, '').trim().replace(/\s+/g, '-') || 'evenement';
+                    const fileName = safeName + '.ics';
+                    const icsContent = generateICS();
+                    const blob = new Blob([icsContent], { type: 'text/calendar' });
+                    return { blob, fileName };
+                }
 
-                                        modalTitle.textContent = props.summary || event.title;
+                function downloadIcsFile() {
+                    const payload = getIcsPayload();
+                    const url = URL.createObjectURL(payload.blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = payload.fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                }
 
-                                        let leftHTML = '';
-                                        let rightHTML = '';
+                if (downloadBtn) {
+                    downloadBtn.onclick = downloadIcsFile;
+                }
 
-                                        if (props.startDate) {
-                                                const isAllDay = !!event.allDay;
-                                                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                                                const timeOptions = { hour: '2-digit', minute: '2-digit' };
-                                                const startDateOnly = props.startDate.toLocaleDateString('fr-FR', dateOptions);
-                                                const startTime = !isAllDay ? props.startDate.toLocaleTimeString('fr-FR', timeOptions) : null;
-                                                const startDisplay = isAllDay ? `${startDateOnly} — Journée entière` : `${startDateOnly} • ${startTime}`;
+                requestAnimationFrame(() => {
+                    modal.setAttribute('role', 'dialog');
+                    modal.setAttribute('aria-modal', 'true');
+                    modal.setAttribute('aria-hidden', 'false');
+                    modalTitle.id = 'modal-title';
+                    modal.setAttribute('aria-labelledby', 'modal-title');
+                    modalTitle.textContent = props.summary || event.title;
 
-                                                leftHTML += `
+                    let leftHTML = '';
+                    let rightHTML = '';
+
+                    if (props.startDate) {
+                        const isAllDay = !!event.allDay;
+                        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        const timeOptions = { hour: '2-digit', minute: '2-digit' };
+                        const startDateOnly = props.startDate.toLocaleDateString('fr-FR', dateOptions);
+                        const startTime = !isAllDay ? props.startDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+                        const startDisplay = isAllDay ? `${startDateOnly} — Journée entière` : `${startDateOnly} • ${startTime}`;
+
+                        let endDisplay = 'Non renseignée';
+                        let durationText = '';
+                        if (props.endDate) {
+                            let displayEndDate = new Date(props.endDate);
+                            if (isAllDay) displayEndDate = new Date(props.endDate.getTime() - 24 * 60 * 60 * 1000);
+                            const endDateOnly = displayEndDate.toLocaleDateString('fr-FR', dateOptions);
+                            const endTime = !isAllDay ? props.endDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+                            endDisplay = isAllDay ? `${endDateOnly} — Journée entière` : `${endDateOnly} • ${endTime}`;
+                            if (displayEndDate.toDateString() !== props.startDate.toDateString()) {
+                                const durationDays = Math.ceil((displayEndDate - props.startDate) / (24 * 60 * 60 * 1000)) + (isAllDay ? 1 : 0);
+                                durationText = ` (${durationDays} jour${durationDays > 1 ? 's' : ''})`;
+                            }
+                        }
+
+                        leftHTML += `
                                 <div class="event-info-row">
                                     <div class="event-info-icon">📅</div>
                                     <div class="event-info-content">
-                                        <div class="event-info-label">Début</div>
-                                        <div class="event-info-text">${startDisplay}</div>
+                                        <div class="event-info-label">Dates</div>
+                                        <div class="event-info-text event-date-inline">
+                                            <span class="event-date-item"><span class="event-date-label">Début:</span>${startDisplay}</span>
+                                            <span class="event-date-item"><span class="event-date-label">Fin:</span>${endDisplay}${durationText}</span>
+                                        </div>
                                     </div>
                                 </div>`;
-                                        }
+                    }
 
-                                        if (props.endDate && props.endDate.toDateString() !== props.startDate.toDateString()) {
-                                                const isAllDay = !!event.allDay;
-                                                let displayEndDate = new Date(props.endDate);
-                                                if (isAllDay) displayEndDate = new Date(props.endDate.getTime() - 24 * 60 * 60 * 1000);
-                                                const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-                                                const timeOptions = { hour: '2-digit', minute: '2-digit' };
-                                                const endDateOnly = displayEndDate.toLocaleDateString('fr-FR', dateOptions);
-                                                const endTime = !isAllDay ? props.endDate.toLocaleTimeString('fr-FR', timeOptions) : null;
-                                                const endDisplay = isAllDay ? `${endDateOnly} — Journée entière` : `${endDateOnly} • ${endTime}`;
-                                                const durationDays = Math.ceil((displayEndDate - props.startDate) / (24 * 60 * 60 * 1000)) + (isAllDay ? 1 : 0);
-
-                                                leftHTML += `
-                                <div class="event-info-row">
-                                    <div class="event-info-icon">🏁</div>
-                                    <div class="event-info-content">
-                                        <div class="event-info-label">Fin</div>
-                                        <div class="event-info-text">${endDisplay} (${durationDays} jour${durationDays > 1 ? 's' : ''})</div>
-                                    </div>
-                                </div>`;
-                                        }
-
-                                        if (props.location) {
-                                                const encodedLocation = encodeURIComponent(props.location);
-                                                leftHTML += `
+                    if (props.location) {
+                        const encodedLocation = encodeURIComponent(props.location);
+                        leftHTML += `
                                 <div class="event-info-row">
                                     <div class="event-info-icon">📍</div>
                                     <div class="event-info-content">
@@ -1066,47 +1213,62 @@
                                         </div>
                                     </div>
                                 </div>`;
-                                        }
+                    }
 
-                                        if (props.description) {
-                                                rightHTML += `
+                    if (props.description) {
+                        const descLineBreaks = (props.description.match(/\r\n?|\n/g) || []).length;
+                        const shouldCollapseDesc = props.description.length > 260 || descLineBreaks > 4;
+                        const descClass = shouldCollapseDesc ? 'event-info-text event-description event-description-collapsed' : 'event-info-text';
+                        const descToggle = shouldCollapseDesc ? '<button type="button" class="event-description-toggle" data-action="toggle-description" aria-expanded="false">Voir plus</button>' : '';
+
+                        rightHTML += `
                                 <div class="event-info-row">
                                     <div class="event-info-icon">📝</div>
                                     <div class="event-info-content">
                                         <div class="event-info-label">Description</div>
-                                        <div class="event-info-text">${safeDescription}</div>
+                                        <div class="${descClass}" id="event-description-text">${safeDescription}</div>
+                                        ${descToggle}
+                                        ${safeUrl ? `<div class="event-description-actions"><a href="${safeUrl}" target="_blank" rel="noopener" class="event-url-button event-url-button-inline">Voir l'événement</a></div>` : ''}
                                     </div>
                                 </div>`;
-                                        }
+                    }
 
-                                        if (safeUrl) {
-                                                rightHTML += `
+                    if (!props.description && safeUrl) {
+                        rightHTML += `
                                 <div class="event-info-row">
-                                    <div class="event-info-icon">🔗</div>
                                     <div class="event-info-content">
-                                        <div class="event-info-label">Lien de l'événement</div>
-                                        <div class="event-info-text">
-                                            <a href="${safeUrl}" target="_blank" rel="noopener" class="event-url-button">Accéder au site</a>
+                                        <div class="event-description-actions">
+                                            <a href="${safeUrl}" target="_blank" rel="noopener" class="event-url-button event-url-button-inline">Voir l'événement</a>
                                         </div>
                                     </div>
                                 </div>`;
-                                        }
+                    }
 
-                                        modalBody.innerHTML = `
+                    modalBody.innerHTML = `
                                 <div class="event-modal-body-grid">
                                     <div class="event-modal-left">${leftHTML}</div>
                                     <div class="event-modal-right">${rightHTML}</div>
                                 </div>`;
-                                        // Ajoute le bouton iCal
-                                        addICalButton();
-                                        modal.classList.add('show');
 
-                                        setTimeout(() => {
-                                                const closeBtn = modal.querySelector('.event-modal-close');
-                                                if (closeBtn) closeBtn.focus();
-                                        }, 100);
-                                });
-                        }
+                    const descToggleBtn = modalBody.querySelector('[data-action="toggle-description"]');
+                    const descText = modalBody.querySelector('#event-description-text');
+                    if (descToggleBtn && descText) {
+                        descToggleBtn.onclick = function () {
+                            const isExpanded = descText.classList.toggle('is-expanded');
+                            descText.classList.toggle('event-description-collapsed', !isExpanded);
+                            descToggleBtn.textContent = isExpanded ? 'Voir moins' : 'Voir plus';
+                            descToggleBtn.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+                        };
+                    }
+
+                    modal.classList.add('show');
+
+                    setTimeout(() => {
+                        const closeBtn = modal.querySelector('.event-modal-close');
+                        if (closeBtn) closeBtn.focus();
+                    }, 100);
+                });
+            }
 
             function updateMonthLabel(date) {
                 const monthEl = document.querySelector('.calendar-month');
@@ -1278,7 +1440,7 @@
                     firstDay: 1,
                     headerToolbar: false,
                     showNonCurrentDates: false,
-                    height: '100%',
+                    height: viewName === 'dayGridMonth' ? 'auto' : '100%',
                     contentHeight: 'auto',
                     expandRows: true,
                     dayMaxEvents: false,
@@ -1498,6 +1660,12 @@
                 const wrapper = document.getElementById('calendar-wrapper');
                 if (!wrapper) return;
 
+                if (currentView === 'dayGridMonth') {
+                    wrapper.style.height = 'auto';
+                    wrapper.style.maxHeight = 'none';
+                    return;
+                }
+
                 const top = wrapper.getBoundingClientRect().top;
                 const bottomMargin = 16;
                 const available = window.innerHeight - top - bottomMargin;
@@ -1544,6 +1712,13 @@
 
             function toggleScrollLock(state) {
                 const body = document.body;
+
+                if (document.body.classList.contains('modal-open')) {
+                    scrollBlocked = false;
+                    body.classList.remove('scroll-locked');
+                    document.documentElement.classList.remove('scroll-locked');
+                    return;
+                }
 
                 if (state && !scrollBlocked) {
                     scrollBlocked = true;
