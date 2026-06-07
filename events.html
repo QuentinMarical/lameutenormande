@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=eKmMup"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=eKmMup" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=AEiAw7"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=AEiAw7" type="text/css">
 
   
   
@@ -58,7 +58,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
 						<a class="nav-link link text-danger display-4" href="events.html">&nbsp;Événements&nbsp;</a>
-					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">&nbsp;Actus&nbsp;</a></li><li class="nav-item"><a class="nav-link link text-danger text-primary display-4" href="artistes.html">&nbsp;LES Artistes&nbsp;</a></li>
+					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">&nbsp;Actus&nbsp;</a></li>
 					
 					<li class="nav-item">
 						<a class="nav-link link text-danger display-4" href="contact.html">&nbsp;Contact&nbsp;</a>
@@ -265,6 +265,8 @@
             line-height: 1.5;
             font-weight: 500;
             word-break: break-word;
+            overflow-wrap: anywhere;
+            white-space: pre-line;
             margin-bottom: 0.75rem;
         }
 
@@ -897,6 +899,26 @@
                 }
             }
 
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function formatMultilineText(value) {
+                return escapeHtml(value).replace(/\r\n?|\n/g, '<br>');
+            }
+
+            function sanitizeUrl(url) {
+                const cleaned = String(url || '').trim();
+                if (!cleaned) return '';
+                if (/^https?:\/\//i.test(cleaned)) return cleaned;
+                return '';
+            }
+
                         function openEventModal(event, props) {
                                 const modal = document.querySelector('.event-modal');
                                 const modalTitle = document.querySelector('.event-modal-title');
@@ -905,6 +927,9 @@
                                 if (!modal || !modalTitle || !modalBody) return;
 
                                 document.body.classList.add('modal-open');
+                                const safeLocation = formatMultilineText(props.location || '');
+                                const safeDescription = formatMultilineText(props.description || '');
+                                const safeUrl = sanitizeUrl(props.url || '');
 
                                 // Générateur de contenu iCal pour un événement
                                 function generateICS(props, event) {
@@ -1033,7 +1058,7 @@
                                     <div class="event-info-icon">📍</div>
                                     <div class="event-info-content">
                                         <div class="event-info-label">Lieu</div>
-                                        <div class="event-info-text">${props.location}</div>
+                                        <div class="event-info-text">${safeLocation}</div>
                                         <div class="event-location-buttons">
                                             <a href="https://www.google.com/maps/search/${encodedLocation}" target="_blank" rel="noopener" class="location-btn location-google">Google Maps</a>
                                             <a href="https://www.waze.com/ul?q=${encodedLocation}" target="_blank" rel="noopener" class="location-btn location-waze">Waze</a>
@@ -1049,19 +1074,19 @@
                                     <div class="event-info-icon">📝</div>
                                     <div class="event-info-content">
                                         <div class="event-info-label">Description</div>
-                                        <div class="event-info-text">${props.description}</div>
+                                        <div class="event-info-text">${safeDescription}</div>
                                     </div>
                                 </div>`;
                                         }
 
-                                        if (props.url && props.url.trim()) {
+                                        if (safeUrl) {
                                                 rightHTML += `
                                 <div class="event-info-row">
                                     <div class="event-info-icon">🔗</div>
                                     <div class="event-info-content">
                                         <div class="event-info-label">Lien de l'événement</div>
                                         <div class="event-info-text">
-                                            <a href="${props.url}" target="_blank" rel="noopener" class="event-url-button">Accéder au site</a>
+                                            <a href="${safeUrl}" target="_blank" rel="noopener" class="event-url-button">Accéder au site</a>
                                         </div>
                                     </div>
                                 </div>`;
