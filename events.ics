@@ -1293,6 +1293,25 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 URL:https://www.harfleur.fr/la_fete_de_la_scie.html
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Gravenchon Geek'Fest
+DESCRIPTION:Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.\n\n\n\nRendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.<br/></div><div><br/></div><div>Rendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).</div>
+DTSTART;VALUE=DATE:20270206
+DTEND;VALUE=DATE:20270208
+LOCATION:Salle Polyvalente Charles Péguy. 5 Avenue du Château\, 76330 Port-Jérôme-sur-Seine
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:9d8a4391774a469aa6f363ef19c65db7@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260621T151245Z
+LAST-MODIFIED:20260621T151245Z
+DTSTAMP:20260621T151246Z
+ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.facebook.com/p/Gravenchon-GeekFest-2025-61574984526520/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Le Havre Japan NorthCon'
 DESCRIPTION:
 DTSTART;VALUE=DATE:20270313
