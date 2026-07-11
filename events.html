@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=ewT63C"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=ewT63C" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=tYnX7S"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=tYnX7S" type="text/css">
 
   
   
@@ -583,10 +583,10 @@
         <div class="calendar-zone">
             <div class="calendar-loader" id="calendar-loader" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
                 <div style="text-align:center; width:100%;">
-                    <div class="loader-spinner" style="margin: 0 auto 1rem auto; width: 48px; height: 48px; border: 6px solid #eee; border-top: 6px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                    <div id="calendar-loader-message" style="color:#888; font-size:1.1rem;">Chargement du calendrier...</div>
-                    <div id="calendar-loader-progress" style="width: 100%; max-width: 320px; height: 8px; background: #eee; border-radius: 5px; margin: 18px auto 0 auto; overflow: hidden; display: none;">
-                        <div id="calendar-loader-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.3s;"></div>
+                    <div class="loader-spinner" style="margin: 0 auto 1rem auto; width: 48px; height: 48px; border: 5px solid rgba(255, 255, 255, 0.14); border-top: 5px solid #ff8a3d; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <div id="calendar-loader-message" style="color:#a9bfce; font-size:1.05rem;">Chargement du calendrier...</div>
+                    <div id="calendar-loader-progress" style="width: 100%; max-width: 320px; height: 7px; background: rgba(255, 255, 255, 0.12); border-radius: 5px; margin: 18px auto 0 auto; overflow: hidden; display: none;">
+                        <div id="calendar-loader-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #ff8a3d, #ffc368); transition: width 0.3s;"></div>
                     </div>
                 </div>
             </div>
@@ -596,7 +596,6 @@
                     <div class="calendar-controls-center">
                         <button class="calendar-btn calendar-today">Aujourd'hui</button>
                         <button class="calendar-btn" id="btn-toggle-view">Vue Liste</button>
-                        <button class="calendar-btn btn-subscribe-style" id="btn-subscribe">📅 S'abonner</button>
                         <span class="calendar-month">Décembre 2024</span>
                     </div>
                     <button class="calendar-arrow-btn calendar-next">›</button>
@@ -627,6 +626,10 @@
                         <select class="calendar-filter-select" id="filter-detail">
                             <option value="all" selected="">Toute la région</option>
                         </select>
+                    </div>
+                    <div class="calendar-filter-group calendar-filter-group-search">
+                        <label class="calendar-filter-label" for="filter-search">🔍</label>
+                        <input type="search" class="calendar-filter-search" id="filter-search" placeholder="Rechercher..." aria-label="Rechercher un événement" autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -676,6 +679,10 @@
 
         (function () {
             const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+            // Passer à true pour activer les journaux de diagnostic dans la console
+            const DEBUG_CAL = false;
+            const dlog = function () { if (DEBUG_CAL) console.log.apply(console, arguments); };
 
             const container = document.querySelector('.container-calendar');
             const getAttr = (name) => {
@@ -994,12 +1001,28 @@
                 setTimeout(() => { detailWrap.classList.add('visible'); }, 20);
             }
 
+            // Normalisation pour recherche insensible aux accents et à la casse
+            function normalizeSearchText(value) {
+                return String(value || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+
             function getFilteredEvents() {
                 const typeFilter = document.getElementById('filter-type')?.value || 'all';
                 const regionFilter = document.getElementById('filter-region')?.value || 'all';
                 const detailFilter = document.getElementById('filter-detail')?.value || 'all';
+                const searchFilter = normalizeSearchText(document.getElementById('filter-search')?.value || '').trim();
 
                 return allLoadedEvents.filter(ev => {
+                    // Recherche texte (titre, lieu, description)
+                    if (searchFilter) {
+                        const haystack = normalizeSearchText(
+                            (ev.title || '') + ' ' +
+                            (ev.extendedProps?.location || '') + ' ' +
+                            (ev.extendedProps?.description || '')
+                        );
+                        if (haystack.indexOf(searchFilter) === -1) return false;
+                    }
+
                     // Type filter
                     const foxEmojiRegex = /\u{1F98A}/u;
                     const isFurry = typeof ev.title === 'string' && foxEmojiRegex.test(ev.title);
@@ -1035,7 +1058,8 @@
                 const settings = {
                     type: document.getElementById('filter-type')?.value || 'all',
                     region: document.getElementById('filter-region')?.value || 'all',
-                    detail: document.getElementById('filter-detail')?.value || 'all'
+                    detail: document.getElementById('filter-detail')?.value || 'all',
+                    search: document.getElementById('filter-search')?.value || ''
                 };
                 localStorage.setItem('calendarFilterSettings', JSON.stringify(settings));
                 localStorage.setItem('calendarFilterSave', 'true');
@@ -1051,6 +1075,8 @@
                     if (!settings) return false;
                     const filterType = document.getElementById('filter-type');
                     const filterRegion = document.getElementById('filter-region');
+                    const filterSearch = document.getElementById('filter-search');
+                    if (filterSearch && typeof settings.search === 'string') filterSearch.value = settings.search;
                     if (filterType && settings.type) filterType.value = settings.type;
                     if (filterRegion && settings.region) {
                         filterRegion.value = settings.region;
@@ -1088,6 +1114,8 @@
                 }, 250);
             }
 
+            let lastFocusedElement = null;
+
             function closeEventModal() {
                 const modal = document.querySelector('.event-modal');
                 if (modal && modal.classList.contains('show')) {
@@ -1098,10 +1126,15 @@
                         modal.classList.remove('closing');
                         modal.setAttribute('aria-hidden', 'true');
                         modal.removeAttribute('role');
+                        modal.onkeydown = null;
                         document.body.classList.remove('modal-open');
                         document.documentElement.classList.remove('modal-open');
                         const calendarZone = document.querySelector('.calendar-zone');
                         toggleScrollLock(!!(calendarZone && calendarZone.scrollTop > 0));
+                        if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                            lastFocusedElement.focus();
+                            lastFocusedElement = null;
+                        }
                     }, 300);
                 }
             }
@@ -1133,6 +1166,24 @@
                 const downloadBtn = modal ? modal.querySelector('[data-modal-action="download-ics"]') : null;
 
                 if (!modal || !modalTitle || !modalBody) return;
+
+                lastFocusedElement = document.activeElement;
+
+                // Piège de focus : Tab reste à l'intérieur de la modale
+                modal.onkeydown = function (e) {
+                    if (e.key !== 'Tab') return;
+                    const focusables = modal.querySelectorAll('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                    if (!focusables.length) return;
+                    const first = focusables[0];
+                    const last = focusables[focusables.length - 1];
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                };
 
                 scrollBlocked = false;
                 document.body.classList.remove('scroll-locked');
@@ -1224,25 +1275,35 @@
 
                     if (props.startDate) {
                         const isAllDay = !!event.allDay;
+                        // Certains flux encodent les journées entières en 00:00/00:01 -> 23:59 :
+                        // ces horaires ne sont que du bruit, on les masque
+                        const startsAtDayStart = props.startDate.getHours() === 0 && props.startDate.getMinutes() <= 1;
+                        const endsAtDayEnd = !!props.endDate && props.endDate.getHours() === 23 && props.endDate.getMinutes() >= 59;
+                        const hideTimes = isAllDay || (startsAtDayStart && (!props.endDate || endsAtDayEnd));
                         const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                         const timeOptions = { hour: '2-digit', minute: '2-digit' };
                         const startDateOnly = props.startDate.toLocaleDateString('fr-FR', dateOptions);
-                        const startTime = !isAllDay ? props.startDate.toLocaleTimeString('fr-FR', timeOptions) : null;
-                        const startDisplay = isAllDay ? `${startDateOnly} — Journée entière` : `${startDateOnly} • ${startTime}`;
 
                         let endDisplay = 'Non renseignée';
                         let durationText = '';
+                        let displayEndDate = null;
                         if (props.endDate) {
-                            let displayEndDate = new Date(props.endDate);
+                            displayEndDate = new Date(props.endDate);
                             if (isAllDay) displayEndDate = new Date(props.endDate.getTime() - 24 * 60 * 60 * 1000);
                             const endDateOnly = displayEndDate.toLocaleDateString('fr-FR', dateOptions);
-                            const endTime = !isAllDay ? props.endDate.toLocaleTimeString('fr-FR', timeOptions) : null;
-                            endDisplay = isAllDay ? `${endDateOnly} — Journée entière` : `${endDateOnly} • ${endTime}`;
+                            const endTime = !hideTimes ? props.endDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+                            endDisplay = hideTimes ? endDateOnly : `${endDateOnly} • ${endTime}`;
                             if (displayEndDate.toDateString() !== props.startDate.toDateString()) {
                                 const durationDays = Math.ceil((displayEndDate - props.startDate) / (24 * 60 * 60 * 1000)) + (isAllDay ? 1 : 0);
                                 durationText = ` (${durationDays} jour${durationDays > 1 ? 's' : ''})`;
                             }
                         }
+
+                        const isMultiDay = !!(displayEndDate && displayEndDate.toDateString() !== props.startDate.toDateString());
+                        const startTime = !hideTimes ? props.startDate.toLocaleTimeString('fr-FR', timeOptions) : null;
+                        const startDisplay = hideTimes
+                            ? (isMultiDay ? startDateOnly : `${startDateOnly} — Journée entière`)
+                            : `${startDateOnly} • ${startTime}`;
 
                         leftHTML += `
                                 <div class="event-info-row">
@@ -1356,7 +1417,11 @@
                     return 'En cours';
                 }
 
-                const sinceDays = Math.max(1, Math.ceil((now.getTime() - endMs) / 86400000));
+                // Écart en jours calendaires (indépendant de l'heure de fin)
+                const endRef = new Date(endMs);
+                const endDayStart = new Date(endRef.getFullYear(), endRef.getMonth(), endRef.getDate());
+                const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const sinceDays = Math.max(1, Math.round((todayStart - endDayStart) / 86400000));
                 return 'Terminé il y a ' + sinceDays + ' jour' + (sinceDays > 1 ? 's' : '');
             }
 
@@ -1477,10 +1542,6 @@
                 });
             }
 
-            function setEasterButtonState(isActive) {
-                return isActive;
-            }
-
             function toggleEasterView() {
                 const wrapper = document.getElementById('calendar-wrapper');
                 const easterView = document.getElementById('calendar-easter-view');
@@ -1499,7 +1560,6 @@
                     wrapper.style.display = 'none';
                     easterView.style.display = 'block';
                     if (calendarZone) calendarZone.classList.add('list-view-active');
-                    setEasterButtonState(true);
                     renderEasterView();
                     return;
                 }
@@ -1508,7 +1568,6 @@
                 easterView.style.display = 'none';
                 wrapper.style.display = '';
                 if (calendarZone && currentView === 'dayGridMonth') calendarZone.classList.remove('list-view-active');
-                setEasterButtonState(false);
                 initCalendar(currentView);
             }
 
@@ -1563,7 +1622,7 @@
                         eventMap.set(ev.id, ev);
                     }
                 });
-                console.log('Deduplication: ' + events.length + ' -> ' + eventMap.size + ' events');
+                dlog('Deduplication: ' + events.length + ' -> ' + eventMap.size + ' events');
                 return Array.from(eventMap.values());
             }
 
@@ -1613,7 +1672,7 @@
                 });
                 
                 if (removedCount > 0) {
-                    console.log('Removed ' + removedCount + ' empty day headers from list view');
+                    dlog('Removed ' + removedCount + ' empty day headers from list view');
                 }
             }
 
@@ -1687,7 +1746,9 @@
                     slotMaxTime: '23:00:00',
                     slotLabelInterval: '01:00:00',
                     events: uniqueEvents,
-                    noEventsContent: '',
+                    listDayFormat: { weekday: 'long', day: 'numeric', month: 'long' },
+                    listDaySideFormat: false,
+                    noEventsContent: 'Aucun événement ne correspond à cette période ou à ces filtres.',
                     eventClick: function (info) {
                         info.jsEvent.preventDefault();
                         openEventModal(info.event, info.event.extendedProps);
@@ -1696,14 +1757,12 @@
                         if (arg.view.type.startsWith('list')) {
                             const start = arg.event.start;
                             const end = arg.event.end;
-                            let html = '';
-                            let nbJours = 1;
-                            let isAllDay = arg.event.allDay;
-                            const hideStart = arg.event.extendedProps && arg.event.extendedProps.hideStartTime;
-                            
+                            const props = arg.event.extendedProps || {};
+                            const isAllDay = arg.event.allDay;
+
                             // Prevent duplicates in list view: only show event on its actual start date
                             try {
-                                const orig = arg.event.extendedProps && arg.event.extendedProps.origStart;
+                                const orig = props.origStart;
                                 if (orig && start) {
                                     const sDay = new Date(start.getFullYear(), start.getMonth(), start.getDate()).getTime();
                                     const oDay = new Date(orig.getFullYear(), orig.getMonth(), orig.getDate()).getTime();
@@ -1713,21 +1772,39 @@
                                     }
                                 }
                             } catch (e) { }
-                            
-                            if (start && end && end - start >= 24 * 60 * 60 * 1000) {
-                                const options = { day: '2-digit', month: 'short', year: 'numeric' };
-                                let displayEnd = end;
-                                if (isAllDay) {
-                                    displayEnd = new Date(end.getTime() - 24 * 60 * 60 * 1000);
+
+                            const dayMs = 24 * 60 * 60 * 1000;
+                            let dateText = '';
+                            let badge = '';
+                            if (start && end && end - start >= dayMs) {
+                                const options = { day: 'numeric', month: 'short' };
+                                const displayEnd = isAllDay ? new Date(end.getTime() - dayMs) : end;
+                                // Nombre de jours calendaires couverts (inclusif)
+                                const startDay = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+                                const endDay = new Date(displayEnd.getFullYear(), displayEnd.getMonth(), displayEnd.getDate());
+                                const nbJours = Math.round((endDay - startDay) / dayMs) + 1;
+                                if (nbJours > 1) {
+                                    dateText = 'Du ' + start.toLocaleDateString('fr-FR', options) + ' au ' + displayEnd.toLocaleDateString('fr-FR', options);
+                                    badge = `<span class="list-event-badge">${nbJours} jours</span>`;
                                 }
-                                const startStr = start.toLocaleDateString('fr-FR', options);
-                                const endStr = displayEnd.toLocaleDateString('fr-FR', options);
-                                nbJours = Math.round((displayEnd - start) / (24 * 60 * 60 * 1000)) + 1;
-                                html += `<div class="fc-event-title">${escapeHtml(arg.event.title)} <span class="multi-days-span" style="font-weight:normal;font-size:0.95em;margin-left:0.5em;color:#ffc107;">(${nbJours} jour${nbJours > 1 ? 's' : ''})</span></div>`;
-                                html += `<div class="fc-list-event-time" style="font-weight:bold;">Du ${startStr} au ${endStr}</div>`;
-                            } else {
-                                html += `<div class="fc-event-title">${escapeHtml(arg.event.title)}</div>`;
                             }
+
+                            const location = String(props.location || '').split(/\r\n|\r|\n/)[0].trim();
+                            const countdown = formatEasterCountdown(start, end);
+                            const chipClass = countdown === 'En cours' ? 'is-now' : (countdown.indexOf('Terminé') === 0 ? 'is-past' : 'is-future');
+
+                            const metaParts = [];
+                            if (dateText) metaParts.push(`<span class="list-event-dates">${dateText}</span>`);
+                            if (location) metaParts.push(`<span class="list-event-location">📍 ${escapeHtml(location)}</span>`);
+
+                            const html = `
+                                <div class="list-event-card-inner">
+                                    <div class="list-event-main">
+                                        <div class="list-event-titleline"><span class="list-event-name">${escapeHtml(arg.event.title)}</span>${badge}</div>
+                                        ${metaParts.length ? `<div class="list-event-meta">${metaParts.join('<span class="list-event-sep">•</span>')}</div>` : ''}
+                                    </div>
+                                    <span class="list-event-chip ${chipClass}">${countdown}</span>
+                                </div>`;
                             return { html };
                         }
                         return true;
@@ -1852,7 +1929,7 @@
                                 }
                             });
                             if (removedCount > 0) {
-                                console.log('Removed ' + removedCount + ' duplicate events from list view');
+                                dlog('Removed ' + removedCount + ' duplicate events from list view');
                             }
                             
                             // Remove empty day headers
@@ -2022,6 +2099,17 @@
                 }
                 if (filterDetail) filterDetail.onchange = applyFilters;
 
+                const filterSearch = document.getElementById('filter-search');
+                if (filterSearch) {
+                    let searchDebounce = null;
+                    const onSearchChange = () => {
+                        if (searchDebounce) clearTimeout(searchDebounce);
+                        searchDebounce = setTimeout(applyFilters, 350);
+                    };
+                    filterSearch.addEventListener('input', onSearchChange);
+                    filterSearch.addEventListener('search', onSearchChange);
+                }
+
                 // Save checkbox toggle
                 const filterSave = document.getElementById('filter-save');
                 if (filterSave) {
@@ -2038,128 +2126,6 @@
                 // Restore saved settings
                 if (restoreFilterSettings()) {
                     applyFilters();
-                }
-
-                const btnSubscribe = document.getElementById('btn-subscribe');
-                if (btnSubscribe) {
-                    btnSubscribe.onclick = () => {
-                        const icalUrl = getIcalUrl();
-                        const safeIcalUrl = escapeHtml(icalUrl);
-
-                        const subscribeModal = document.createElement('div');
-                        subscribeModal.className = 'event-modal show';
-                        subscribeModal.setAttribute('role', 'dialog');
-                        subscribeModal.setAttribute('aria-modal', 'true');
-                        subscribeModal.innerHTML = `
-                  <div class="event-modal-overlay"></div>
-                  <div class="event-modal-content">
-                    <button class="event-modal-close">×</button>
-                    <h3 class="event-modal-title">📅 S'abonner au calendrier</h3>
-                    <div class="event-modal-body">
-                      <div class="event-info-row">
-                        <div class="event-info-icon">🔗</div>
-                        <div class="event-info-content">
-                          <div class="event-info-label">Lien d'abonnement iCal</div>
-                          <div class="event-info-text">
-                            <input type="text" readonly value="${safeIcalUrl}" data-subscribe-url style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 0.5rem;">
-                            <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                              <button class="event-url-button" data-subscribe-copy style="flex: 1;">Copier le lien</button>
-                              <button class="event-url-button" data-subscribe-open style="flex: 1;">Télécharger</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="event-info-row">
-                        <div class="event-info-icon">💾</div>
-                        <div class="event-info-content">
-                          <div class="event-info-label">Télécharger et importer</div>
-                          <div class="event-info-text">
-                            <p style="margin: 0 0 0.8rem 0; font-size: 0.9rem;">La méthode la plus simple pour tous les systèmes :</p>
-                            <ol style="margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6;">
-                              <li><strong>Téléchargez</strong> le fichier iCal avec le lien ci-dessus</li>
-                              <li><strong>Ouvrez</strong> le fichier téléchargé (double-clic ou clic droit → Ouvrir avec)</li>
-                              <li>Sélectionnez votre application de calendrier ou de messagerie<br>(Outlook, Apple Calendar, Google Calendar, Thunderbird, Evolution, etc.)</li>
-                              <li>Confirmez <strong>l'import</strong> du calendrier</li>
-                            </ol>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="event-info-row">
-                        <div class="event-info-icon">🌐</div>
-                        <div class="event-info-content">
-                          <div class="event-info-label">S'abonner directement (Web)</div>
-                          <div class="event-info-text">
-                            <p style="margin: 0 0 0.8rem 0; font-size: 0.9rem;">Si votre application supporte les URLs iCal :</p>
-                            <ol style="margin: 0.5rem 0; padding-left: 1.2rem; font-size: 0.85rem; line-height: 1.6;">
-                              <li><strong>Copiez</strong> le lien iCal ci-dessus</li>
-                              <li>Ouvrez <strong>Google Calendar</strong>, <strong>Apple Calendar</strong>, <strong>Outlook</strong>, ou autre</li>
-                              <li>Recherchez l'option <strong>"Ajouter un calendrier"</strong> ou <strong>"S'abonner"</strong></li>
-                              <li><strong>Collez</strong> le lien iCal fourni</li>
-                            </ol>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="event-info-row">
-                        <div class="event-info-icon">ℹ️</div>
-                        <div class="event-info-content">
-                          <div class="event-info-label">Systèmes compatibles</div>
-                          <div class="event-info-text">
-                            <p style="margin: 0; font-size: 0.85rem;">Tous les calendriers et applications de messagerie modernes supportent le format iCal :</p>
-                            <p style="margin: 0.5rem 0 0 0; font-size: 0.8rem; color: #ccc;">
-                              📧 <strong>Messagerie :</strong> Outlook, Thunderbird, Evolution, Mail (macOS/iOS)<br>
-                              📅 <strong>Calendrier :</strong> Google Calendar, Apple Calendar, Calendrier (Windows), Gnome Calendar<br>
-                              ☁️ <strong>Autres :</strong> NextCloud, Owncloud, Kolab, et tous les services iCal-compatible
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                `;
-
-                        document.body.appendChild(subscribeModal);
-
-                        const closeBtn = subscribeModal.querySelector('.event-modal-close');
-                        const overlay = subscribeModal.querySelector('.event-modal-overlay');
-                        const urlInput = subscribeModal.querySelector('[data-subscribe-url]');
-                        const copyBtn = subscribeModal.querySelector('[data-subscribe-copy]');
-                        const openBtn = subscribeModal.querySelector('[data-subscribe-open]');
-
-                        const onEscape = (ev) => {
-                            if (ev.key === 'Escape') closeSubscribe();
-                        };
-
-                        const closeSubscribe = () => {
-                            document.removeEventListener('keydown', onEscape);
-                            subscribeModal.remove();
-                        };
-
-                        document.addEventListener('keydown', onEscape);
-
-                        if (urlInput) urlInput.onclick = function () { this.select(); };
-                        if (copyBtn) copyBtn.onclick = function () {
-                            const done = () => {
-                                copyBtn.textContent = '✓ Copié !';
-                                setTimeout(() => { copyBtn.textContent = 'Copier le lien'; }, 2000);
-                            };
-                            if (navigator.clipboard && navigator.clipboard.writeText) {
-                                navigator.clipboard.writeText(icalUrl).then(done).catch(() => {
-                                    if (urlInput) { urlInput.select(); document.execCommand('copy'); done(); }
-                                });
-                            } else if (urlInput) {
-                                urlInput.select();
-                                document.execCommand('copy');
-                                done();
-                            }
-                        };
-                        if (openBtn) openBtn.onclick = () => window.open(icalUrl, '_blank', 'noopener');
-
-                        if (closeBtn) closeBtn.onclick = closeSubscribe;
-                        if (overlay) overlay.onclick = closeSubscribe;
-                    };
                 }
 
                 window.addEventListener('orientationchange', handleOrientationChange);
@@ -2187,9 +2153,14 @@
 
                 (async function () {
 
-                    // Cache désactivé - Contenu toujours live
-                    const ICAL_CACHE_DURATION = 0; // Pas de cache
-                    const getIcalCacheKey = (url) => 'icalcache_' + encodeURIComponent(url);
+                    // Cache "stale-while-revalidate" : si un flux est en cache, il est affiché
+                    // immédiatement, puis les données fraîches sont récupérées en arrière-plan
+                    // et le calendrier est re-rendu uniquement si le contenu a changé.
+                    const getIcalCacheKey = (url) => 'icalcache_v2_' + encodeURIComponent(url);
+
+                    const loaderMsg = document.getElementById('calendar-loader-message');
+                    const loaderBar = document.getElementById('calendar-loader-bar');
+                    const loaderProgress = document.getElementById('calendar-loader-progress');
 
                     const fetchWithRetry = async (url, maxRetries = 2) => {
                         // Essayer d'abord l'URL locale si disponible (même domaine = pas de CORS)
@@ -2200,13 +2171,13 @@
                             (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, // AllOrigins
                             (u) => `https://corsproxy.org/?${encodeURIComponent(u)}` // CorsProxy.org
                         ];
-                        
+
                         for (let proxyIdx = 0; proxyIdx < proxies.length; proxyIdx++) {
                             const isLocalFetch = proxyIdx === 0;
                             const isDirectFetch = proxyIdx === 1;
                             const proxyName = isLocalFetch ? 'Local' : (isDirectFetch ? 'Direct' : 'CORS Proxy');
-                            console.log(`   Tentative ${proxyIdx + 1}/4: ${proxyName}`);
-                            
+                            dlog(`   Tentative ${proxyIdx + 1}/4: ${proxyName}`);
+
                             for (let i = 0; i < maxRetries; i++) {
                                 try {
                                     const proxiedUrl = proxies[proxyIdx](url);
@@ -2217,13 +2188,13 @@
                                         cache: 'no-store',
                                         mode: isLocalFetch ? 'same-origin' : 'cors'
                                     });
-                                    console.log(`   ✅ Réponse: ${response.status} ${response.statusText}`);
+                                    dlog(`   Réponse: ${response.status} ${response.statusText}`);
                                     if (response.ok) return response;
                                     if (response.status === 403 || response.status === 401) {
                                         throw new Error(`Accès refusé (${response.status}). Vérifiez que le calendrier est public.`);
                                     }
                                 } catch (err) {
-                                    console.log(`   ❌ Erreur (${proxyName}, essai ${i + 1}/${maxRetries}):`, err.message);
+                                    dlog(`   Erreur (${proxyName}, essai ${i + 1}/${maxRetries}):`, err.message);
                                     if (i === maxRetries - 1 && proxyIdx === proxies.length - 1) throw err;
                                     if (i < maxRetries - 1) {
                                         await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
@@ -2234,100 +2205,55 @@
                         throw new Error('Impossible de charger via tous les proxies CORS');
                     };
 
-
-                    try {
-                        let icalUrl = getIcalUrl();
-
-                        console.log('URL trouvée:', icalUrl);
-
-                        if (!icalUrl || icalUrl.trim().length === 0) {
-                            throw new Error('No iCal URL provided in parameters');
-                        }
-
-                        let icalText = null;
-                        let cacheKey = getIcalCacheKey(icalUrl);
-                        let cache = null;
+                    async function fetchIcalText(url) {
+                        let response = null;
                         try {
-                            cache = JSON.parse(localStorage.getItem(cacheKey));
-                        } catch (e) { cache = null; }
-                        const nowTs = Date.now();
-                        const loaderMsg = document.getElementById('calendar-loader-message');
-                        const loaderBar = document.getElementById('calendar-loader-bar');
-                        const loaderProgress = document.getElementById('calendar-loader-progress');
-                        let usedCache = false;
-                        // Cache localStorage désactivé - Toujours récupérer les données fraîches
-                        if (false) { // Force à toujours aller chercher les données live
-                            // Code de cache désactivé
-                            if (loaderMsg) loaderMsg.textContent = 'Chargement depuis le cache...';
-                            if (loaderProgress) loaderProgress.style.display = 'none';
-                            let refreshBtn = document.getElementById('calendar-refresh-btn');
-                            if (!refreshBtn) {
-                                refreshBtn = document.createElement('button');
-                                refreshBtn.id = 'calendar-refresh-btn';
-                                refreshBtn.className = 'calendar-btn';
-                                refreshBtn.style.margin = '1rem auto 0 auto';
-                                refreshBtn.textContent = '🔄 Rafraîchir le calendrier';
-                                refreshBtn.onclick = function () {
-                                    localStorage.removeItem(cacheKey);
-                                    window.location.reload();
-                                };
-                                const loaderDiv = document.getElementById('calendar-loader');
-                                if (loaderDiv) loaderDiv.appendChild(refreshBtn);
-                            }
-                            console.log('✅ Utilisation du cache localStorage pour le flux iCal');
-                        } else {
-                            if (loaderMsg) loaderMsg.innerHTML = 'Téléchargement et mise en cache du calendrier en cours...<br><span style="font-size:0.95em; color:#aaa;">(cela peut prendre 5 à 10 secondes selon la connexion)</span>';
-                            if (loaderProgress) loaderProgress.style.display = '';
+                            response = await fetchWithRetry(url, 2);
+                        } catch (err) {
                             if (loaderBar) loaderBar.style.width = '0%';
-                            let response = null;
-                            try {
-                                response = await fetchWithRetry(icalUrl, 2);
-                            } catch (err) {
-                                if (loaderBar) loaderBar.style.width = '0%';
-                                console.error('Dernier erreur:', err);
-                                throw new Error(`Impossible de charger le calendrier. Dernier essai: ${err?.message || 'Unknown'}`);
-                            }
-                            if (!response || !response.ok) {
-                                if (loaderBar) loaderBar.style.width = '0%';
-                                throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
-                            }
-                            if (response && response.body && window.ReadableStream) {
-                                const reader = response.body.getReader();
-                                const contentLength = +response.headers.get('Content-Length') || 0;
-                                let receivedLength = 0;
-                                let chunks = [];
-                                while (true) {
-                                    const { done, value } = await reader.read();
-                                    if (done) break;
-                                    chunks.push(value);
-                                    receivedLength += value.length;
-                                    if (loaderBar && contentLength) {
-                                        const percent = Math.min(100, Math.round(receivedLength / contentLength * 100));
-                                        loaderBar.style.width = percent + '%';
-                                    } else if (loaderBar) {
-                                        loaderBar.style.width = ((receivedLength / 10000) % 100) + '%';
-                                    }
-                                }
-                                let chunksAll = new Uint8Array(receivedLength);
-                                let pos = 0;
-                                for (let chunk of chunks) {
-                                    chunksAll.set(chunk, pos);
-                                    pos += chunk.length;
-                                }
-                                icalText = new TextDecoder('utf-8').decode(chunksAll);
-                                if (loaderBar) loaderBar.style.width = '100%';
-                            } else {
-                                icalText = await response.text();
-                                if (loaderBar) loaderBar.style.width = '100%';
-                            }
-                            if (!icalText || icalText.trim().length === 0) {
-                                if (loaderBar) loaderBar.style.width = '0%';
-                                throw new Error('iCal file is empty or invalid');
-                            }
-                            // localStorage cache désactivé - pas de mise en cache locale
-                            console.log('✅ Données fraîches chargées (pas de cache)');
+                            throw new Error(`Impossible de charger le calendrier. Dernier essai: ${err?.message || 'Unknown'}`);
                         }
+                        if (!response || !response.ok) {
+                            if (loaderBar) loaderBar.style.width = '0%';
+                            throw new Error(`HTTP ${response?.status || 'Network Error'}: ${response?.statusText || 'Failed to load calendar'}`);
+                        }
+                        let icalText = null;
+                        if (response.body && window.ReadableStream) {
+                            const reader = response.body.getReader();
+                            const contentLength = +response.headers.get('Content-Length') || 0;
+                            let receivedLength = 0;
+                            let chunks = [];
+                            while (true) {
+                                const { done, value } = await reader.read();
+                                if (done) break;
+                                chunks.push(value);
+                                receivedLength += value.length;
+                                if (loaderBar && contentLength) {
+                                    const percent = Math.min(100, Math.round(receivedLength / contentLength * 100));
+                                    loaderBar.style.width = percent + '%';
+                                } else if (loaderBar) {
+                                    loaderBar.style.width = ((receivedLength / 10000) % 100) + '%';
+                                }
+                            }
+                            let chunksAll = new Uint8Array(receivedLength);
+                            let pos = 0;
+                            for (let chunk of chunks) {
+                                chunksAll.set(chunk, pos);
+                                pos += chunk.length;
+                            }
+                            icalText = new TextDecoder('utf-8').decode(chunksAll);
+                        } else {
+                            icalText = await response.text();
+                        }
+                        if (loaderBar) loaderBar.style.width = '100%';
+                        if (!icalText || icalText.trim().length === 0) {
+                            if (loaderBar) loaderBar.style.width = '0%';
+                            throw new Error('iCal file is empty or invalid');
+                        }
+                        return icalText;
+                    }
 
+                    function buildEventsFromIcs(icalText) {
                         let jcalData = null;
                         try {
                             jcalData = ICAL.parse(icalText);
@@ -2337,11 +2263,10 @@
 
                         const comp = new ICAL.Component(jcalData);
                         const vevents = comp.getAllSubcomponents("vevent");
-                        loadedEvents = [];
-
+                        const events = [];
                         const eventMap = new Map();
-
                         const overrideMap = new Map();
+
                         vevents.forEach((v, i) => {
                             try {
                                 const maybeOverride = v.getFirstProperty('recurrence-id');
@@ -2407,7 +2332,7 @@
                                         if (overrideMap.has(key)) { count++; continue; }
                                         if (!eventMap.has(key)) {
                                             const colors = getEventColors(cleanTitle, occStart, now);
-                                            loadedEvents.push({
+                                            events.push({
                                                 id: key,
                                                 title: cleanTitle,
                                                 start: occStart,
@@ -2454,7 +2379,7 @@
                                     if (!eventMap.has(key)) {
                                         const now = new Date();
                                         const colors = getEventColors(cleanTitle, startDate, now);
-                                        loadedEvents.push({
+                                        events.push({
                                             id: key,
                                             title: cleanTitle,
                                             start: startDate,
@@ -2482,28 +2407,12 @@
                             }
                         });
 
-                        allLoadedEvents = loadedEvents.slice();
+                        return events;
+                    }
 
-                        // Resolve locations without postal codes via geocoding API
-                        try {
-                            await resolveAllEventLocations(allLoadedEvents);
-                            // Copy resolved codes back to loadedEvents
-                            allLoadedEvents.forEach(ev => {
-                                const match = loadedEvents.find(le => le.id === ev.id);
-                                if (match && ev.extendedProps?.resolvedDeptCode) {
-                                    match.extendedProps.resolvedDeptCode = ev.extendedProps.resolvedDeptCode;
-                                }
-                            });
-                        } catch (e) {
-                            console.warn('Geocoding resolution failed, filtering may be limited:', e.message);
-                        }
+                    let uiReady = false;
 
-                        // Deduplicate all loaded events to prevent any duplicates
-                        allLoadedEvents = deduplicateEvents(allLoadedEvents);
-                        
-                        // Apply filters and deduplicate again
-                        loadedEvents = deduplicateEvents(consolidateMultiDayEvents(getFilteredEvents()));
-
+                    function showCalendarUI() {
                         let startView = 'dayGridMonth';
                         if (!allowCalendarView && allowListView) {
                             startView = 'listMonth';
@@ -2547,16 +2456,90 @@
                             };
                             todayBtn.setAttribute('aria-label', 'Aller à aujourd\'hui');
                         }
+                        uiReady = true;
+                    }
+
+                    async function renderFromIcsText(icalText) {
+                        const events = buildEventsFromIcs(icalText);
+                        // Résolution des lieux sans code postal (géocodage, avec cache persistant)
+                        try {
+                            await resolveAllEventLocations(events);
+                        } catch (e) {
+                            console.warn('Geocoding resolution failed, filtering may be limited:', e.message);
+                        }
+                        allLoadedEvents = deduplicateEvents(events);
+                        loadedEvents = deduplicateEvents(consolidateMultiDayEvents(getFilteredEvents()));
+
+                        if (!uiReady) {
+                            showCalendarUI();
+                        } else if (easterViewActive) {
+                            renderEasterView();
+                        } else {
+                            initCalendar(currentView);
+                        }
+                    }
+
+                    try {
+                        const icalUrl = getIcalUrl();
+                        dlog('URL iCal:', icalUrl);
+
+                        if (!icalUrl || icalUrl.trim().length === 0) {
+                            throw new Error('No iCal URL provided in parameters');
+                        }
+
+                        const cacheKey = getIcalCacheKey(icalUrl);
+                        let cached = null;
+                        try { cached = JSON.parse(localStorage.getItem(cacheKey)); } catch (e) { cached = null; }
+
+                        // 1. Affichage immédiat depuis le cache si disponible
+                        if (cached && cached.text) {
+                            dlog('Affichage depuis le cache, rafraîchissement en arrière-plan...');
+                            try {
+                                await renderFromIcsText(cached.text);
+                            } catch (e) {
+                                dlog('Cache invalide, rechargement complet:', e.message);
+                                cached = null;
+                            }
+                        }
+
+                        if (!uiReady) {
+                            if (loaderMsg) loaderMsg.textContent = 'Récupération des événements...';
+                            if (loaderProgress) loaderProgress.style.display = '';
+                            if (loaderBar) loaderBar.style.width = '0%';
+                        }
+
+                        // 2. Récupération des données fraîches (toujours, pour rester à jour)
+                        const freshText = await fetchIcalText(icalUrl);
+                        try {
+                            localStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), text: freshText }));
+                        } catch (e) { /* stockage local plein : on continue sans mise en cache */ }
+
+                        // 3. Re-rendu uniquement si le contenu a changé
+                        if (!cached || cached.text !== freshText) {
+                            await renderFromIcsText(freshText);
+                            dlog('Données fraîches affichées');
+                        } else {
+                            dlog('Contenu inchangé, affichage du cache conservé');
+                        }
                     } catch (error) {
+                        // Si le calendrier est déjà affiché depuis le cache, on garde cet affichage
+                        if (uiReady) {
+                            console.warn('Rafraîchissement du calendrier impossible (affichage du cache conservé):', error.message);
+                            return;
+                        }
                         console.error("Erreur de chargement du calendrier:", error);
                         const calendarEl = document.querySelector(".fullcalendar-container");
+                        const loaderEl = document.getElementById('calendar-loader');
+                        const wrapperEl = document.getElementById('calendar-wrapper');
+                        if (loaderEl) loaderEl.style.display = 'none';
+                        if (wrapperEl) wrapperEl.style.display = '';
                         if (calendarEl) {
                             let errorMsg = error.message;
                             let suggestions = '';
 
                             if (error.message.includes('No iCal URL')) {
                                 errorMsg = 'Aucune URL iCal n\'a été fournie.';
-                                suggestions = '<br><strong>Action requise :</strong> Entrez une URL iCal valide dans les paramètres du formulaire ci-dessus.';
+                                suggestions = '<br><strong>Action requise :</strong> Entrez une URL iCal valide dans les paramètres du bloc.';
                             } else if (error.message.includes('Impossible de charger')) {
                                 errorMsg = 'Impossible de charger le calendrier avec l\'URL fournie.';
                                 suggestions = '<br><strong>Solutions :</strong><ul style="text-align: left; margin: 1rem 0; padding-left: 1.5rem;"><li>✅ Vérifiez que l\'URL du calendrier iCal est <strong>correcte</strong> et <strong>publique</strong></li><li>✅ Testez l\'URL directement dans votre navigateur</li><li>✅ Attendez quelques secondes avant de recharger (cache proxy)</li><li>ℹ️ Consultez la console (F12) pour plus de détails techniques</li></ul>';
@@ -2578,7 +2561,10 @@
                       ❌ ${errorMsg}<br>
                       <small style="color: #888; margin-top: 0.5rem; display: block;">Ouvrez F12 (console) pour plus de détails techniques</small>
                       ${suggestions}
+                      <button type="button" class="calendar-btn" data-calendar-retry style="margin-top: 1rem;">🔄 Réessayer</button>
                     </div>`;
+                            const retryBtn = calendarEl.querySelector('[data-calendar-retry]');
+                            if (retryBtn) retryBtn.onclick = () => window.location.reload();
                         }
                     }
                 })();
