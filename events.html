@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=WYxVE9"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=WYxVE9" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=ewT63C"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=ewT63C" type="text/css">
 
   
   
@@ -83,7 +83,7 @@
 	</nav>
 </section>
 
-<section data-bs-version="5.1" class="mbr-section mbr-section--no-padding cid-v5QUnVSVmZ mbr-parallax-background" id="header09-i">
+<section data-bs-version="5.1" class="mbr-section mbr-section--no-padding section-calendar-global cid-v5QUnVSVmZ mbr-parallax-background" id="header09-i">
 
     
 
@@ -91,13 +91,13 @@
     </div>
 
     <style>
-        .mbr-section {
+        .mbr-section.section-calendar-global {
             min-height: 100vh !important;
             display: flex !important;
             flex-direction: column !important;
         }
 
-            .mbr-section > .container-calendar {
+            .mbr-section.section-calendar-global > .container-calendar {
                 flex: 1 1 auto !important;
                 display: flex !important;
                 flex-direction: column !important;
@@ -579,7 +579,7 @@
             }
     </style>
 
-    <div class="container container-calendar" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
+    <div class="container container-calendar" data-ical-source="https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics" data-allow-list-view="true" data-allow-calendar-view="true" data-default-list-view-mobile="true">
         <div class="calendar-zone">
             <div class="calendar-loader" id="calendar-loader" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
                 <div style="text-align:center; width:100%;">
@@ -687,6 +687,19 @@
             const allowListView = getAttr('data-allow-list-view');
             const allowCalendarView = getAttr('data-allow-calendar-view');
             const defaultListViewMobile = getAttr('data-default-list-view-mobile');
+
+            const DEFAULT_ICAL_URL = "https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics";
+
+            function getIcalUrl() {
+                // Site publié : Mobirise remplace {{icalUrl}} dans l'attribut du conteneur
+                const attr = container ? (container.getAttribute('data-ical-source') || '').trim() : '';
+                if (attr && attr.indexOf('{{') === -1) return attr;
+                // Éditeur Mobirise : lire la valeur du paramètre directement
+                const input = document.querySelector('input[name="icalUrl"]');
+                const fromInput = input ? (input.value || input.getAttribute('value') || '').trim() : '';
+                if (fromInput && fromInput.indexOf('{{') === -1) return fromInput;
+                return DEFAULT_ICAL_URL;
+            }
 
             let calendar = null;
             let currentDate = new Date();
@@ -796,8 +809,28 @@
                 return null;
             }
 
-            // Geocoding cache: city name -> dept code
-            const geocodeCache = {};
+            // Cache de géocodage (ville -> code département), persistant 30 jours en localStorage
+            const GEOCODE_CACHE_KEY = 'calendarGeocodeCache_v1';
+            const GEOCODE_CACHE_TTL = 30 * 24 * 60 * 60 * 1000;
+            const geocodeCache = (function () {
+                try {
+                    const stored = JSON.parse(localStorage.getItem(GEOCODE_CACHE_KEY));
+                    if (stored && stored.ts && (Date.now() - stored.ts) < GEOCODE_CACHE_TTL && stored.entries) {
+                        return stored.entries;
+                    }
+                } catch (e) { }
+                return {};
+            })();
+            let geocodeSaveTimeout = null;
+            function setGeocodeCache(key, value) {
+                geocodeCache[key] = value;
+                if (geocodeSaveTimeout) clearTimeout(geocodeSaveTimeout);
+                geocodeSaveTimeout = setTimeout(() => {
+                    try {
+                        localStorage.setItem(GEOCODE_CACHE_KEY, JSON.stringify({ ts: Date.now(), entries: geocodeCache }));
+                    } catch (e) { }
+                }, 300);
+            }
 
             async function geocodeCityToDept(query) {
                 if (!query || query.length < 2) return null;
@@ -805,14 +838,14 @@
                 if (geocodeCache[cacheKey] !== undefined) return geocodeCache[cacheKey];
                 try {
                     const resp = await fetch('https://api-adresse.data.gouv.fr/search/?q=' + encodeURIComponent(query) + '&limit=1&type=municipality');
-                    if (!resp.ok) { geocodeCache[cacheKey] = null; return null; }
+                    if (!resp.ok) { setGeocodeCache(cacheKey, null); return null; }
                     const data = await resp.json();
                     if (data.features && data.features.length > 0) {
                         const props = data.features[0].properties;
                         const postcode = props.postcode || '';
                         if (postcode.length >= 5) {
                             const code = extractDeptCodeFromPostal(postcode);
-                            geocodeCache[cacheKey] = code;
+                            setGeocodeCache(cacheKey, code);
                             return code;
                         }
                         // Fallback: use citycode (INSEE code, first 2 digits = dept)
@@ -826,15 +859,15 @@
                             } else {
                                 code = citycode.substring(0, 2);
                             }
-                            geocodeCache[cacheKey] = code;
+                            setGeocodeCache(cacheKey, code);
                             return code;
                         }
                     }
-                    geocodeCache[cacheKey] = null;
+                    setGeocodeCache(cacheKey, null);
                     return null;
                 } catch (e) {
                     console.warn('Geocoding error for "' + query + '":', e.message);
-                    geocodeCache[cacheKey] = null;
+                    setGeocodeCache(cacheKey, null);
                     return null;
                 }
             }
@@ -958,7 +991,7 @@
                         detailSelect.appendChild(opt);
                     });
                 }
-                requestAnimationFrame(() => { detailWrap.classList.add('visible'); });
+                setTimeout(() => { detailWrap.classList.add('visible'); }, 20);
             }
 
             function getFilteredEvents() {
@@ -1057,7 +1090,7 @@
 
             function closeEventModal() {
                 const modal = document.querySelector('.event-modal');
-                if (modal) {
+                if (modal && modal.classList.contains('show')) {
                     modal.classList.add('closing');
 
                     setTimeout(() => {
@@ -1111,15 +1144,25 @@
                 const safeUrl = sanitizeUrl(props.url || '');
 
                 function pad(n) {
-                    return n < 10 ? '0' + n : n;
+                    return String(n).padStart(2, '0');
                 }
 
                 function formatDateICS(date, allDay) {
                     if (!date) return '';
                     if (allDay) {
-                        return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate());
+                        // Journée entière : date locale (les getters UTC décalent d'un jour en France)
+                        return '' + date.getFullYear() + pad(date.getMonth() + 1) + pad(date.getDate());
                     }
-                    return date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate()) + 'T' + pad(date.getUTCHours()) + pad(date.getUTCMinutes()) + pad(date.getUTCSeconds()) + 'Z';
+                    return '' + date.getUTCFullYear() + pad(date.getUTCMonth() + 1) + pad(date.getUTCDate()) + 'T' + pad(date.getUTCHours()) + pad(date.getUTCMinutes()) + pad(date.getUTCSeconds()) + 'Z';
+                }
+
+                // Échappement des valeurs texte selon RFC 5545 (\ ; , et retours à la ligne)
+                function escapeICSText(value) {
+                    return String(value || '')
+                        .replace(/\\/g, '\\\\')
+                        .replace(/;/g, '\\;')
+                        .replace(/,/g, '\\,')
+                        .replace(/\r\n|\r|\n/g, '\\n');
                 }
 
                 function generateICS() {
@@ -1129,18 +1172,20 @@
                     let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Mobirise Calendar//FR\r\n';
                     ics += 'BEGIN:VEVENT\r\n';
                     ics += 'UID:' + uid + '\r\n';
-                    ics += 'SUMMARY:' + (props.summary || event.title || 'Événement') + '\r\n';
-                    ics += 'DESCRIPTION:' + (props.description ? props.description.replace(/\n/g, '\\n') : '') + '\r\n';
+                    ics += 'DTSTAMP:' + formatDateICS(new Date(), false) + '\r\n';
+                    ics += 'SUMMARY:' + escapeICSText(props.summary || event.title || 'Événement') + '\r\n';
+                    if (props.description) ics += 'DESCRIPTION:' + escapeICSText(props.description) + '\r\n';
                     ics += 'DTSTART' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtStart + '\r\n';
                     if (dtEnd) ics += 'DTEND' + (event.allDay ? ';VALUE=DATE' : '') + ':' + dtEnd + '\r\n';
-                    if (props.location) ics += 'LOCATION:' + props.location.replace(/\n/g, ' ') + '\r\n';
+                    if (props.location) ics += 'LOCATION:' + escapeICSText(String(props.location).replace(/\r\n|\r|\n/g, ' ')) + '\r\n';
                     if (props.url) ics += 'URL:' + props.url + '\r\n';
                     ics += 'END:VEVENT\r\nEND:VCALENDAR';
                     return ics;
                 }
 
                 function getIcsPayload() {
-                    const rawName = (props.summary || event.title || 'evenement').toLowerCase();
+                    const rawName = (props.summary || event.title || 'evenement').toLowerCase()
+                        .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
                     const safeName = rawName.replace(/[^a-z0-9\-\s]/g, '').trim().replace(/\s+/g, '-') || 'evenement';
                     const fileName = safeName + '.ics';
                     const icsContent = generateICS();
@@ -1166,7 +1211,7 @@
                     downloadBtn.onclick = downloadIcsFile;
                 }
 
-                requestAnimationFrame(() => {
+                (() => {
                     modal.setAttribute('role', 'dialog');
                     modal.setAttribute('aria-modal', 'true');
                     modal.setAttribute('aria-hidden', 'false');
@@ -1281,7 +1326,7 @@
                         const closeBtn = modal.querySelector('.event-modal-close');
                         if (closeBtn) closeBtn.focus();
                     }, 100);
-                });
+                })();
             }
 
             function updateMonthLabel(date) {
@@ -1312,7 +1357,7 @@
                 }
 
                 const sinceDays = Math.max(1, Math.ceil((now.getTime() - endMs) / 86400000));
-                return 'Terminé il y a ' + sinceDays + ' jours';
+                return 'Terminé il y a ' + sinceDays + ' jour' + (sinceDays > 1 ? 's' : '');
             }
 
             function renderEasterView() {
@@ -1678,10 +1723,10 @@
                                 const startStr = start.toLocaleDateString('fr-FR', options);
                                 const endStr = displayEnd.toLocaleDateString('fr-FR', options);
                                 nbJours = Math.round((displayEnd - start) / (24 * 60 * 60 * 1000)) + 1;
-                                html += `<div class="fc-event-title">${arg.event.title} <span class="multi-days-span" style="font-weight:normal;font-size:0.95em;margin-left:0.5em;color:#ffc107;">(${nbJours} jour${nbJours > 1 ? 's' : ''})</span></div>`;
+                                html += `<div class="fc-event-title">${escapeHtml(arg.event.title)} <span class="multi-days-span" style="font-weight:normal;font-size:0.95em;margin-left:0.5em;color:#ffc107;">(${nbJours} jour${nbJours > 1 ? 's' : ''})</span></div>`;
                                 html += `<div class="fc-list-event-time" style="font-weight:bold;">Du ${startStr} au ${endStr}</div>`;
                             } else {
-                                html += `<div class="fc-event-title">${arg.event.title}</div>`;
+                                html += `<div class="fc-event-title">${escapeHtml(arg.event.title)}</div>`;
                             }
                             return { html };
                         }
@@ -1998,13 +2043,8 @@
                 const btnSubscribe = document.getElementById('btn-subscribe');
                 if (btnSubscribe) {
                     btnSubscribe.onclick = () => {
-                        // Utiliser uniquement le lien GitHub pour l'iCal
-                        const defaultIcalUrl = "https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics";
-                        const icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
-                            document.querySelector('[data-ical-url]')?.getAttribute('value') ||
-                            document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
-                            document.querySelector('input[name="icalUrl"]')?.value ||
-                            defaultIcalUrl;
+                        const icalUrl = getIcalUrl();
+                        const safeIcalUrl = escapeHtml(icalUrl);
 
                         const subscribeModal = document.createElement('div');
                         subscribeModal.className = 'event-modal show';
@@ -2021,10 +2061,10 @@
                         <div class="event-info-content">
                           <div class="event-info-label">Lien d'abonnement iCal</div>
                           <div class="event-info-text">
-                            <input type="text" readonly value="${icalUrl}" style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 0.5rem;" onclick="this.select()">
+                            <input type="text" readonly value="${safeIcalUrl}" data-subscribe-url style="width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 0.5rem;">
                             <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
-                              <button class="event-url-button" onclick="navigator.clipboard.writeText('${icalUrl}'); this.textContent='✓ Copié !'; setTimeout(() => this.textContent='Copier le lien', 2000)" style="flex: 1;">Copier le lien</button>
-                              <button class="event-url-button" onclick="window.open('${icalUrl}', '_blank')" style="flex: 1;">Télécharger</button>
+                              <button class="event-url-button" data-subscribe-copy style="flex: 1;">Copier le lien</button>
+                              <button class="event-url-button" data-subscribe-open style="flex: 1;">Télécharger</button>
                             </div>
                           </div>
                         </div>
@@ -2084,10 +2124,38 @@
 
                         const closeBtn = subscribeModal.querySelector('.event-modal-close');
                         const overlay = subscribeModal.querySelector('.event-modal-overlay');
+                        const urlInput = subscribeModal.querySelector('[data-subscribe-url]');
+                        const copyBtn = subscribeModal.querySelector('[data-subscribe-copy]');
+                        const openBtn = subscribeModal.querySelector('[data-subscribe-open]');
+
+                        const onEscape = (ev) => {
+                            if (ev.key === 'Escape') closeSubscribe();
+                        };
 
                         const closeSubscribe = () => {
+                            document.removeEventListener('keydown', onEscape);
                             subscribeModal.remove();
                         };
+
+                        document.addEventListener('keydown', onEscape);
+
+                        if (urlInput) urlInput.onclick = function () { this.select(); };
+                        if (copyBtn) copyBtn.onclick = function () {
+                            const done = () => {
+                                copyBtn.textContent = '✓ Copié !';
+                                setTimeout(() => { copyBtn.textContent = 'Copier le lien'; }, 2000);
+                            };
+                            if (navigator.clipboard && navigator.clipboard.writeText) {
+                                navigator.clipboard.writeText(icalUrl).then(done).catch(() => {
+                                    if (urlInput) { urlInput.select(); document.execCommand('copy'); done(); }
+                                });
+                            } else if (urlInput) {
+                                urlInput.select();
+                                document.execCommand('copy');
+                                done();
+                            }
+                        };
+                        if (openBtn) openBtn.onclick = () => window.open(icalUrl, '_blank', 'noopener');
 
                         if (closeBtn) closeBtn.onclick = closeSubscribe;
                         if (overlay) overlay.onclick = closeSubscribe;
@@ -2168,13 +2236,7 @@
 
 
                     try {
-                        // Utiliser uniquement le lien GitHub pour l'iCal
-                        const defaultIcalUrl = "https://raw.githubusercontent.com/QuentinMarical/lameutenormande/refs/heads/main/events.ics";
-                        let icalUrl = document.querySelector('[data-ical-url]')?.getAttribute('data-ical-url') ||
-                            document.querySelector('[data-ical-url]')?.getAttribute('value') ||
-                            document.querySelector('input[name="icalUrl"]')?.getAttribute('value') ||
-                            document.querySelector('input[name="icalUrl"]')?.value ||
-                            defaultIcalUrl;
+                        let icalUrl = getIcalUrl();
 
                         console.log('URL trouvée:', icalUrl);
 
