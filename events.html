@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=tYnX7S"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=tYnX7S" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=lhq57u"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=lhq57u" type="text/css">
 
   
   
@@ -43,13 +43,13 @@
 		<div class="container">
 			<div class="navbar-brand">
 				<span class="navbar-logo">
-					<a href="https://lameutenormande.fr">
+					<a href="index.html">
 						<img src="assets/images/logo-2000x837.png" alt="La Meute Normande" style="height: 3.7rem;">
 					</a>
 				</span>
 				
 			</div>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<div class="hamburger">
 					<span></span>
 					<span></span>
@@ -59,11 +59,11 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item">
-						<a class="nav-link link text-danger display-4" href="events.html">&nbsp;Événements&nbsp;</a>
-					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">&nbsp;Actus&nbsp;</a></li>
+						<a class="nav-link link text-danger display-4" href="events.html">Événements</a>
+					</li><li class="nav-item"><a class="nav-link link text-danger display-4" href="actus.html">Actus</a></li>
 					
 					<li class="nav-item">
-						<a class="nav-link link text-danger display-4" href="contact.html">&nbsp;Contact&nbsp;</a>
+						<a class="nav-link link text-danger display-4" href="contact.html">Contact</a>
 					</li></ul>
 				<div class="icons-menu">
 					<a class="iconfont-wrapper" href="http://t.me/Annonces_Meute_Normande">
@@ -629,7 +629,11 @@
                     </div>
                     <div class="calendar-filter-group calendar-filter-group-search">
                         <label class="calendar-filter-label" for="filter-search">🔍</label>
-                        <input type="search" class="calendar-filter-search" id="filter-search" placeholder="Rechercher..." aria-label="Rechercher un événement" autocomplete="off">
+                        <div class="calendar-search-box">
+                            <input type="search" class="calendar-filter-search" id="filter-search" placeholder="Rechercher..." aria-label="Rechercher un événement" autocomplete="off">
+                            <button type="button" class="calendar-search-clear" id="filter-search-clear" aria-label="Effacer la recherche">×</button>
+                            <div class="calendar-search-results" id="filter-search-results" role="listbox" hidden=""></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1052,6 +1056,107 @@
                 });
             }
 
+            // ===== Suggestions de recherche =====
+            let searchActiveIndex = -1;
+
+            function buildSearchMatches(query) {
+                const q = normalizeSearchText(query).trim();
+                if (!q) return [];
+                const now = new Date();
+                const scored = [];
+                allLoadedEvents.forEach(ev => {
+                    const props = ev.extendedProps || {};
+                    const nTitle = normalizeSearchText(ev.title || '');
+                    let score = -1;
+                    if (nTitle.indexOf(q) === 0) score = 0;
+                    else if (nTitle.indexOf(q) !== -1) score = 1;
+                    else if (normalizeSearchText(props.location || '').indexOf(q) !== -1) score = 2;
+                    else if (normalizeSearchText(props.description || '').indexOf(q) !== -1) score = 3;
+                    if (score < 0) return;
+                    const start = ev.start ? new Date(ev.start) : null;
+                    const end = ev.end ? new Date(ev.end) : start;
+                    const isPast = !!(end && end.getTime() < now.getTime());
+                    scored.push({ ev, score, isPast, start });
+                });
+                scored.sort((a, b) => {
+                    if (a.isPast !== b.isPast) return a.isPast ? 1 : -1; // à venir d'abord
+                    if (a.score !== b.score) return a.score - b.score;   // meilleure pertinence d'abord
+                    const at = a.start ? a.start.getTime() : 0;
+                    const bt = b.start ? b.start.getTime() : 0;
+                    return a.isPast ? bt - at : at - bt;                 // à venir: le plus proche / passés: le plus récent
+                });
+                return scored.slice(0, 8);
+            }
+
+            function hideSearchResults() {
+                const searchResults = document.getElementById('filter-search-results');
+                if (searchResults) {
+                    searchResults.hidden = true;
+                    searchResults.innerHTML = '';
+                }
+                searchActiveIndex = -1;
+            }
+
+            function renderSearchResults() {
+                const searchResults = document.getElementById('filter-search-results');
+                const filterSearch = document.getElementById('filter-search');
+                if (!searchResults || !filterSearch) return;
+                const q = filterSearch.value.trim();
+                if (q.length < 2) { hideSearchResults(); return; }
+
+                const matches = buildSearchMatches(q);
+                searchActiveIndex = -1;
+                if (!matches.length) {
+                    searchResults.innerHTML = '<div class="calendar-search-empty">Aucun événement trouvé</div>';
+                    searchResults.hidden = false;
+                    return;
+                }
+
+                let html = '<div class="calendar-search-count">' + matches.length + ' résultat' + (matches.length > 1 ? 's' : '') + ' — cliquez pour ouvrir</div>';
+                html += matches.map((m, i) => {
+                    const dateStr = m.start ? m.start.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+                    return `<button type="button" class="calendar-search-item${m.isPast ? ' is-past' : ''}" data-result-index="${i}" role="option">
+                                <span class="calendar-search-item-title">${escapeHtml(m.ev.title || '')}</span>
+                                <span class="calendar-search-item-date">${dateStr}</span>
+                            </button>`;
+                }).join('');
+                searchResults.innerHTML = html;
+                searchResults.hidden = false;
+
+                searchResults.querySelectorAll('[data-result-index]').forEach(btn => {
+                    btn.onclick = () => {
+                        const m = matches[parseInt(btn.getAttribute('data-result-index'), 10)];
+                        if (m) {
+                            hideSearchResults();
+                            openEventModal(m.ev, m.ev.extendedProps || {});
+                        }
+                    };
+                });
+            }
+
+            function handleSearchKeydown(e) {
+                const searchResults = document.getElementById('filter-search-results');
+                if (!searchResults || searchResults.hidden) return;
+                const items = Array.prototype.slice.call(searchResults.querySelectorAll('.calendar-search-item'));
+                if (e.key === 'Escape') {
+                    e.stopPropagation();
+                    hideSearchResults();
+                    return;
+                }
+                if (!items.length) return;
+                if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    searchActiveIndex = e.key === 'ArrowDown'
+                        ? (searchActiveIndex + 1) % items.length
+                        : (searchActiveIndex <= 0 ? items.length - 1 : searchActiveIndex - 1);
+                    items.forEach((el, i) => el.classList.toggle('is-active', i === searchActiveIndex));
+                    items[searchActiveIndex].scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'Enter' && searchActiveIndex >= 0 && items[searchActiveIndex]) {
+                    e.preventDefault();
+                    items[searchActiveIndex].click();
+                }
+            }
+
             function saveFilterSettings() {
                 const saveCheckbox = document.getElementById('filter-save');
                 if (!saveCheckbox || !saveCheckbox.checked) return;
@@ -1108,6 +1213,28 @@
                     }
                     // Get fresh filtered events and consolidate them
                     loadedEvents = consolidateMultiDayEvents(getFilteredEvents());
+
+                    // Recherche active sans résultat dans le mois affiché :
+                    // sauter au mois du premier résultat (à venir de préférence)
+                    const searchVal = (document.getElementById('filter-search')?.value || '').trim();
+                    if (searchVal.length > 1 && loadedEvents.length) {
+                        const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+                        const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1);
+                        const inMonth = loadedEvents.some(ev => {
+                            const s = ev.start ? new Date(ev.start) : null;
+                            if (!s) return false;
+                            const e = ev.end ? new Date(ev.end) : s;
+                            return s < monthEnd && e >= monthStart;
+                        });
+                        if (!inMonth) {
+                            const now = new Date();
+                            const sorted = loadedEvents.slice().sort((a, b) => new Date(a.start) - new Date(b.start));
+                            const upcoming = sorted.find(ev => (ev.end ? new Date(ev.end) : new Date(ev.start)) >= now);
+                            const target = upcoming || sorted[sorted.length - 1];
+                            if (target && target.start) currentDate = new Date(target.start);
+                        }
+                    }
+
                     // Reinitialize calendar with the fresh event list
                     initCalendar(currentView);
                     if (wrapper) wrapper.classList.remove('calendar-filtering');
@@ -2100,14 +2227,40 @@
                 if (filterDetail) filterDetail.onchange = applyFilters;
 
                 const filterSearch = document.getElementById('filter-search');
+                const searchClear = document.getElementById('filter-search-clear');
+                const searchBox = filterSearch ? filterSearch.closest('.calendar-search-box') : null;
                 if (filterSearch) {
                     let searchDebounce = null;
+                    const syncClearButton = () => {
+                        if (searchBox) searchBox.classList.toggle('has-value', filterSearch.value.trim().length > 0);
+                    };
                     const onSearchChange = () => {
+                        syncClearButton();
+                        renderSearchResults();
                         if (searchDebounce) clearTimeout(searchDebounce);
                         searchDebounce = setTimeout(applyFilters, 350);
                     };
                     filterSearch.addEventListener('input', onSearchChange);
                     filterSearch.addEventListener('search', onSearchChange);
+                    filterSearch.addEventListener('focus', renderSearchResults);
+                    filterSearch.addEventListener('keydown', handleSearchKeydown);
+
+                    if (searchClear) {
+                        searchClear.onclick = () => {
+                            filterSearch.value = '';
+                            syncClearButton();
+                            hideSearchResults();
+                            applyFilters();
+                            filterSearch.focus();
+                        };
+                    }
+
+                    // Fermer les suggestions au clic en dehors du champ
+                    document.addEventListener('mousedown', (ev) => {
+                        if (searchBox && !searchBox.contains(ev.target)) hideSearchResults();
+                    });
+
+                    syncClearButton();
                 }
 
                 // Save checkbox toggle
@@ -2125,6 +2278,7 @@
 
                 // Restore saved settings
                 if (restoreFilterSettings()) {
+                    if (searchBox && filterSearch) searchBox.classList.toggle('has-value', filterSearch.value.trim().length > 0);
                     applyFilters();
                 }
 
