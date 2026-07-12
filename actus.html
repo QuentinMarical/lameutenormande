@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=UOwg8T"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=UOwg8T" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=Dy0kaz"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=Dy0kaz" type="text/css">
 
   
   
@@ -82,7 +82,7 @@
 	</nav>
 </section>
 
-<section data-bs-version="5.1" class="header-actus-fullscreen startm5 cid-vfPilZdu2W mbr-fullscreen mbr-parallax-background" id="header09-1l">
+<section data-bs-version="5.1" class="header-actus-v3 startm5 cid-vfPilZdu2W mbr-fullscreen mbr-parallax-background" id="header09-1l">
 
     
 
@@ -102,7 +102,7 @@
                     Découvrez les prochains événements auxquels notre groupe participe.
                 </p>
 
-                <div class="events-grid" id="events-grid" aria-live="polite"></div>
+                <div class="events-grid" aria-live="polite" aria-busy="false" data-ical-url="https://lameutenormande.fr/events.ics" data-filter="go@events.lameutenormande" data-max-events="3" data-future-days="365"></div>
 
                 <p class="mbr-fonts-style mbr-white mt-4 mb-2 telegram-note display-7">
                     <em>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</em><br>
@@ -120,487 +120,597 @@
         </div>
     </div>
 
-    <!-- MODALE standard centrée -->
-    <div class="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-modal-title" aria-hidden="true">
-        <div class="event-modal-overlay"></div>
-        <div class="event-modal-content" tabindex="-1">
+    <!-- MODALE : élément <dialog> natif (top layer = plus aucun hack z-index nécessaire) -->
+    <dialog class="event-modal">
+        <div class="event-modal-content">
             <div class="event-modal-header">
                 <h3 class="event-modal-title"></h3>
-                <button class="event-modal-close" aria-label="Fermer">×</button>
+                <div class="event-modal-actions">
+                    <button type="button" class="event-modal-dl">Télécharger pour mon calendrier (.ics)</button>
+                    <button type="button" class="event-modal-close" aria-label="Fermer">×</button>
+                </div>
             </div>
             <div class="event-modal-body"></div>
         </div>
-    </div>
+    </dialog>
 
     <script>
-    (function() {
+    (function () {
         'use strict';
 
-        // Fix z-index navbar + modal fullscreen mobile : injection globale dans <head>
-        // ⚠️ EXCLUT les modules artistes (.module-artiste) et leurs modales (.artist-modal)
-        // EXCLUT les modales gallery bloc (.artistgallery1) et leurs modales (.ag-modal)
-        // EXCLUT les fullscreen overlays (.carousel-fullscreen, .pricing-fullscreen)
-        (function() {
-            var s = document.createElement('style');
-            s.textContent = ''
-                + 'body.modal-open{overflow:hidden}'
-                + 'body.modal-open>*:not(.module-artiste):not(.artistgallery1):not(.carousel-fullscreen):not(.pricing-fullscreen){z-index:0!important;position:relative}'
-                + 'body.modal-open>.module-artiste{z-index:0!important;position:relative}'
-                + 'body.modal-open>.artistgallery1{z-index:0!important;position:relative}'
-                + 'body.modal-open>.module-artiste:has(.artist-modal.show){z-index:2147483647!important}'
-                + 'body.modal-open>.artistgallery1:has(.ag-modal.show){z-index:2147483647!important}'
-                + 'body.modal-open>:has(.event-modal){z-index:2147483647!important}'
-                + 'body.modal-open>:has(.legal-modal){z-index:2147483647!important}'
-                + '.carousel-fullscreen,.pricing-fullscreen{position:fixed!important;z-index:2147483648!important}'
-                + '@media(max-width:767px){'
-                    + '.event-modal{padding:0!important;align-items:stretch!important}'
-                    + '.event-modal-overlay{position:fixed!important;inset:0!important}'
-                    + '.event-modal-content{position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;margin:0!important;border-radius:0!important;box-shadow:none!important;animation:eventSheetUp .32s cubic-bezier(.25,.46,.45,.94)}'
-                    + '.event-modal.closing .event-modal-content{animation:eventSheetDown .25s ease forwards}'
-                    + '.event-modal-header{padding:1.5rem 1.25rem 1rem!important;position:sticky!important;top:0!important;z-index:10;background:linear-gradient(155deg,#1e1430 0%,#120d22 60%,#0d0a1c 100%)}'
-                    + '.event-modal-body{padding:1rem 1.25rem 2rem!important;flex:1;overflow-y:auto}'
-                    + '.event-modal-title{font-size:1.3rem!important}'
-                + '}'
-                + '@keyframes eventSheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}'
-                + '@keyframes eventSheetDown{from{transform:translateY(0)}to{transform:translateY(100%)}}';
-            document.head.appendChild(s);
-        })();
+        // Capturé au parsing : permet plusieurs instances du module sur une même page.
+        const scriptActuel = document.currentScript;
 
-        const CONFIG = {
-            ICAL_URL: 'https://lameutenormande.fr/events.ics',
-            MAX_EVENTS: 3,
-            EVENT_FILTER: 'go@events.lameutenormande',
-            FUTURE_DAYS: 365
-        };
+        function trouverRacine() {
+            const parent = scriptActuel && scriptActuel.closest('section.header-actus-v3');
+            if (parent) return parent;
+            const candidats = document.querySelectorAll('section.header-actus-v3');
+            for (const c of candidats) {
+                if (!c.dataset.actusInit) return c;
+            }
+            return candidats[0] || null;
+        }
 
-        let conventions = [];
-        let currentKeyHandler = null;
-        let lastFocusedElement = null;
+        function init() {
+            const racine = trouverRacine();
+            if (!racine || racine.dataset.actusInit) return;
+            racine.dataset.actusInit = '1';
 
-        function chargerICAL() {
-            return new Promise((resolve, reject) => {
-                if (typeof ICAL !== 'undefined') {
-                    resolve();
+            const grille = racine.querySelector('.events-grid');
+            const modale = racine.querySelector('.event-modal');
+            if (!grille || !modale) return;
+
+            const titreModale = modale.querySelector('.event-modal-title');
+            const corpsModale = modale.querySelector('.event-modal-body');
+            const boutonFermer = modale.querySelector('.event-modal-close');
+            const supporteDialog = typeof modale.showModal === 'function';
+
+            // Id unique pour l'accessibilité (évite les collisions entre instances)
+            const uid = 'actus3-titre-' + Math.random().toString(36).slice(2, 8);
+            titreModale.id = uid;
+            modale.setAttribute('aria-labelledby', uid);
+
+            /* ------------------------------------------------------------------
+             * Configuration : lue depuis les paramètres Mobirise (data-attributes),
+             * avec valeurs de repli si le HTML est injecté sans les {{params}}.
+             * ------------------------------------------------------------------ */
+            const config = {
+                url: grille.dataset.icalUrl || 'https://lameutenormande.fr/events.ics',
+                filtre: (grille.dataset.filter || 'go@events.lameutenormande').toLowerCase(),
+                maxEvents: parseInt(grille.dataset.maxEvents, 10) || 3,
+                joursFuturs: parseInt(grille.dataset.futureDays, 10) || 365,
+                cacheMinutes: 10,
+                timeoutMs: 12000
+            };
+            const cleCache = 'actus3:' + config.url;
+
+            let conventions = [];
+            let enChargement = false;
+            let dernierFocus = null;
+            let evenementModal = null;
+
+            /* ---------------------- Utilitaires texte ---------------------- */
+
+            function echapperHtml(t) {
+                return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[c]));
+            }
+
+            function lierUrls(t) {
+                return echapperHtml(t)
+                    .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
+                    .replace(/\n/g, '<br>');
+            }
+
+            function majusculeInitiale(t) {
+                return t.charAt(0).toUpperCase() + t.slice(1);
+            }
+
+            /* ---------------------- Chargement du flux ICS ---------------------- */
+
+            function lireCache() {
+                try {
+                    const brut = sessionStorage.getItem(cleCache);
+                    if (!brut) return null;
+                    const donnees = JSON.parse(brut);
+                    if (Date.now() - donnees.t > config.cacheMinutes * 60000) return null;
+                    return donnees.ics;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function ecrireCache(ics) {
+                try {
+                    sessionStorage.setItem(cleCache, JSON.stringify({ t: Date.now(), ics }));
+                } catch (e) { /* stockage indisponible : sans gravité */ }
+            }
+
+            async function chargerICS() {
+                const enCache = lireCache();
+                if (enCache) return enCache;
+
+                const options = { cache: 'no-store' };
+                if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+                    options.signal = AbortSignal.timeout(config.timeoutMs);
+                }
+
+                const separateur = config.url.includes('?') ? '&' : '?';
+                const reponse = await fetch(config.url + separateur + 'v=' + Date.now(), options);
+                if (!reponse.ok) throw new Error('HTTP ' + reponse.status);
+
+                const texte = await reponse.text();
+                if (!texte.includes('BEGIN:VCALENDAR')) throw new Error('Fichier ICS invalide');
+
+                ecrireCache(texte);
+                return texte;
+            }
+
+            /* ------------------------------------------------------------------
+             * Parseur iCalendar natif (RFC 5545) — remplace la dépendance CDN
+             * ICAL.js de la V2. Gère : dépliage des lignes, paramètres de
+             * propriété (VALUE=DATE, TZID…), séquences d'échappement, ':' dans
+             * les paramètres entre guillemets.
+             * Non géré (comme en V2) : RRULE, EXDATE, fuseaux VTIMEZONE.
+             * ------------------------------------------------------------------ */
+
+            function deplierICS(texte) {
+                return texte.replace(/\r?\n[ \t]/g, '');
+            }
+
+            function decouperLigne(ligne) {
+                let enGuillemets = false;
+                for (let i = 0; i < ligne.length; i++) {
+                    const c = ligne[i];
+                    if (c === '"') enGuillemets = !enGuillemets;
+                    else if (c === ':' && !enGuillemets) {
+                        return { avant: ligne.slice(0, i), valeur: ligne.slice(i + 1) };
+                    }
+                }
+                return null;
+            }
+
+            function desechapperICS(t) {
+                return t.replace(/\\n/gi, '\n').replace(/\\([,;\\])/g, '$1');
+            }
+
+            function parserDateICS(valeur, parametres) {
+                const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
+                if (!m) return null;
+                const allDay = /VALUE=DATE(?!-TIME)/i.test(parametres) || !m[4];
+                const date = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
+                return isNaN(date.getTime()) ? null : { date, allDay };
+            }
+
+            function parserICS(texte) {
+                const lignes = deplierICS(texte).split(/\r?\n/);
+                const evenements = [];
+                let courant = null;
+
+                for (const ligne of lignes) {
+                    if (ligne === 'BEGIN:VEVENT') { courant = {}; continue; }
+                    if (ligne === 'END:VEVENT') {
+                        if (courant) evenements.push(courant);
+                        courant = null;
+                        continue;
+                    }
+                    if (!courant) continue;
+
+                    const parts = decouperLigne(ligne);
+                    if (!parts) continue;
+
+                    const nom = parts.avant.split(';')[0].toUpperCase();
+                    const valeur = parts.valeur.trim();
+
+                    switch (nom) {
+                        case 'UID':         courant.uid = valeur; break;
+                        case 'SUMMARY':     courant.title = desechapperICS(valeur); break;
+                        case 'DESCRIPTION': courant.description = desechapperICS(valeur); break;
+                        case 'LOCATION':    courant.location = desechapperICS(valeur); break;
+                        case 'URL':         courant.url = valeur; break;
+                        case 'DTSTART':     courant.debut = parserDateICS(valeur, parts.avant); break;
+                        case 'DTEND':       courant.fin = parserDateICS(valeur, parts.avant); break;
+                        case 'ATTENDEE':
+                            if (ligne.toLowerCase().includes(config.filtre)) courant.estGo = true;
+                            break;
+                    }
+                }
+                return evenements;
+            }
+
+            /* ------------------------------------------------------------------
+             * Filtrage : un événement reste visible tant qu'il n'est pas terminé
+             * (la V2 le faisait disparaître dès que l'heure de début était passée).
+             * ------------------------------------------------------------------ */
+            function filtrerEvenements(evts) {
+                const maintenant = Date.now();
+                const limite = maintenant + config.joursFuturs * 86400000;
+
+                return evts
+                    .filter(e => {
+                        if (!e.estGo || !e.debut) return false;
+                        const finVisible = e.fin ? e.fin.date.getTime() : e.debut.date.getTime() + 86400000;
+                        return finVisible > maintenant && e.debut.date.getTime() <= limite;
+                    })
+                    .sort((a, b) => a.debut.date - b.debut.date)
+                    .slice(0, config.maxEvents);
+            }
+
+            /* ---------------------- Formatage des dates ---------------------- */
+
+            function formaterDate(date) {
+                return {
+                    jour: date.getUTCDate(),
+                    mois: date.toLocaleDateString('fr-FR', { month: 'short', timeZone: 'UTC' })
+                        .replace('.', '').toUpperCase(),
+                    complet: date.toLocaleDateString('fr-FR', {
+                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+                    })
+                };
+            }
+
+            function memeJourUTC(a, b) {
+                return a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);
+            }
+
+            // DTEND en tout-journée est exclusif (RFC 5545) : le vrai dernier jour est J-1
+            function dernierJour(evt) {
+                if (!evt.fin) return evt.debut.date;
+                return evt.fin.allDay ? new Date(evt.fin.date.getTime() - 86400000) : evt.fin.date;
+            }
+
+            function statutDe(evt) {
+                const t = Date.now();
+                const fin = evt.fin ? evt.fin.date.getTime() : evt.debut.date.getTime() + 86400000;
+                if (fin <= t) return 'past';
+                if (evt.debut.date.getTime() <= t) return 'now';
+                return 'future';
+            }
+
+            function nombreJours(evt) {
+                return Math.round((dernierJour(evt) - evt.debut.date) / 86400000) + 1;
+            }
+
+            function texteHeureUTC(d) {
+                return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });
+            }
+
+            function compteARebours(evt) {
+                if (statutDe(evt) === 'now') return 'En cours';
+                const ms = evt.debut.date.getTime() - Date.now();
+                // Événement horodaté à moins de 24 h : précision à l'heure
+                if (!evt.debut.allDay && ms < 86400000) {
+                    return 'Dans ' + Math.max(1, Math.ceil(ms / 3600000)) + ' h';
+                }
+                const diff = Math.ceil(ms / 86400000);
+                if (diff <= 0) return "Aujourd'hui !";
+                if (typeof Intl.RelativeTimeFormat === 'function') {
+                    const rtf = new Intl.RelativeTimeFormat('fr', { numeric: 'auto' });
+                    return majusculeInitiale(rtf.format(diff, 'day'));
+                }
+                return diff === 1 ? 'Demain !' : 'Dans ' + diff + ' jours';
+            }
+
+            /* ---------------------- Rendu de la grille ---------------------- */
+
+            function afficherSquelette() {
+                const n = Math.min(config.maxEvents, 3);
+                let html = '';
+                for (let i = 0; i < n; i++) {
+                    html += `
+                        <div class="event-tile skeleton" aria-hidden="true">
+                            <div class="event-tile-date"></div>
+                            <div class="event-tile-content">
+                                <div class="sk-line sk-title"></div>
+                                <div class="sk-line sk-sub"></div>
+                                <div class="sk-line sk-tag"></div>
+                            </div>
+                        </div>`;
+                }
+                grille.innerHTML = html;
+            }
+
+            function afficherErreur() {
+                grille.innerHTML = `
+                    <div class="events-message error">
+                        <span aria-hidden="true">⚠️</span>
+                        <p>Erreur de chargement des événements.</p>
+                        <button type="button" class="events-retry">Réessayer</button>
+                    </div>`;
+                const btn = grille.querySelector('.events-retry');
+                if (btn) btn.addEventListener('click', demarrer);
+            }
+
+            function rendreTuiles() {
+                if (!conventions.length) {
+                    grille.innerHTML = `
+                        <div class="events-message info">
+                            <span aria-hidden="true">ℹ️</span>
+                            <p>Aucune convention prévue pour le moment</p>
+                        </div>`;
                     return;
                 }
-                const s = document.createElement('script');
-                s.src = 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js';
-                s.crossOrigin = 'anonymous';
-                s.onload = () => (typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL indéfini')));
-                s.onerror = () => reject(new Error('Échec CDN ICAL.js'));
-                document.head.appendChild(s);
+
+                grille.innerHTML = conventions.map((evt, i) => {
+                    const date = formaterDate(evt.debut.date);
+                    const statut = statutDe(evt);
+                    const estFox = /\u{1F98A}/u.test(evt.title || '');
+                    const nbJours = nombreJours(evt);
+                    const badge = nbJours > 1 ? ` <span class="event-badge">${nbJours} jours</span>` : '';
+                    return `
+                        <article class="event-tile is-${statut}${estFox ? ' is-fox' : ''}" tabindex="0" role="button" data-index="${i}"
+                                 aria-label="Voir les détails de ${echapperHtml(evt.title || 'cet événement')}">
+                            <div class="event-tile-date">
+                                <span class="event-tile-day">${date.jour}</span>
+                                <span class="event-tile-month">${date.mois}</span>
+                            </div>
+                            <div class="event-tile-content">
+                                <h3 class="event-tile-title">${echapperHtml(evt.title || 'Convention')}${badge}</h3>
+                                ${evt.location ? `<p class="event-tile-location"><span aria-hidden="true">📍</span> ${echapperHtml(evt.location)}</p>` : ''}
+                                <p class="event-tile-countdown"><span class="event-chip is-${statut}">${compteARebours(evt)}</span></p>
+                            </div>
+                            <div class="event-tile-arrow" aria-hidden="true">▶</div>
+                        </article>`;
+                }).join('');
+            }
+
+            // Délégation d'événements : un seul listener pour toutes les tuiles
+            grille.addEventListener('click', e => {
+                const tuile = e.target.closest('.event-tile[data-index]');
+                if (tuile) ouvrirModale(conventions[+tuile.dataset.index], tuile);
             });
-        }
-
-        function attendeeContainsFilter(prop, filter) {
-            try {
-                const raw = JSON.stringify(prop.jCal || '').toLowerCase();
-                if (raw.includes(filter)) return true;
-
-                const val = String(prop.getFirstValue() || '').toLowerCase();
-                if (val.includes(filter)) return true;
-
-                const cn = String(prop.getParameter('cn') || '').toLowerCase();
-                if (cn.includes(filter)) return true;
-            } catch (e) {}
-            return false;
-        }
-
-        function parserICSManuel(texte) {
-            const filter = CONFIG.EVENT_FILTER.toLowerCase();
-            const now = new Date();
-            const cutoff = new Date(now.getTime() + CONFIG.FUTURE_DAYS * 86400000);
-            const events = [];
-
-            const blocs = texte.split('BEGIN:VEVENT');
-
-            for (let i = 1; i < blocs.length; i++) {
-                const bloc = blocs[i].split('END:VEVENT');
-                const unfolded = bloc.replace(/\r\n[ \t]/g, '').replace(/\n[ \t]/g, '');
-                const lines = unfolded.split(/\r?\n/);
-
-                let summary = '';
-                let dtstart = '';
-                let dtend = '';
-                let location = '';
-                let url = '';
-                let description = '';
-                let isGo = false;
-
-                for (const line of lines) {
-                    const ci = line.indexOf(':');
-                    if (ci === -1) continue;
-
-                    const keyFull = line.substring(0, ci);
-                    const key = keyFull.split(';').toUpperCase();
-                    const val = line.substring(ci + 1).trim();
-
-                    if (key === 'SUMMARY') summary = val.replace(/\\,/g, ',').replace(/\\n/g, '\n');
-                    else if (key === 'DTSTART') dtstart = val;
-                    else if (key === 'DTEND') dtend = val;
-                    else if (key === 'LOCATION') location = val.replace(/\\,/g, ',');
-                    else if (key === 'URL') url = val;
-                    else if (key === 'DESCRIPTION') description = val.replace(/\\n/g, '\n').replace(/\\,/g, ',');
-                    else if (key === 'ATTENDEE' && line.toLowerCase().includes(filter)) isGo = true;
+            grille.addEventListener('keydown', e => {
+                if (e.key !== 'Enter' && e.key !== ' ') return;
+                const tuile = e.target.closest('.event-tile[data-index]');
+                if (tuile) {
+                    e.preventDefault();
+                    ouvrirModale(conventions[+tuile.dataset.index], tuile);
                 }
-
-                if (!isGo || !dtstart) continue;
-
-                let startDate = null;
-                try {
-                    const d = dtstart.replace(/[TZ\-:]/g, '');
-                    const y = +d.substring(0, 4);
-                    const mo = +d.substring(4, 6) - 1;
-                    const day = +d.substring(6, 8);
-                    let h = 0;
-                    let mi = 0;
-                    let s = 0;
-
-                    if (d.length >= 12) {
-                        h = +d.substring(8, 10);
-                        mi = +d.substring(10, 12);
-                    }
-                    if (d.length >= 14) {
-                        s = +d.substring(12, 14);
-                    }
-
-                    startDate = new Date(Date.UTC(y, mo, day, h, mi, s));
-                } catch (e) {
-                    continue;
-                }
-
-                if (!startDate || startDate < now || startDate > cutoff) continue;
-
-                let endDate = null;
-                if (dtend) {
-                    try {
-                        const d = dtend.replace(/[TZ\-:]/g, '');
-                        const y = +d.substring(0, 4);
-                        const mo = +d.substring(4, 6) - 1;
-                        const day = +d.substring(6, 8);
-                        let h = 0;
-                        let mi = 0;
-                        let s = 0;
-
-                        if (d.length >= 12) {
-                            h = +d.substring(8, 10);
-                            mi = +d.substring(10, 12);
-                        }
-                        if (d.length >= 14) {
-                            s = +d.substring(12, 14);
-                        }
-
-                        endDate = new Date(Date.UTC(y, mo, day, h, mi, s));
-                    } catch (e) {}
-                }
-
-                events.push({
-                    title: summary || 'Convention',
-                    description,
-                    location,
-                    url,
-                    startDate,
-                    endDate
-                });
-            }
-
-            events.sort((a, b) => a.startDate - b.startDate);
-            return events.slice(0, CONFIG.MAX_EVENTS);
-        }
-
-        async function chargerConventions() {
-            const url = CONFIG.ICAL_URL + '?v=' + Date.now();
-            const r = await fetch(url, { cache: 'no-store' });
-
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-
-            const texte = await r.text();
-            if (!texte.includes('BEGIN:VCALENDAR')) {
-                throw new Error('Pas un fichier ICS valide');
-            }
-
-            try {
-                await chargerICAL();
-
-                const now = new Date();
-                const cutoff = new Date(now.getTime() + CONFIG.FUTURE_DAYS * 86400000);
-                const filter = CONFIG.EVENT_FILTER.toLowerCase();
-
-                const comp = new ICAL.Component(ICAL.parse(texte));
-                const vevents = comp.getAllSubcomponents('vevent');
-
-                const events = vevents
-                    .map(v => {
-                        const e = new ICAL.Event(v);
-                        const attendees = v.getAllProperties('attendee');
-                        const isGo = attendees.some(a => attendeeContainsFilter(a, filter));
-
-                        if (!isGo) return null;
-
-                        const startDate = e.startDate ? e.startDate.toJSDate() : null;
-                        const endDate = e.endDate ? e.endDate.toJSDate() : null;
-
-                        if (!startDate || startDate < now || startDate > cutoff) return null;
-
-                        return {
-                            title: e.summary || 'Convention',
-                            description: e.description || '',
-                            location: e.location || '',
-                            url: v.getFirstPropertyValue('url') || '',
-                            startDate,
-                            endDate
-                        };
-                    })
-                    .filter(Boolean);
-
-                events.sort((a, b) => a.startDate - b.startDate);
-                const result = events.slice(0, CONFIG.MAX_EVENTS);
-
-                if (!result.length) {
-                    console.warn('⚠️ ICAL.js 0 résultat → fallback parser manuel');
-                    return parserICSManuel(texte);
-                }
-
-                return result;
-            } catch (e) {
-                console.warn('⚠️ ICAL.js échoué, fallback manuel:', e.message);
-                return parserICSManuel(texte);
-            }
-        }
-
-        function escapeHtml(t) {
-            if (!t) return '';
-            const d = document.createElement('div');
-            d.textContent = t;
-            return d.innerHTML;
-        }
-
-        function linkify(t) {
-            return escapeHtml(t)
-                .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>')
-                .replace(/\n/g, '<br>');
-        }
-
-        function formatDate(date) {
-            if (!date) {
-                return { jour: '?', mois: '???', complet: 'Date inconnue' };
-            }
-
-            return {
-                jour: date.getUTCDate(),
-                mois: date
-                    .toLocaleDateString('fr-FR', { month: 'short', timeZone: 'UTC' })
-                    .replace('.', '')
-                    .toUpperCase(),
-                complet: date.toLocaleDateString('fr-FR', {
-                    weekday: 'long',
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                    timeZone: 'UTC'
-                })
-            };
-        }
-
-        function countdown(date) {
-            if (!date) return '';
-            const diff = Math.ceil((date - new Date()) / 86400000);
-            if (diff === 0) return "Aujourd'hui !";
-            if (diff === 1) return 'Demain !';
-            if (diff < 0) return 'Passé';
-            return 'Dans ' + diff + ' jours';
-        }
-
-        function afficherChargement(grid) {
-            grid.innerHTML = `
-                <div class="events-loading">
-                    <div class="loading-spinner" aria-hidden="true"></div>
-                    <p>Chargement des conventions...</p>
-                </div>`;
-        }
-
-        function afficherMessage(grid, msg, isError) {
-            grid.innerHTML = `
-                <div class="events-message ${isError ? 'error' : 'info'}">
-                    <span aria-hidden="true">${isError ? '⚠️' : 'ℹ️'}</span>
-                    <p>${escapeHtml(msg)}</p>
-                </div>`;
-        }
-
-        function genererTuiles(grid) {
-            if (!conventions.length) {
-                afficherMessage(grid, 'Aucune convention prévue pour le moment', false);
-                return;
-            }
-
-            grid.innerHTML = '';
-
-            conventions.forEach(event => {
-                const date = formatDate(event.startDate);
-                const tile = document.createElement('article');
-
-                tile.className = 'event-tile';
-                tile.tabIndex = 0;
-                tile.setAttribute('role', 'button');
-                tile.setAttribute('aria-label', 'Voir les détails de ' + (event.title || 'cet événement'));
-
-                tile.innerHTML = `
-                    <div class="event-tile-date">
-                        <span class="event-tile-day">${date.jour}</span>
-                        <span class="event-tile-month">${date.mois}</span>
-                    </div>
-                    <div class="event-tile-content">
-                        <h3 class="event-tile-title">${escapeHtml(event.title)}</h3>
-                        ${event.location ? `<p class="event-tile-location"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}
-                        <p class="event-tile-countdown">${countdown(event.startDate)}</p>
-                    </div>
-                    <div class="event-tile-arrow" aria-hidden="true">▶</div>
-                `;
-
-                const open = () => {
-                    lastFocusedElement = tile;
-                    ouvrirPopup(event);
-                };
-
-                tile.addEventListener('click', open);
-                tile.addEventListener('keydown', e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        open();
-                    }
-                });
-
-                grid.appendChild(tile);
             });
-        }
 
-        function ouvrirPopup(event) {
-            const modal = document.querySelector('.event-modal');
-            const modalContent = document.querySelector('.event-modal-content');
-            const titre = document.querySelector('.event-modal-title');
-            const corps = document.querySelector('.event-modal-body');
+            /* ---------------------- Modale (dialog natif) ---------------------- */
 
-            if (!modal || !modalContent || !titre || !corps) return;
+            const SVG_GOOGLE = '<svg viewBox="0 0 32 32" class="location-btn-logo" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 11.9556C2 8.47078 2 6.7284 2.67818 5.39739C3.27473 4.22661 4.22661 3.27473 5.39739 2.67818C6.7284 2 8.47078 2 11.9556 2H20.0444C23.5292 2 25.2716 2 26.6026 2.67818C27.7734 3.27473 28.7253 4.22661 29.3218 5.39739C30 6.7284 30 8.47078 30 11.9556V20.0444C30 23.5292 30 25.2716 29.3218 26.6026C28.7253 27.7734 27.7734 28.7253 26.6026 29.3218C25.2716 30 23.5292 30 20.0444 30H11.9556C8.47078 30 6.7284 30 5.39739 29.3218C4.22661 28.7253 3.27473 27.7734 2.67818 26.6026C2 25.2716 2 23.5292 2 20.0444V11.9556Z" fill="white" fill-opacity="0.15"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 12.8116L23.9999 12.8541C23.9998 12.872 23.9996 12.8899 23.9994 12.9078C23.9998 12.9287 24 12.9498 24 12.971C24 16.3073 21.4007 19.2604 19.6614 21.2367C19.1567 21.8101 18.7244 22.3013 18.449 22.6957C17.4694 24.0986 16.9524 25.6184 16.8163 26.2029C16.8163 26.6431 16.4509 27 16 27C15.5491 27 15.1837 26.6431 15.1837 26.2029C15.0476 25.6184 14.5306 24.0986 13.551 22.6957C13.2756 22.3013 12.8433 21.8101 12.3386 21.2367C10.5993 19.2604 8 16.3073 8 12.971C8 12.9498 8.0002 12.9287 8.0006 12.9078C8.0002 12.8758 8 12.8437 8 12.8116C8 8.49736 11.5817 5 16 5C20.4183 5 24 8.49736 24 12.8116ZM16 15.6812C17.7132 15.6812 19.102 14.325 19.102 12.6522C19.102 10.9793 17.7132 9.62319 16 9.62319C14.2868 9.62319 12.898 10.9793 12.898 12.6522C12.898 14.325 14.2868 15.6812 16 15.6812Z" fill="white"/><path d="M23.1054 9.21856C22.1258 7.37546 20.4161 5.96177 18.3504 5.34277L13.7559 10.5615C14.3208 9.98352 15.1174 9.62346 16.0002 9.62346C17.7134 9.62346 19.1022 10.9796 19.1022 12.6524C19.1022 13.3349 18.8711 13.9646 18.4811 14.4711L23.1054 9.21856Z" fill="white" fill-opacity="0.8"/><path d="M12.4311 21.3425C12.4004 21.3076 12.3695 21.2725 12.3383 21.2371C11.1918 19.9344 9.67162 18.2073 8.76855 16.2257L13.5439 10.8018C13.1387 11.3136 12.8976 11.9556 12.8976 12.6526C12.8976 14.3254 14.2865 15.6816 15.9997 15.6816C16.8675 15.6816 17.6521 15.3336 18.2151 14.7727L12.4311 21.3425Z" fill="white" fill-opacity="0.7"/><path d="M9.89288 7.76562C8.71207 9.12685 8 10.8881 8 12.8117C8 12.8438 8.0002 12.8759 8.0006 12.9079C8.0002 12.9288 8 12.9499 8 12.9711C8 14.1082 8.30196 15.2009 8.76889 16.2254L13.5362 10.8106L9.89288 7.76562Z" fill="white" fill-opacity="0.6"/><path d="M18.3499 5.34254C17.6068 5.11988 16.8176 5 15.9997 5C13.5514 5 11.36 6.07387 9.89258 7.76553L13.5359 10.8105L13.5438 10.8015C13.6101 10.7178 13.6807 10.6375 13.7554 10.5611L18.3499 5.34254Z" fill="white" fill-opacity="0.9"/></svg>';
+            const SVG_WAZE = '<svg viewBox="0 0 14 14" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="m 12.937649,5.689685 c -0.11625,-0.68661 -0.388914,-1.33016 -0.810638,-1.91282 -0.476314,-0.65811 -1.127922,-1.20761 -1.884324,-1.58903 -0.7645339,-0.38552 -1.6178829,-0.58938 -2.4678369,-0.58938 -0.239783,0 -0.481475,0.0163 -0.71843,0.0482 -0.992367,0.13407 -1.968118,0.54689 -2.747572,1.16243 -0.878239,0.69354 -1.444993,1.58521 -1.638884,2.57878 -0.05777,0.29537 -0.08238,0.62212 -0.106209,0.93806 -0.03734,0.49456 -0.07594,1.00595 -0.233207,1.34013 -0.107482,0.2284 -0.267856,0.3805 -0.701389,0.3805 -0.238581,0 -0.456585,0.13492 -0.563077,0.34847 -0.10642098,0.21355 -0.08294,0.46889 0.0606,0.65931 0.653164,0.8665 1.505522,1.39133 2.402923,1.70755 -0.04087,0.12346 -0.06385,0.25491 -0.06385,0.39209 0,0.68902 0.558551,1.24757 1.247566,1.24757 0.671972,0 1.218291,-0.53161 1.244949,-1.19701 0.292534,0.0159 1.685483,0.0197 1.840836,0.0153 0.03444,0.65825 0.577502,1.18166 1.244243,1.18166 0.688943,0 1.2474949,-0.55848 1.2474949,-1.24757 0,-0.15705 -0.03026,-0.30674 -0.08316,-0.44513 0.489183,-0.23794 0.95093,-0.55904 1.353845,-0.94576 0.561875,-0.53918 0.974265,-1.1753 1.192764,-1.83964 0.245865,-0.7477 0.307667,-1.4993 0.183355,-2.23378 m -8.2243299,5.876 c -0.227338,0 -0.411684,-0.18421 -0.411684,-0.41169 0,-0.22733 0.184346,-0.41168 0.411684,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 0,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 4.330028,0 c -0.227409,0 -0.411754,-0.18421 -0.411754,-0.41169 0,-0.22733 0.184345,-0.41168 0.411754,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 7.1e-5,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 3.1132919,-3.83873 c -0.360276,1.09533 -1.309862,1.9998 -2.3218169,2.46289 -0.215458,-0.17706 -0.490951,-0.28327 -0.791405,-0.28327 -0.484233,0 -0.903058,0.2762 -1.109748,0.67933 -0.210438,0.009 -1.777338,0.003 -2.120219,-0.0202 -0.210155,-0.39223 -0.623818,-0.65917 -1.100061,-0.65917 -0.316788,0 -0.605221,0.11894 -0.825134,0.31354 -0.852358,-0.27543 -1.65734,-0.74608 -2.259025,-1.54449 1.779176,0 1.428092,-1.98827 1.658259,-3.16731 0.350659,-1.79693 2.12835,-3.00518 3.853148,-3.23817 0.212135,-0.0286 0.42427,-0.0426 0.634213,-0.0426 2.8347599,7e-5 5.3581049,2.53098 4.3817889,5.49938 m -4.4056189,0.87435 c -1.023692,0 -1.945914,-0.67119 -2.115056,-1.54978 -0.03281,-0.17056 0.07891,-0.33553 0.249471,-0.36834 0.170627,-0.0329 0.335527,0.0789 0.368337,0.24947 0.09942,0.51648 0.717865,1.06039 1.542221,1.03882 0.858722,-0.0225 1.4259,-0.53599 1.542433,-1.03154 0.03981,-0.16907 0.209378,-0.27379 0.378308,-0.23419 0.169213,0.0398 0.274007,0.20916 0.234197,0.37823 -0.09518,0.40454 -0.35568,0.77932 -0.733634,1.05545 -0.393652,0.28779 -0.879511,0.44718 -1.404757,0.46104 -0.02051,6.3e-4 -0.04108,8.4e-4 -0.06152,8.4e-4 m 2.037132,-3.23958 c 0,0.33369 -0.270542,0.60423 -0.604231,0.60423 -0.333617,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270543,-0.60409 0.60416,-0.60409 0.333689,0 0.604231,0.27033 0.604231,0.60409 m -2.822597,0 c 0,0.33369 -0.270472,0.60423 -0.60416,0.60423 -0.333618,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270542,-0.60409 0.60416,-0.60409 0.333688,0 0.60416,0.27033 0.60416,0.60409"/></svg>';
+            const SVG_APPLE = '<svg viewBox="0 0 30 30" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M 9 4 C 8.657 4 8.323 4.0355625 8 4.1015625 L 8 13.275391 C 7.646263 13.401511 7.3068564 13.555772 7 13.761719 L 7 4.421875 C 5.755 4.966875 4.7873594 6.0089688 4.3183594 7.2929688 L 6 8.4707031 L 6 14.611328 L 4 13.210938 L 4 21 C 4 23.049 5.236 24.806125 7 25.578125 L 7 21.238281 C 7.7157567 21.718662 8.5752393 22 9.5 22 C 10.424761 22 11.284243 21.718662 12 21.238281 L 12 26 L 21 26 C 21.369 26 21.726266 25.954906 22.072266 25.878906 L 13.361328 19.773438 C 13.757438 19.103628 14 18.332818 14 17.5 C 14 16.439688 13.615994 15.47704 13 14.707031 L 13 13.376953 L 25.794922 22.345703 C 25.915922 21.914703 26 21.469 26 21 L 26 15.974609 C 19.497 15.716609 14.283391 10.503 14.025391 4 L 12 4 L 12 13.761719 C 11.693144 13.555772 11.353737 13.401511 11 13.275391 L 11 4 L 9 4 z M 18.025391 4 C 18.275391 8.294 21.706 11.723609 26 11.974609 L 26 9 C 26 6.239 23.761 4 21 4 L 18.025391 4 z M 9.5 14 C 10.480989 14 11.364517 14.406452 12 15.056641 C 12.15425 15.214391 12.293344 15.385984 12.416016 15.570312 C 12.538687 15.754641 12.644031 15.951641 12.730469 16.158203 C 12.816906 16.364766 12.884141 16.580234 12.929688 16.804688 C 12.975072 17.029622 13 17.261689 13 17.5 C 13 17.738 12.975234 17.970859 12.929688 18.195312 C 12.884141 18.419766 12.816906 18.635234 12.730469 18.841797 C 12.644031 19.048359 12.538687 19.245359 12.416016 19.429688 C 12.293344 19.614016 12.15425 19.785609 12 19.943359 C 11.364517 20.593548 10.480989 21 9.5 21 C 8.5195528 21 7.6354091 20.59487 7 19.945312 C 6.9818906 19.926763 6.9688744 19.903706 6.9511719 19.884766 C 6.8180905 19.742375 6.6922542 19.592499 6.5839844 19.429688 C 6.4613125 19.245219 6.3559687 19.048422 6.2695312 18.841797 C 6.1830938 18.635172 6.1158594 18.419781 6.0703125 18.195312 C 6.0247656 17.970844 6 17.738 6 17.5 C 6 17.261689 6.0249282 17.029622 6.0703125 16.804688 C 6.1158594 16.580234 6.1830938 16.364766 6.2695312 16.158203 C 6.3559687 15.951641 6.4613125 15.754641 6.5839844 15.570312 C 6.7066562 15.385984 6.84575 15.214391 7 15.056641 C 7.6354827 14.406452 8.519011 14 9.5 14 z M 9.5253906 15.216797 C 9.4297656 15.216297 9.333875 15.271359 9.296875 15.380859 L 8.0136719 19.181641 C 7.9286719 19.436641 8.2455938 19.631453 8.4335938 19.439453 L 9.5273438 18.320312 L 10.5625 19.414062 C 10.7475 19.609063 11.070328 19.418109 10.986328 19.162109 L 9.7519531 15.382812 C 9.7164531 15.273312 9.6210156 15.217297 9.5253906 15.216797 z"/></svg>';
 
-            titre.textContent = event.title || 'Convention';
-
-            const opts = {
-                weekday: 'long',
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric',
-                timeZone: 'UTC'
-            };
-
-            let dateStr = event.startDate
-                ? event.startDate.toLocaleDateString('fr-FR', opts)
-                : 'Date inconnue';
-
-            let dateRange = '';
-            if (event.endDate && event.startDate) {
-                const s = event.startDate.toDateString();
-                const e = event.endDate.toDateString();
-                if (s !== e) {
-                    dateRange = ' au ' + event.endDate.toLocaleDateString('fr-FR', opts);
-                }
+            function ligneInfo(icone, label, contenuHtml) {
+                return `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">${icone}</span><div class="event-info-content"><div class="event-info-label">${label}</div><div class="event-info-text">${contenuHtml}</div></div></div>`;
             }
 
-            let html = '<div class="event-modal-body-grid"><div class="event-modal-left">';
-            html += `<div class="event-info-row"><span class="event-info-icon">📅</span><div class="event-info-content"><div class="event-info-label">Date</div><div class="event-info-text">${escapeHtml(dateStr + dateRange)}</div></div></div>`;
+            function construireDatesHtml(evt) {
+                const debut = evt.debut.date;
+                const fin = dernierJour(evt);
+                const multi = !memeJourUTC(debut, fin);
+                const nbJours = nombreJours(evt);
 
-            if (event.location) {
-                const loc = encodeURIComponent(event.location);
-                html += `<div class="event-info-row"><span class="event-info-icon">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${escapeHtml(event.location)}</div>
-                    <div class="event-location-buttons">
-                        <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-google"><svg viewBox="0 0 32 32" class="location-btn-logo" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 11.9556C2 8.47078 2 6.7284 2.67818 5.39739C3.27473 4.22661 4.22661 3.27473 5.39739 2.67818C6.7284 2 8.47078 2 11.9556 2H20.0444C23.5292 2 25.2716 2 26.6026 2.67818C27.7734 3.27473 28.7253 4.22661 29.3218 5.39739C30 6.7284 30 8.47078 30 11.9556V20.0444C30 23.5292 30 25.2716 29.3218 26.6026C28.7253 27.7734 27.7734 28.7253 26.6026 29.3218C25.2716 30 23.5292 30 20.0444 30H11.9556C8.47078 30 6.7284 30 5.39739 29.3218C4.22661 28.7253 3.27473 27.7734 2.67818 26.6026C2 25.2716 2 23.5292 2 20.0444V11.9556Z" fill="white" fill-opacity="0.15"/><path fill-rule="evenodd" clip-rule="evenodd" d="M24 12.8116L23.9999 12.8541C23.9998 12.872 23.9996 12.8899 23.9994 12.9078C23.9998 12.9287 24 12.9498 24 12.971C24 16.3073 21.4007 19.2604 19.6614 21.2367C19.1567 21.8101 18.7244 22.3013 18.449 22.6957C17.4694 24.0986 16.9524 25.6184 16.8163 26.2029C16.8163 26.6431 16.4509 27 16 27C15.5491 27 15.1837 26.6431 15.1837 26.2029C15.0476 25.6184 14.5306 24.0986 13.551 22.6957C13.2756 22.3013 12.8433 21.8101 12.3386 21.2367C10.5993 19.2604 8 16.3073 8 12.971C8 12.9498 8.0002 12.9287 8.0006 12.9078C8.0002 12.8758 8 12.8437 8 12.8116C8 8.49736 11.5817 5 16 5C20.4183 5 24 8.49736 24 12.8116ZM16 15.6812C17.7132 15.6812 19.102 14.325 19.102 12.6522C19.102 10.9793 17.7132 9.62319 16 9.62319C14.2868 9.62319 12.898 10.9793 12.898 12.6522C12.898 14.325 14.2868 15.6812 16 15.6812Z" fill="white"/><path d="M23.1054 9.21856C22.1258 7.37546 20.4161 5.96177 18.3504 5.34277L13.7559 10.5615C14.3208 9.98352 15.1174 9.62346 16.0002 9.62346C17.7134 9.62346 19.1022 10.9796 19.1022 12.6524C19.1022 13.3349 18.8711 13.9646 18.4811 14.4711L23.1054 9.21856Z" fill="white" fill-opacity="0.8"/><path d="M12.4311 21.3425C12.4004 21.3076 12.3695 21.2725 12.3383 21.2371C11.1918 19.9344 9.67162 18.2073 8.76855 16.2257L13.5439 10.8018C13.1387 11.3136 12.8976 11.9556 12.8976 12.6526C12.8976 14.3254 14.2865 15.6816 15.9997 15.6816C16.8675 15.6816 17.6521 15.3336 18.2151 14.7727L12.4311 21.3425Z" fill="white" fill-opacity="0.7"/><path d="M9.89288 7.76562C8.71207 9.12685 8 10.8881 8 12.8117C8 12.8438 8.0002 12.8759 8.0006 12.9079C8.0002 12.9288 8 12.9499 8 12.9711C8 14.1082 8.30196 15.2009 8.76889 16.2254L13.5362 10.8106L9.89288 7.76562Z" fill="white" fill-opacity="0.6"/><path d="M18.3499 5.34254C17.6068 5.11988 16.8176 5 15.9997 5C13.5514 5 11.36 6.07387 9.89258 7.76553L13.5359 10.8105L13.5438 10.8015C13.6101 10.7178 13.6807 10.6375 13.7554 10.5611L18.3499 5.34254Z" fill="white" fill-opacity="0.9"/></svg><span class="location-btn-label">Google Maps</span></a>
-                        <a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-waze"><svg viewBox="0 0 14 14" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="m 12.937649,5.689685 c -0.11625,-0.68661 -0.388914,-1.33016 -0.810638,-1.91282 -0.476314,-0.65811 -1.127922,-1.20761 -1.884324,-1.58903 -0.7645339,-0.38552 -1.6178829,-0.58938 -2.4678369,-0.58938 -0.239783,0 -0.481475,0.0163 -0.71843,0.0482 -0.992367,0.13407 -1.968118,0.54689 -2.747572,1.16243 -0.878239,0.69354 -1.444993,1.58521 -1.638884,2.57878 -0.05777,0.29537 -0.08238,0.62212 -0.106209,0.93806 -0.03734,0.49456 -0.07594,1.00595 -0.233207,1.34013 -0.107482,0.2284 -0.267856,0.3805 -0.701389,0.3805 -0.238581,0 -0.456585,0.13492 -0.563077,0.34847 -0.10642098,0.21355 -0.08294,0.46889 0.0606,0.65931 0.653164,0.8665 1.505522,1.39133 2.402923,1.70755 -0.04087,0.12346 -0.06385,0.25491 -0.06385,0.39209 0,0.68902 0.558551,1.24757 1.247566,1.24757 0.671972,0 1.218291,-0.53161 1.244949,-1.19701 0.292534,0.0159 1.685483,0.0197 1.840836,0.0153 0.03444,0.65825 0.577502,1.18166 1.244243,1.18166 0.688943,0 1.2474949,-0.55848 1.2474949,-1.24757 0,-0.15705 -0.03026,-0.30674 -0.08316,-0.44513 0.489183,-0.23794 0.95093,-0.55904 1.353845,-0.94576 0.561875,-0.53918 0.974265,-1.1753 1.192764,-1.83964 0.245865,-0.7477 0.307667,-1.4993 0.183355,-2.23378 m -8.2243299,5.876 c -0.227338,0 -0.411684,-0.18421 -0.411684,-0.41169 0,-0.22733 0.184346,-0.41168 0.411684,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 0,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 4.330028,0 c -0.227409,0 -0.411754,-0.18421 -0.411754,-0.41169 0,-0.22733 0.184345,-0.41168 0.411754,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 7.1e-5,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 3.1132919,-3.83873 c -0.360276,1.09533 -1.309862,1.9998 -2.3218169,2.46289 -0.215458,-0.17706 -0.490951,-0.28327 -0.791405,-0.28327 -0.484233,0 -0.903058,0.2762 -1.109748,0.67933 -0.210438,0.009 -1.777338,0.003 -2.120219,-0.0202 -0.210155,-0.39223 -0.623818,-0.65917 -1.100061,-0.65917 -0.316788,0 -0.605221,0.11894 -0.825134,0.31354 -0.852358,-0.27543 -1.65734,-0.74608 -2.259025,-1.54449 1.779176,0 1.428092,-1.98827 1.658259,-3.16731 0.350659,-1.79693 2.12835,-3.00518 3.853148,-3.23817 0.212135,-0.0286 0.42427,-0.0426 0.634213,-0.0426 2.8347599,7e-5 5.3581049,2.53098 4.3817889,5.49938 m -4.4056189,0.87435 c -1.023692,0 -1.945914,-0.67119 -2.115056,-1.54978 -0.03281,-0.17056 0.07891,-0.33553 0.249471,-0.36834 0.170627,-0.0329 0.335527,0.0789 0.368337,0.24947 0.09942,0.51648 0.717865,1.06039 1.542221,1.03882 0.858722,-0.0225 1.4259,-0.53599 1.542433,-1.03154 0.03981,-0.16907 0.209378,-0.27379 0.378308,-0.23419 0.169213,0.0398 0.274007,0.20916 0.234197,0.37823 -0.09518,0.40454 -0.35568,0.77932 -0.733634,1.05545 -0.393652,0.28779 -0.879511,0.44718 -1.404757,0.46104 -0.02051,6.3e-4 -0.04108,8.4e-4 -0.06152,8.4e-4 m 2.037132,-3.23958 c 0,0.33369 -0.270542,0.60423 -0.604231,0.60423 -0.333617,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270543,-0.60409 0.60416,-0.60409 0.333689,0 0.604231,0.27033 0.604231,0.60409 m -2.822597,0 c 0,0.33369 -0.270472,0.60423 -0.60416,0.60423 -0.333618,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270542,-0.60409 0.60416,-0.60409 0.333688,0 0.60416,0.27033 0.60416,0.60409"/></svg><span class="location-btn-label">Waze</span></a>
-                        <a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-apple"><svg viewBox="0 0 30 30" class="location-btn-logo" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M 9 4 C 8.657 4 8.323 4.0355625 8 4.1015625 L 8 13.275391 C 7.646263 13.401511 7.3068564 13.555772 7 13.761719 L 7 4.421875 C 5.755 4.966875 4.7873594 6.0089688 4.3183594 7.2929688 L 6 8.4707031 L 6 14.611328 L 4 13.210938 L 4 21 C 4 23.049 5.236 24.806125 7 25.578125 L 7 21.238281 C 7.7157567 21.718662 8.5752393 22 9.5 22 C 10.424761 22 11.284243 21.718662 12 21.238281 L 12 26 L 21 26 C 21.369 26 21.726266 25.954906 22.072266 25.878906 L 13.361328 19.773438 C 13.757438 19.103628 14 18.332818 14 17.5 C 14 16.439688 13.615994 15.47704 13 14.707031 L 13 13.376953 L 25.794922 22.345703 C 25.915922 21.914703 26 21.469 26 21 L 26 15.974609 C 19.497 15.716609 14.283391 10.503 14.025391 4 L 12 4 L 12 13.761719 C 11.693144 13.555772 11.353737 13.401511 11 13.275391 L 11 4 L 9 4 z M 18.025391 4 C 18.275391 8.294 21.706 11.723609 26 11.974609 L 26 9 C 26 6.239 23.761 4 21 4 L 18.025391 4 z M 9.5 14 C 10.480989 14 11.364517 14.406452 12 15.056641 C 12.15425 15.214391 12.293344 15.385984 12.416016 15.570312 C 12.538687 15.754641 12.644031 15.951641 12.730469 16.158203 C 12.816906 16.364766 12.884141 16.580234 12.929688 16.804688 C 12.975072 17.029622 13 17.261689 13 17.5 C 13 17.738 12.975234 17.970859 12.929688 18.195312 C 12.884141 18.419766 12.816906 18.635234 12.730469 18.841797 C 12.644031 19.048359 12.538687 19.245359 12.416016 19.429688 C 12.293344 19.614016 12.15425 19.785609 12 19.943359 C 11.364517 20.593548 10.480989 21 9.5 21 C 8.5195528 21 7.6354091 20.59487 7 19.945312 C 6.9818906 19.926763 6.9688744 19.903706 6.9511719 19.884766 C 6.8180905 19.742375 6.6922542 19.592499 6.5839844 19.429688 C 6.4613125 19.245219 6.3559687 19.048422 6.2695312 18.841797 C 6.1830938 18.635172 6.1158594 18.419781 6.0703125 18.195312 C 6.0247656 17.970844 6 17.738 6 17.5 C 6 17.261689 6.0249282 17.029622 6.0703125 16.804688 C 6.1158594 16.580234 6.1830938 16.364766 6.2695312 16.158203 C 6.3559687 15.951641 6.4613125 15.754641 6.5839844 15.570312 C 6.7066562 15.385984 6.84575 15.214391 7 15.056641 C 7.6354827 14.406452 8.519011 14 9.5 14 z M 9.5253906 15.216797 C 9.4297656 15.216297 9.333875 15.271359 9.296875 15.380859 L 8.0136719 19.181641 C 7.9286719 19.436641 8.2455938 19.631453 8.4335938 19.439453 L 9.5273438 18.320312 L 10.5625 19.414062 C 10.7475 19.609063 11.070328 19.418109 10.986328 19.162109 L 9.7519531 15.382812 C 9.7164531 15.273312 9.6210156 15.217297 9.5253906 15.216797 z"/></svg><span class="location-btn-label">Apple Plans</span></a>
-                    </div></div></div>`;
-            }
-
-            html += '</div><div class="event-modal-right">';
-
-            if (event.description) {
-                html += `<div class="event-info-row"><span class="event-info-icon">📝</span><div class="event-info-content"><div class="event-info-label">Description</div><div class="event-info-text">${linkify(event.description)}</div></div></div>`;
-            }
-
-            if (event.url) {
-                try {
-                    const u = new URL(event.url);
-                    if (u.protocol.indexOf('http') === 0) {
-                        html += `<div class="event-info-row"><span class="event-info-icon">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${escapeHtml(event.url)}" target="_blank" rel="noopener noreferrer" class="event-url-button">Visiter le site</a></div></div>`;
-                    }
-                } catch (e) {}
-            }
-
-            html += '</div></div>';
-            corps.innerHTML = html;
-
-            document.body.classList.add('modal-open');
-            modal.classList.add('show');
-            modal.classList.remove('closing');
-            modal.setAttribute('aria-hidden', 'false');
-
-            const closeBtn = modal.querySelector('.event-modal-close');
-            const overlay = modal.querySelector('.event-modal-overlay');
-
-            if (closeBtn) closeBtn.onclick = fermerPopup;
-            if (overlay) overlay.onclick = fermerPopup;
-
-            if (currentKeyHandler) {
-                document.removeEventListener('keydown', currentKeyHandler);
-            }
-
-            currentKeyHandler = e => {
-                if (e.key === 'Escape') fermerPopup();
-            };
-            document.addEventListener('keydown', currentKeyHandler);
-
-            setTimeout(() => {
-                if (closeBtn) {
-                    closeBtn.focus();
+                let debutTxt = majusculeInitiale(formaterDate(debut).complet);
+                if (evt.debut.allDay) {
+                    if (!multi) debutTxt += ' — Journée entière';
                 } else {
-                    modalContent.focus();
+                    debutTxt += ' • ' + texteHeureUTC(debut);
                 }
-            }, 20);
+
+                if (!multi) return echapperHtml(debutTxt);
+
+                let finTxt = majusculeInitiale(formaterDate(fin).complet);
+                if (evt.fin && !evt.fin.allDay) finTxt += ' • ' + texteHeureUTC(evt.fin.date);
+                finTxt += ' (' + nbJours + ' jours)';
+
+                return `<div class="event-dates">
+                    <span class="event-date-item"><span class="event-date-label">Début :</span>${echapperHtml(debutTxt)}</span>
+                    <span class="event-date-item"><span class="event-date-label">Fin :</span>${echapperHtml(finTxt)}</span>
+                </div>`;
+            }
+
+            function construireCorpsModale(evt) {
+                let html = '<div class="event-modal-body-grid"><div class="event-modal-left">';
+                html += ligneInfo('📅', nombreJours(evt) > 1 ? 'Dates' : 'Date', construireDatesHtml(evt));
+
+                if (evt.location) {
+                    const loc = encodeURIComponent(evt.location);
+                    html += `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">📍</span><div class="event-info-content"><div class="event-info-label">Lieu</div><div class="event-info-text">${echapperHtml(evt.location)}</div>
+                        <div class="event-location-buttons">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-google">${SVG_GOOGLE}<span class="location-btn-label">Google Maps</span></a>
+                            <a href="https://waze.com/ul?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-waze">${SVG_WAZE}<span class="location-btn-label">Waze</span></a>
+                            <a href="https://maps.apple.com/?q=${loc}" target="_blank" rel="noopener noreferrer" class="location-btn location-apple">${SVG_APPLE}<span class="location-btn-label">Apple Plans</span></a>
+                        </div></div></div>`;
+                }
+
+                html += '</div><div class="event-modal-right">';
+
+                if (evt.description) {
+                    // Description longue : repliée avec fondu + bouton « Voir plus »
+                    const sauts = (evt.description.match(/\n/g) || []).length;
+                    const replier = evt.description.length > 260 || sauts > 4;
+                    html += `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">📝</span><div class="event-info-content"><div class="event-info-label">Description</div><div class="event-info-text event-desc${replier ? ' is-collapsed' : ''}">${lierUrls(evt.description)}</div>${replier ? '<button type="button" class="event-desc-toggle" aria-expanded="false">Voir plus</button>' : ''}</div></div>`;
+                }
+
+                if (evt.url) {
+                    try {
+                        const u = new URL(evt.url);
+                        if (u.protocol === 'http:' || u.protocol === 'https:') {
+                            html += `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${echapperHtml(evt.url)}" target="_blank" rel="noopener noreferrer" class="event-url-button">Visiter le site</a></div></div>`;
+                        }
+                    } catch (e) { /* URL invalide : on ignore */ }
+                }
+
+                html += '</div></div>';
+                return html;
+            }
+
+            function ouvrirModale(evt, origine) {
+                if (!evt) return;
+                dernierFocus = origine || null;
+                evenementModal = evt;
+
+                titreModale.textContent = evt.title || 'Convention';
+                corpsModale.innerHTML = construireCorpsModale(evt);
+
+                const basculeDesc = corpsModale.querySelector('.event-desc-toggle');
+                if (basculeDesc) {
+                    const desc = corpsModale.querySelector('.event-desc');
+                    basculeDesc.addEventListener('click', () => {
+                        const deplie = !desc.classList.toggle('is-collapsed');
+                        basculeDesc.textContent = deplie ? 'Voir moins' : 'Voir plus';
+                        basculeDesc.setAttribute('aria-expanded', deplie ? 'true' : 'false');
+                    });
+                }
+
+                modale.classList.remove('closing');
+                document.body.style.overflow = 'hidden';
+
+                if (supporteDialog) {
+                    if (!modale.open) modale.showModal();
+                } else {
+                    // Repli pour les très vieux navigateurs sans <dialog>
+                    modale.setAttribute('open', '');
+                    modale.classList.add('fallback-open');
+                    if (boutonFermer) boutonFermer.focus();
+                }
+                corpsModale.scrollTop = 0;
+            }
+
+            function fermerModale() {
+                const ouverte = supporteDialog ? modale.open : modale.classList.contains('fallback-open');
+                if (!ouverte || modale.classList.contains('closing')) return;
+
+                modale.classList.add('closing');
+                setTimeout(() => {
+                    modale.classList.remove('closing');
+                    if (supporteDialog) {
+                        modale.close(); // le navigateur restaure le focus tout seul
+                    } else {
+                        modale.removeAttribute('open');
+                        modale.classList.remove('fallback-open');
+                        if (dernierFocus) dernierFocus.focus();
+                    }
+                    document.body.style.overflow = '';
+                }, 230);
+            }
+
+            /* ---------- Export .ics d'un événement (RFC 5545) ---------- */
+
+            function icsPourEvenement(evt) {
+                const pad2 = n => String(n).padStart(2, '0');
+                const dateICS = d => '' + d.getUTCFullYear() + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate());
+                const dateHeureICS = d => dateICS(d) + 'T' + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes()) + pad2(d.getUTCSeconds()) + 'Z';
+                const echapperICS = v => String(v || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n|\r|\n/g, '\\n');
+
+                const lignes = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Actus Meute Normande//FR', 'BEGIN:VEVENT',
+                    'UID:' + (evt.uid || 'actus-' + Date.now() + '@lameutenormande'),
+                    'DTSTAMP:' + dateHeureICS(new Date()),
+                    'SUMMARY:' + echapperICS(evt.title)];
+
+                if (evt.debut.allDay) {
+                    lignes.push('DTSTART;VALUE=DATE:' + dateICS(evt.debut.date));
+                    const finExclusive = evt.fin ? evt.fin.date : new Date(evt.debut.date.getTime() + 86400000);
+                    lignes.push('DTEND;VALUE=DATE:' + dateICS(finExclusive));
+                } else {
+                    lignes.push('DTSTART:' + dateHeureICS(evt.debut.date));
+                    lignes.push('DTEND:' + dateHeureICS(evt.fin ? evt.fin.date : new Date(evt.debut.date.getTime() + 3600000)));
+                }
+
+                if (evt.description) lignes.push('DESCRIPTION:' + echapperICS(evt.description));
+                if (evt.location) lignes.push('LOCATION:' + echapperICS(String(evt.location).replace(/\r\n|\r|\n/g, ' ')));
+                if (evt.url && /^https?:\/\//i.test(evt.url)) lignes.push('URL:' + evt.url.trim());
+                lignes.push('END:VEVENT', 'END:VCALENDAR');
+                return lignes.join('\r\n');
+            }
+
+            function telechargerIcs(evt) {
+                const slug = String(evt.title || 'evenement').toLowerCase()
+                    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+                    .replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') || 'evenement';
+                const blob = new Blob([icsPourEvenement(evt)], { type: 'text/calendar' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = slug + '.ics';
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+            }
+
+            const boutonTelecharger = modale.querySelector('.event-modal-dl');
+            if (boutonTelecharger) {
+                boutonTelecharger.addEventListener('click', () => {
+                    if (evenementModal) telechargerIcs(evenementModal);
+                });
+            }
+
+            boutonFermer.addEventListener('click', fermerModale);
+            // Échap : on intercepte pour jouer l'animation de fermeture
+            modale.addEventListener('cancel', e => {
+                e.preventDefault();
+                fermerModale();
+            });
+            // Clic en dehors de la carte (le dialog occupe tout l'écran, la carte est dedans)
+            modale.addEventListener('click', e => {
+                if (e.target === modale) fermerModale();
+            });
+            // Filet de sécurité si la modale est fermée par un autre biais
+            modale.addEventListener('close', () => {
+                document.body.style.overflow = '';
+            });
+            if (!supporteDialog) {
+                document.addEventListener('keydown', e => {
+                    if (e.key === 'Escape' && modale.classList.contains('fallback-open')) fermerModale();
+                });
+            }
+
+            /* ---------------------- Point d'entrée ---------------------- */
+
+            async function demarrer() {
+                if (enChargement) return;
+                enChargement = true;
+                grille.setAttribute('aria-busy', 'true');
+                afficherSquelette();
+
+                try {
+                    const ics = await chargerICS();
+                    conventions = filtrerEvenements(parserICS(ics));
+                    rendreTuiles();
+                } catch (e) {
+                    console.error('[Actus V3]', e);
+                    afficherErreur();
+                } finally {
+                    grille.setAttribute('aria-busy', 'false');
+                    enChargement = false;
+                }
+            }
+
+            // Chargement paresseux : on ne télécharge le calendrier que lorsque
+            // la section approche du viewport. Filet de sécurité : certains
+            // environnements (prérendu, webviews throttlées) ne déclenchent
+            // jamais l'observer → démarrage forcé après 2,5 s.
+            let dejaLance = false;
+            let observateur = null;
+
+            function lancerUneFois() {
+                if (dejaLance) return;
+                dejaLance = true;
+                if (observateur) observateur.disconnect();
+                demarrer();
+            }
+
+            if ('IntersectionObserver' in window) {
+                observateur = new IntersectionObserver(entrees => {
+                    if (entrees.some(en => en.isIntersecting)) lancerUneFois();
+                }, { rootMargin: '400px' });
+                observateur.observe(grille);
+                setTimeout(lancerUneFois, 2500);
+            } else {
+                lancerUneFois();
+            }
         }
 
-        function fermerPopup() {
-            const modal = document.querySelector('.event-modal');
-            if (!modal || !modal.classList.contains('show')) return;
-
-            modal.classList.add('closing');
-            modal.setAttribute('aria-hidden', 'true');
-            document.body.classList.remove('modal-open');
-
-            setTimeout(() => {
-                modal.classList.remove('show', 'closing');
-            }, 250);
-
-            if (currentKeyHandler) {
-                document.removeEventListener('keydown', currentKeyHandler);
-                currentKeyHandler = null;
-            }
-
-            if (lastFocusedElement) {
-                lastFocusedElement.focus();
-                lastFocusedElement = null;
-            }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
         }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            const grid = document.getElementById('events-grid');
-            if (!grid) return;
-
-            try {
-                afficherChargement(grid);
-                conventions = await chargerConventions();
-                genererTuiles(grid);
-            } catch (e) {
-                console.error('❌', e);
-                afficherMessage(grid, 'Erreur de chargement des événements. Réessayez plus tard.', true);
-            }
-        });
     })();
     </script>
 </section>
