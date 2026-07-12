@@ -1,7 +1,7 @@
 {
   "settings": {
     "name": "La Meute Normande",
-    "currentPage": "index.html",
+    "currentPage": "actus.html",
     "theme": {
       "name": "startm5",
       "title": "StartM5",
@@ -5647,8 +5647,8 @@
               "margin": "0 auto",
               "justify-items": "stretch"
             },
-            ".events-loading, .events-message": {
-              "grid-column": "(1 / -1)",
+            ".events-message": {
+              "grid-column": "~\"1 / -1\"",
               "width": "100%",
               "margin": "0 auto",
               "justify-self": "stretch",
@@ -5658,45 +5658,24 @@
               "justify-content": "center",
               "padding": "1.25rem 1.5rem",
               "text-align": "center",
-              "color": "rgba(255, 255, 255, 0.78)"
-            },
-            ".events-loading": {
-              "flex-direction": "column",
-              "min-height": "140px"
-            },
-            ".events-loading .loading-spinner": {
-              "width": "48px",
-              "height": "48px",
-              "border": "3px solid rgba(255, 255, 255, 0.15)",
-              "border-top-color": "#E91E63",
-              "border-radius": "50%",
-              "animation": "events-spin 0.8s linear infinite",
-              "margin-bottom": "1rem"
-            },
-            ".events-message": {
-              "flex-direction": "row",
-              "gap": "0.75rem",
-              "min-height": "72px",
-              "border-radius": "12px"
+              "color": "rgba(255, 255, 255, 0.78)",
+              "border-radius": "12px",
+              "gap": "0.6rem",
+              "min-height": "72px"
             },
             ".events-message.error": {
+              "flex-direction": "column",
               "color": "#ff8b8b",
               "background": "rgba(255, 107, 107, 0.12)",
               "border": "1px solid rgba(255, 107, 107, 0.25)"
             },
             ".events-message.info": {
-              "max-width": "none",
-              "margin": "0.5rem 0",
-              "padding": "1.25rem 1.5rem",
-              "display": "flex",
               "flex-direction": "column",
-              "align-items": "center",
-              "justify-content": "center",
+              "margin": "0.5rem 0",
               "color": "rgba(255, 255, 255, 0.72)",
-              "background": "rgba(255, 255, 255, 0.06)",
-              "border-radius": "12px"
+              "background": "rgba(255, 255, 255, 0.06)"
             },
-            ".events-message p, .events-loading p": {
+            ".events-message p": {
               "margin": "0",
               "width": "100%",
               "text-align": "center"
@@ -5705,8 +5684,21 @@
               "font-size": "1.5rem",
               "flex-shrink": "0"
             },
-            ".events-message.info span": {
-              "margin-bottom": "0.5rem"
+            ".events-retry": {
+              "margin-top": "0.25rem",
+              "padding": "0.45rem 1.3rem",
+              "border-radius": "18px",
+              "border": "1px solid rgba(255, 107, 107, 0.45)",
+              "background": "rgba(255, 107, 107, 0.15)",
+              "color": "#ffb3b3",
+              "font-weight": "600",
+              "font-size": "0.85rem",
+              "cursor": "pointer",
+              "transition": "background 0.2s ease"
+            },
+            ".events-retry:hover, .events-retry:focus-visible": {
+              "background": "rgba(255, 107, 107, 0.3)",
+              "color": "#fff"
             },
             ".event-tile": {
               "display": "flex",
@@ -5718,26 +5710,23 @@
               "border": "1px solid rgba(255, 255, 255, 0.14)",
               "box-shadow": "0 4px 20px rgba(0, 0, 0, 0.28)",
               "cursor": "pointer",
-              "transition": "all 0.3s ease",
+              "transition": "transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
               "-webkit-backdrop-filter": "blur(10px)",
               "backdrop-filter": "blur(10px)"
             },
             ".event-tile:hover": {
               "transform": "translateY(-4px)",
-              "box-shadow": "0 8px 30px rgba(233, 30, 99, 0.25)",
-              "border-color": "rgba(233, 30, 99, 0.35)"
+              "box-shadow": "0 8px 30px fade(@accentColor, 25%)",
+              "border-color": "fade(@accentColor, 35%)"
             },
             ".event-tile:hover .event-tile-arrow": {
-              "color": "#E91E63",
+              "color": "@accentColor",
               "transform": "translateX(3px)"
             },
-            ".event-tile:focus": {
-              "outline": "none",
-              "box-shadow": "0 8px 30px rgba(233, 30, 99, 0.25), 0 0 0 3px rgba(233, 30, 99, 0.45)"
-            },
             ".event-tile:focus-visible": {
-              "outline": "2px solid #E91E63",
-              "outline-offset": "2px"
+              "outline": "2px solid @accentColor",
+              "outline-offset": "2px",
+              "box-shadow": "0 8px 30px fade(@accentColor, 25%)"
             },
             ".event-tile-date": {
               "display": "flex",
@@ -5746,7 +5735,7 @@
               "justify-content": "center",
               "min-width": "78px",
               "padding": "0.9rem",
-              "background": "linear-gradient(180deg, #e91e63 0%, #9c27b0 100%)",
+              "background": "linear-gradient(180deg, @accentColor 0%, @accentColor2 100%)",
               "color": "#fff"
             },
             ".event-tile-day": {
@@ -5795,12 +5784,63 @@
               "flex-shrink": "0"
             },
             ".event-tile-countdown": {
-              "font-size": "0.78rem",
-              "font-weight": "700",
-              "color": "#66d17a",
               "margin": "0",
+              "line-height": "1"
+            },
+            ".event-chip": {
+              "display": "inline-flex",
+              "align-items": "center",
+              "padding": "0.3rem 0.62rem",
+              "border-radius": "999px",
+              "font-size": "0.66rem",
+              "font-weight": "800",
+              "letter-spacing": "0.05em",
               "text-transform": "uppercase",
-              "letter-spacing": "0.03em"
+              "white-space": "nowrap"
+            },
+            ".event-chip.is-future": {
+              "color": "lighten(@accentColor, 28%)",
+              "background": "fade(@accentColor, 14%)",
+              "border": "1px solid fade(@accentColor, 40%)"
+            },
+            ".event-chip.is-now": {
+              "color": "#0d2b1f",
+              "background": "linear-gradient(140deg, #2ebb88, #79d8b3)",
+              "border": "1px solid rgba(46, 187, 136, 0.6)",
+              "animation": "actus3-pulse 2s infinite"
+            },
+            ".event-badge": {
+              "display": "inline-block",
+              "margin-left": "0.4rem",
+              "padding": "0.12rem 0.5rem",
+              "border-radius": "999px",
+              "font-size": "0.66rem",
+              "font-weight": "700",
+              "letter-spacing": "0.03em",
+              "vertical-align": "middle",
+              "white-space": "nowrap",
+              "color": "lighten(@accentColor2, 32%)",
+              "background": "fade(@accentColor2, 18%)",
+              "border": "1px solid fade(@accentColor2, 45%)"
+            },
+            ".event-tile.is-now": {
+              "border-color": "rgba(46, 187, 136, 0.45)"
+            },
+            ".event-tile.is-now .event-tile-date": {
+              "background": "linear-gradient(140deg, #2ebb88, #79d8b3)",
+              "color": "#0d2b1f"
+            },
+            ".event-tile.is-fox": {
+              "border-color": "rgba(255, 170, 80, 0.35)"
+            },
+            ".event-tile.is-fox .event-tile-date": {
+              "background": "linear-gradient(140deg, #ff7a2f, #ffbe5d)",
+              "color": "#31200f"
+            },
+            ".event-tile.is-fox .event-chip.is-future": {
+              "color": "#ffcf87",
+              "background": "rgba(255, 152, 61, 0.14)",
+              "border-color": "rgba(255, 170, 80, 0.45)"
             },
             ".event-tile-arrow": {
               "display": "flex",
@@ -5810,55 +5850,86 @@
               "padding": "0 0.65rem",
               "color": "rgba(255, 255, 255, 0.45)",
               "font-size": "1rem",
-              "transition": "all 0.3s ease"
+              "transition": "color 0.3s ease, transform 0.3s ease"
+            },
+            ".event-tile.skeleton": {
+              "cursor": "default",
+              "pointer-events": "none"
+            },
+            ".event-tile.skeleton .event-tile-date": {
+              "background": "rgba(255, 255, 255, 0.08)"
+            },
+            ".sk-line": {
+              "height": "12px",
+              "border-radius": "6px",
+              "background": "linear-gradient(90deg, rgba(255, 255, 255, 0.07) 25%, rgba(255, 255, 255, 0.16) 50%, rgba(255, 255, 255, 0.07) 75%)",
+              "background-size": "200% 100%",
+              "animation": "actus3-shimmer 1.4s ease infinite",
+              "margin-bottom": "0.55rem"
+            },
+            ".sk-title": {
+              "width": "80%"
+            },
+            ".sk-sub": {
+              "width": "60%"
+            },
+            ".sk-tag": {
+              "width": "40%",
+              "margin-bottom": "0"
             },
             ".event-modal": {
-              "display": "none !important",
-              "position": "fixed !important",
-              "z-index": "2147483647 !important",
-              "inset": "0 !important",
-              "width": "100vw !important",
-              "height": "100vh !important",
-              "align-items": "center",
-              "justify-content": "center",
+              "border": "none",
+              "outline": "none",
               "padding": "1.25rem",
-              "box-sizing": "border-box"
+              "margin": "0",
+              "width": "100%",
+              "height": "100%",
+              "max-width": "none",
+              "max-height": "none",
+              "background": "transparent",
+              "color": "inherit",
+              "overflow": "visible",
+              "box-sizing": "border-box",
+              "align-items": "center",
+              "justify-content": "center"
             },
-            ".event-modal.show": {
-              "display": "flex !important"
+            ".event-modal[open]": {
+              "display": "flex"
             },
-            ".event-modal.closing .event-modal-content": {
-              "animation": "modalFadeOut 0.25s ease forwards"
+            ".event-modal::backdrop": {
+              "background": "rgba(10, 5, 20, 0.92)",
+              "-webkit-backdrop-filter": "blur(12px)",
+              "backdrop-filter": "blur(12px)"
             },
-            ".event-modal-overlay": {
-              "position": "fixed !important",
-              "inset": "0 !important",
-              "background": "rgba(10, 5, 20, 0.92) !important",
-              "-webkit-backdrop-filter": "blur(12px) !important",
-              "backdrop-filter": "blur(12px) !important",
-              "z-index": "0 !important",
-              "cursor": "pointer"
+            ".event-modal.fallback-open": {
+              "display": "flex",
+              "position": "fixed",
+              "inset": "0",
+              "z-index": "2147483647",
+              "background": "rgba(10, 5, 20, 0.92)"
             },
             ".event-modal-content": {
               "position": "relative",
-              "z-index": "1",
               "width": "100%",
               "max-width": "860px",
               "max-height": "calc(100vh - 2.5rem)",
-              "border-radius": "20px !important",
+              "border-radius": "20px",
               "margin": "0 auto",
               "padding": "0",
               "background": "linear-gradient(155deg, #1e1430 0%, #120d22 60%, #0d0a1c 100%)",
-              "border": "1px solid rgba(255, 110, 180, 0.18)",
-              "box-shadow": "0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 80px rgba(196, 113, 237, 0.12)",
+              "border": "1px solid fade(lighten(@accentColor, 15%), 18%)",
+              "box-shadow": "0 0 0 1px rgba(255, 255, 255, 0.06), 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 80px fade(lighten(@accentColor2, 20%), 12%)",
               "overflow-y": "auto",
               "overflow-x": "hidden",
               "-webkit-overflow-scrolling": "touch",
               "display": "flex",
               "flex-direction": "column",
-              "animation": "modalFadeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+              "animation": "actus3-fadeIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
               "scrollbar-width": "thin",
-              "scrollbar-color": "rgba(255, 110, 180, 0.45) transparent"
+              "scrollbar-color": "fade(lighten(@accentColor, 15%), 45%) transparent"
+            },
+            ".event-modal.closing .event-modal-content": {
+              "animation": "actus3-fadeOut 0.25s ease forwards"
             },
             ".event-modal-content::-webkit-scrollbar": {
               "width": "6px"
@@ -5867,11 +5938,11 @@
               "background": "transparent"
             },
             ".event-modal-content::-webkit-scrollbar-thumb": {
-              "background": "rgba(255, 110, 180, 0.45)",
+              "background": "fade(lighten(@accentColor, 15%), 45%)",
               "border-radius": "3px"
             },
             ".event-modal-content::-webkit-scrollbar-thumb:hover": {
-              "background": "rgba(255, 110, 180, 0.7)"
+              "background": "fade(lighten(@accentColor, 15%), 70%)"
             },
             ".event-modal-header": {
               "display": "flex",
@@ -5879,20 +5950,45 @@
               "justify-content": "space-between",
               "padding": "1.75rem 2rem 1.25rem",
               "border-bottom": "1px solid rgba(255, 255, 255, 0.1)",
-              "background": "linear-gradient(90deg, rgba(233, 30, 99, 0.08), rgba(196, 113, 237, 0.06), transparent)",
+              "background": "linear-gradient(90deg, fade(@accentColor, 8%), fade(lighten(@accentColor2, 20%), 6%), transparent)",
               "gap": "1rem"
             },
             ".event-modal-title": {
               "margin": "0",
-              "font-size": "1.5rem",
+              "font-size": "clamp(1.05rem, 3.3vw, 1.55rem)",
               "font-weight": "700",
               "line-height": "1.3",
-              "background": "linear-gradient(90deg, #ff6eb4, #c471ed, #8b5cf6)",
+              "background": "linear-gradient(90deg, lighten(@accentColor, 15%), lighten(@accentColor2, 20%), #8b5cf6)",
               "-webkit-background-clip": "text",
               "background-clip": "text",
               "-webkit-text-fill-color": "transparent",
               "flex": "1",
               "min-width": "0"
+            },
+            ".event-modal-actions": {
+              "display": "flex",
+              "align-items": "center",
+              "justify-content": "flex-end",
+              "flex-wrap": "wrap",
+              "gap": "0.45rem",
+              "flex-shrink": "0"
+            },
+            ".event-modal-dl": {
+              "border": "1px solid fade(lighten(@accentColor, 15%), 75%)",
+              "border-radius": "999px",
+              "padding": "0.45rem 0.72rem",
+              "font-size": "0.74rem",
+              "line-height": "1",
+              "font-weight": "700",
+              "color": "#fff",
+              "background": "linear-gradient(140deg, @accentColor, @accentColor2)",
+              "cursor": "pointer",
+              "white-space": "nowrap",
+              "transition": "transform 0.2s ease, box-shadow 0.2s ease"
+            },
+            ".event-modal-dl:hover, .event-modal-dl:focus-visible": {
+              "transform": "translateY(-1px)",
+              "box-shadow": "0 6px 18px fade(@accentColor, 45%)"
             },
             ".event-modal-close": {
               "flex-shrink": "0",
@@ -5912,9 +6008,9 @@
               "padding": "0",
               "margin-top": "0.15rem"
             },
-            ".event-modal-close:hover, .event-modal-close:focus": {
-              "background": "rgba(233, 30, 99, 0.25)",
-              "border-color": "rgba(233, 30, 99, 0.5)",
+            ".event-modal-close:hover, .event-modal-close:focus-visible": {
+              "background": "fade(@accentColor, 25%)",
+              "border-color": "fade(@accentColor, 50%)",
               "color": "#fff",
               "transform": "rotate(90deg)"
             },
@@ -5961,7 +6057,7 @@
               "letter-spacing": "0.1em",
               "text-transform": "uppercase",
               "font-weight": "700",
-              "color": "rgba(255, 110, 180, 0.85)",
+              "color": "fade(lighten(@accentColor, 15%), 85%)",
               "margin-bottom": "0.35rem"
             },
             ".event-info-text": {
@@ -5972,12 +6068,58 @@
               "color": "rgba(255, 255, 255, 0.92)"
             },
             ".event-info-text a": {
-              "color": "#ff6eb4",
+              "color": "lighten(@accentColor, 15%)",
               "text-decoration": "underline",
               "transition": "color 0.2s"
             },
             ".event-info-text a:hover": {
-              "color": "#c471ed"
+              "color": "lighten(@accentColor2, 20%)"
+            },
+            ".event-dates": {
+              "display": "flex",
+              "flex-wrap": "wrap",
+              "gap": "0.55rem 0.95rem",
+              "align-items": "baseline"
+            },
+            ".event-date-item": {
+              "min-width": "190px"
+            },
+            ".event-date-label": {
+              "font-weight": "700",
+              "color": "rgba(255, 255, 255, 0.88)",
+              "margin-right": "0.3rem"
+            },
+            ".event-desc": {
+              "position": "relative"
+            },
+            ".event-desc.is-collapsed": {
+              "max-height": "7.4em",
+              "overflow": "hidden"
+            },
+            ".event-desc.is-collapsed::after": {
+              "content": "''",
+              "position": "absolute",
+              "left": "0",
+              "right": "0",
+              "bottom": "0",
+              "height": "2.2em",
+              "background": "linear-gradient(to bottom, rgba(18, 13, 34, 0), rgba(18, 13, 34, 0.95))",
+              "pointer-events": "none"
+            },
+            ".event-desc-toggle": {
+              "margin-top": "0.6rem",
+              "border": "1px solid rgba(255, 255, 255, 0.25)",
+              "border-radius": "999px",
+              "background": "rgba(255, 255, 255, 0.08)",
+              "color": "#f4fbff",
+              "font-size": "0.78rem",
+              "font-weight": "700",
+              "padding": "0.4rem 0.75rem",
+              "cursor": "pointer",
+              "transition": "background 0.2s ease"
+            },
+            ".event-desc-toggle:hover, .event-desc-toggle:focus-visible": {
+              "background": "rgba(255, 255, 255, 0.16)"
             },
             ".event-location-buttons": {
               "display": "flex",
@@ -6049,7 +6191,7 @@
               "gap": "0.4rem",
               "margin-top": "0.5rem",
               "padding": "0.55rem 1.1rem",
-              "background": "linear-gradient(135deg, #ff6eb4, #c471ed)",
+              "background": "linear-gradient(135deg, lighten(@accentColor, 15%), lighten(@accentColor2, 20%))",
               "color": "#fff !important",
               "text-decoration": "none",
               "border-radius": "20px",
@@ -6059,10 +6201,10 @@
             },
             ".event-url-button:hover": {
               "transform": "translateY(-2px)",
-              "box-shadow": "0 6px 20px rgba(255, 110, 180, 0.45)",
+              "box-shadow": "0 6px 20px fade(lighten(@accentColor, 15%), 45%)",
               "color": "#fff !important"
             },
-            "@keyframes modalFadeIn": {
+            "@keyframes actus3-fadeIn": {
               "from": {
                 "opacity": "0",
                 "transform": "scale(0.94) translateY(12px)"
@@ -6072,7 +6214,7 @@
                 "transform": "scale(1) translateY(0)"
               }
             },
-            "@keyframes modalFadeOut": {
+            "@keyframes actus3-fadeOut": {
               "from": {
                 "opacity": "1",
                 "transform": "scale(1) translateY(0)"
@@ -6082,12 +6224,39 @@
                 "transform": "scale(0.94) translateY(12px)"
               }
             },
-            "@keyframes events-spin": {
+            "@keyframes actus3-pulse": {
               "0%": {
-                "transform": "rotate(0deg)"
+                "box-shadow": "0 0 0 0 rgba(46, 187, 136, 0.5)"
+              },
+              "70%": {
+                "box-shadow": "0 0 0 10px rgba(46, 187, 136, 0)"
               },
               "100%": {
-                "transform": "rotate(360deg)"
+                "box-shadow": "0 0 0 0 rgba(46, 187, 136, 0)"
+              }
+            },
+            "@keyframes actus3-shimmer": {
+              "from": {
+                "background-position": "200% 0"
+              },
+              "to": {
+                "background-position": "-200% 0"
+              }
+            },
+            "@keyframes actus3-sheetUp": {
+              "from": {
+                "transform": "translateY(100%)"
+              },
+              "to": {
+                "transform": "translateY(0)"
+              }
+            },
+            "@keyframes actus3-sheetDown": {
+              "from": {
+                "transform": "translateY(0)"
+              },
+              "to": {
+                "transform": "translateY(100%)"
               }
             },
             "@media (min-width: 768px)": {
@@ -6133,72 +6302,63 @@
                 "padding-top": "0.8rem"
               },
               ".event-modal": {
-                "padding": "0 !important",
-                "align-items": "stretch !important"
-              },
-              ".event-modal-overlay": {
-                "position": "fixed !important",
-                "inset": "0 !important"
+                "padding": "0",
+                "align-items": "stretch"
               },
               ".event-modal-content": {
-                "position": "fixed !important",
-                "inset": "0 !important",
-                "width": "100vw !important",
-                "max-width": "100vw !important",
-                "height": "100vh !important",
-                "max-height": "100vh !important",
-                "margin": "0 !important",
-                "border-radius": "0 !important",
-                "box-shadow": "none !important",
-                "animation": "sheetUp 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+                "width": "100vw",
+                "max-width": "100vw",
+                "height": "100dvh",
+                "max-height": "none",
+                "margin": "0",
+                "border-radius": "0",
+                "box-shadow": "none",
+                "animation": "actus3-sheetUp 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
               },
               ".event-modal.closing .event-modal-content": {
-                "animation": "sheetDown 0.25s ease forwards"
+                "animation": "actus3-sheetDown 0.25s ease forwards"
               },
               ".event-modal-header": {
-                "padding": "1.5rem 1.25rem 1rem !important",
-                "position": "sticky !important",
-                "top": "0 !important",
-                "z-index": "10 !important",
+                "padding": "1.5rem 1.25rem 1rem",
+                "position": "sticky",
+                "top": "0",
+                "z-index": "10",
                 "background": "linear-gradient(155deg, #1e1430 0%, #120d22 60%, #0d0a1c 100%)"
               },
               ".event-modal-body": {
-                "padding": "1rem 1.25rem 2rem !important",
+                "padding": "1rem 1.25rem 2rem",
                 "flex": "1",
                 "overflow-y": "auto"
               },
               ".event-modal-title": {
-                "font-size": "1.3rem !important"
+                "font-size": "1.3rem"
               },
               ".location-btn": {
                 "min-width": "100%"
+              },
+              ".event-modal-dl": {
+                "font-size": "0.68rem",
+                "white-space": "normal",
+                "text-align": "center"
               }
             },
-            "@keyframes sheetUp": {
-              "from": {
-                "transform": "translateY(100%)"
+            "@media (prefers-reduced-motion: reduce)": {
+              ".event-tile, .event-tile-arrow, .event-modal-close, .event-modal-dl, .event-desc-toggle, .location-btn, .event-url-button": {
+                "transition": "none"
               },
-              "to": {
-                "transform": "translateY(0)"
-              }
-            },
-            "@keyframes sheetDown": {
-              "from": {
-                "transform": "translateY(0)"
-              },
-              "to": {
-                "transform": "translateY(100%)"
+              ".event-modal-content, .event-modal.closing .event-modal-content, .event-chip.is-now, .sk-line": {
+                "animation": "none"
               }
             }
           },
           "_name": "header09",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\"\n         class=\"header-actus-fullscreen startm5\"\n         group=\"Headers\"\n         data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\"\n         mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\n\n    <mbr-parameters>\n        <header>Size</header>\n        <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\" checked>\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"12\">\n\n        <header>Show / Hide</header>\n        <input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n        <input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\n        <select title=\"Vertical Align\" name=\"verticalAlign\" condition=\"fullScreen\">\n            <option value=\"flex-start\">Top</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Bottom</option>\n        </select>\n\n        <select title=\"Horizontal Align\" name=\"horizontalAlign\">\n            <option value=\"flex-start\">Left</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Right</option>\n        </select>\n\n        <header>Background</header>\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected parallax>\n            <input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n            <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n        </fieldset>\n\n        <header condition=\"bg.type === 'video'\">Fallback Image</header>\n        <input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\n        <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n    </mbr-parameters>\n\n    <div class=\"mbr-overlay\"\n         mbr-if=\"overlay && bg.type !== 'color'\"\n         opacity=\"{{overlayOpacity}}\"\n         bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\n    <div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n        <div class=\"row\">\n            <div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\n                <h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\"\n                    mbr-theme-style=\"display-2\"\n                    data-app-selector=\".mbr-section-title\"\n                    mbr-if=\"showTitle\">\n                    <b>📢 Les actus de la Meute !</b>\n                </h1>\n\n                <p class=\"mbr-fonts-style mbr-text mbr-white mb-4\"\n                   mbr-theme-style=\"display-7\"\n                   mbr-if=\"showSubtitle\"\n                   data-app-selector=\".mbr-text\">\n                    Découvrez les prochains événements auxquels notre groupe participe.\n                </p>\n\n                <div class=\"events-grid\" id=\"events-grid\" aria-live=\"polite\"></div>\n\n                <p class=\"mbr-fonts-style mbr-white mt-4 mb-2 telegram-note\"\n                   mbr-theme-style=\"display-7\">\n                    <i>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</i><br>\n                    <i>(Pas besoin d'avoir obligatoirement un compte)</i>\n                </p>\n\n                <div class=\"mbr-section-btn\"\n                     mbr-if=\"showButtons\"\n                     data-toolbar=\"-mbrBtnMove\"\n                     mbr-buttons\n                     mbr-theme-style=\"display-7\">\n                    <a class=\"btn btn-primary\"\n                       href=\"https://t.me/Annonces_Meute_Normande\"\n                       target=\"_blank\"\n                       rel=\"noopener noreferrer\"\n                       data-app-placeholder=\"Type Text\">\n                        <span class=\"telegram-icon p-2 mbr-iconfont socicon-telegram socicon\" aria-hidden=\"true\"></span>\n                        Rejoindre le canal Telegram\n                    </a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n\n    <!-- MODALE standard centrée -->\n    <div class=\"event-modal\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"event-modal-title\" aria-hidden=\"true\">\n        <div class=\"event-modal-overlay\"></div>\n        <div class=\"event-modal-content\" tabindex=\"-1\">\n            <div class=\"event-modal-header\">\n                <h3 class=\"event-modal-title\" id=\"event-modal-title\"></h3>\n                <button class=\"event-modal-close\" aria-label=\"Fermer\">×</button>\n            </div>\n            <div class=\"event-modal-body\"></div>\n        </div>\n    </div>\n\n    [JS_CODE_0]\n</section>\n",
+          "_customHTML": "<section data-bs-version=\"5.1\"\n         class=\"header-actus-v3 startm5\"\n         group=\"Headers\"\n         data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\"\n         mbr-class=\"{'mbr-fullscreen': fullScreen, 'mbr-parallax-background': bg.parallax}\">\n\n    <mbr-parameters>\n        <header>Size</header>\n        <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\" checked>\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n        <input type=\"range\" inline name=\"contentWidth\" title=\"Content Width\" min=\"6\" max=\"12\" step=\"1\" value=\"12\">\n\n        <header>Show / Hide</header>\n        <input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Subtitle\" name=\"showSubtitle\" checked>\n        <input type=\"checkbox\" title=\"Follow Button\" name=\"showButtons\" checked>\n\n        <select title=\"Vertical Align\" name=\"verticalAlign\" condition=\"fullScreen\">\n            <option value=\"flex-start\">Top</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Bottom</option>\n        </select>\n\n        <select title=\"Horizontal Align\" name=\"horizontalAlign\">\n            <option value=\"flex-start\">Left</option>\n            <option value=\"center\" selected>Center</option>\n            <option value=\"flex-end\">Right</option>\n        </select>\n\n        <header>Agenda</header>\n        <input type=\"text\" title=\"URL du calendrier (.ics)\" name=\"icalUrl\" value=\"https://lameutenormande.fr/events.ics\">\n        <input type=\"text\" title=\"Filtre participant\" name=\"eventFilter\" value=\"go@events.lameutenormande\">\n        <input type=\"range\" inline title=\"Nb max d'événements\" name=\"maxEvents\" min=\"1\" max=\"6\" step=\"1\" value=\"3\">\n        <input type=\"range\" inline title=\"Fenêtre (jours)\" name=\"futureDays\" min=\"30\" max=\"730\" step=\"5\" value=\"365\">\n\n        <header>Couleurs</header>\n        <input type=\"color\" title=\"Accent\" name=\"accentColor\" value=\"#e91e63\">\n        <input type=\"color\" title=\"Accent secondaire\" name=\"accentColor2\" value=\"#9c27b0\">\n\n        <header>Background</header>\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/img-2921-2000x1186.webp\" selected parallax>\n            <input type=\"color\" title=\"Color\" value=\"#1a1a2e\">\n            <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n        </fieldset>\n\n        <header condition=\"bg.type === 'video'\">Fallback Image</header>\n        <input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n\n        <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#1a1a2e\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.8\" condition=\"overlay && bg.type !== 'color'\">\n    </mbr-parameters>\n\n    <div class=\"mbr-overlay\"\n         mbr-if=\"overlay && bg.type !== 'color'\"\n         opacity=\"{{overlayOpacity}}\"\n         bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n\n    <div mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n        <div class=\"row\">\n            <div class=\"content-wrap col-12 col-md-{{contentWidth}}\">\n\n                <h1 class=\"mbr-section-title mbr-fonts-style mbr-white mb-3\"\n                    mbr-theme-style=\"display-2\"\n                    data-app-selector=\".mbr-section-title\"\n                    mbr-if=\"showTitle\">\n                    <b>📢 Les actus de la Meute !</b>\n                </h1>\n\n                <p class=\"mbr-fonts-style mbr-text mbr-white mb-4\"\n                   mbr-theme-style=\"display-7\"\n                   mbr-if=\"showSubtitle\"\n                   data-app-selector=\".mbr-text\">\n                    Découvrez les prochains événements auxquels notre groupe participe.\n                </p>\n\n                <div class=\"events-grid\"\n                     aria-live=\"polite\"\n                     aria-busy=\"false\"\n                     data-ical-url=\"{{icalUrl}}\"\n                     data-filter=\"{{eventFilter}}\"\n                     data-max-events=\"{{maxEvents}}\"\n                     data-future-days=\"{{futureDays}}\"></div>\n\n                <p class=\"mbr-fonts-style mbr-white mt-4 mb-2 telegram-note\"\n                   mbr-theme-style=\"display-7\">\n                    <i>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</i><br>\n                    <i>(Pas besoin d'avoir obligatoirement un compte)</i>\n                </p>\n\n                <div class=\"mbr-section-btn\"\n                     mbr-if=\"showButtons\"\n                     data-toolbar=\"-mbrBtnMove\"\n                     mbr-buttons\n                     mbr-theme-style=\"display-7\">\n                    <a class=\"btn btn-primary\"\n                       href=\"https://t.me/Annonces_Meute_Normande\"\n                       target=\"_blank\"\n                       rel=\"noopener noreferrer\"\n                       data-app-placeholder=\"Type Text\">\n                        <span class=\"telegram-icon p-2 mbr-iconfont socicon-telegram socicon\" aria-hidden=\"true\"></span>\n                        Rejoindre le canal Telegram\n                    </a>\n                </div>\n\n            </div>\n        </div>\n    </div>\n\n    <!-- MODALE : élément <dialog> natif (top layer = plus aucun hack z-index nécessaire) -->\n    <dialog class=\"event-modal\">\n        <div class=\"event-modal-content\">\n            <div class=\"event-modal-header\">\n                <h3 class=\"event-modal-title\"></h3>\n                <div class=\"event-modal-actions\">\n                    <button type=\"button\" class=\"event-modal-dl\">Télécharger pour mon calendrier (.ics)</button>\n                    <button type=\"button\" class=\"event-modal-close\" aria-label=\"Fermer\">×</button>\n                </div>\n            </div>\n            <div class=\"event-modal-body\"></div>\n        </div>\n    </dialog>\n\n    [JS_CODE_0]\n</section>\n",
           "_cid": "vfPilZdu2W",
           "_anchor": "header09-1l",
           "_PHPplaceholders": [],
           "_JSplaceholders": [
-            "<script>\n    (function() {\n        'use strict';\n\n        // Fix z-index navbar + modal fullscreen mobile : injection globale dans <head>\n        // ⚠️ EXCLUT les modules artistes (.module-artiste) et leurs modales (.artist-modal)\n        // EXCLUT les modales gallery bloc (.artistgallery1) et leurs modales (.ag-modal)\n        // EXCLUT les fullscreen overlays (.carousel-fullscreen, .pricing-fullscreen)\n        (function() {\n            var s = document.createElement('style');\n            s.textContent = ''\n                + 'body.modal-open{overflow:hidden}'\n                + 'body.modal-open>*:not(.module-artiste):not(.artistgallery1):not(.carousel-fullscreen):not(.pricing-fullscreen){z-index:0!important;position:relative}'\n                + 'body.modal-open>.module-artiste{z-index:0!important;position:relative}'\n                + 'body.modal-open>.artistgallery1{z-index:0!important;position:relative}'\n                + 'body.modal-open>.module-artiste:has(.artist-modal.show){z-index:2147483647!important}'\n                + 'body.modal-open>.artistgallery1:has(.ag-modal.show){z-index:2147483647!important}'\n                + 'body.modal-open>:has(.event-modal){z-index:2147483647!important}'\n                + 'body.modal-open>:has(.legal-modal){z-index:2147483647!important}'\n                + '.carousel-fullscreen,.pricing-fullscreen{position:fixed!important;z-index:2147483648!important}'\n                + '@media(max-width:767px){'\n                    + '.event-modal{padding:0!important;align-items:stretch!important}'\n                    + '.event-modal-overlay{position:fixed!important;inset:0!important}'\n                    + '.event-modal-content{position:fixed!important;inset:0!important;width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;margin:0!important;border-radius:0!important;box-shadow:none!important;animation:eventSheetUp .32s cubic-bezier(.25,.46,.45,.94)}'\n                    + '.event-modal.closing .event-modal-content{animation:eventSheetDown .25s ease forwards}'\n                    + '.event-modal-header{padding:1.5rem 1.25rem 1rem!important;position:sticky!important;top:0!important;z-index:10;background:linear-gradient(155deg,#1e1430 0%,#120d22 60%,#0d0a1c 100%)}'\n                    + '.event-modal-body{padding:1rem 1.25rem 2rem!important;flex:1;overflow-y:auto}'\n                    + '.event-modal-title{font-size:1.3rem!important}'\n                + '}'\n                + '@keyframes eventSheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}'\n                + '@keyframes eventSheetDown{from{transform:translateY(0)}to{transform:translateY(100%)}}';\n            document.head.appendChild(s);\n        })();\n\n        const CONFIG = {\n            ICAL_URL: 'https://lameutenormande.fr/events.ics',\n            MAX_EVENTS: 3,\n            EVENT_FILTER: 'go@events.lameutenormande',\n            FUTURE_DAYS: 365\n        };\n\n        let conventions = [];\n        let currentKeyHandler = null;\n        let lastFocusedElement = null;\n\n        function chargerICAL() {\n            return new Promise((resolve, reject) => {\n                if (typeof ICAL !== 'undefined') {\n                    resolve();\n                    return;\n                }\n                const s = document.createElement('script');\n                s.src = 'https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js';\n                s.crossOrigin = 'anonymous';\n                s.onload = () => (typeof ICAL !== 'undefined' ? resolve() : reject(new Error('ICAL indéfini')));\n                s.onerror = () => reject(new Error('Échec CDN ICAL.js'));\n                document.head.appendChild(s);\n            });\n        }\n\n        function attendeeContainsFilter(prop, filter) {\n            try {\n                const raw = JSON.stringify(prop.jCal || '').toLowerCase();\n                if (raw.includes(filter)) return true;\n\n                const val = String(prop.getFirstValue() || '').toLowerCase();\n                if (val.includes(filter)) return true;\n\n                const cn = String(prop.getParameter('cn') || '').toLowerCase();\n                if (cn.includes(filter)) return true;\n            } catch (e) {}\n            return false;\n        }\n\n        function parserICSManuel(texte) {\n            const filter = CONFIG.EVENT_FILTER.toLowerCase();\n            const now = new Date();\n            const cutoff = new Date(now.getTime() + CONFIG.FUTURE_DAYS * 86400000);\n            const events = [];\n\n            const blocs = texte.split('BEGIN:VEVENT');\n\n            for (let i = 1; i < blocs.length; i++) {\n                const bloc = blocs[i].split('END:VEVENT');\n                const unfolded = bloc.replace(/\\r\\n[ \\t]/g, '').replace(/\\n[ \\t]/g, '');\n                const lines = unfolded.split(/\\r?\\n/);\n\n                let summary = '';\n                let dtstart = '';\n                let dtend = '';\n                let location = '';\n                let url = '';\n                let description = '';\n                let isGo = false;\n\n                for (const line of lines) {\n                    const ci = line.indexOf(':');\n                    if (ci === -1) continue;\n\n                    const keyFull = line.substring(0, ci);\n                    const key = keyFull.split(';').toUpperCase();\n                    const val = line.substring(ci + 1).trim();\n\n                    if (key === 'SUMMARY') summary = val.replace(/\\\\,/g, ',').replace(/\\\\n/g, '\\n');\n                    else if (key === 'DTSTART') dtstart = val;\n                    else if (key === 'DTEND') dtend = val;\n                    else if (key === 'LOCATION') location = val.replace(/\\\\,/g, ',');\n                    else if (key === 'URL') url = val;\n                    else if (key === 'DESCRIPTION') description = val.replace(/\\\\n/g, '\\n').replace(/\\\\,/g, ',');\n                    else if (key === 'ATTENDEE' && line.toLowerCase().includes(filter)) isGo = true;\n                }\n\n                if (!isGo || !dtstart) continue;\n\n                let startDate = null;\n                try {\n                    const d = dtstart.replace(/[TZ\\-:]/g, '');\n                    const y = +d.substring(0, 4);\n                    const mo = +d.substring(4, 6) - 1;\n                    const day = +d.substring(6, 8);\n                    let h = 0;\n                    let mi = 0;\n                    let s = 0;\n\n                    if (d.length >= 12) {\n                        h = +d.substring(8, 10);\n                        mi = +d.substring(10, 12);\n                    }\n                    if (d.length >= 14) {\n                        s = +d.substring(12, 14);\n                    }\n\n                    startDate = new Date(Date.UTC(y, mo, day, h, mi, s));\n                } catch (e) {\n                    continue;\n                }\n\n                if (!startDate || startDate < now || startDate > cutoff) continue;\n\n                let endDate = null;\n                if (dtend) {\n                    try {\n                        const d = dtend.replace(/[TZ\\-:]/g, '');\n                        const y = +d.substring(0, 4);\n                        const mo = +d.substring(4, 6) - 1;\n                        const day = +d.substring(6, 8);\n                        let h = 0;\n                        let mi = 0;\n                        let s = 0;\n\n                        if (d.length >= 12) {\n                            h = +d.substring(8, 10);\n                            mi = +d.substring(10, 12);\n                        }\n                        if (d.length >= 14) {\n                            s = +d.substring(12, 14);\n                        }\n\n                        endDate = new Date(Date.UTC(y, mo, day, h, mi, s));\n                    } catch (e) {}\n                }\n\n                events.push({\n                    title: summary || 'Convention',\n                    description,\n                    location,\n                    url,\n                    startDate,\n                    endDate\n                });\n            }\n\n            events.sort((a, b) => a.startDate - b.startDate);\n            return events.slice(0, CONFIG.MAX_EVENTS);\n        }\n\n        async function chargerConventions() {\n            const url = CONFIG.ICAL_URL + '?v=' + Date.now();\n            const r = await fetch(url, { cache: 'no-store' });\n\n            if (!r.ok) throw new Error('HTTP ' + r.status);\n\n            const texte = await r.text();\n            if (!texte.includes('BEGIN:VCALENDAR')) {\n                throw new Error('Pas un fichier ICS valide');\n            }\n\n            try {\n                await chargerICAL();\n\n                const now = new Date();\n                const cutoff = new Date(now.getTime() + CONFIG.FUTURE_DAYS * 86400000);\n                const filter = CONFIG.EVENT_FILTER.toLowerCase();\n\n                const comp = new ICAL.Component(ICAL.parse(texte));\n                const vevents = comp.getAllSubcomponents('vevent');\n\n                const events = vevents\n                    .map(v => {\n                        const e = new ICAL.Event(v);\n                        const attendees = v.getAllProperties('attendee');\n                        const isGo = attendees.some(a => attendeeContainsFilter(a, filter));\n\n                        if (!isGo) return null;\n\n                        const startDate = e.startDate ? e.startDate.toJSDate() : null;\n                        const endDate = e.endDate ? e.endDate.toJSDate() : null;\n\n                        if (!startDate || startDate < now || startDate > cutoff) return null;\n\n                        return {\n                            title: e.summary || 'Convention',\n                            description: e.description || '',\n                            location: e.location || '',\n                            url: v.getFirstPropertyValue('url') || '',\n                            startDate,\n                            endDate\n                        };\n                    })\n                    .filter(Boolean);\n\n                events.sort((a, b) => a.startDate - b.startDate);\n                const result = events.slice(0, CONFIG.MAX_EVENTS);\n\n                if (!result.length) {\n                    console.warn('⚠️ ICAL.js 0 résultat → fallback parser manuel');\n                    return parserICSManuel(texte);\n                }\n\n                return result;\n            } catch (e) {\n                console.warn('⚠️ ICAL.js échoué, fallback manuel:', e.message);\n                return parserICSManuel(texte);\n            }\n        }\n\n        function escapeHtml(t) {\n            if (!t) return '';\n            const d = document.createElement('div');\n            d.textContent = t;\n            return d.innerHTML;\n        }\n\n        function linkify(t) {\n            return escapeHtml(t)\n                .replace(/(https?:\\/\\/[^\\s<]+)/g, '<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer\">$1</a>')\n                .replace(/\\n/g, '<br>');\n        }\n\n        function formatDate(date) {\n            if (!date) {\n                return { jour: '?', mois: '???', complet: 'Date inconnue' };\n            }\n\n            return {\n                jour: date.getUTCDate(),\n                mois: date\n                    .toLocaleDateString('fr-FR', { month: 'short', timeZone: 'UTC' })\n                    .replace('.', '')\n                    .toUpperCase(),\n                complet: date.toLocaleDateString('fr-FR', {\n                    weekday: 'long',\n                    day: 'numeric',\n                    month: 'long',\n                    year: 'numeric',\n                    timeZone: 'UTC'\n                })\n            };\n        }\n\n        function countdown(date) {\n            if (!date) return '';\n            const diff = Math.ceil((date - new Date()) / 86400000);\n            if (diff === 0) return \"Aujourd'hui !\";\n            if (diff === 1) return 'Demain !';\n            if (diff < 0) return 'Passé';\n            return 'Dans ' + diff + ' jours';\n        }\n\n        function afficherChargement(grid) {\n            grid.innerHTML = `\n                <div class=\"events-loading\">\n                    <div class=\"loading-spinner\" aria-hidden=\"true\"></div>\n                    <p>Chargement des conventions...</p>\n                </div>`;\n        }\n\n        function afficherMessage(grid, msg, isError) {\n            grid.innerHTML = `\n                <div class=\"events-message ${isError ? 'error' : 'info'}\">\n                    <span aria-hidden=\"true\">${isError ? '⚠️' : 'ℹ️'}</span>\n                    <p>${escapeHtml(msg)}</p>\n                </div>`;\n        }\n\n        function genererTuiles(grid) {\n            if (!conventions.length) {\n                afficherMessage(grid, 'Aucune convention prévue pour le moment', false);\n                return;\n            }\n\n            grid.innerHTML = '';\n\n            conventions.forEach(event => {\n                const date = formatDate(event.startDate);\n                const tile = document.createElement('article');\n\n                tile.className = 'event-tile';\n                tile.tabIndex = 0;\n                tile.setAttribute('role', 'button');\n                tile.setAttribute('aria-label', 'Voir les détails de ' + (event.title || 'cet événement'));\n\n                tile.innerHTML = `\n                    <div class=\"event-tile-date\">\n                        <span class=\"event-tile-day\">${date.jour}</span>\n                        <span class=\"event-tile-month\">${date.mois}</span>\n                    </div>\n                    <div class=\"event-tile-content\">\n                        <h3 class=\"event-tile-title\">${escapeHtml(event.title)}</h3>\n                        ${event.location ? `<p class=\"event-tile-location\"><span>📍</span> ${escapeHtml(event.location)}</p>` : ''}\n                        <p class=\"event-tile-countdown\">${countdown(event.startDate)}</p>\n                    </div>\n                    <div class=\"event-tile-arrow\" aria-hidden=\"true\">▶</div>\n                `;\n\n                const open = () => {\n                    lastFocusedElement = tile;\n                    ouvrirPopup(event);\n                };\n\n                tile.addEventListener('click', open);\n                tile.addEventListener('keydown', e => {\n                    if (e.key === 'Enter' || e.key === ' ') {\n                        e.preventDefault();\n                        open();\n                    }\n                });\n\n                grid.appendChild(tile);\n            });\n        }\n\n        function ouvrirPopup(event) {\n            const modal = document.querySelector('.event-modal');\n            const modalContent = document.querySelector('.event-modal-content');\n            const titre = document.querySelector('.event-modal-title');\n            const corps = document.querySelector('.event-modal-body');\n\n            if (!modal || !modalContent || !titre || !corps) return;\n\n            titre.textContent = event.title || 'Convention';\n\n            const opts = {\n                weekday: 'long',\n                day: 'numeric',\n                month: 'long',\n                year: 'numeric',\n                timeZone: 'UTC'\n            };\n\n            let dateStr = event.startDate\n                ? event.startDate.toLocaleDateString('fr-FR', opts)\n                : 'Date inconnue';\n\n            let dateRange = '';\n            if (event.endDate && event.startDate) {\n                const s = event.startDate.toDateString();\n                const e = event.endDate.toDateString();\n                if (s !== e) {\n                    dateRange = ' au ' + event.endDate.toLocaleDateString('fr-FR', opts);\n                }\n            }\n\n            let html = '<div class=\"event-modal-body-grid\"><div class=\"event-modal-left\">';\n            html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📅</span><div class=\"event-info-content\"><div class=\"event-info-label\">Date</div><div class=\"event-info-text\">${escapeHtml(dateStr + dateRange)}</div></div></div>`;\n\n            if (event.location) {\n                const loc = encodeURIComponent(event.location);\n                html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📍</span><div class=\"event-info-content\"><div class=\"event-info-label\">Lieu</div><div class=\"event-info-text\">${escapeHtml(event.location)}</div>\n                    <div class=\"event-location-buttons\">\n                        <a href=\"https://www.google.com/maps/search/?api=1&query=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-google\"><svg viewBox=\"0 0 32 32\" class=\"location-btn-logo\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2 11.9556C2 8.47078 2 6.7284 2.67818 5.39739C3.27473 4.22661 4.22661 3.27473 5.39739 2.67818C6.7284 2 8.47078 2 11.9556 2H20.0444C23.5292 2 25.2716 2 26.6026 2.67818C27.7734 3.27473 28.7253 4.22661 29.3218 5.39739C30 6.7284 30 8.47078 30 11.9556V20.0444C30 23.5292 30 25.2716 29.3218 26.6026C28.7253 27.7734 27.7734 28.7253 26.6026 29.3218C25.2716 30 23.5292 30 20.0444 30H11.9556C8.47078 30 6.7284 30 5.39739 29.3218C4.22661 28.7253 3.27473 27.7734 2.67818 26.6026C2 25.2716 2 23.5292 2 20.0444V11.9556Z\" fill=\"white\" fill-opacity=\"0.15\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M24 12.8116L23.9999 12.8541C23.9998 12.872 23.9996 12.8899 23.9994 12.9078C23.9998 12.9287 24 12.9498 24 12.971C24 16.3073 21.4007 19.2604 19.6614 21.2367C19.1567 21.8101 18.7244 22.3013 18.449 22.6957C17.4694 24.0986 16.9524 25.6184 16.8163 26.2029C16.8163 26.6431 16.4509 27 16 27C15.5491 27 15.1837 26.6431 15.1837 26.2029C15.0476 25.6184 14.5306 24.0986 13.551 22.6957C13.2756 22.3013 12.8433 21.8101 12.3386 21.2367C10.5993 19.2604 8 16.3073 8 12.971C8 12.9498 8.0002 12.9287 8.0006 12.9078C8.0002 12.8758 8 12.8437 8 12.8116C8 8.49736 11.5817 5 16 5C20.4183 5 24 8.49736 24 12.8116ZM16 15.6812C17.7132 15.6812 19.102 14.325 19.102 12.6522C19.102 10.9793 17.7132 9.62319 16 9.62319C14.2868 9.62319 12.898 10.9793 12.898 12.6522C12.898 14.325 14.2868 15.6812 16 15.6812Z\" fill=\"white\"/><path d=\"M23.1054 9.21856C22.1258 7.37546 20.4161 5.96177 18.3504 5.34277L13.7559 10.5615C14.3208 9.98352 15.1174 9.62346 16.0002 9.62346C17.7134 9.62346 19.1022 10.9796 19.1022 12.6524C19.1022 13.3349 18.8711 13.9646 18.4811 14.4711L23.1054 9.21856Z\" fill=\"white\" fill-opacity=\"0.8\"/><path d=\"M12.4311 21.3425C12.4004 21.3076 12.3695 21.2725 12.3383 21.2371C11.1918 19.9344 9.67162 18.2073 8.76855 16.2257L13.5439 10.8018C13.1387 11.3136 12.8976 11.9556 12.8976 12.6526C12.8976 14.3254 14.2865 15.6816 15.9997 15.6816C16.8675 15.6816 17.6521 15.3336 18.2151 14.7727L12.4311 21.3425Z\" fill=\"white\" fill-opacity=\"0.7\"/><path d=\"M9.89288 7.76562C8.71207 9.12685 8 10.8881 8 12.8117C8 12.8438 8.0002 12.8759 8.0006 12.9079C8.0002 12.9288 8 12.9499 8 12.9711C8 14.1082 8.30196 15.2009 8.76889 16.2254L13.5362 10.8106L9.89288 7.76562Z\" fill=\"white\" fill-opacity=\"0.6\"/><path d=\"M18.3499 5.34254C17.6068 5.11988 16.8176 5 15.9997 5C13.5514 5 11.36 6.07387 9.89258 7.76553L13.5359 10.8105L13.5438 10.8015C13.6101 10.7178 13.6807 10.6375 13.7554 10.5611L18.3499 5.34254Z\" fill=\"white\" fill-opacity=\"0.9\"/></svg><span class=\"location-btn-label\">Google Maps</span></a>\n                        <a href=\"https://waze.com/ul?q=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-waze\"><svg viewBox=\"0 0 14 14\" class=\"location-btn-logo\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#ffffff\" d=\"m 12.937649,5.689685 c -0.11625,-0.68661 -0.388914,-1.33016 -0.810638,-1.91282 -0.476314,-0.65811 -1.127922,-1.20761 -1.884324,-1.58903 -0.7645339,-0.38552 -1.6178829,-0.58938 -2.4678369,-0.58938 -0.239783,0 -0.481475,0.0163 -0.71843,0.0482 -0.992367,0.13407 -1.968118,0.54689 -2.747572,1.16243 -0.878239,0.69354 -1.444993,1.58521 -1.638884,2.57878 -0.05777,0.29537 -0.08238,0.62212 -0.106209,0.93806 -0.03734,0.49456 -0.07594,1.00595 -0.233207,1.34013 -0.107482,0.2284 -0.267856,0.3805 -0.701389,0.3805 -0.238581,0 -0.456585,0.13492 -0.563077,0.34847 -0.10642098,0.21355 -0.08294,0.46889 0.0606,0.65931 0.653164,0.8665 1.505522,1.39133 2.402923,1.70755 -0.04087,0.12346 -0.06385,0.25491 -0.06385,0.39209 0,0.68902 0.558551,1.24757 1.247566,1.24757 0.671972,0 1.218291,-0.53161 1.244949,-1.19701 0.292534,0.0159 1.685483,0.0197 1.840836,0.0153 0.03444,0.65825 0.577502,1.18166 1.244243,1.18166 0.688943,0 1.2474949,-0.55848 1.2474949,-1.24757 0,-0.15705 -0.03026,-0.30674 -0.08316,-0.44513 0.489183,-0.23794 0.95093,-0.55904 1.353845,-0.94576 0.561875,-0.53918 0.974265,-1.1753 1.192764,-1.83964 0.245865,-0.7477 0.307667,-1.4993 0.183355,-2.23378 m -8.2243299,5.876 c -0.227338,0 -0.411684,-0.18421 -0.411684,-0.41169 0,-0.22733 0.184346,-0.41168 0.411684,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 0,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 4.330028,0 c -0.227409,0 -0.411754,-0.18421 -0.411754,-0.41169 0,-0.22733 0.184345,-0.41168 0.411754,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 7.1e-5,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 3.1132919,-3.83873 c -0.360276,1.09533 -1.309862,1.9998 -2.3218169,2.46289 -0.215458,-0.17706 -0.490951,-0.28327 -0.791405,-0.28327 -0.484233,0 -0.903058,0.2762 -1.109748,0.67933 -0.210438,0.009 -1.777338,0.003 -2.120219,-0.0202 -0.210155,-0.39223 -0.623818,-0.65917 -1.100061,-0.65917 -0.316788,0 -0.605221,0.11894 -0.825134,0.31354 -0.852358,-0.27543 -1.65734,-0.74608 -2.259025,-1.54449 1.779176,0 1.428092,-1.98827 1.658259,-3.16731 0.350659,-1.79693 2.12835,-3.00518 3.853148,-3.23817 0.212135,-0.0286 0.42427,-0.0426 0.634213,-0.0426 2.8347599,7e-5 5.3581049,2.53098 4.3817889,5.49938 m -4.4056189,0.87435 c -1.023692,0 -1.945914,-0.67119 -2.115056,-1.54978 -0.03281,-0.17056 0.07891,-0.33553 0.249471,-0.36834 0.170627,-0.0329 0.335527,0.0789 0.368337,0.24947 0.09942,0.51648 0.717865,1.06039 1.542221,1.03882 0.858722,-0.0225 1.4259,-0.53599 1.542433,-1.03154 0.03981,-0.16907 0.209378,-0.27379 0.378308,-0.23419 0.169213,0.0398 0.274007,0.20916 0.234197,0.37823 -0.09518,0.40454 -0.35568,0.77932 -0.733634,1.05545 -0.393652,0.28779 -0.879511,0.44718 -1.404757,0.46104 -0.02051,6.3e-4 -0.04108,8.4e-4 -0.06152,8.4e-4 m 2.037132,-3.23958 c 0,0.33369 -0.270542,0.60423 -0.604231,0.60423 -0.333617,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270543,-0.60409 0.60416,-0.60409 0.333689,0 0.604231,0.27033 0.604231,0.60409 m -2.822597,0 c 0,0.33369 -0.270472,0.60423 -0.60416,0.60423 -0.333618,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270542,-0.60409 0.60416,-0.60409 0.333688,0 0.60416,0.27033 0.60416,0.60409\"/></svg><span class=\"location-btn-label\">Waze</span></a>\n                        <a href=\"https://maps.apple.com/?q=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-apple\"><svg viewBox=\"0 0 30 30\" class=\"location-btn-logo\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#ffffff\" d=\"M 9 4 C 8.657 4 8.323 4.0355625 8 4.1015625 L 8 13.275391 C 7.646263 13.401511 7.3068564 13.555772 7 13.761719 L 7 4.421875 C 5.755 4.966875 4.7873594 6.0089688 4.3183594 7.2929688 L 6 8.4707031 L 6 14.611328 L 4 13.210938 L 4 21 C 4 23.049 5.236 24.806125 7 25.578125 L 7 21.238281 C 7.7157567 21.718662 8.5752393 22 9.5 22 C 10.424761 22 11.284243 21.718662 12 21.238281 L 12 26 L 21 26 C 21.369 26 21.726266 25.954906 22.072266 25.878906 L 13.361328 19.773438 C 13.757438 19.103628 14 18.332818 14 17.5 C 14 16.439688 13.615994 15.47704 13 14.707031 L 13 13.376953 L 25.794922 22.345703 C 25.915922 21.914703 26 21.469 26 21 L 26 15.974609 C 19.497 15.716609 14.283391 10.503 14.025391 4 L 12 4 L 12 13.761719 C 11.693144 13.555772 11.353737 13.401511 11 13.275391 L 11 4 L 9 4 z M 18.025391 4 C 18.275391 8.294 21.706 11.723609 26 11.974609 L 26 9 C 26 6.239 23.761 4 21 4 L 18.025391 4 z M 9.5 14 C 10.480989 14 11.364517 14.406452 12 15.056641 C 12.15425 15.214391 12.293344 15.385984 12.416016 15.570312 C 12.538687 15.754641 12.644031 15.951641 12.730469 16.158203 C 12.816906 16.364766 12.884141 16.580234 12.929688 16.804688 C 12.975072 17.029622 13 17.261689 13 17.5 C 13 17.738 12.975234 17.970859 12.929688 18.195312 C 12.884141 18.419766 12.816906 18.635234 12.730469 18.841797 C 12.644031 19.048359 12.538687 19.245359 12.416016 19.429688 C 12.293344 19.614016 12.15425 19.785609 12 19.943359 C 11.364517 20.593548 10.480989 21 9.5 21 C 8.5195528 21 7.6354091 20.59487 7 19.945312 C 6.9818906 19.926763 6.9688744 19.903706 6.9511719 19.884766 C 6.8180905 19.742375 6.6922542 19.592499 6.5839844 19.429688 C 6.4613125 19.245219 6.3559687 19.048422 6.2695312 18.841797 C 6.1830938 18.635172 6.1158594 18.419781 6.0703125 18.195312 C 6.0247656 17.970844 6 17.738 6 17.5 C 6 17.261689 6.0249282 17.029622 6.0703125 16.804688 C 6.1158594 16.580234 6.1830938 16.364766 6.2695312 16.158203 C 6.3559687 15.951641 6.4613125 15.754641 6.5839844 15.570312 C 6.7066562 15.385984 6.84575 15.214391 7 15.056641 C 7.6354827 14.406452 8.519011 14 9.5 14 z M 9.5253906 15.216797 C 9.4297656 15.216297 9.333875 15.271359 9.296875 15.380859 L 8.0136719 19.181641 C 7.9286719 19.436641 8.2455938 19.631453 8.4335938 19.439453 L 9.5273438 18.320312 L 10.5625 19.414062 C 10.7475 19.609063 11.070328 19.418109 10.986328 19.162109 L 9.7519531 15.382812 C 9.7164531 15.273312 9.6210156 15.217297 9.5253906 15.216797 z\"/></svg><span class=\"location-btn-label\">Apple Plans</span></a>\n                    </div></div></div>`;\n            }\n\n            html += '</div><div class=\"event-modal-right\">';\n\n            if (event.description) {\n                html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">📝</span><div class=\"event-info-content\"><div class=\"event-info-label\">Description</div><div class=\"event-info-text\">${linkify(event.description)}</div></div></div>`;\n            }\n\n            if (event.url) {\n                try {\n                    const u = new URL(event.url);\n                    if (u.protocol.indexOf('http') === 0) {\n                        html += `<div class=\"event-info-row\"><span class=\"event-info-icon\">🔗</span><div class=\"event-info-content\"><div class=\"event-info-label\">Site officiel</div><a href=\"${escapeHtml(event.url)}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"event-url-button\">Visiter le site</a></div></div>`;\n                    }\n                } catch (e) {}\n            }\n\n            html += '</div></div>';\n            corps.innerHTML = html;\n\n            document.body.classList.add('modal-open');\n            modal.classList.add('show');\n            modal.classList.remove('closing');\n            modal.setAttribute('aria-hidden', 'false');\n\n            const closeBtn = modal.querySelector('.event-modal-close');\n            const overlay = modal.querySelector('.event-modal-overlay');\n\n            if (closeBtn) closeBtn.onclick = fermerPopup;\n            if (overlay) overlay.onclick = fermerPopup;\n\n            if (currentKeyHandler) {\n                document.removeEventListener('keydown', currentKeyHandler);\n            }\n\n            currentKeyHandler = e => {\n                if (e.key === 'Escape') fermerPopup();\n            };\n            document.addEventListener('keydown', currentKeyHandler);\n\n            setTimeout(() => {\n                if (closeBtn) {\n                    closeBtn.focus();\n                } else {\n                    modalContent.focus();\n                }\n            }, 20);\n        }\n\n        function fermerPopup() {\n            const modal = document.querySelector('.event-modal');\n            if (!modal || !modal.classList.contains('show')) return;\n\n            modal.classList.add('closing');\n            modal.setAttribute('aria-hidden', 'true');\n            document.body.classList.remove('modal-open');\n\n            setTimeout(() => {\n                modal.classList.remove('show', 'closing');\n            }, 250);\n\n            if (currentKeyHandler) {\n                document.removeEventListener('keydown', currentKeyHandler);\n                currentKeyHandler = null;\n            }\n\n            if (lastFocusedElement) {\n                lastFocusedElement.focus();\n                lastFocusedElement = null;\n            }\n        }\n\n        document.addEventListener('DOMContentLoaded', async () => {\n            const grid = document.getElementById('events-grid');\n            if (!grid) return;\n\n            try {\n                afficherChargement(grid);\n                conventions = await chargerConventions();\n                genererTuiles(grid);\n            } catch (e) {\n                console.error('❌', e);\n                afficherMessage(grid, 'Erreur de chargement des événements. Réessayez plus tard.', true);\n            }\n        });\n    })();\n    </script>"
+            "<script>\n    (function () {\n        'use strict';\n\n        // Capturé au parsing : permet plusieurs instances du module sur une même page.\n        const scriptActuel = document.currentScript;\n\n        function trouverRacine() {\n            const parent = scriptActuel && scriptActuel.closest('section.header-actus-v3');\n            if (parent) return parent;\n            const candidats = document.querySelectorAll('section.header-actus-v3');\n            for (const c of candidats) {\n                if (!c.dataset.actusInit) return c;\n            }\n            return candidats[0] || null;\n        }\n\n        function init() {\n            const racine = trouverRacine();\n            if (!racine || racine.dataset.actusInit) return;\n            racine.dataset.actusInit = '1';\n\n            const grille = racine.querySelector('.events-grid');\n            const modale = racine.querySelector('.event-modal');\n            if (!grille || !modale) return;\n\n            const titreModale = modale.querySelector('.event-modal-title');\n            const corpsModale = modale.querySelector('.event-modal-body');\n            const boutonFermer = modale.querySelector('.event-modal-close');\n            const supporteDialog = typeof modale.showModal === 'function';\n\n            // Id unique pour l'accessibilité (évite les collisions entre instances)\n            const uid = 'actus3-titre-' + Math.random().toString(36).slice(2, 8);\n            titreModale.id = uid;\n            modale.setAttribute('aria-labelledby', uid);\n\n            /* ------------------------------------------------------------------\n             * Configuration : lue depuis les paramètres Mobirise (data-attributes),\n             * avec valeurs de repli si le HTML est injecté sans les {{params}}.\n             * ------------------------------------------------------------------ */\n            const config = {\n                url: grille.dataset.icalUrl || 'https://lameutenormande.fr/events.ics',\n                filtre: (grille.dataset.filter || 'go@events.lameutenormande').toLowerCase(),\n                maxEvents: parseInt(grille.dataset.maxEvents, 10) || 3,\n                joursFuturs: parseInt(grille.dataset.futureDays, 10) || 365,\n                cacheMinutes: 10,\n                timeoutMs: 12000\n            };\n            const cleCache = 'actus3:' + config.url;\n\n            let conventions = [];\n            let enChargement = false;\n            let dernierFocus = null;\n            let evenementModal = null;\n\n            /* ---------------------- Utilitaires texte ---------------------- */\n\n            function echapperHtml(t) {\n                return String(t == null ? '' : t).replace(/[&<>\"']/g, c => ({\n                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;'\n                }[c]));\n            }\n\n            function lierUrls(t) {\n                return echapperHtml(t)\n                    .replace(/(https?:\\/\\/[^\\s<]+)/g, '<a href=\"$1\" target=\"_blank\" rel=\"noopener noreferrer\">$1</a>')\n                    .replace(/\\n/g, '<br>');\n            }\n\n            function majusculeInitiale(t) {\n                return t.charAt(0).toUpperCase() + t.slice(1);\n            }\n\n            /* ---------------------- Chargement du flux ICS ---------------------- */\n\n            function lireCache() {\n                try {\n                    const brut = sessionStorage.getItem(cleCache);\n                    if (!brut) return null;\n                    const donnees = JSON.parse(brut);\n                    if (Date.now() - donnees.t > config.cacheMinutes * 60000) return null;\n                    return donnees.ics;\n                } catch (e) {\n                    return null;\n                }\n            }\n\n            function ecrireCache(ics) {\n                try {\n                    sessionStorage.setItem(cleCache, JSON.stringify({ t: Date.now(), ics }));\n                } catch (e) { /* stockage indisponible : sans gravité */ }\n            }\n\n            async function chargerICS() {\n                const enCache = lireCache();\n                if (enCache) return enCache;\n\n                const options = { cache: 'no-store' };\n                if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {\n                    options.signal = AbortSignal.timeout(config.timeoutMs);\n                }\n\n                const separateur = config.url.includes('?') ? '&' : '?';\n                const reponse = await fetch(config.url + separateur + 'v=' + Date.now(), options);\n                if (!reponse.ok) throw new Error('HTTP ' + reponse.status);\n\n                const texte = await reponse.text();\n                if (!texte.includes('BEGIN:VCALENDAR')) throw new Error('Fichier ICS invalide');\n\n                ecrireCache(texte);\n                return texte;\n            }\n\n            /* ------------------------------------------------------------------\n             * Parseur iCalendar natif (RFC 5545) — remplace la dépendance CDN\n             * ICAL.js de la V2. Gère : dépliage des lignes, paramètres de\n             * propriété (VALUE=DATE, TZID…), séquences d'échappement, ':' dans\n             * les paramètres entre guillemets.\n             * Non géré (comme en V2) : RRULE, EXDATE, fuseaux VTIMEZONE.\n             * ------------------------------------------------------------------ */\n\n            function deplierICS(texte) {\n                return texte.replace(/\\r?\\n[ \\t]/g, '');\n            }\n\n            function decouperLigne(ligne) {\n                let enGuillemets = false;\n                for (let i = 0; i < ligne.length; i++) {\n                    const c = ligne[i];\n                    if (c === '\"') enGuillemets = !enGuillemets;\n                    else if (c === ':' && !enGuillemets) {\n                        return { avant: ligne.slice(0, i), valeur: ligne.slice(i + 1) };\n                    }\n                }\n                return null;\n            }\n\n            function desechapperICS(t) {\n                return t.replace(/\\\\n/gi, '\\n').replace(/\\\\([,;\\\\])/g, '$1');\n            }\n\n            function parserDateICS(valeur, parametres) {\n                const m = valeur.match(/^(\\d{4})(\\d{2})(\\d{2})(?:T(\\d{2})(\\d{2})(\\d{2})?Z?)?$/);\n                if (!m) return null;\n                const allDay = /VALUE=DATE(?!-TIME)/i.test(parametres) || !m[4];\n                const date = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));\n                return isNaN(date.getTime()) ? null : { date, allDay };\n            }\n\n            function parserICS(texte) {\n                const lignes = deplierICS(texte).split(/\\r?\\n/);\n                const evenements = [];\n                let courant = null;\n\n                for (const ligne of lignes) {\n                    if (ligne === 'BEGIN:VEVENT') { courant = {}; continue; }\n                    if (ligne === 'END:VEVENT') {\n                        if (courant) evenements.push(courant);\n                        courant = null;\n                        continue;\n                    }\n                    if (!courant) continue;\n\n                    const parts = decouperLigne(ligne);\n                    if (!parts) continue;\n\n                    const nom = parts.avant.split(';')[0].toUpperCase();\n                    const valeur = parts.valeur.trim();\n\n                    switch (nom) {\n                        case 'UID':         courant.uid = valeur; break;\n                        case 'SUMMARY':     courant.title = desechapperICS(valeur); break;\n                        case 'DESCRIPTION': courant.description = desechapperICS(valeur); break;\n                        case 'LOCATION':    courant.location = desechapperICS(valeur); break;\n                        case 'URL':         courant.url = valeur; break;\n                        case 'DTSTART':     courant.debut = parserDateICS(valeur, parts.avant); break;\n                        case 'DTEND':       courant.fin = parserDateICS(valeur, parts.avant); break;\n                        case 'ATTENDEE':\n                            if (ligne.toLowerCase().includes(config.filtre)) courant.estGo = true;\n                            break;\n                    }\n                }\n                return evenements;\n            }\n\n            /* ------------------------------------------------------------------\n             * Filtrage : un événement reste visible tant qu'il n'est pas terminé\n             * (la V2 le faisait disparaître dès que l'heure de début était passée).\n             * ------------------------------------------------------------------ */\n            function filtrerEvenements(evts) {\n                const maintenant = Date.now();\n                const limite = maintenant + config.joursFuturs * 86400000;\n\n                return evts\n                    .filter(e => {\n                        if (!e.estGo || !e.debut) return false;\n                        const finVisible = e.fin ? e.fin.date.getTime() : e.debut.date.getTime() + 86400000;\n                        return finVisible > maintenant && e.debut.date.getTime() <= limite;\n                    })\n                    .sort((a, b) => a.debut.date - b.debut.date)\n                    .slice(0, config.maxEvents);\n            }\n\n            /* ---------------------- Formatage des dates ---------------------- */\n\n            function formaterDate(date) {\n                return {\n                    jour: date.getUTCDate(),\n                    mois: date.toLocaleDateString('fr-FR', { month: 'short', timeZone: 'UTC' })\n                        .replace('.', '').toUpperCase(),\n                    complet: date.toLocaleDateString('fr-FR', {\n                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'\n                    })\n                };\n            }\n\n            function memeJourUTC(a, b) {\n                return a.toISOString().slice(0, 10) === b.toISOString().slice(0, 10);\n            }\n\n            // DTEND en tout-journée est exclusif (RFC 5545) : le vrai dernier jour est J-1\n            function dernierJour(evt) {\n                if (!evt.fin) return evt.debut.date;\n                return evt.fin.allDay ? new Date(evt.fin.date.getTime() - 86400000) : evt.fin.date;\n            }\n\n            function statutDe(evt) {\n                const t = Date.now();\n                const fin = evt.fin ? evt.fin.date.getTime() : evt.debut.date.getTime() + 86400000;\n                if (fin <= t) return 'past';\n                if (evt.debut.date.getTime() <= t) return 'now';\n                return 'future';\n            }\n\n            function nombreJours(evt) {\n                return Math.round((dernierJour(evt) - evt.debut.date) / 86400000) + 1;\n            }\n\n            function texteHeureUTC(d) {\n                return d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'UTC' });\n            }\n\n            function compteARebours(evt) {\n                if (statutDe(evt) === 'now') return 'En cours';\n                const ms = evt.debut.date.getTime() - Date.now();\n                // Événement horodaté à moins de 24 h : précision à l'heure\n                if (!evt.debut.allDay && ms < 86400000) {\n                    return 'Dans ' + Math.max(1, Math.ceil(ms / 3600000)) + ' h';\n                }\n                const diff = Math.ceil(ms / 86400000);\n                if (diff <= 0) return \"Aujourd'hui !\";\n                if (typeof Intl.RelativeTimeFormat === 'function') {\n                    const rtf = new Intl.RelativeTimeFormat('fr', { numeric: 'auto' });\n                    return majusculeInitiale(rtf.format(diff, 'day'));\n                }\n                return diff === 1 ? 'Demain !' : 'Dans ' + diff + ' jours';\n            }\n\n            /* ---------------------- Rendu de la grille ---------------------- */\n\n            function afficherSquelette() {\n                const n = Math.min(config.maxEvents, 3);\n                let html = '';\n                for (let i = 0; i < n; i++) {\n                    html += `\n                        <div class=\"event-tile skeleton\" aria-hidden=\"true\">\n                            <div class=\"event-tile-date\"></div>\n                            <div class=\"event-tile-content\">\n                                <div class=\"sk-line sk-title\"></div>\n                                <div class=\"sk-line sk-sub\"></div>\n                                <div class=\"sk-line sk-tag\"></div>\n                            </div>\n                        </div>`;\n                }\n                grille.innerHTML = html;\n            }\n\n            function afficherErreur() {\n                grille.innerHTML = `\n                    <div class=\"events-message error\">\n                        <span aria-hidden=\"true\">⚠️</span>\n                        <p>Erreur de chargement des événements.</p>\n                        <button type=\"button\" class=\"events-retry\">Réessayer</button>\n                    </div>`;\n                const btn = grille.querySelector('.events-retry');\n                if (btn) btn.addEventListener('click', demarrer);\n            }\n\n            function rendreTuiles() {\n                if (!conventions.length) {\n                    grille.innerHTML = `\n                        <div class=\"events-message info\">\n                            <span aria-hidden=\"true\">ℹ️</span>\n                            <p>Aucune convention prévue pour le moment</p>\n                        </div>`;\n                    return;\n                }\n\n                grille.innerHTML = conventions.map((evt, i) => {\n                    const date = formaterDate(evt.debut.date);\n                    const statut = statutDe(evt);\n                    const estFox = /\\u{1F98A}/u.test(evt.title || '');\n                    const nbJours = nombreJours(evt);\n                    const badge = nbJours > 1 ? ` <span class=\"event-badge\">${nbJours} jours</span>` : '';\n                    return `\n                        <article class=\"event-tile is-${statut}${estFox ? ' is-fox' : ''}\" tabindex=\"0\" role=\"button\" data-index=\"${i}\"\n                                 aria-label=\"Voir les détails de ${echapperHtml(evt.title || 'cet événement')}\">\n                            <div class=\"event-tile-date\">\n                                <span class=\"event-tile-day\">${date.jour}</span>\n                                <span class=\"event-tile-month\">${date.mois}</span>\n                            </div>\n                            <div class=\"event-tile-content\">\n                                <h3 class=\"event-tile-title\">${echapperHtml(evt.title || 'Convention')}${badge}</h3>\n                                ${evt.location ? `<p class=\"event-tile-location\"><span aria-hidden=\"true\">📍</span> ${echapperHtml(evt.location)}</p>` : ''}\n                                <p class=\"event-tile-countdown\"><span class=\"event-chip is-${statut}\">${compteARebours(evt)}</span></p>\n                            </div>\n                            <div class=\"event-tile-arrow\" aria-hidden=\"true\">▶</div>\n                        </article>`;\n                }).join('');\n            }\n\n            // Délégation d'événements : un seul listener pour toutes les tuiles\n            grille.addEventListener('click', e => {\n                const tuile = e.target.closest('.event-tile[data-index]');\n                if (tuile) ouvrirModale(conventions[+tuile.dataset.index], tuile);\n            });\n            grille.addEventListener('keydown', e => {\n                if (e.key !== 'Enter' && e.key !== ' ') return;\n                const tuile = e.target.closest('.event-tile[data-index]');\n                if (tuile) {\n                    e.preventDefault();\n                    ouvrirModale(conventions[+tuile.dataset.index], tuile);\n                }\n            });\n\n            /* ---------------------- Modale (dialog natif) ---------------------- */\n\n            const SVG_GOOGLE = '<svg viewBox=\"0 0 32 32\" class=\"location-btn-logo\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2 11.9556C2 8.47078 2 6.7284 2.67818 5.39739C3.27473 4.22661 4.22661 3.27473 5.39739 2.67818C6.7284 2 8.47078 2 11.9556 2H20.0444C23.5292 2 25.2716 2 26.6026 2.67818C27.7734 3.27473 28.7253 4.22661 29.3218 5.39739C30 6.7284 30 8.47078 30 11.9556V20.0444C30 23.5292 30 25.2716 29.3218 26.6026C28.7253 27.7734 27.7734 28.7253 26.6026 29.3218C25.2716 30 23.5292 30 20.0444 30H11.9556C8.47078 30 6.7284 30 5.39739 29.3218C4.22661 28.7253 3.27473 27.7734 2.67818 26.6026C2 25.2716 2 23.5292 2 20.0444V11.9556Z\" fill=\"white\" fill-opacity=\"0.15\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M24 12.8116L23.9999 12.8541C23.9998 12.872 23.9996 12.8899 23.9994 12.9078C23.9998 12.9287 24 12.9498 24 12.971C24 16.3073 21.4007 19.2604 19.6614 21.2367C19.1567 21.8101 18.7244 22.3013 18.449 22.6957C17.4694 24.0986 16.9524 25.6184 16.8163 26.2029C16.8163 26.6431 16.4509 27 16 27C15.5491 27 15.1837 26.6431 15.1837 26.2029C15.0476 25.6184 14.5306 24.0986 13.551 22.6957C13.2756 22.3013 12.8433 21.8101 12.3386 21.2367C10.5993 19.2604 8 16.3073 8 12.971C8 12.9498 8.0002 12.9287 8.0006 12.9078C8.0002 12.8758 8 12.8437 8 12.8116C8 8.49736 11.5817 5 16 5C20.4183 5 24 8.49736 24 12.8116ZM16 15.6812C17.7132 15.6812 19.102 14.325 19.102 12.6522C19.102 10.9793 17.7132 9.62319 16 9.62319C14.2868 9.62319 12.898 10.9793 12.898 12.6522C12.898 14.325 14.2868 15.6812 16 15.6812Z\" fill=\"white\"/><path d=\"M23.1054 9.21856C22.1258 7.37546 20.4161 5.96177 18.3504 5.34277L13.7559 10.5615C14.3208 9.98352 15.1174 9.62346 16.0002 9.62346C17.7134 9.62346 19.1022 10.9796 19.1022 12.6524C19.1022 13.3349 18.8711 13.9646 18.4811 14.4711L23.1054 9.21856Z\" fill=\"white\" fill-opacity=\"0.8\"/><path d=\"M12.4311 21.3425C12.4004 21.3076 12.3695 21.2725 12.3383 21.2371C11.1918 19.9344 9.67162 18.2073 8.76855 16.2257L13.5439 10.8018C13.1387 11.3136 12.8976 11.9556 12.8976 12.6526C12.8976 14.3254 14.2865 15.6816 15.9997 15.6816C16.8675 15.6816 17.6521 15.3336 18.2151 14.7727L12.4311 21.3425Z\" fill=\"white\" fill-opacity=\"0.7\"/><path d=\"M9.89288 7.76562C8.71207 9.12685 8 10.8881 8 12.8117C8 12.8438 8.0002 12.8759 8.0006 12.9079C8.0002 12.9288 8 12.9499 8 12.9711C8 14.1082 8.30196 15.2009 8.76889 16.2254L13.5362 10.8106L9.89288 7.76562Z\" fill=\"white\" fill-opacity=\"0.6\"/><path d=\"M18.3499 5.34254C17.6068 5.11988 16.8176 5 15.9997 5C13.5514 5 11.36 6.07387 9.89258 7.76553L13.5359 10.8105L13.5438 10.8015C13.6101 10.7178 13.6807 10.6375 13.7554 10.5611L18.3499 5.34254Z\" fill=\"white\" fill-opacity=\"0.9\"/></svg>';\n            const SVG_WAZE = '<svg viewBox=\"0 0 14 14\" class=\"location-btn-logo\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#ffffff\" d=\"m 12.937649,5.689685 c -0.11625,-0.68661 -0.388914,-1.33016 -0.810638,-1.91282 -0.476314,-0.65811 -1.127922,-1.20761 -1.884324,-1.58903 -0.7645339,-0.38552 -1.6178829,-0.58938 -2.4678369,-0.58938 -0.239783,0 -0.481475,0.0163 -0.71843,0.0482 -0.992367,0.13407 -1.968118,0.54689 -2.747572,1.16243 -0.878239,0.69354 -1.444993,1.58521 -1.638884,2.57878 -0.05777,0.29537 -0.08238,0.62212 -0.106209,0.93806 -0.03734,0.49456 -0.07594,1.00595 -0.233207,1.34013 -0.107482,0.2284 -0.267856,0.3805 -0.701389,0.3805 -0.238581,0 -0.456585,0.13492 -0.563077,0.34847 -0.10642098,0.21355 -0.08294,0.46889 0.0606,0.65931 0.653164,0.8665 1.505522,1.39133 2.402923,1.70755 -0.04087,0.12346 -0.06385,0.25491 -0.06385,0.39209 0,0.68902 0.558551,1.24757 1.247566,1.24757 0.671972,0 1.218291,-0.53161 1.244949,-1.19701 0.292534,0.0159 1.685483,0.0197 1.840836,0.0153 0.03444,0.65825 0.577502,1.18166 1.244243,1.18166 0.688943,0 1.2474949,-0.55848 1.2474949,-1.24757 0,-0.15705 -0.03026,-0.30674 -0.08316,-0.44513 0.489183,-0.23794 0.95093,-0.55904 1.353845,-0.94576 0.561875,-0.53918 0.974265,-1.1753 1.192764,-1.83964 0.245865,-0.7477 0.307667,-1.4993 0.183355,-2.23378 m -8.2243299,5.876 c -0.227338,0 -0.411684,-0.18421 -0.411684,-0.41169 0,-0.22733 0.184346,-0.41168 0.411684,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 0,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 4.330028,0 c -0.227409,0 -0.411754,-0.18421 -0.411754,-0.41169 0,-0.22733 0.184345,-0.41168 0.411754,-0.41168 0.227408,0 0.411683,0.18435 0.411683,0.41168 7.1e-5,0.22748 -0.184275,0.41169 -0.411683,0.41169 m 3.1132919,-3.83873 c -0.360276,1.09533 -1.309862,1.9998 -2.3218169,2.46289 -0.215458,-0.17706 -0.490951,-0.28327 -0.791405,-0.28327 -0.484233,0 -0.903058,0.2762 -1.109748,0.67933 -0.210438,0.009 -1.777338,0.003 -2.120219,-0.0202 -0.210155,-0.39223 -0.623818,-0.65917 -1.100061,-0.65917 -0.316788,0 -0.605221,0.11894 -0.825134,0.31354 -0.852358,-0.27543 -1.65734,-0.74608 -2.259025,-1.54449 1.779176,0 1.428092,-1.98827 1.658259,-3.16731 0.350659,-1.79693 2.12835,-3.00518 3.853148,-3.23817 0.212135,-0.0286 0.42427,-0.0426 0.634213,-0.0426 2.8347599,7e-5 5.3581049,2.53098 4.3817889,5.49938 m -4.4056189,0.87435 c -1.023692,0 -1.945914,-0.67119 -2.115056,-1.54978 -0.03281,-0.17056 0.07891,-0.33553 0.249471,-0.36834 0.170627,-0.0329 0.335527,0.0789 0.368337,0.24947 0.09942,0.51648 0.717865,1.06039 1.542221,1.03882 0.858722,-0.0225 1.4259,-0.53599 1.542433,-1.03154 0.03981,-0.16907 0.209378,-0.27379 0.378308,-0.23419 0.169213,0.0398 0.274007,0.20916 0.234197,0.37823 -0.09518,0.40454 -0.35568,0.77932 -0.733634,1.05545 -0.393652,0.28779 -0.879511,0.44718 -1.404757,0.46104 -0.02051,6.3e-4 -0.04108,8.4e-4 -0.06152,8.4e-4 m 2.037132,-3.23958 c 0,0.33369 -0.270542,0.60423 -0.604231,0.60423 -0.333617,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270543,-0.60409 0.60416,-0.60409 0.333689,0 0.604231,0.27033 0.604231,0.60409 m -2.822597,0 c 0,0.33369 -0.270472,0.60423 -0.60416,0.60423 -0.333618,0 -0.60416,-0.27054 -0.60416,-0.60423 0,-0.33369 0.270542,-0.60409 0.60416,-0.60409 0.333688,0 0.60416,0.27033 0.60416,0.60409\"/></svg>';\n            const SVG_APPLE = '<svg viewBox=\"0 0 30 30\" class=\"location-btn-logo\" xmlns=\"http://www.w3.org/2000/svg\"><path fill=\"#ffffff\" d=\"M 9 4 C 8.657 4 8.323 4.0355625 8 4.1015625 L 8 13.275391 C 7.646263 13.401511 7.3068564 13.555772 7 13.761719 L 7 4.421875 C 5.755 4.966875 4.7873594 6.0089688 4.3183594 7.2929688 L 6 8.4707031 L 6 14.611328 L 4 13.210938 L 4 21 C 4 23.049 5.236 24.806125 7 25.578125 L 7 21.238281 C 7.7157567 21.718662 8.5752393 22 9.5 22 C 10.424761 22 11.284243 21.718662 12 21.238281 L 12 26 L 21 26 C 21.369 26 21.726266 25.954906 22.072266 25.878906 L 13.361328 19.773438 C 13.757438 19.103628 14 18.332818 14 17.5 C 14 16.439688 13.615994 15.47704 13 14.707031 L 13 13.376953 L 25.794922 22.345703 C 25.915922 21.914703 26 21.469 26 21 L 26 15.974609 C 19.497 15.716609 14.283391 10.503 14.025391 4 L 12 4 L 12 13.761719 C 11.693144 13.555772 11.353737 13.401511 11 13.275391 L 11 4 L 9 4 z M 18.025391 4 C 18.275391 8.294 21.706 11.723609 26 11.974609 L 26 9 C 26 6.239 23.761 4 21 4 L 18.025391 4 z M 9.5 14 C 10.480989 14 11.364517 14.406452 12 15.056641 C 12.15425 15.214391 12.293344 15.385984 12.416016 15.570312 C 12.538687 15.754641 12.644031 15.951641 12.730469 16.158203 C 12.816906 16.364766 12.884141 16.580234 12.929688 16.804688 C 12.975072 17.029622 13 17.261689 13 17.5 C 13 17.738 12.975234 17.970859 12.929688 18.195312 C 12.884141 18.419766 12.816906 18.635234 12.730469 18.841797 C 12.644031 19.048359 12.538687 19.245359 12.416016 19.429688 C 12.293344 19.614016 12.15425 19.785609 12 19.943359 C 11.364517 20.593548 10.480989 21 9.5 21 C 8.5195528 21 7.6354091 20.59487 7 19.945312 C 6.9818906 19.926763 6.9688744 19.903706 6.9511719 19.884766 C 6.8180905 19.742375 6.6922542 19.592499 6.5839844 19.429688 C 6.4613125 19.245219 6.3559687 19.048422 6.2695312 18.841797 C 6.1830938 18.635172 6.1158594 18.419781 6.0703125 18.195312 C 6.0247656 17.970844 6 17.738 6 17.5 C 6 17.261689 6.0249282 17.029622 6.0703125 16.804688 C 6.1158594 16.580234 6.1830938 16.364766 6.2695312 16.158203 C 6.3559687 15.951641 6.4613125 15.754641 6.5839844 15.570312 C 6.7066562 15.385984 6.84575 15.214391 7 15.056641 C 7.6354827 14.406452 8.519011 14 9.5 14 z M 9.5253906 15.216797 C 9.4297656 15.216297 9.333875 15.271359 9.296875 15.380859 L 8.0136719 19.181641 C 7.9286719 19.436641 8.2455938 19.631453 8.4335938 19.439453 L 9.5273438 18.320312 L 10.5625 19.414062 C 10.7475 19.609063 11.070328 19.418109 10.986328 19.162109 L 9.7519531 15.382812 C 9.7164531 15.273312 9.6210156 15.217297 9.5253906 15.216797 z\"/></svg>';\n\n            function ligneInfo(icone, label, contenuHtml) {\n                return `<div class=\"event-info-row\"><span class=\"event-info-icon\" aria-hidden=\"true\">${icone}</span><div class=\"event-info-content\"><div class=\"event-info-label\">${label}</div><div class=\"event-info-text\">${contenuHtml}</div></div></div>`;\n            }\n\n            function construireDatesHtml(evt) {\n                const debut = evt.debut.date;\n                const fin = dernierJour(evt);\n                const multi = !memeJourUTC(debut, fin);\n                const nbJours = nombreJours(evt);\n\n                let debutTxt = majusculeInitiale(formaterDate(debut).complet);\n                if (evt.debut.allDay) {\n                    if (!multi) debutTxt += ' — Journée entière';\n                } else {\n                    debutTxt += ' • ' + texteHeureUTC(debut);\n                }\n\n                if (!multi) return echapperHtml(debutTxt);\n\n                let finTxt = majusculeInitiale(formaterDate(fin).complet);\n                if (evt.fin && !evt.fin.allDay) finTxt += ' • ' + texteHeureUTC(evt.fin.date);\n                finTxt += ' (' + nbJours + ' jours)';\n\n                return `<div class=\"event-dates\">\n                    <span class=\"event-date-item\"><span class=\"event-date-label\">Début :</span>${echapperHtml(debutTxt)}</span>\n                    <span class=\"event-date-item\"><span class=\"event-date-label\">Fin :</span>${echapperHtml(finTxt)}</span>\n                </div>`;\n            }\n\n            function construireCorpsModale(evt) {\n                let html = '<div class=\"event-modal-body-grid\"><div class=\"event-modal-left\">';\n                html += ligneInfo('📅', nombreJours(evt) > 1 ? 'Dates' : 'Date', construireDatesHtml(evt));\n\n                if (evt.location) {\n                    const loc = encodeURIComponent(evt.location);\n                    html += `<div class=\"event-info-row\"><span class=\"event-info-icon\" aria-hidden=\"true\">📍</span><div class=\"event-info-content\"><div class=\"event-info-label\">Lieu</div><div class=\"event-info-text\">${echapperHtml(evt.location)}</div>\n                        <div class=\"event-location-buttons\">\n                            <a href=\"https://www.google.com/maps/search/?api=1&query=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-google\">${SVG_GOOGLE}<span class=\"location-btn-label\">Google Maps</span></a>\n                            <a href=\"https://waze.com/ul?q=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-waze\">${SVG_WAZE}<span class=\"location-btn-label\">Waze</span></a>\n                            <a href=\"https://maps.apple.com/?q=${loc}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"location-btn location-apple\">${SVG_APPLE}<span class=\"location-btn-label\">Apple Plans</span></a>\n                        </div></div></div>`;\n                }\n\n                html += '</div><div class=\"event-modal-right\">';\n\n                if (evt.description) {\n                    // Description longue : repliée avec fondu + bouton « Voir plus »\n                    const sauts = (evt.description.match(/\\n/g) || []).length;\n                    const replier = evt.description.length > 260 || sauts > 4;\n                    html += `<div class=\"event-info-row\"><span class=\"event-info-icon\" aria-hidden=\"true\">📝</span><div class=\"event-info-content\"><div class=\"event-info-label\">Description</div><div class=\"event-info-text event-desc${replier ? ' is-collapsed' : ''}\">${lierUrls(evt.description)}</div>${replier ? '<button type=\"button\" class=\"event-desc-toggle\" aria-expanded=\"false\">Voir plus</button>' : ''}</div></div>`;\n                }\n\n                if (evt.url) {\n                    try {\n                        const u = new URL(evt.url);\n                        if (u.protocol === 'http:' || u.protocol === 'https:') {\n                            html += `<div class=\"event-info-row\"><span class=\"event-info-icon\" aria-hidden=\"true\">🔗</span><div class=\"event-info-content\"><div class=\"event-info-label\">Site officiel</div><a href=\"${echapperHtml(evt.url)}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"event-url-button\">Visiter le site</a></div></div>`;\n                        }\n                    } catch (e) { /* URL invalide : on ignore */ }\n                }\n\n                html += '</div></div>';\n                return html;\n            }\n\n            function ouvrirModale(evt, origine) {\n                if (!evt) return;\n                dernierFocus = origine || null;\n                evenementModal = evt;\n\n                titreModale.textContent = evt.title || 'Convention';\n                corpsModale.innerHTML = construireCorpsModale(evt);\n\n                const basculeDesc = corpsModale.querySelector('.event-desc-toggle');\n                if (basculeDesc) {\n                    const desc = corpsModale.querySelector('.event-desc');\n                    basculeDesc.addEventListener('click', () => {\n                        const deplie = !desc.classList.toggle('is-collapsed');\n                        basculeDesc.textContent = deplie ? 'Voir moins' : 'Voir plus';\n                        basculeDesc.setAttribute('aria-expanded', deplie ? 'true' : 'false');\n                    });\n                }\n\n                modale.classList.remove('closing');\n                document.body.style.overflow = 'hidden';\n\n                if (supporteDialog) {\n                    if (!modale.open) modale.showModal();\n                } else {\n                    // Repli pour les très vieux navigateurs sans <dialog>\n                    modale.setAttribute('open', '');\n                    modale.classList.add('fallback-open');\n                    if (boutonFermer) boutonFermer.focus();\n                }\n                corpsModale.scrollTop = 0;\n            }\n\n            function fermerModale() {\n                const ouverte = supporteDialog ? modale.open : modale.classList.contains('fallback-open');\n                if (!ouverte || modale.classList.contains('closing')) return;\n\n                modale.classList.add('closing');\n                setTimeout(() => {\n                    modale.classList.remove('closing');\n                    if (supporteDialog) {\n                        modale.close(); // le navigateur restaure le focus tout seul\n                    } else {\n                        modale.removeAttribute('open');\n                        modale.classList.remove('fallback-open');\n                        if (dernierFocus) dernierFocus.focus();\n                    }\n                    document.body.style.overflow = '';\n                }, 230);\n            }\n\n            /* ---------- Export .ics d'un événement (RFC 5545) ---------- */\n\n            function icsPourEvenement(evt) {\n                const pad2 = n => String(n).padStart(2, '0');\n                const dateICS = d => '' + d.getUTCFullYear() + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate());\n                const dateHeureICS = d => dateICS(d) + 'T' + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes()) + pad2(d.getUTCSeconds()) + 'Z';\n                const echapperICS = v => String(v || '').replace(/\\\\/g, '\\\\\\\\').replace(/;/g, '\\\\;').replace(/,/g, '\\\\,').replace(/\\r\\n|\\r|\\n/g, '\\\\n');\n\n                const lignes = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Actus Meute Normande//FR', 'BEGIN:VEVENT',\n                    'UID:' + (evt.uid || 'actus-' + Date.now() + '@lameutenormande'),\n                    'DTSTAMP:' + dateHeureICS(new Date()),\n                    'SUMMARY:' + echapperICS(evt.title)];\n\n                if (evt.debut.allDay) {\n                    lignes.push('DTSTART;VALUE=DATE:' + dateICS(evt.debut.date));\n                    const finExclusive = evt.fin ? evt.fin.date : new Date(evt.debut.date.getTime() + 86400000);\n                    lignes.push('DTEND;VALUE=DATE:' + dateICS(finExclusive));\n                } else {\n                    lignes.push('DTSTART:' + dateHeureICS(evt.debut.date));\n                    lignes.push('DTEND:' + dateHeureICS(evt.fin ? evt.fin.date : new Date(evt.debut.date.getTime() + 3600000)));\n                }\n\n                if (evt.description) lignes.push('DESCRIPTION:' + echapperICS(evt.description));\n                if (evt.location) lignes.push('LOCATION:' + echapperICS(String(evt.location).replace(/\\r\\n|\\r|\\n/g, ' ')));\n                if (evt.url && /^https?:\\/\\//i.test(evt.url)) lignes.push('URL:' + evt.url.trim());\n                lignes.push('END:VEVENT', 'END:VCALENDAR');\n                return lignes.join('\\r\\n');\n            }\n\n            function telechargerIcs(evt) {\n                const slug = String(evt.title || 'evenement').toLowerCase()\n                    .normalize('NFD').replace(/[̀-ͯ]/g, '')\n                    .replace(/[^a-z0-9\\s-]/g, '').trim().replace(/\\s+/g, '-') || 'evenement';\n                const blob = new Blob([icsPourEvenement(evt)], { type: 'text/calendar' });\n                const url = URL.createObjectURL(blob);\n                const a = document.createElement('a');\n                a.href = url;\n                a.download = slug + '.ics';\n                document.body.appendChild(a);\n                a.click();\n                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);\n            }\n\n            const boutonTelecharger = modale.querySelector('.event-modal-dl');\n            if (boutonTelecharger) {\n                boutonTelecharger.addEventListener('click', () => {\n                    if (evenementModal) telechargerIcs(evenementModal);\n                });\n            }\n\n            boutonFermer.addEventListener('click', fermerModale);\n            // Échap : on intercepte pour jouer l'animation de fermeture\n            modale.addEventListener('cancel', e => {\n                e.preventDefault();\n                fermerModale();\n            });\n            // Clic en dehors de la carte (le dialog occupe tout l'écran, la carte est dedans)\n            modale.addEventListener('click', e => {\n                if (e.target === modale) fermerModale();\n            });\n            // Filet de sécurité si la modale est fermée par un autre biais\n            modale.addEventListener('close', () => {\n                document.body.style.overflow = '';\n            });\n            if (!supporteDialog) {\n                document.addEventListener('keydown', e => {\n                    if (e.key === 'Escape' && modale.classList.contains('fallback-open')) fermerModale();\n                });\n            }\n\n            /* ---------------------- Point d'entrée ---------------------- */\n\n            async function demarrer() {\n                if (enChargement) return;\n                enChargement = true;\n                grille.setAttribute('aria-busy', 'true');\n                afficherSquelette();\n\n                try {\n                    const ics = await chargerICS();\n                    conventions = filtrerEvenements(parserICS(ics));\n                    rendreTuiles();\n                } catch (e) {\n                    console.error('[Actus V3]', e);\n                    afficherErreur();\n                } finally {\n                    grille.setAttribute('aria-busy', 'false');\n                    enChargement = false;\n                }\n            }\n\n            // Chargement paresseux : on ne télécharge le calendrier que lorsque\n            // la section approche du viewport. Filet de sécurité : certains\n            // environnements (prérendu, webviews throttlées) ne déclenchent\n            // jamais l'observer → démarrage forcé après 2,5 s.\n            let dejaLance = false;\n            let observateur = null;\n\n            function lancerUneFois() {\n                if (dejaLance) return;\n                dejaLance = true;\n                if (observateur) observateur.disconnect();\n                demarrer();\n            }\n\n            if ('IntersectionObserver' in window) {\n                observateur = new IntersectionObserver(entrees => {\n                    if (entrees.some(en => en.isIntersecting)) lancerUneFois();\n                }, { rootMargin: '400px' });\n                observateur.observe(grille);\n                setTimeout(lancerUneFois, 2500);\n            } else {\n                lancerUneFois();\n            }\n        }\n\n        if (document.readyState === 'loading') {\n            document.addEventListener('DOMContentLoaded', init);\n        } else {\n            init();\n        }\n    })();\n    </script>"
           ],
           "_protectedParams": [],
           "_global": false,
