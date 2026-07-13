@@ -1895,6 +1895,23 @@ DTSTAMP:20260207T110203Z
 URL:https://www.kamopolis.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Blagnac Culture Geek
+DESCRIPTION:Venez participer à la 6ème édition du Blagnac Culture Geek\, avec plus de 80 exposants dans une ambiance familiale avec des invités et décors de la pop culture.\nAvec une vingtaines d'animations sur scène (Kpop\, Just dance\, rencontre acteurs\, démonstration sabre laser etc....) mais aussi sur stand (manga\, jeux vidéo\, cosplay\, et bien sur des boutiques spécialisées geek et pop culture).\nUn jeu de piste géant sur le thème Kaamelott vous y attend\, avec Qrcode\, cadenas et bien d'autres énigmes pour trouver le Trésor des chevaliers !!!\n\n\nEntrée gratuite.\n\n\nEn invité : Thomas COUSSEAU.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Venez participer à la 6ème édition du Blagnac Culture Geek\, avec plus de 80 exposants dans une ambiance familiale avec des invités et décors de la pop culture.</p><p>Avec une vingtaines d'animations sur scène (Kpop\, Just dance\, rencontre acteurs\, démonstration sabre laser etc....) mais aussi sur stand (manga\, jeux vidéo\, cosplay\, et bien sur des boutiques spécialisées geek et pop culture).</p><p>Un jeu de piste géant sur le thème Kaamelott vous y attend\, avec Qrcode\, cadenas et bien d'autres énigmes pour trouver le Trésor des chevaliers !!!</p><p><br class="rte-ignore-br"/></p><p>Entrée gratuite.</p><p><br/></p><p>En invité : Thomas COUSSEAU.</p></div>
+DTSTART:20261010T080000Z
+DTEND:20261011T160000Z
+LOCATION:Salle des fêtes des Ramiers. Rue des Sports\, 31700 Blagnac
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:de3a3845753d4f4e9ac1e9c1427fb32f@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260713T051318Z
+LAST-MODIFIED:20260713T051318Z
+DTSTAMP:20260713T051320Z
+URL:https://www.billetweb.fr/blagnac-culture-geek-10-et-11-octobre-2026
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Pontogeek 2026
 DESCRIPTION:
 DTSTART;VALUE=DATE:20261010
