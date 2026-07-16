@@ -27,7 +27,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=oLT0lS"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=oLT0lS" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=52KfmU"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=52KfmU" type="text/css">
 
   
   
@@ -97,139 +97,969 @@
     </div>
 </section>
 
-<section data-bs-version="5.1" class="form03 cid-v2Jn1UwHO0 mbr-fullscreen" id="form03-c">
+<section data-bs-version="5.1" class="form03 contact-modern cid-v2Jn1UwHO0 mbr-fullscreen" id="form03-c">
     
 
-    
+    <!-- ============================================================
+         DESIGN DU MODULE (CSS embarqué, scopé .contact-modern)
+         Refonte « Aurora Split » : carte 2 panneaux, thème sombre premium.
+         Tout est autonome : couleurs, mise en page, animations.
+         >>> POUR CHANGER LES COULEURS : édite les 4 variables ci-dessous <<<
+         (le champ « Style » LESS du module ne gère que plein écran / marges)
+         ============================================================ -->
+    <style>
+        .contact-modern {
+            /* ====== COULEURS DU MODULE (modifie ici) ====== */
+            --mn-bg: #0b0c1a;          /* fond de la section */
+            --mn-title: #ffffff;       /* titre, sous-titre, libellés, texte des champs */
+            --mn-accent: #6366f1;      /* accent principal (focus, bouton, panneau) */
+            --mn-accent-2: #22d3ee;    /* accent secondaire (dégradés aurora) */
+            /* ============================================== */
+
+            /* ---- Valeurs dérivées (ne pas modifier sauf besoin) ---- */
+            --mn-field: color-mix(in srgb, var(--mn-title) 6%, transparent);
+            --mn-field-hover: color-mix(in srgb, var(--mn-title) 10%, transparent);
+            --mn-border: color-mix(in srgb, var(--mn-title) 14%, transparent);
+            --mn-muted: color-mix(in srgb, var(--mn-title) 55%, transparent);
+            --mn-accent-lo: color-mix(in srgb, var(--mn-accent) 78%, #000000);
+
+            position: relative;
+            overflow: hidden;
+            background-color: var(--mn-bg);
+            background-image:
+                radial-gradient(60% 55% at 12% 8%, color-mix(in srgb, var(--mn-accent) 32%, transparent) 0%, transparent 60%),
+                radial-gradient(55% 55% at 92% 100%, color-mix(in srgb, var(--mn-accent-2) 26%, transparent) 0%, transparent 60%);
+        }
+
+        /* ---- Halo d'ambiance animé en fond de section ---- */
+        .contact-modern::before {
+            content: "";
+            position: absolute;
+            top: -25%;
+            left: 50%;
+            width: min(90vw, 900px);
+            height: min(90vw, 900px);
+            transform: translateX(-50%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--mn-accent) 22%, transparent) 0%, transparent 62%);
+            filter: blur(30px);
+            opacity: 0.7;
+            pointer-events: none;
+            animation: mn-float 16s ease-in-out infinite alternate;
+        }
+        @keyframes mn-float {
+            from { transform: translateX(-56%) translateY(-4%) scale(1); }
+            to   { transform: translateX(-44%) translateY(6%) scale(1.12); }
+        }
+
+        /* ============================================================
+           CARTE SPLIT (aside décoratif + formulaire)
+           ============================================================ */
+        .contact-modern .mn-shell {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+            grid-template-rows: 1fr auto;
+            max-width: 1040px;
+            margin: 0 auto;
+            border-radius: 1.75rem;
+            overflow: hidden;
+            border: 1px solid var(--mn-border);
+            background: color-mix(in srgb, var(--mn-title) 4%, var(--mn-bg));
+            box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.75);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+        }
+
+        /* ---- Panneau gauche (aurora) : occupe toute la colonne gauche ---- */
+        .contact-modern .mn-aside {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            position: relative;
+            overflow: hidden;
+            padding: clamp(1.6rem, 3.5vw, 2.6rem);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 1.4rem;
+            min-height: 100%;
+            background:
+                linear-gradient(155deg,
+                    color-mix(in srgb, var(--mn-accent) 92%, #000) 0%,
+                    var(--mn-accent) 45%,
+                    color-mix(in srgb, var(--mn-accent-2) 65%, var(--mn-accent)) 100%);
+        }
+        .contact-modern .mn-aside::after {
+            content: "";
+            position: absolute;
+            inset: -40% -20% auto -20%;
+            height: 120%;
+            background: radial-gradient(60% 60% at 30% 20%, rgba(255, 255, 255, 0.35), transparent 60%);
+            opacity: 0.5;
+            pointer-events: none;
+            animation: mn-shimmer 12s ease-in-out infinite alternate;
+        }
+        @keyframes mn-shimmer {
+            from { transform: translate3d(-6%, -4%, 0) rotate(0deg); }
+            to   { transform: translate3d(8%, 6%, 0) rotate(8deg); }
+        }
+        .contact-modern .mn-aside > * { position: relative; z-index: 1; }
+
+        /* ---- Titres (dans l'aside) ---- */
+        .contact-modern .mbr-section-head { margin: 0; }
+        .contact-modern .mbr-section-title {
+            color: #ffffff;
+            text-align: left;
+            font-size: clamp(1.9rem, 3.4vw, 2.9rem);
+            line-height: 1.05;
+            letter-spacing: -0.01em;
+            text-shadow: 0 2px 24px rgba(0, 0, 0, 0.25);
+        }
+        .contact-modern .mbr-section-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            text-align: left;
+            margin-top: 0.9rem;
+            font-size: 1.02rem;
+            line-height: 1.5;
+            max-width: 34ch;
+        }
+
+        /* ---- Easter egg : chat OIIA (GIF + son) ---- */
+        /* Desktop : en bas de la colonne gauche, par-dessus l'aurora */
+        .contact-modern .mn-oiia-wrap {
+            grid-column: 1;
+            grid-row: 2;
+            z-index: 1;
+            align-self: end;
+            justify-self: start;
+            margin: 0 0 clamp(1.6rem, 3.5vw, 2.6rem) clamp(1.6rem, 3.5vw, 2.6rem);
+        }
+        /* Chat libre (sans cadre rond) */
+        .contact-modern .mn-oiia {
+            --oiia-size: clamp(120px, 22vw, 180px);
+            position: relative;
+            width: var(--oiia-size);
+            height: var(--oiia-size);
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.35));
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .contact-modern .mn-oiia:hover { transform: scale(1.05); }
+        .contact-modern .mn-oiia.is-playing { transform: scale(1.06); }
+        .contact-modern .mn-oiia:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 4px;
+            border-radius: 8px;
+        }
+        .contact-modern .mn-oiia .mn-oiia-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: none;              /* affichée uniquement quand le GIF est prêt */
+            pointer-events: none;
+        }
+        .contact-modern .mn-oiia .mn-oiia-face {
+            font-size: clamp(3rem, 9vw, 4.4rem);
+            line-height: 1;
+            pointer-events: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* Dès que le GIF est prêt on l'affiche à la place de l'emoji */
+        .contact-modern .mn-oiia.has-gif .mn-oiia-img { display: block; }
+        .contact-modern .mn-oiia.has-gif .mn-oiia-face { display: none; }
+
+        /* ---- Panneau droit (formulaire) : colonne droite, pleine hauteur ---- */
+        .contact-modern .mn-main {
+            grid-column: 2;
+            grid-row: 1 / 3;
+            padding: clamp(1.5rem, 3.2vw, 2.6rem);
+        }
+        .contact-modern .mn-main .mbr-form { margin: 0; }
+
+        /* ============================================================
+           GRILLE DU FORMULAIRE
+           ============================================================ */
+        .contact-modern .dragArea {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.85rem clamp(0.7rem, 2vw, 1rem);
+            margin: 0;
+            align-items: start;
+        }
+        /* Neutralise largeurs / marges Bootstrap : la grille gère tout */
+        .contact-modern .dragArea > * {
+            width: auto;
+            max-width: none;
+            min-width: 0;
+            margin: 0 !important;
+            padding: 0;
+        }
+        .contact-modern .dragArea .name-field      { order: 1; }
+        .contact-modern .dragArea .network-field   { grid-column: 1 / -1; order: 2; }
+        .contact-modern .dragArea .id-field        { grid-column: 1 / -1; order: 3; }
+        .contact-modern .dragArea .msg-field       { grid-column: 1 / -1; order: 4; }
+        .contact-modern .dragArea .file-field      { grid-column: 1 / -1; order: 5; }
+        .contact-modern .dragArea .consent-wrapper { grid-column: 1 / -1; order: 6; }
+        .contact-modern .dragArea .mbr-section-btn { grid-column: 1 / -1; order: 7; }
+
+        @media (max-width: 575px) {
+            .contact-modern .dragArea { grid-template-columns: 1fr; }
+        }
+
+        /* ---- Libellés / légende ---- */
+        .contact-modern .form-label,
+        .contact-modern .network-legend {
+            color: var(--mn-title);
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.45rem;
+            display: block;
+            float: none;
+            width: auto;
+            padding: 0;
+        }
+        .contact-modern .step-num {
+            display: inline-grid;
+            place-items: center;
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.35rem;
+            border-radius: 50%;
+            background: color-mix(in srgb, var(--mn-accent) 22%, transparent);
+            color: color-mix(in srgb, var(--mn-accent) 60%, var(--mn-title));
+            font-size: 0.72rem;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+
+        /* ---- Champs (verre sombre) ---- */
+        .contact-modern .form-control {
+            background: var(--mn-field);
+            color: var(--mn-title);
+            border: 1px solid var(--mn-border);
+            border-radius: 0.8rem;
+            padding: 0.7rem 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .contact-modern .form-control::placeholder {
+            color: var(--mn-muted);
+        }
+        .contact-modern .form-control:hover {
+            background: var(--mn-field-hover);
+            border-color: color-mix(in srgb, var(--mn-title) 24%, transparent);
+        }
+        .contact-modern textarea.form-control {
+            min-height: 108px;
+            resize: vertical;
+        }
+        .contact-modern .form-control:focus {
+            background: var(--mn-field-hover);
+            border-color: var(--mn-accent);
+            box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--mn-accent) 28%, transparent);
+            outline: none;
+            color: var(--mn-title);
+        }
+
+        /* ---- Champ fichier (pièce jointe) ---- */
+        .contact-modern input[type="file"].form-control {
+            padding: 0.5rem 0.6rem;
+            min-height: 46px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--mn-muted);
+        }
+        .contact-modern input[type="file"].form-control::file-selector-button,
+        .contact-modern input[type="file"].form-control::-webkit-file-upload-button {
+            margin: 0 0.7rem 0 0;
+            padding: 0.4rem 0.95rem;
+            border: none;
+            border-radius: 0.55rem;
+            background-color: #6366f1;
+            background-image: linear-gradient(135deg, var(--mn-accent), var(--mn-accent-lo));
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: filter 0.2s ease;
+        }
+        .contact-modern input[type="file"].form-control::file-selector-button:hover { filter: brightness(1.1); }
+        .contact-modern input[type="file"].form-control::-webkit-file-upload-button:hover { filter: brightness(1.1); }
+        /* Filet de sécurité si le plugin Mobirise (formstyler) remplace le champ fichier */
+        .contact-modern .jq-file { background: var(--mn-field); border-radius: 0.8rem; }
+        .contact-modern .jq-file .jq-file__name { color: var(--mn-title); }
+        .contact-modern .jq-file::after,
+        .contact-modern .jq-file .jq-file__browse {
+            background-color: #6366f1;
+            background-color: var(--mn-accent);
+            color: #ffffff;
+            border: none;
+        }
+
+        /* ---- Honeypot anti-spam ---- */
+        .contact-modern .mn-honeypot {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        /* ============================================================
+           SÉLECTEUR DE RÉSEAUX
+           ============================================================ */
+        .contact-modern .contact-network {
+            border: 0;
+            padding: 0;
+            margin: 0;
+            min-width: 0;
+        }
+        .contact-modern .contact-network-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.55rem;
+        }
+        @media (max-width: 575px) {
+            .contact-modern .contact-network-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        .contact-modern .network-option { position: relative; }
+        .contact-modern .network-option input[type="radio"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            opacity: 0;
+            z-index: 2;
+            cursor: pointer;
+        }
+        .contact-modern .network-card {
+            background: var(--mn-field);
+            color: var(--mn-title);
+            border: 1.5px solid var(--mn-border);
+            border-radius: 0.9rem;
+            padding: 0.7rem 0.55rem;
+            min-height: 82px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.45rem;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+        }
+        /* Couleur de marque de chaque réseau (--net = principale, --net-2 = fin du dégradé) */
+        .contact-modern .net-telegram { --net: #29a9ea; --net-2: #1c86c4; }
+        .contact-modern .net-discord  { --net: #5865f2; --net-2: #3a43b0; }
+        .contact-modern .net-twitter  { --net: #1d9bf0; --net-2: #0b0c1a; }
+        .contact-modern .net-email    { --net: var(--mn-accent); --net-2: var(--mn-accent-lo); }
+
+        .contact-modern .network-icon {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 auto;
+            border-radius: 12px;
+            background: color-mix(in srgb, var(--net, var(--mn-accent)) 20%, transparent);
+            color: var(--net, var(--mn-accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            transition: background 0.25s ease, color 0.25s ease;
+        }
+        .contact-modern .network-icon svg { width: 20px; height: 20px; }
+        .contact-modern .network-icon-double {
+            width: auto;
+            min-width: 52px;
+            padding: 0 0.5rem;
+            gap: 0.3rem;
+            border-radius: 12px;
+        }
+        .contact-modern .network-icon-double svg:first-child { width: 16px; height: 16px; }
+        .contact-modern .network-icon-double svg:last-child { width: 14px; height: 14px; }
+        .contact-modern .network-name {
+            color: var(--mn-title);
+            font-size: 0.82rem;
+            font-weight: 600;
+            line-height: 1.2;
+            pointer-events: none;
+        }
+
+        /* Survol */
+        .contact-modern .network-option input[type="radio"]:hover + .network-card {
+            border-color: var(--net);
+            background: color-mix(in srgb, var(--net) 12%, transparent);
+            transform: translateY(-2px);
+        }
+
+        /* Badge de sélection : coche */
+        .contact-modern .network-card::after {
+            content: "";
+            position: absolute;
+            top: 0.4rem;
+            right: 0.4rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000000' d='M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 14px;
+            opacity: 0;
+            transform: scale(0.4);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Sélection : carte pleine couleur de marque */
+        .contact-modern .network-option input[type="radio"]:checked + .network-card {
+            background: linear-gradient(140deg, var(--net) 55%, var(--net-2));
+            border-color: var(--net);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--net) 30%, transparent), 0 14px 28px -8px color-mix(in srgb, var(--net) 55%, transparent);
+            transform: translateY(-2px);
+        }
+        .contact-modern .network-option input[type="radio"]:checked + .network-card .network-name { color: #ffffff; }
+        .contact-modern .network-option input[type="radio"]:checked + .network-card .network-icon {
+            background: rgba(255, 255, 255, 0.24);
+            color: #ffffff;
+        }
+        .contact-modern .network-option input[type="radio"]:checked + .network-card::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .contact-modern .network-option input[type="radio"]:focus-visible + .network-card {
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--net) 45%, transparent);
+        }
+
+        /* ---- Consentement ---- */
+        .contact-modern .consent-wrapper { text-align: left; }
+        .contact-modern .consent-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            color: var(--mn-muted);
+            font-size: 0.8rem;
+            line-height: 1.45;
+            cursor: pointer;
+        }
+        .contact-modern .consent-label input[type="checkbox"] {
+            margin-top: 0.1rem;
+            flex: 0 0 auto;
+            width: 1.05rem;
+            height: 1.05rem;
+            accent-color: var(--mn-accent);
+            cursor: pointer;
+        }
+        .contact-modern .consent-label a {
+            color: var(--mn-title);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+        .contact-modern .consent-label a:hover { opacity: 0.85; }
+
+        /* ---- Bouton ---- */
+        .contact-modern .mbr-section-btn { text-align: center; }
+        .contact-modern .btn-primary,
+        .contact-modern #contact-submit {
+            width: 100%;
+            display: block;
+            background: linear-gradient(135deg, var(--mn-accent), color-mix(in srgb, var(--mn-accent-2) 55%, var(--mn-accent)));
+            border: none;
+            color: #ffffff;
+            border-radius: 0.9rem;
+            padding: 0.95rem 2.4rem;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 14px 30px -8px color-mix(in srgb, var(--mn-accent) 60%, transparent);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        .contact-modern .btn-primary:hover,
+        .contact-modern #contact-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 36px -8px color-mix(in srgb, var(--mn-accent) 70%, transparent);
+            filter: brightness(1.06);
+            color: #ffffff;
+        }
+        .contact-modern .btn-primary:active,
+        .contact-modern #contact-submit:active { transform: translateY(0); }
+
+        /* ---- Alertes ---- */
+        .contact-modern .alert {
+            border-radius: 0.8rem;
+            border: 1px solid transparent;
+            margin-bottom: 1rem;
+        }
+        .contact-modern .alert-success {
+            background: color-mix(in srgb, #22c55e 16%, transparent);
+            border-color: color-mix(in srgb, #22c55e 40%, transparent);
+            color: #dcfce7;
+        }
+        .contact-modern .alert-danger {
+            background: color-mix(in srgb, #ef4444 16%, transparent);
+            border-color: color-mix(in srgb, #ef4444 40%, transparent);
+            color: #fee2e2;
+        }
+
+        /* ============================================================
+           RESPONSIVE : empilement de la carte split
+           ============================================================ */
+        @media (max-width: 767px) {
+            /* Empilement : aurora (titre) → formulaire → chat OIIA tout en bas */
+            .contact-modern .mn-shell {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+            }
+            .contact-modern .mn-aside {
+                grid-column: 1;
+                grid-row: 1;
+                flex-direction: row;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+            .contact-modern .mn-main { grid-column: 1; grid-row: 2; }
+            .contact-modern .mn-oiia-wrap {
+                grid-column: 1;
+                grid-row: 3;
+                align-self: center;
+                justify-self: center;
+                margin: 0;
+                padding: 1.5rem 1rem 2rem;
+            }
+            .contact-modern .mbr-section-subtitle { max-width: none; }
+        }
+
+        /* ---- Accessibilité : mouvement réduit ---- */
+        @media (prefers-reduced-motion: reduce) {
+            .contact-modern::before,
+            .contact-modern .mn-aside::after { animation: none; }
+            .contact-modern .network-card,
+            .contact-modern .btn-primary,
+            .contact-modern #contact-submit,
+            .contact-modern .network-icon,
+            .contact-modern .network-card::after { transition: none; }
+            .contact-modern .network-card:hover,
+            .contact-modern .network-option input[type="radio"]:checked + .network-card,
+            .contact-modern .btn-primary:hover,
+            .contact-modern #contact-submit:hover { transform: none; }
+        }
+    </style>
 
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <div class="col-12 col-lg item-wrapper">
-                <div class="mbr-section-head mb-5">
-                    <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-1">
-                        <strong>Contact</strong>
-                    </h3>
+            <div class="col-12 item-wrapper">
+                <div class="mn-shell">
 
-                    <h4 class="mbr-section-subtitle mbr-fonts-style align-center mb-0 mt-4 display-7">
-                        Pour rejoindre la meute ou pour un renseignement,<br>ce formulaire est fait pour ça !
-                    </h4>
-                </div>
+                    <!-- ================= PANNEAU GAUCHE (décoratif + titres) ================= -->
+                    <div class="mn-aside">
+                        <div class="mbr-section-head">
+                            <h3 class="mbr-section-title mbr-fonts-style mb-0 display-1">
+                                <strong>Contact</strong>
+                            </h3>
 
-                <div class="col-lg-12 mx-auto mbr-form">
-                    <!-- FORMULAIRE BASIN -->
-                    <form action="https://usebasin.com/f/56e1aab16816" method="POST" accept-charset="UTF-8" enctype="multipart/form-data" class="mbr-form form-with-styler" data-verified="">
-
-                        <div class="row">
-                            
-                            <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">
-                                Oops... un problème est survenu.
-                            </div>
+                            <h4 class="mbr-section-subtitle mbr-fonts-style mb-0 mt-4 display-7">
+                                Pour rejoindre la meute ou pour un renseignement, ce formulaire est fait pour ça !
+                            </h4>
                         </div>
+                    </div>
 
-                        <div class="dragArea row">
-                            <div class="col-md col-sm-12 form-group mb-3" data-for="name">
-                                <input type="text" name="name" placeholder="Nom / Prénom / Pseudo" data-form-field="name" class="form-control" required="" id="name-form03-c">
-                            </div>
+                    <!-- ================= PANNEAU DROIT (formulaire) ================= -->
+                    <div class="mn-main">
+                        <div class="mbr-form">
+                            <!-- FORMULAIRE BASIN -->
+                            <form action="https://usebasin.com/f/56e1aab16816" method="POST" accept-charset="UTF-8" enctype="multipart/form-data" class="mbr-form form-with-styler" data-verified="">
 
-                            <div class="col-md col-sm-12 form-group mb-3" data-for="email">
-                                <input type="text" name="email" placeholder="Identifiant / E-mail" data-form-field="email" class="form-control" required="" id="email-form03-c">
-                            </div>
-
-                            <div class="col-12 form-group mb-3" data-for="contact-network">
-                                <label class="form-label">Préférence de contact</label>
-
-                                <div class="contact-network-grid" role="radiogroup" aria-label="Préférence de contact">
-                                    <div class="network-option">
-                                        <input type="radio" name="contact-network" id="contact-network-form03-c" value="discord" data-form-field="contact-network" required="">
-                                        <label class="network-card" for="network-discord">
-                                            <span class="network-icon">
-                                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path fill="currentColor" d="M20.317 4.369A19.791 19.791 0 0 0 15.885 3c-.191.328-.404.775-.553 1.124a18.27 18.27 0 0 0-5.29 0A11.587 11.587 0 0 0 9.49 3a19.736 19.736 0 0 0-4.433 1.369C2.255 8.462 1.52 12.454 1.887 16.389a19.9 19.9 0 0 0 5.993 3.03c.48-.666.908-1.37 1.277-2.108-.705-.267-1.377-.6-2.006-.984.168-.124.332-.252.49-.385 3.87 1.817 8.067 1.817 11.892 0 .16.133.323.261.49.385a12.64 12.64 0 0 1-2.01.985c.37.737.798 1.44 1.278 2.107a19.86 19.86 0 0 0 6-3.03c.43-4.56-.735-8.515-3.97-12.02ZM9.75 13.978c-1.157 0-2.11-1.063-2.11-2.37 0-1.306.934-2.37 2.11-2.37 1.185 0 2.128 1.073 2.11 2.37 0 1.307-.934 2.37-2.11 2.37Zm4.5 0c-1.157 0-2.11-1.063-2.11-2.37 0-1.306.934-2.37 2.11-2.37 1.185 0 2.128 1.073 2.11 2.37 0 1.307-.925 2.37-2.11 2.37Z"></path>
-                                                </svg>
-                                            </span>
-                                            <span class="network-name">Discord</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="network-option">
-                                        <input type="radio" name="contact-network" id="contact-network-form03-c" value="telegram" data-form-field="contact-network">
-                                        <label class="network-card" for="network-telegram">
-                                            <span class="network-icon">
-                                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path fill="currentColor" d="M9.78 18.65 9.95 14l8.47-7.65c.37-.33-.08-.5-.57-.17L7.39 12.75l-4.5-1.4c-.98-.3-.99-.98.2-1.45L20.7 3.1c.82-.3 1.53.2 1.26 1.45l-3.03 14.28c-.23 1.01-.82 1.26-1.67.79l-4.62-3.4-2.23 2.15c-.25.25-.46.46-.93.28Z"></path>
-                                                </svg>
-                                            </span>
-                                            <span class="network-name">Telegram</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="network-option">
-                                        <input type="radio" name="contact-network" id="contact-network-form03-c" value="twitter" data-form-field="contact-network">
-                                        <label class="network-card" for="network-twitter">
-                                            <span class="network-icon network-icon-double">
-                                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path fill="currentColor" d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.4 2.92c0 .34.04.68.11 1A12.15 12.15 0 0 1 3.03 4.9a4.28 4.28 0 0 0 1.32 5.72 4.23 4.23 0 0 1-1.94-.54v.05a4.28 4.28 0 0 0 3.43 4.2 4.3 4.3 0 0 1-1.93.07 4.29 4.29 0 0 0 4 2.98A8.6 8.6 0 0 1 2 19.54a12.13 12.13 0 0 0 6.56 1.92c7.88 0 12.19-6.53 12.19-12.19 0-.19 0-.37-.01-.55A8.7 8.7 0 0 0 22.46 6z"></path>
-                                                </svg>
-                                                <svg viewBox="0 0 16 16" aria-hidden="true">
-                                                    <path fill="currentColor" d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"></path>
-                                                </svg>
-                                            </span>
-                                            <span class="network-name">Twitter / X</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="network-option">
-                                        <input type="radio" name="contact-network" id="contact-network-form03-c" value="email" data-form-field="contact-network">
-                                        <label class="network-card" for="network-email">
-                                            <span class="network-icon">
-                                                <svg viewBox="0 0 24 24" aria-hidden="true">
-                                                    <path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"></path>
-                                                </svg>
-                                            </span>
-                                            <span class="network-name">Email</span>
-                                        </label>
+                                <div class="row">
+                                    
+                                    <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">
+                                        Oops... un problème est survenu.
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12 form-group mb-3" data-for="textarea">
-                                <textarea name="textarea" placeholder="Message" data-form-field="textarea" class="form-control" required="" id="textarea-form03-c"></textarea>
-                            </div>
+                                <div class="dragArea row">
+                                    <div class="col-md-6 col-12 form-group mb-3 name-field" data-for="name">
+                                        <label class="form-label" for="contact-name">Ton nom / pseudo</label>
+                                        <input type="text" name="name" id="name-form03-c" placeholder="Nom, prénom ou pseudo" data-form-field="name" autocomplete="name" class="form-control" required="">
+                                    </div>
 
-                            <!-- Champ pièce jointe pour Basin -->
-                            <div class="col-12 form-group mb-3" data-for="attachment">
-                                <label class="form-label" for="attachment-form03-c">Pièce jointe (optionnel)</label>
-                                <input type="file" name="attachment" id="attachment-form03-c" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.zip,.txt">
-                            </div>
+                                    <fieldset class="col-12 form-group mb-3 contact-network network-field" data-for="contact-network">
+                                        <legend class="network-legend"><span class="step-num">1</span> Préférence de contact</legend>
 
-                            <div class="col-12 form-group mb-4 consent-wrapper" data-for="consent">
-                                <label class="consent-label" for="contact-consent">
-                                    <input type="checkbox" id="consent-form03-c" name="consent" data-form-field="consent" required="">
-                                    <span>
-                                        J'accepte que mes données (nom, identifiant ou e-mail, message, pièce jointe éventuelle) soient utilisées uniquement pour traiter ma demande, conformément à la
-                                        <a href="privacy.html" target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>.
-                                    </span>
-                                </label>
-                            </div>
+                                        <div class="contact-network-grid">
+                                            <div class="network-option">
+                                                <input type="radio" name="contact-network" id="contact-network-form03-c" value="telegram" data-form-field="contact-network" required="">
+                                                <label class="network-card net-telegram" for="network-telegram">
+                                                    <span class="network-icon">
+                                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                            <path fill="currentColor" d="M9.78 18.65 9.95 14l8.47-7.65c.37-.33-.08-.5-.57-.17L7.39 12.75l-4.5-1.4c-.98-.3-.99-.98.2-1.45L20.7 3.1c.82-.3 1.53.2 1.26 1.45l-3.03 14.28c-.23 1.01-.82 1.26-1.67.79l-4.62-3.4-2.23 2.15c-.25.25-.46.46-.93.28Z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="network-name">Telegram</span>
+                                                </label>
+                                            </div>
 
-                            <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
-                                <button type="submit" class="btn btn-primary display-7" id="contact-submit">
-                                    Envoyer ✉️
-                                </button>
-                            </div>
+                                            <div class="network-option">
+                                                <input type="radio" name="contact-network" id="contact-network-form03-c" value="discord" data-form-field="contact-network">
+                                                <label class="network-card net-discord" for="network-discord">
+                                                    <span class="network-icon">
+                                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                            <path fill="currentColor" d="M20.317 4.369A19.791 19.791 0 0 0 15.885 3c-.191.328-.404.775-.553 1.124a18.27 18.27 0 0 0-5.29 0A11.587 11.587 0 0 0 9.49 3a19.736 19.736 0 0 0-4.433 1.369C2.255 8.462 1.52 12.454 1.887 16.389a19.9 19.9 0 0 0 5.993 3.03c.48-.666.908-1.37 1.277-2.108-.705-.267-1.377-.6-2.006-.984.168-.124.332-.252.49-.385 3.87 1.817 8.067 1.817 11.892 0 .16.133.323.261.49.385a12.64 12.64 0 0 1-2.01.985c.37.737.798 1.44 1.278 2.107a19.86 19.86 0 0 0 6-3.03c.43-4.56-.735-8.515-3.97-12.02ZM9.75 13.978c-1.157 0-2.11-1.063-2.11-2.37 0-1.306.934-2.37 2.11-2.37 1.185 0 2.128 1.073 2.11 2.37 0 1.307-.934 2.37-2.11 2.37Zm4.5 0c-1.157 0-2.11-1.063-2.11-2.37 0-1.306.934-2.37 2.11-2.37 1.185 0 2.128 1.073 2.11 2.37 0 1.307-.925 2.37-2.11 2.37Z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="network-name">Discord</span>
+                                                </label>
+                                            </div>
+
+                                            <div class="network-option">
+                                                <input type="radio" name="contact-network" id="contact-network-form03-c" value="twitter" data-form-field="contact-network">
+                                                <label class="network-card net-twitter" for="network-twitter">
+                                                    <span class="network-icon network-icon-double">
+                                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                            <path fill="currentColor" d="M22.46 6c-.77.35-1.6.58-2.46.69a4.3 4.3 0 0 0 1.88-2.37 8.59 8.59 0 0 1-2.72 1.04 4.28 4.28 0 0 0-7.4 2.92c0 .34.04.68.11 1A12.15 12.15 0 0 1 3.03 4.9a4.28 4.28 0 0 0 1.32 5.72 4.23 4.23 0 0 1-1.94-.54v.05a4.28 4.28 0 0 0 3.43 4.2 4.3 4.3 0 0 1-1.93.07 4.29 4.29 0 0 0 4 2.98A8.6 8.6 0 0 1 2 19.54a12.13 12.13 0 0 0 6.56 1.92c7.88 0 12.19-6.53 12.19-12.19 0-.19 0-.37-.01-.55A8.7 8.7 0 0 0 22.46 6z"></path>
+                                                        </svg>
+                                                        <svg viewBox="0 0 16 16" aria-hidden="true">
+                                                            <path fill="currentColor" d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="network-name">Twitter / X</span>
+                                                </label>
+                                            </div>
+
+                                            <div class="network-option">
+                                                <input type="radio" name="contact-network" id="contact-network-form03-c" value="email" data-form-field="contact-network">
+                                                <label class="network-card net-email" for="network-email">
+                                                    <span class="network-icon">
+                                                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                            <path fill="currentColor" d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    <span class="network-name">Email</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+
+                                    <!-- Champ identifiant CONTEXTUEL : label/placeholder/type s'adaptent au réseau choisi ci-dessus -->
+                                    <div class="col-md-6 col-12 form-group mb-3 id-field" data-for="identifiant">
+                                        <label class="form-label" for="contact-identifier" data-id-label=""><span class="step-num">2</span> Ton identifiant de contact</label>
+                                        <input type="text" name="identifiant" id="identifiant-form03-c" placeholder="Choisis un réseau ci-dessus" data-form-field="identifiant" autocomplete="off" class="form-control" required="">
+                                    </div>
+
+                                    <div class="col-12 form-group mb-3 msg-field" data-for="textarea">
+                                        <label class="form-label" for="contact-message">Ton message</label>
+                                        <textarea name="textarea" id="textarea-form03-c" placeholder="Dis-nous tout..." data-form-field="textarea" class="form-control" required=""></textarea>
+                                    </div>
+
+                                    <!-- Champ pièce jointe pour Basin -->
+                                    <div class="col-12 form-group mb-3 file-field" data-for="attachment">
+                                        <label class="form-label" for="attachment-form03-c">Pièce jointe (optionnel)</label>
+                                        <input type="file" name="attachment" id="attachment-form03-c" class="form-control" title="Pièce jointe (optionnel)" aria-label="Pièce jointe (optionnel)" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.zip,.txt">
+                                    </div>
+
+                                    <div class="col-12 form-group mb-4 consent-wrapper" data-for="consent">
+                                        <label class="consent-label" for="contact-consent">
+                                            <input type="checkbox" id="consent-form03-c" name="consent" data-form-field="consent" required="">
+                                            <span>
+                                                J'accepte que mes données (nom, identifiant ou e-mail, message, pièce jointe éventuelle) soient utilisées uniquement pour traiter ma demande, conformément à la
+                                                <a href="privacy.html" data-legal-open="confidentialite" target="_blank" rel="noopener noreferrer">Politique de confidentialité</a>.
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <!-- Anti-spam Basin (honeypot) : invisible pour les humains -->
+                                    <input type="text" name="_gotcha" class="mn-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true" id="_gotcha-form03-c">
+
+                                    <div class="col-12 mbr-section-btn">
+                                        <button type="submit" class="btn btn-primary display-7" id="contact-submit">
+                                            Envoyer ✉️
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- /FORMULAIRE BASIN -->
                         </div>
-                    </form>
-                    <!-- /FORMULAIRE BASIN -->
-                </div>
-            </div>
+                    </div>
 
-            <div class="col-12 col-lg-6">
-                <div class="image-wrapper">
-                    <img class="w-100" src="assets/images/la20meute20normandemodif202-1256x888.webp" alt="La Meute Normande">
+                    <!-- ============================================================
+                         EASTER EGG : chat OIIA — GIF + son joués UNE fois au clic.
+                         Fichiers attendus : assets/OIA/OIA.gif  et  assets/OIA/OIA.mp3
+                         (chemins réglables via data-gif / data-audio ci-dessous).
+                         Sur mobile : placé en bas de la carte (après le formulaire).
+                         ============================================================ -->
+                    <div class="mn-oiia-wrap">
+                        <button type="button" class="mn-oiia" data-gif="https://lameutenormande.fr/assets/OIA/OIA.gif" data-audio="https://lameutenormande.fr/assets/OIA/OIA.mp3" aria-label="Chat OIIA, clique pour le lancer" title="Clique-moi">
+                            <span class="mn-oiia-face" aria-hidden="true">🐱</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Script : adapte le champ identifiant au réseau choisi (s'exécute sur le site publié, pas dans l'éditeur Mobirise) -->
+    <script>
+    (function () {
+        // Motif : commence par @ suivi d'au moins un caractère sans espace
+        var AT_PATTERN = '@\\S+';
+        var AT_TITLE = 'Commence par @ suivi de ton identifiant (ex : @pseudo).';
+
+        var NETWORKS = {
+            discord: {
+                label: 'Ton pseudo Discord',
+                placeholder: 'Ex : @pseudo',
+                type: 'text', inputmode: 'text', autocomplete: 'off',
+                requiresAt: true
+            },
+            telegram: {
+                label: 'Ton @ Telegram',
+                placeholder: 'Ex : @pseudo',
+                type: 'text', inputmode: 'text', autocomplete: 'off',
+                requiresAt: true
+            },
+            twitter: {
+                label: 'Ton @ sur Twitter / X',
+                placeholder: 'Ex : @pseudo',
+                type: 'text', inputmode: 'text', autocomplete: 'off',
+                requiresAt: true
+            },
+            email: {
+                label: 'Ton adresse e-mail',
+                placeholder: 'Ex : prenom@exemple.com',
+                type: 'email', inputmode: 'email', autocomplete: 'email',
+                requiresAt: false
+            }
+        };
+
+        function initForm(form) {
+            var input = form.querySelector('#contact-identifier, [name="identifiant"]');
+            var labelEl = form.querySelector('[data-id-label]');
+            var radios = form.querySelectorAll('input[name="contact-network"]');
+            if (!input || !radios.length) { return; }
+
+            var current = null;
+
+            function apply(value) {
+                var cfg = NETWORKS[value];
+                if (!cfg) { return; }
+                current = cfg;
+                input.disabled = false;
+                input.type = cfg.type;
+                input.placeholder = cfg.placeholder;
+                input.setAttribute('inputmode', cfg.inputmode);
+                input.setAttribute('autocomplete', cfg.autocomplete);
+                if (cfg.requiresAt) {
+                    input.setAttribute('pattern', AT_PATTERN);
+                    input.setAttribute('title', AT_TITLE);
+                    // Impose directement le @ dans le champ
+                    var v = input.value.trim();
+                    if (v === '') { input.value = '@'; }
+                    else if (v.charAt(0) !== '@') { input.value = '@' + v.replace(/^@+/, ''); }
+                } else {
+                    input.removeAttribute('pattern');
+                    input.removeAttribute('title');
+                    // Sur Email : on efface le @ seul laissé par un réseau social
+                    if (input.value.trim() === '@') { input.value = ''; }
+                }
+                if (labelEl) { labelEl.innerHTML = '<span class="step-num">2</span> ' + cfg.label; }
+            }
+
+            // Sécurité : ré-ajoute le @ manquant quand on quitte le champ
+            input.addEventListener('blur', function () {
+                if (current && current.requiresAt) {
+                    var v = input.value.trim();
+                    if (v !== '' && v.charAt(0) !== '@') {
+                        input.value = '@' + v.replace(/^@+/, '');
+                    }
+                }
+            });
+
+            // Place le curseur après le @ à la sélection d'un réseau
+            function focusEnd() {
+                input.focus();
+                if (input.type === 'text') {
+                    var end = input.value.length;
+                    try { input.setSelectionRange(end, end); } catch (e) {}
+                }
+            }
+
+            for (var i = 0; i < radios.length; i++) {
+                radios[i].addEventListener('change', function () {
+                    if (this.checked) { apply(this.value); focusEnd(); }
+                });
+                if (radios[i].checked) { apply(radios[i].value); }
+            }
+        }
+
+        // Lien « Politique de confidentialité » : ouvre la popup légale du module footer
+        // (module global présent sur toutes les pages). Repli sur le href si le footer est absent.
+        function wireLegalLinks() {
+            var links = document.querySelectorAll('.contact-modern [data-legal-open]');
+            for (var i = 0; i < links.length; i++) {
+                links[i].addEventListener('click', function (e) {
+                    var key = this.getAttribute('data-legal-open');
+                    var btn = document.querySelector('.footer-modern .footer-legal-btn[data-legal="' + key + '"]');
+                    if (btn) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        btn.click();
+                    }
+                    // sinon : le lien suit son href (fallback privacy.html)
+                });
+            }
+        }
+
+        // ============================================================
+        // Easter egg : chat OIIA — GIF + son joués UNE fois au clic.
+        // Chemins réglés via data-gif / data-audio sur le bouton (.mn-oiia).
+        // • Au repos : 1re image figée du GIF (capturée en canvas), sinon chat SVG.
+        // • Au clic  : le GIF rejoue depuis le début + le son (une fois).
+        // • À la fin du son : le GIF est figé sur son image courante (stop visuel),
+        //   ce qui garantit « une seule lecture » même si le GIF boucle en interne.
+        // ============================================================
+        function initOiia() {
+            var btns = document.querySelectorAll('.contact-modern .mn-oiia');
+            for (var i = 0; i < btns.length; i++) { setupOiia(btns[i]); }
+        }
+
+        function setupOiia(btn) {
+            var GIF = btn.getAttribute('data-gif');
+            var AUD = btn.getAttribute('data-audio');
+            if (!GIF) { return; }
+
+            // Cree l'image du GIF a la volee (absente du HTML pour ne pas gener Mobirise)
+            var img = btn.querySelector('.mn-oiia-img');
+            if (!img) {
+                img = document.createElement('img');
+                img.className = 'mn-oiia-img';
+                img.alt = '';
+                img.setAttribute('decoding', 'async');
+                img.crossOrigin = 'anonymous';   // le GIF renvoie ACAO:* => capture canvas OK partout
+                btn.insertBefore(img, btn.firstChild);
+            }
+
+            var poster = null;      // 1re image du GIF figée (dataURL)
+            var audioEl = null;
+            var playing = false;
+            var started = false;
+            var endTimer = null;
+
+            // Prépare l'état de repos : 1re image du GIF (sinon on garde l'emoji),
+            // et met le GIF en cache pour un redémarrage instantané au clic.
+            (function preloadPoster() {
+                var probe = new Image();
+                probe.crossOrigin = 'anonymous';
+                probe.onload = function () {
+                    try {
+                        var c = document.createElement('canvas');
+                        c.width = probe.naturalWidth; c.height = probe.naturalHeight;
+                        c.getContext('2d').drawImage(probe, 0, 0);
+                        poster = c.toDataURL('image/png');
+                        img.src = poster;
+                        btn.classList.add('has-gif');
+                    } catch (e) { /* canvas teinté → garde l'emoji au repos */ }
+                };
+                probe.onerror = function () { /* GIF absent → garde l'emoji */ };
+                probe.src = GIF;
+            })();
+
+            // Précharge le son dès maintenant → démarrage sans latence au clic.
+            if (AUD) {
+                audioEl = new Audio();
+                audioEl.preload = 'auto';
+                audioEl.src = AUD;
+                audioEl.addEventListener('ended', stop);   // fin normale → fige
+                audioEl.addEventListener('error', stop);   // son introuvable → fige quand même
+                try { audioEl.load(); } catch (e) {}
+            }
+
+            function armEndTimer() {
+                if (endTimer) { clearTimeout(endTimer); }
+                var d = (audioEl && audioEl.duration && isFinite(audioEl.duration)) ? audioEl.duration : 3;
+                endTimer = setTimeout(stop, d * 1000 + 250);
+            }
+
+            // Relance l'animation du GIF depuis le cache. Au repos l'image = poster,
+            // donc réassigner le GIF relance toujours l'animation depuis la 1re frame,
+            // sans re-téléchargement.
+            function startGif() {
+                img.src = GIF;
+                btn.classList.add('has-gif');
+            }
+
+            function stop() {
+                if (!playing) { return; }
+                playing = false;
+                started = false;
+                btn.classList.remove('is-playing');
+                if (endTimer) { clearTimeout(endTimer); endTimer = null; }
+                if (audioEl) { try { audioEl.pause(); } catch (e) {} }
+                // Fin de lecture → retour à la 1re image (même rendu qu'au repos)
+                if (poster) { img.src = poster; btn.classList.add('has-gif'); }
+                else { btn.classList.remove('has-gif'); }  // repli : ré-affiche l'emoji
+            }
+
+            // Démarre l'animation ET le son EN MÊME TEMPS : on lance le GIF au moment
+            // précis où le son commence réellement à jouer (fini le décalage).
+            function play() {
+                if (playing) { return; }          // un clic = une lecture (pas de cumul)
+                playing = true;
+                started = false;
+                btn.classList.add('is-playing');
+
+                function onStart() {
+                    if (started) { return; }
+                    started = true;
+                    startGif();
+                    armEndTimer();
+                }
+
+                if (audioEl) {
+                    try { audioEl.currentTime = 0; } catch (e) {}
+                    audioEl.addEventListener('playing', onStart, { once: true });
+                    var p = audioEl.play();
+                    if (p && p.then) {
+                        p.then(onStart).catch(function () { startGif(); stop(); });
+                    } else {
+                        onStart(); // navigateur sans promesse sur play()
+                    }
+                    // filet : si l'événement 'playing' n'arrive pas, on démarre quand même
+                    setTimeout(function () { if (playing && !started) { onStart(); } }, 250);
+                } else {
+                    startGif();
+                    endTimer = setTimeout(stop, 3000);
+                }
+            }
+
+            btn.addEventListener('click', play);
+        }
+
+        function initAll() {
+            var forms = document.querySelectorAll('.contact-modern form.mbr-form');
+            for (var i = 0; i < forms.length; i++) { initForm(forms[i]); }
+            wireLegalLinks();
+            initOiia();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAll);
+        } else {
+            initAll();
+        }
+    })();
+    </script>
 </section>
 
 <section data-bs-version="5.1" class="footer-modern cid-v4N9BybemT" once="footers" id="footer04-1j">
