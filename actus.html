@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=Dy0kaz"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=Dy0kaz" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=4qAbK9"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=4qAbK9" type="text/css">
 
   
   
@@ -102,7 +102,14 @@
                     Découvrez les prochains événements auxquels notre groupe participe.
                 </p>
 
-                <div class="events-grid" aria-live="polite" aria-busy="false" data-ical-url="https://lameutenormande.fr/events.ics" data-filter="go@events.lameutenormande" data-max-events="3" data-future-days="365"></div>
+                <div class="events-grid" aria-live="polite" aria-busy="false" data-ical-url="https://lameutenormande.fr/events.ics" data-filter="go@events.lameutenormande" data-max-events="3" data-future-days="365">
+                    <!-- Filet de sécurité si le JavaScript ne s'exécute pas :
+                         remplacé instantanément par le squelette/les tuiles sinon -->
+                    <div class="events-message info events-fallback">
+                        <span aria-hidden="true">📅</span>
+                        <p>Retrouvez tous nos événements sur notre canal Telegram, juste en dessous.</p>
+                    </div>
+                </div>
 
                 <p class="mbr-fonts-style mbr-white mt-4 mb-2 telegram-note display-7">
                     <em>Retrouvez ici toutes nos annonces et événements en direct de notre canal Telegram !</em><br>
@@ -209,13 +216,20 @@
 
             /* ---------------------- Chargement du flux ICS ---------------------- */
 
+            // Cache persistant (localStorage) : survit à la fermeture de l'onglet,
+            // sert de secours hors-ligne. On distingue « frais » (< cacheMinutes,
+            // pas besoin de retélécharger) et « périmé » (affiché quand même en
+            // attendant le rafraîchissement réseau).
             function lireCache() {
                 try {
-                    const brut = sessionStorage.getItem(cleCache);
+                    const brut = localStorage.getItem(cleCache);
                     if (!brut) return null;
                     const donnees = JSON.parse(brut);
-                    if (Date.now() - donnees.t > config.cacheMinutes * 60000) return null;
-                    return donnees.ics;
+                    if (!donnees || !donnees.ics) return null;
+                    return {
+                        ics: donnees.ics,
+                        frais: Date.now() - donnees.t < config.cacheMinutes * 60000
+                    };
                 } catch (e) {
                     return null;
                 }
@@ -223,17 +237,30 @@
 
             function ecrireCache(ics) {
                 try {
-                    sessionStorage.setItem(cleCache, JSON.stringify({ t: Date.now(), ics }));
-                } catch (e) { /* stockage indisponible : sans gravité */ }
+                    localStorage.setItem(cleCache, JSON.stringify({ t: Date.now(), ics }));
+                } catch (e) { /* stockage indisponible/plein : sans gravité */ }
             }
 
-            async function chargerICS() {
-                const enCache = lireCache();
-                if (enCache) return enCache;
+            // Garantit qu'une promesse se règle (ou échoue) sous `ms`, même sur les
+            // navigateurs sans AbortSignal.timeout → jamais de squelette figé.
+            function avecTimeout(promesse, ms) {
+                return new Promise((resolve, reject) => {
+                    const minuteur = setTimeout(() => reject(new Error('Délai dépassé')), ms);
+                    promesse.then(
+                        v => { clearTimeout(minuteur); resolve(v); },
+                        e => { clearTimeout(minuteur); reject(e); }
+                    );
+                });
+            }
 
+            async function telechargerICS() {
                 const options = { cache: 'no-store' };
-                if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
-                    options.signal = AbortSignal.timeout(config.timeoutMs);
+                let controleur = null;
+                // Annule aussi la requête sous-jacente quand c'est possible
+                if ('AbortController' in window) {
+                    controleur = new AbortController();
+                    options.signal = controleur.signal;
+                    setTimeout(() => { try { controleur.abort(); } catch (e) {} }, config.timeoutMs);
                 }
 
                 const separateur = config.url.includes('?') ? '&' : '?';
@@ -242,8 +269,6 @@
 
                 const texte = await reponse.text();
                 if (!texte.includes('BEGIN:VCALENDAR')) throw new Error('Fichier ICS invalide');
-
-                ecrireCache(texte);
                 return texte;
             }
 
@@ -419,7 +444,7 @@
                         <button type="button" class="events-retry">Réessayer</button>
                     </div>`;
                 const btn = grille.querySelector('.events-retry');
-                if (btn) btn.addEventListener('click', demarrer);
+                if (btn) btn.addEventListener('click', rafraichir);
             }
 
             function rendreTuiles() {
@@ -662,47 +687,75 @@
 
             /* ---------------------- Point d'entrée ---------------------- */
 
-            async function demarrer() {
+            // Affichage synchrone (aucun réseau) au tout premier appel : soit le
+            // dernier calendrier connu (cache), soit le squelette. La grille n'est
+            // donc jamais vide, quelle que soit la position de la section.
+            // Renvoie true si le cache affiché est frais (→ inutile de rafraîchir).
+            function afficherInitial() {
+                const cache = lireCache();
+                if (cache) {
+                    try {
+                        const evs = filtrerEvenements(parserICS(cache.ics));
+                        if (evs.length) {
+                            conventions = evs;
+                            rendreTuiles();
+                            return cache.frais;
+                        }
+                    } catch (e) { /* cache corrompu : on l'ignore */ }
+                }
+                afficherSquelette();
+                return false;
+            }
+
+            // Rafraîchissement réseau (stale-while-revalidate) : ne remplace l'écran
+            // que par du contenu valide. Si le réseau échoue mais qu'on affiche déjà
+            // le cache, on garde le cache au lieu d'afficher une erreur.
+            async function rafraichir() {
                 if (enChargement) return;
                 enChargement = true;
                 grille.setAttribute('aria-busy', 'true');
-                afficherSquelette();
+                const avaitContenu = conventions.length > 0;
+                if (!avaitContenu) afficherSquelette();
 
                 try {
-                    const ics = await chargerICS();
+                    const ics = await avecTimeout(telechargerICS(), config.timeoutMs);
+                    ecrireCache(ics);
                     conventions = filtrerEvenements(parserICS(ics));
                     rendreTuiles();
                 } catch (e) {
                     console.error('[Actus V3]', e);
-                    afficherErreur();
+                    if (!avaitContenu) afficherErreur(); // erreur seulement si rien à montrer
                 } finally {
                     grille.setAttribute('aria-busy', 'false');
                     enChargement = false;
                 }
             }
 
-            // Chargement paresseux : on ne télécharge le calendrier que lorsque
-            // la section approche du viewport. Filet de sécurité : certains
-            // environnements (prérendu, webviews throttlées) ne déclenchent
-            // jamais l'observer → démarrage forcé après 2,5 s.
-            let dejaLance = false;
-            let observateur = null;
+            // 1) Premier paint immédiat (cache ou squelette)
+            const cacheFrais = afficherInitial();
 
-            function lancerUneFois() {
-                if (dejaLance) return;
-                dejaLance = true;
-                if (observateur) observateur.disconnect();
-                demarrer();
-            }
+            // 2) Rafraîchissement réseau paresseux, sauf si le cache est déjà frais.
+            //    Filet de sécurité : si l'IntersectionObserver ne se déclenche jamais
+            //    (prérendu, webview throttlée), démarrage forcé après 2,5 s.
+            if (!cacheFrais) {
+                let dejaLance = false;
+                let observateur = null;
+                const lancerUneFois = () => {
+                    if (dejaLance) return;
+                    dejaLance = true;
+                    if (observateur) observateur.disconnect();
+                    rafraichir();
+                };
 
-            if ('IntersectionObserver' in window) {
-                observateur = new IntersectionObserver(entrees => {
-                    if (entrees.some(en => en.isIntersecting)) lancerUneFois();
-                }, { rootMargin: '400px' });
-                observateur.observe(grille);
-                setTimeout(lancerUneFois, 2500);
-            } else {
-                lancerUneFois();
+                if ('IntersectionObserver' in window) {
+                    observateur = new IntersectionObserver(entrees => {
+                        if (entrees.some(en => en.isIntersecting)) lancerUneFois();
+                    }, { rootMargin: '400px' });
+                    observateur.observe(grille);
+                    setTimeout(lancerUneFois, 2500);
+                } else {
+                    lancerUneFois();
+                }
             }
         }
 
