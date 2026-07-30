@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=jHmIe4"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=jHmIe4" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=QE00ij"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=QE00ij" type="text/css">
 
   
   
@@ -1009,19 +1009,39 @@
             cursor: pointer;
         }
 
+        .mcal-url-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mcal-url-btns--solo { margin-top: 0.5rem; padding-top: 0; border-top: none; }
+
         .mcal-url-btn {
-            display: inline-block;
-            padding: 0.7rem 1rem;
-            background: rgba(76, 175, 80, 0.9);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            flex: 1;
+            min-width: 100px;
+            padding: 0.75rem 1rem;
+            background: rgba(76, 175, 80, 0.8);
+            border: 2px solid #4CAF50;
             color: #fff;
             text-decoration: none;
+            text-align: center;
             border-radius: 0.5rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            margin-top: 0.75rem;
+            line-height: 1.2;
             transition: all 0.3s;
         }
 
-        .mcal-url-btn:hover { background: #4CAF50; transform: translateY(-2px); color: #fff; }
+        .mcal-url-btn:hover, .mcal-url-btn:focus-visible { background: #4CAF50; transform: translateY(-2px); color: #fff; text-decoration: none; }
+        .mcal-url-btn .mcal-url-ico { font-size: 1em; line-height: 1; }
 
         /* ---------- Responsive ---------- */
         @media (min-width: 600px) {
@@ -1900,7 +1920,10 @@
 
                 let right = '';
                 const url = safeUrl(ev.url);
-                const urlBtn = url ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" class="mcal-url-btn">Voir l\'événement</a>' : '';
+                const urlBtn = url
+                    ? '<div class="mcal-url-btns"><a href="' + esc(url) + '" target="_blank" rel="noopener" class="mcal-url-btn">' +
+                      '<span class="mcal-url-ico" aria-hidden="true">🔗</span>Site de l\'événement</a></div>'
+                    : '';
 
                 if (ev.description) {
                     const lineBreaks = (ev.description.match(/\r\n?|\n/g) || []).length;
@@ -1911,7 +1934,9 @@
                         (collapse ? '<button type="button" class="mcal-desc-toggle" data-action="toggle-desc" aria-expanded="false">Voir plus</button>' : '') +
                         urlBtn + '</div></div>';
                 } else if (urlBtn) {
-                    right += '<div class="mcal-info-row"><div class="mcal-info-content">' + urlBtn + '</div></div>';
+                    right += '<div class="mcal-info-row"><div class="mcal-info-icon">🔗</div><div class="mcal-info-content">' +
+                        '<div class="mcal-info-label">En savoir plus</div>' +
+                        urlBtn.replace('mcal-url-btns', 'mcal-url-btns mcal-url-btns--solo') + '</div></div>';
                 }
 
                 const body = DIALOG.querySelector('.mcal-dialog-body');
