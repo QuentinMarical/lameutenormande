@@ -438,6 +438,22 @@ LAST-MODIFIED:20251204T123800Z
 DTSTAMP:20260104T042141Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Robertot – Fête Médiévale Fantastique
+DESCRIPTION:Entrée : 2 € (gratuit pour enfants)\n\n\n\nProgramme :\n\nBatailles grandeur nature et initiations au combat \n\nCampements et ateliers (taille de pierre\, teintures\, cuir\, jeux anciens)\n\nSpectacle équestre\, marché artisanal médiéval\n\nMusiciens déambulatoires et restauration sur place \n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Entrée&nbsp\;: 2 € (gratuit pour enfants)<br/></div><div><br/></div><div>Programme&nbsp\;:<br/></div><div>Batailles grandeur nature et initiations au combat&nbsp\;<br/></div><div>Campements et ateliers (taille de pierre\, teintures\, cuir\, jeux anciens)<br/></div><div>Spectacle équestre\, marché artisanal médiéval<br/></div><div>Musiciens déambulatoires et restauration sur place&nbsp\;<br/></div><div><br/></div>
+DTSTART:20260704T080000Z
+DTEND:20260705T170000Z
+LOCATION:76560 Robertot
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:36ccc424d13947d0bc52c8a9e52d1ad8@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260730T111858Z
+LAST-MODIFIED:20260730T111915Z
+DTSTAMP:20260730T111919Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Game Fest Charleville
 DESCRIPTION:Game Fest Charleville à Charleville-Mézières.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Game Fest Charleville à Charleville-Mézières.<br /></div>
@@ -1009,6 +1025,23 @@ DTSTAMP:20260123T172234Z
 URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Furfurieux 4
+DESCRIPTION:Inscription le samedi 12 septembre 2026 à 20h.\n\n\nComme l'édition précédente\, les Furfurieux se déroulera à l'hôtel Metz Technopole - Best Western Plus.\n\n\nLe nom de cette 4ème édition est "La Symphonie du Pixel".\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Inscription le samedi 12 septembre 2026 à 20h.</p><p><br/></p><p>Comme l'édition précédente\, les Furfurieux se déroulera à l'hôtel Metz Technopole - Best Western Plus.</p><p><br class="rte-ignore-br"/></p><p>Le nom de cette 4ème édition est &quot\;La Symphonie du Pixel&quot\;.</p></div>
+DTSTART:20270505T220000Z
+DTEND:20270509T215900Z
+LOCATION:Hotel Metz Technopole - Best Western Plus
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:7affcd8184254463b4235921fe6316e0@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260730T113346Z
+LAST-MODIFIED:20260730T113459Z
+DTSTAMP:20260730T113501Z
+URL:https://furfurieux.com/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Pix'Ailes Jungle Edition
 DESCRIPTION:La Pix'ailes Convention\, organisée par l'association Pix'ailes\, revient pour sa 3ème édition les 6 et 7 juin 2026 de 10h à 18h à la Salle Maurice Ravel\, Rue de la Gare\, Issou (78440 — Yvelines). Cette édition est placée sous le thème de la Jungle 🌿 — sortez votre plus beau pagne et préparez-vous à sauter de liane en liane !\n\nAu programme : jeux vidéo\, rétrogaming\, tournois\, dédicaces avec des invités exclusifs (dont le YouTubeur spécialiste du rétro gaming Edward)\, animations en continu\, cadeaux à gagner\, et une ambiance conviviale et passionnée entre fans de pop culture. Une DeLorean DMC-12 (oui\, celle de Retour vers le Futur !) sera également de la partie pour les amateurs de voitures légendaires 🚗⚡ !\n\nTarifs : 10€ à 15€ selon la formule\, avec billetterie disponible sur les réseaux officiels de l'association.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Pix'ailes Convention</b>\, organisée par l'association Pix'ailes\, revient pour sa<span>&nbsp\;</span><b>3ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 18h</b><span>&nbsp\;</span>à la<span>&nbsp\;</span><b>Salle Maurice Ravel</b>\, Rue de la Gare\,<span>&nbsp\;</span><b>Issou</b><span>&nbsp\;</span>(78440 — Yvelines). Cette édition est placée sous le thème de la<span>&nbsp\;</span><b>Jungle</b><span>&nbsp\;</span>🌿 — sortez votre plus beau pagne et préparez-vous à sauter de liane en liane !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : jeux vidéo\, rétrogaming\, tournois\, dédicaces avec des invités exclusifs (dont le YouTubeur spécialiste du rétro gaming<span>&nbsp\;</span><b>Edward</b>)\, animations en continu\, cadeaux à gagner\, et une ambiance conviviale et passionnée entre fans de pop culture. Une DeLorean DMC-12 (oui\, celle de<span>&nbsp\;</span><i>Retour vers le Futur</i><span>&nbsp\;</span>!) sera également de la partie pour les amateurs de voitures légendaires 🚗⚡ !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Tarifs :<span>&nbsp\;</span><b>10€ à 15€</b><span>&nbsp\;</span>selon la formule\, avec billetterie disponible sur les réseaux officiels de l'association.<br /></p><div><br /></div>
@@ -1037,10 +1070,8 @@ STATUS:CONFIRMED
 UID:7c4c24b5a12547fe8699122ce1ebcb6b@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260607T112331Z
-LAST-MODIFIED:20260607T112331Z
-DTSTAMP:20260607T112332Z
-ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
-ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260730T112441Z
+DTSTAMP:20260730T112443Z
 URL:https://japanmangawave.com/colmar/
 END:VEVENT
 BEGIN:VEVENT
@@ -1460,6 +1491,22 @@ DTSTAMP:20260104T042141Z
 URL:https://ticketevent.fr/gdc25/public-1
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Fête Médiévale 1412
+DESCRIPTION:Programme :\n\nCampements médiévaux avec chevaliers\, artisans et reconstitueurs\n\nDémonstrations de combat\, joutes\, maniement d’armes\n\nMarché artisanal (forgerons\, potiers\, tailleurs de pierre…)\n\nExpositions sur la vie quotidienne en 1412\n\nAnimations enfants : tir à l’arc\, jeux\, contes\n\nRestauration sur place inspirée de l’époque\n\nSpectacles déambulatoires et musiciens\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Programme&nbsp\;:<br/></div><div>Campements médiévaux avec chevaliers\, artisans et reconstitueurs<br/></div><div>Démonstrations de combat\, joutes\, maniement d’armes<br/></div><div>Marché artisanal (forgerons\, potiers\, tailleurs de pierre…)<br/></div><div>Expositions sur la vie quotidienne en 1412<br/></div><div>Animations enfants : tir à l’arc\, jeux\, contes<br/></div><div>Restauration sur place inspirée de l’époque<br/></div><div>Spectacles déambulatoires et musiciens<br/></div><div><br/></div>
+DTSTART:20260704T080000Z
+DTEND:20260705T160000Z
+LOCATION:Parc des Aulnes\, 27100 Le Vaudreuil
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ac4ad6d2be4b4c1b81534d6df387333c@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260730T111646Z
+LAST-MODIFIED:20260730T111646Z
+DTSTAMP:20260730T111647Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Turretot Geek Convention
 DESCRIPTION:
 DTSTART:20261107T090000Z
@@ -1508,6 +1555,23 @@ CREATED:20260325T084738Z
 LAST-MODIFIED:20260518T094316Z
 DTSTAMP:20260518T094318Z
 URL:https://japanotakufestival.com/event/lisieux/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Historiques de Gaillon
+DESCRIPTION:Programme :\n\nGrande parade d’ouverture et spectacle inaugural\n\nCampements de reconstitution médiévale\n\nMarché d’artisans (forgerons\, enlumineurs\, tisserands\, potiers)\n\nDanses et musiques médiévales/Renaissance\, spectacles de rue\, jongleurs\, cracheurs de feu\n\nTournois\, démonstrations d’armes\, initiations au combat\n\nConférences sur l’histoire locale\n\nSoirée festive avec bal Renaissance et spectacle pyrotechnique\n\nThème 2026 : « Jardins en fête » – immersion entre nature et histoire \n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Programme&nbsp\;:<br/></div><div>Grande parade d’ouverture et spectacle inaugural<br/></div><div>Campements de reconstitution médiévale<br/></div><div>Marché d’artisans (forgerons\, enlumineurs\, tisserands\, potiers)<br/></div><div>Danses et musiques médiévales/Renaissance\, spectacles de rue\, jongleurs\, cracheurs de feu<br/></div><div>Tournois\, démonstrations d’armes\, initiations au combat<br/></div><div>Conférences sur l’histoire locale<br/></div><div>Soirée festive avec bal Renaissance et spectacle pyrotechnique<br/></div><div>Thème 2026&nbsp\;: « Jardins en fête » – immersion entre nature et histoire <br/></div>
+DTSTART;VALUE=DATE:20260606
+DTEND;VALUE=DATE:20260608
+LOCATION:Château Renaissance et Jardins Hauts de Gaillon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b563cc0955624585b2378241c40a7386@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260730T111157Z
+LAST-MODIFIED:20260730T111348Z
+DTSTAMP:20260730T111350Z
+URL:https://leshistoriquesdegaillon.fr
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Fauntastic 6
@@ -1623,10 +1687,8 @@ STATUS:CONFIRMED
 UID:c43e8cf73be24c0a8ba076373f696e3b@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260607T101250Z
-LAST-MODIFIED:20260607T101250Z
-DTSTAMP:20260607T101251Z
-ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
-ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260730T112451Z
+DTSTAMP:20260730T112453Z
 URL:https://japanmangawave.com/amiens/
 END:VEVENT
 BEGIN:VEVENT
@@ -1845,6 +1907,23 @@ TRANSP:TRANSPARENT
 CREATED:20260326T151612Z
 LAST-MODIFIED:20260326T151612Z
 DTSTAMP:20260326T151612Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Médiévales de Fontaine‑Guérard
+DESCRIPTION:Horaires : 10h30‑18h00 (banquet samedi à partir de 20h\, sur réservation)\n\nProgramme :\n\nCompagnies en costumes d’époque\, campements vivants\n\nDémonstrations d’armes\, artisanat\, cuisine médiévale\, forge\n\nCombats chorégraphiés\, théâtre de rue\, danses anciennes\n\nMarché médiéval et fantastique (30 artisans)\n\nAnimations enfants : château ludique\, jeux\, ateliers blasons\, tir à l’arc\n\nRôtisseur au feu de bois\, échoppes artisanales\n\nBanquet‑spectacle samedi soir dans le dortoir des moniales\, suivi de spectacle de feu\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Horaires : 10h30‑18h00 (banquet samedi à partir de 20h\, sur réservation)<br/></div><div>Programme&nbsp\;:<br/></div><div>Compagnies en costumes d’époque\, campements vivants<br/></div><div>Démonstrations d’armes\, artisanat\, cuisine médiévale\, forge<br/></div><div>Combats chorégraphiés\, théâtre de rue\, danses anciennes<br/></div><div>Marché médiéval et fantastique (30 artisans)<br/></div><div>Animations enfants : château ludique\, jeux\, ateliers blasons\, tir à l’arc<br/></div><div>Rôtisseur au feu de bois\, échoppes artisanales<br/></div><div>Banquet‑spectacle samedi soir dans le dortoir des moniales\, suivi de spectacle de feu<br/></div><div><br/></div>
+DTSTART:20260606T083000Z
+DTEND:20260607T160000Z
+LOCATION:Abbaye cistercienne de Fontaine‑Guérard\, D714\, 27380 Radepont
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d937934860b64a5a8bf0ae8f651d22d1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260730T111121Z
+LAST-MODIFIED:20260730T111121Z
+DTSTAMP:20260730T111122Z
+URL:https://abbayefontaineguerard.fr
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🌍 Made In Asia (Belgique)
@@ -2095,6 +2174,22 @@ CREATED:20260207T141235Z
 LAST-MODIFIED:20260207T141235Z
 DTSTAMP:20260207T141235Z
 URL:https://japanotakufestival.com/event/chalons-en-champagne-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Les Médiévales de Grestain
+DESCRIPTION:Programme et animations\n\nReconstitutions historiques : compagnies en costume d’époque\, campements médiévaux\, démonstrations de combats\, cuisine au feu de bois\, armes et objets du quotidien\n\n\n\nMusique et spectacles : troupes de musique médiévale (tambours\, flûtes\, vièles) et spectacles mêlant théâtre et acrobaties\, comme la troupe L’Arbre de Sovenancene\n\n\n\nMarché artisanal médiéval : étals d’artisans locaux avec savoir-faire traditionnel\n\n\n\nPause gourmande d’époque : dégustations de plats et boissons du Moyen Âge\n\n\n\nInformations pratiques\n\nEntrée libre mais prévoir des espèces pour les achats (pas de distributeur à proximité)\n\n\n\nConseils : se munir d’anti-moustiques\, vérifier les horaires et réserver si possible\n\n\n\nAccès : site historique\, parking gratuit\, accessible en voiture\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Programme et animations<br/></div><div>Reconstitutions historiques&nbsp\;: compagnies en costume d’époque\, campements médiévaux\, démonstrations de combats\, cuisine au feu de bois\, armes et objets du quotidien<br/></div><div><br/></div><div>Musique et spectacles&nbsp\;: troupes de musique médiévale (tambours\, flûtes\, vièles) et spectacles mêlant théâtre et acrobaties\, comme la troupe&nbsp\;L’Arbre de Sovenancene<br/></div><div><br/></div><div>Marché artisanal médiéval&nbsp\;: étals d’artisans locaux avec savoir-faire traditionnel<br/></div><div><br/></div><div>Pause gourmande d’époque&nbsp\;: dégustations de plats et boissons du Moyen Âge<br/></div><div><br/></div><div>Informations pratiques<br/></div><div>Entrée libre&nbsp\;mais prévoir des espèces pour les achats (pas de distributeur à proximité)<br/></div><div><br/></div><div>Conseils&nbsp\;: se munir d’anti-moustiques\, vérifier les horaires et réserver si possible<br/></div><div><br/></div><div>Accès&nbsp\;: site historique\, parking gratuit\, accessible en voiture<br/></div><div><br/></div>
+DTSTART:20260815T100000Z
+DTEND:20260816T160000Z
+LOCATION:Abbaye Notre-Dame de Grestain\, 27210 Fatouville-Grestain
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ed66b14343974f5aac2525a31a44d4ca@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260730T112351Z
+LAST-MODIFIED:20260730T112351Z
+DTSTAMP:20260730T112353Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Cultures Geeks
