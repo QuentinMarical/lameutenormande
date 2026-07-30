@@ -625,7 +625,7 @@
               </div>
             </a>
 
-            <a class="item" data-username="nitrafox" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer" role="listitem">
+            <a class="item" data-username="nitrafox" data-avatar-provider="twitter" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer" role="listitem">
               <div class="icon-circle" aria-hidden="true">
                 <img class="avatar" alt="Nitra" src="" loading="eager" width="42" height="42" />
                 <span class="initials">N</span>
@@ -664,10 +664,10 @@
               </div>
             </a>
 
-            <a class="item" data-username="TheFoxFurieFR" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
+            <a class="item" data-username="TheFoxFurieFR" data-avatar-provider="twitter" data-avatar-handle="froxy7793" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
               <div class="icon-circle" aria-hidden="true">
-			  <img class="avatar loaded" alt="Froxy" src="https://unavatar.io/twitter/froxy7793
-			  " loading="eager" width="42" height="42" decoding="async">                <span class="initials">F</span>
+                <img class="avatar" alt="Froxy" src="" loading="eager" width="42" height="42" />
+                <span class="initials">F</span>
               </div>
               <div class="item-body">
                 <div class="title">Froxy</div>
@@ -771,8 +771,9 @@
         const label = initialsFromNode(initialsNode, username);
         const size = Math.max(32, parseInt(img.getAttribute('width')||42, 10));
         const dataUrl = svgDataUrl(username, label, size);
-        const provider = username.toLowerCase() === 'nitrafox' ? 'twitter' : 'telegram';
-        const unavatar = `https://unavatar.io/${provider}/${encodeURIComponent(username)}`;
+        const provider = (item.dataset.avatarProvider || '').trim() || 'telegram';
+        const handle = (item.dataset.avatarHandle || '').trim() || username;
+        const unavatar = `https://unavatar.io/${provider}/${encodeURIComponent(handle)}`;
 
         img.loading = 'eager';
         img.decoding = 'async';
