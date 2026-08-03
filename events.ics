@@ -1026,9 +1026,10 @@ URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Normannia
-DESCRIPTION:
-DTSTART:20270219T230000Z
-DTEND:20270221T225900Z
+DESCRIPTION:Horaires :\n- Samedi 20 février de 10h à 23h\n\n- Dimanche 21 février de 10h à 18h\n\n\n\nTarifs :\n- Gratuit pour les moins de 3 ans\n\n- Pass 2 jours : 12€\n\n- Plein tarif : 9€ (8€ en e-billet)\n\n- Tarif réduit * : 6€\n\n\n\n* Le tarif réduit est accessible pour les visiteurs costumés\, enfants -12 ans\, PMR +1 accompagnant (au même tarif) et personnes en recherche d'emploi.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="font-size:19px" class="font_8 wixui-rich-text__text">Horaires :</p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Samedi 20 février de 10h à 23h</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Dimanche 21 février de 10h à 18h</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text">Tarifs :</p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Gratuit pour les moins de 3 ans</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Pass 2 jours : 12€</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Plein tarif : 9€ (8€ en e-billet)</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Tarif réduit * : 6€</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><br/></p><p style="font-size:16px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:16px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">* Le  tarif réduit est accessible pour les visiteurs costumés\, enfants -12  ans\, PMR +1 accompagnant (au même tarif) et personnes en recherche  d'emploi.</span></span></span><br/></p>
+DTSTART:20270220T090000Z
+DTEND:20270221T170000Z
 LOCATION:Parc des Expositions de Rouen\, Parc Expo Rouen\, 46 Avenue des Canadiens\, 76120 Le Grand-Quevilly\, France
 CLASS:PUBLIC
 IMPORTANT:0
@@ -1036,8 +1037,9 @@ STATUS:CONFIRMED
 UID:7a82a056ceb64c3289b4f163b011cf06@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260802T141234Z
-LAST-MODIFIED:20260802T141305Z
-DTSTAMP:20260802T141306Z
+LAST-MODIFIED:20260803T161810Z
+DTSTAMP:20260803T161811Z
+URL:https://www.federation-francaise-medievale.fr/normannia
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Furfurieux 4
