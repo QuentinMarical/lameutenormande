@@ -1540,6 +1540,22 @@ LAST-MODIFIED:20260730T111646Z
 DTSTAMP:20260730T111647Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Fest'In Geek 4
+DESCRIPTION:
+DTSTART:20260828T220000Z
+DTEND:20260830T215900Z
+LOCATION:Centre Socio-Culturel Gabriel Chaine. Place du 8 Mai 1945\, 13440 Cabannes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b092eafb8a3b46679192e27206039200@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260804T122815Z
+LAST-MODIFIED:20260804T122815Z
+DTSTAMP:20260804T122816Z
+URL:https://www.festingeek.fr
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Turretot Geek Convention
 DESCRIPTION:
 DTSTART:20261107T090000Z
@@ -2320,6 +2336,23 @@ CREATED:20260513T184347Z
 LAST-MODIFIED:20260513T184446Z
 DTSTAMP:20260513T184448Z
 URL:https://furagora.com/anthropolis
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Éclipse solaire
+DESCRIPTION:Le mercredi 12 août\, de 19 h à 21 h 15\, la Ville et l’Observatoire de Rouen proposent une observation gratuite de l’éclipse partielle (93 %) sur le pont Boieldieu. Astronomes et médiateurs seront présents. Des lunettes solaires seront distribuées gratuitement : ne jamais regarder à l’œil nu ni avec des instruments non filtrés. Sous réserve de météo favorable\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2\; overflow:auto"><p style="margin:0px\; box-sizing:border-box">Le mercredi 12 août\, de 19 h à 21 h 15\, la Ville et l’Observatoire de Rouen proposent une observation gratuite de l’éclipse partielle (93 %) sur le pont Boieldieu. Astronomes et médiateurs seront présents. Des lunettes solaires seront distribuées gratuitement : ne jamais regarder à l’œil nu ni avec des instruments non filtrés. Sous réserve de météo favorable</p></div>
+DTSTART:20260812T170000Z
+DTEND:20260812T191500Z
+LOCATION:Pont Boieldieu\,Pont Boieldieu\, 76000 Rouen\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f8b1c2ecf71e4bd8a2c7ec5750544484@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260804T122528Z
+LAST-MODIFIED:20260804T122528Z
+DTSTAMP:20260804T122530Z
+URL:https://www.instagram.com/p/DbdspRDiCVR/?igsh=MXYwNmxmYWhicTM0eA==
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 FCD 7 (Fur Calva Dance 7)
