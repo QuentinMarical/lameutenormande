@@ -256,6 +256,23 @@ DTSTAMP:20260712T082453Z
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Vandoeuvre In-Game 7ème édition
+DESCRIPTION:Lien vers la billetterie : https://www.vandoeuvreingame.fr/billeterie-2/\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Lien vers la billetterie :&nbsp\;<a target="_blank" href="https://www.vandoeuvreingame.fr/billeterie-2/">https://www.vandoeuvreingame.fr/billeterie-2/</a></div>
+DTSTART:20260905T080000Z
+DTEND:20260906T170000Z
+LOCATION:Parc des Sports de Vandoeuvre. 3 Rue de Gembloux\, 54500 Vandœuvre-lès-Nancy
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1daa58001ef84e369e266019bcd63d26@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T210740Z
+LAST-MODIFIED:20260807T210740Z
+DTSTAMP:20260807T210741Z
+URL:https://www.vandoeuvreingame.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Life Rouen
 DESCRIPTION:
 DTSTART:20270212T230000Z
@@ -643,6 +660,23 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://amisc.fr/montigeek-2025/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Arcadia GeekFest 2
+DESCRIPTION:Entrée gratuite et restauration sur place.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Entrée gratuite et restauration sur place.<br/></div>
+DTSTART:20261017T080000Z
+DTEND:20261018T160000Z
+LOCATION:Salle du Cosec. 63 Rue de Lorraine\, 62510 Arques
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:449da280336e48868fd27c97b8f6b4d1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T204253Z
+LAST-MODIFIED:20260807T210055Z
+DTSTAMP:20260807T210057Z
+URL:https://www.facebook.com/ArcadiaGeekFest/?locale=fr_FR
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Life Laval
 DESCRIPTION:L'événement des fans de pop culture\, jeux vidéo\, mangas et cosplay\n\n\n\nRendez-vous du 26 au 27 septembre 2026 à l’Espace Mayenne à Laval ! Entre amis ou en famille\, plongez dans un week-end riche en découvertes : cosplay\, concerts\, jeux vidéo\, calligraphie\, retrogaming\, arcade\, K-pop… .\n\n\n\n3000 m² d’expositions et d’animations\, plus de 70 exposants\, près de 15 invités\, 3 scènes\, 45 h de divertissement : tout cela est inclus\, sans aucun supplément.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div class="elementor-element elementor-element-2321cb7 elementor-widget__width-initial elementor-widget-tablet__width-inherit elementor-widget-mobile__width-inherit elementor-widget elementor-widget-heading"><div class="elementor-widget-container"><h2 class="elementor-heading-title elementor-size-default">L'événement des fans de pop culture\, jeux vidéo\, mangas et cosplay<br/></h2></div></div><div class="elementor-element elementor-element-fdfbc76 elementor-widget__width-initial elementor-widget-mobile__width-inherit elementor-widget elementor-widget-text-editor"><div class="elementor-widget-container"><p>Rendez-vous du 26 au 27 septembre 2026 à l’Espace Mayenne à  Laval ! Entre amis ou en famille\, plongez dans un week-end riche en  découvertes : cosplay\, concerts\, jeux vidéo\, calligraphie\, retrogaming\,  arcade\, K-pop… .<br/></p></div></div><div>3000 m² d’expositions et d’animations\, plus de 70 exposants\, près de 15  invités\, 3 scènes\, 45 h de divertissement : tout cela est inclus\, sans  aucun supplément.<br/></div>
@@ -990,6 +1024,23 @@ CREATED:20260213T220322Z
 LAST-MODIFIED:20260406T120530Z
 DTSTAMP:20260406T120532Z
 URL:https://nordicfuzzcon.org
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Boc'N'Geek 2026
+DESCRIPTION:Tarifs journée :\n\n0 / 7 ans : Gratuit\n\n8 / 14 ans : 6 €\n\n15 ans et + : 8 €\n\n\n\nTarifs week-end :\n\n0 / 7 ans : Gratuit\n\n8 / 14 ans : 10 €\n\n15 ans et + : 14 €\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Tarifs journée :<br/></div><ul><li>0 / 7 ans : Gratuit<br/></li><li>8 / 14 ans : 6 €<br/></li><li>15 ans et + : 8 €<br/></li></ul><div><br/></div><div>Tarifs week-end :<br/></div><ul><li>0 / 7 ans : Gratuit<br/></li><li>8 / 14 ans : 10 €<br/></li><li>15 ans et + : 14 €<br/></li></ul>
+DTSTART:20260926T080000Z
+DTEND:20260927T160000Z
+LOCATION:Espace Bocapole. 79300 Bressuire
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:73d16bc8af414431ad7ff0a5ae5d0f1a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T204905Z
+LAST-MODIFIED:20260807T204905Z
+DTSTAMP:20260807T204906Z
+URL:https://www.bocapole.fr/spectacles/79-evenements/576-boc-n-geek-2026
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Manga Expo
@@ -1407,6 +1458,23 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 URL:https://www.harfleur.fr/la_fete_de_la_scie.html
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:PontaGeek Chapter 7
+DESCRIPTION:Restauration et buvette sur place.\n\n\nTarifs :\n\nEntrée : 8 €\n\nWeek-end : 10 €\n\nEntre 6 et 10 ans : 5 €\n- de 6 ans : Gratuit\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Restauration et buvette sur place.</div><div><br/></div><div>Tarifs :<br/></div><ul><li>Entrée : 8 €<br/></li><li>Week-end : 10 €<br/></li><li>Entre 6 et 10 ans : 5 €</li><li>- de 6 ans : Gratuit<br/></li></ul>
+DTSTART:20260919T080000Z
+DTEND:20260920T160000Z
+LOCATION:Espace René Pourny. Place René Pourny\, 25300 Pontarlier
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:9d1d2265e3cd4a74abcbdc04a943616e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T205948Z
+LAST-MODIFIED:20260807T205948Z
+DTSTAMP:20260807T205948Z
+URL:https://www.facebook.com/pontageek/?locale=fr_FR
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Gravenchon Geek'Fest
 DESCRIPTION:Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.\n\n\n\nRendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.<br/></div><div><br/></div><div>Rendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).</div>
@@ -1439,6 +1507,23 @@ TRANSP:TRANSPARENT
 CREATED:20260319T105025Z
 LAST-MODIFIED:20260730T140319Z
 DTSTAMP:20260730T140321Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Albi Games Festival 5ème édition
+DESCRIPTION:Tarifs :\n\nJournée : 6 € à partir de 7 ans\, 4 € pour les 4 / 6 ans\n\nPass week-end : 10 €\n\nGratuit pour les - de 4 ans\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Tarifs :<br/></div><ul><li>Journée : 6 € à partir de 7 ans\, 4 € pour les 4 / 6 ans<br/></li><li>Pass week-end : 10 €<br/></li><li>Gratuit pour les - de 4 ans</li></ul>
+DTSTART:20261031T080000Z
+DTEND:20261101T180000Z
+LOCATION:Albi Expos. Parc des Expositions\, Le Séquestre. 81990 Albi
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a403f80801c9402c82dd1e5716a7a550@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T205444Z
+LAST-MODIFIED:20260807T205444Z
+DTSTAMP:20260807T205446Z
+URL:https://www.albi-tourisme.fr/agenda/albi-games-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Brest 2025
