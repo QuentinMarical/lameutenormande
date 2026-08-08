@@ -1,4 +1,4 @@
-# La Meute Normande 🐺
+# La Meute Normande
 
 Bienvenue sur le dépôt de **La Meute Normande** ! Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, qui se retrouvent régulièrement pour participer à des événements ensemble.
 
@@ -25,16 +25,7 @@ Le site propose les sections suivantes :
 - **[Accueil](https://lameutenormande.fr/)** - Présentation du groupe
 - **[Événements](https://lameutenormande.fr/events.html)** - Calendrier des événements à venir
 - **[Actus](https://lameutenormande.fr/actus.html)** - Actualités du groupe
-- **[Artistes](https://lameutenormande.fr/artistes.html)** - Présentations des membres
 - **[Contact](https://lameutenormande.fr/contact.html)** - Formulaire de contact
-
-## 📅 Calendrier des événements
-
-Le calendrier des événements est disponible au format iCalendar (`.ics`) et est mis à jour automatiquement :
-
-**📥 [Télécharger le calendrier](https://lameutenormande.fr/events.ics)**
-
-Vous pouvez importer ce fichier dans votre calendrier préféré (Google Calendar, Outlook, Apple Calendar, etc.) pour recevoir les mises à jour automatiquement.
 
 ## 🔧 Technologie
 
