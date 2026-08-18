@@ -424,6 +424,23 @@ DTSTAMP:20260214T093459Z
 URL:https://furagora.com/anthropolis
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 FurDU (Australie)
+DESCRIPTION:Ouverture des inscriptions le vendredi 4 septembre 2026.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Ouverture des inscriptions le vendredi 4 septembre 2026.</div>
+DTSTART;VALUE=DATE:20270416
+DTEND;VALUE=DATE:20270419
+LOCATION:Crowne Plaza Surfers Paradise\, an IHG Hotel. 2807 Gold Coast Hwy\, Surfers Paradise QLD 4217\, Australie
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2f36da730e7e4352aa4edb71837759e6@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T083828Z
+LAST-MODIFIED:20260818T083828Z
+DTSTAMP:20260818T083829Z
+URL:https://furdu.com.au/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊La meet du dragon d'eau 🐉
 DESCRIPTION:
 DTSTART:20260613T090000Z
@@ -1292,6 +1309,23 @@ DTSTAMP:20260104T042141Z
 URL:https://billetterie.beauvais.fr/beauvais/rgfb2025/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Game Fest Charleville
+DESCRIPTION:Le Game Fest revient pour nouvelle édition les 10 et 11 avril 2027 au Parc des Expositions de Charleville-Mézières.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Le Game Fest revient pour nouvelle édition les 10 et 11 avril 2027 au Parc des Expositions de Charleville-Mézières.</div>
+DTSTART;VALUE=DATE:20270410
+DTEND;VALUE=DATE:20270412
+LOCATION:Parc des Expositions. Rue de la Vieille Meuse\, 08000 Charleville-Mézières
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:92c2fb9befaa47f9af341d5651b32235@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T084511Z
+LAST-MODIFIED:20260818T084511Z
+DTSTAMP:20260818T084511Z
+URL:https://www.gamefest.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Canthrofur
 DESCRIPTION:
 DTSTART:20260115T080000Z
@@ -1423,6 +1457,22 @@ CREATED:20260424T112050Z
 LAST-MODIFIED:20260424T112050Z
 DTSTAMP:20260424T112052Z
 URL:https://www.mangazur.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 Furbar de Rouen
+DESCRIPTION:Au programme :\n\nDès 14h30*\, activité : RDV à E.V.A de Mont-Saint-Aignan au 10\, Rue Pierre de Gennes.\n\nDès 19h\, bar : RDV à l'Antre du Malt de Rouen au 14\, Place Martin Luther King.\n\nInscriptions jusqu'au 2 septembre pour l'activité et jusqu'au 9 septembre pour le bar.\n\n\n\n* : Horaire soumis à modification.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Au programme :<br/></div><ul><li>Dès 14h30*\, activité : RDV à E.V.A de Mont-Saint-Aignan au 10\, Rue Pierre de Gennes.<br/></li><li>Dès 19h\, bar : RDV à l'Antre du Malt de Rouen au 14\, Place Martin Luther King.<br/></li></ul><div>Inscriptions jusqu'au 2 septembre pour l'activité et jusqu'au 9 septembre pour le bar.<br/></div><div><br/></div><div>* : Horaire soumis à modification.<br/></div>
+DTSTART:20260912T123000Z
+DTEND:20260912T215900Z
+LOCATION:L'Antre du Malt-Craft Beer Pub. 14 Place Martin Luther King\, 76000 Rouen
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:987efa0203444d22943b9e74dd8b2c04@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T085523Z
+LAST-MODIFIED:20260818T085602Z
+DTSTAMP:20260818T085604Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:TGS Montpellier
