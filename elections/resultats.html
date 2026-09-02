@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Résultats — Élections de la Meute Normande</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/elections.css">
+</head>
+<body>
+  <main class="container wide">
+    <header class="header">
+      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
+      <h1 id="title">Résultats</h1>
+      <div class="sub" id="subtitle">Participation et scores mis à jour en direct</div>
+    </header>
+    <nav class="nav" id="nav"></nav>
+    <div class="content" id="app"><div class="loader">Chargement…</div></div>
+    <footer class="footer" id="footer"></footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/roles.js"></script>
+  <script src="assets/common.js"></script>
+  <script src="assets/auth.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    E.footer();
+    await E.renderNav('resultats.html');
+    if (!E.ready) { E.notConfigured(app); return; }
+    let election = await E.electionFromUrl();
+    await E.loadRoles();
+    E.clear(app);
+    if (!election) { app.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin disponible.')); return; }
+    E.qs('#title').textContent = election.title;
+    const roles = E.rolesOf(election);
+    const q = '?e=' + encodeURIComponent(election.slug);
+    const css = getComputedStyle(document.documentElement);
+    const C = { accent: css.getPropertyValue('--accent').trim(), accent2: css.getPropertyValue('--accent-2').trim(), muted: css.getPropertyValue('--muted').trim(), text: css.getPropertyValue('--text').trim(), grid: 'rgba(255,255,255,0.06)' };
+    if (window.Chart) { Chart.defaults.color = C.muted; Chart.defaults.font.family = 'Inter, system-ui, sans-serif'; Chart.defaults.borderColor = C.grid; }
+
+    // ---------- Structure ----------
+    const banner = h('div', { id: 'banner' });
+    const kpis = h('div', { class: 'kpis' });
+    const partWrap = h('div', { class: 'chart-wrap' });
+    const timelineWrap = h('div', { class: 'chart-wrap' });
+    const rolesWrap = h('div');
+    const updated = h('div', { class: 'small muted center mt-8' });
+    app.append(banner, kpis, h('div', { class: 'grid-2' }, partWrap, timelineWrap), h('h2', { class: 'section-title' }, 'Scores par poste'), rolesWrap, updated,
+      h('div', { class: 'btn-row center' }, h('a', { class: 'btn', href: 'voter.html' + q }, '🗳️ Voter'), h('button', { class: 'btn secondary', type: 'button', onClick: () => refresh(true) }, '↻ Actualiser')));
+
+    let donut, line;
+    const telegram = await E.loadTelegramCount();
+
+    async function refresh(manual) {
+      const [{ data: fresh }, { data: results }, { data: part }, { data: timeline }] = await Promise.all([
+        E.sb.from('elections').select('*').eq('id', election.id).maybeSingle(),
+        E.sb.from('results').select('*').eq('election_id', election.id),
+        E.sb.from('participation').select('*').eq('election_id', election.id).maybeSingle(),
+        E.sb.from('participation_timeline').select('*').eq('election_id', election.id).order('hour')
+      ]);
+      if (fresh) election = fresh;
+      const st = E.electionState(election);
+      const voters = (part && part.voters) || 0;
+      const members = telegram && telegram.members > 0 ? telegram.members : null;
+      const rate = members ? Math.min(100, Math.round(voters / members * 1000) / 10) : null;
+
+      // Bandeau
+      E.clear(banner);
+      banner.appendChild(h('div', { class: 'card ' + (st.phase === 'vote' ? 'ok' : 'info') + ' column' },
+        h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, E.phaseBadge(election),
+          h('span', { class: 'small muted' }, st.phase === 'vote' ? 'Résultats provisoires, mis à jour en direct' + (election.voting_closes_at ? ' · clôture le ' + E.fmtDateTime(election.voting_closes_at) : '') : st.phase === 'closed' || st.phase === 'archived' ? 'Résultats définitifs' : 'Le vote n\'a pas encore commencé'))));
+      if (!election.results_public && st.phase !== 'closed') banner.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'body' }, 'Les scores sont masqués jusqu\'à la clôture par décision du staff.')));
+
+      // KPI
+      E.clear(kpis);
+      const kpi = (label, value, sub) => h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, value), sub ? h('div', { class: 'sub' }, sub) : null);
+      kpis.append(
+        kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
+        kpi('Membres Telegram', members ? String(members) : '—', telegram && telegram.updated_at ? 'relevé le ' + E.fmtDate(telegram.updated_at) : 'compteur non disponible'),
+        kpi('Participation', rate != null ? rate + ' %' : '—', members ? 'des membres du groupe principal' : 'en attente du compteur Telegram'),
+        kpi('Candidat·es', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
+
+      // Donut participation
+      E.clear(partWrap);
+      partWrap.appendChild(h('div', { class: 'section-title', style: { margin: '0 0 8px' } }, 'Participation'));
+      if (window.Chart) {
+        const wrap = h('div', { class: 'donut-wrap' });
+        const cv = document.createElement('canvas'); wrap.appendChild(cv);
+        const legend = h('div', { class: 'small muted' });
+        if (members) {
+          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, members - voters) + ' membres n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, rate + ' %')));
+        } else legend.textContent = 'Le taux sera calculé dès que le compteur Telegram (bot) aura relevé le nombre de membres.';
+        wrap.appendChild(legend); partWrap.appendChild(wrap);
+        if (donut) donut.destroy();
+        donut = new Chart(cv, { type: 'doughnut', data: { labels: ['Ont voté', 'N\'ont pas voté'], datasets: [{ data: members ? [voters, Math.max(0, members - voters)] : [voters, Math.max(1, voters ? 0 : 1)], backgroundColor: [C.accent, 'rgba(255,255,255,0.08)'], borderWidth: 0, hoverOffset: 4 }] },
+          options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { enabled: !!members } }, animation: { duration: manual ? 300 : 600 } } });
+      }
+
+      // Timeline
+      E.clear(timelineWrap);
+      timelineWrap.appendChild(h('div', { class: 'section-title', style: { margin: '0 0 8px' } }, 'Votants dans le temps'));
+      if (window.Chart && timeline && timeline.length) {
+        const cv = document.createElement('canvas'); cv.height = 140; timelineWrap.appendChild(cv);
+        if (line) line.destroy();
+        const labels = timeline.map(t => new Date(t.hour).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit' }));
+        line = new Chart(cv, { type: 'line', data: { labels, datasets: [{ label: 'Votants cumulés', data: timeline.map(t => t.cumulative), borderColor: C.accent, backgroundColor: 'rgba(122,162,255,0.15)', fill: true, tension: .3, pointRadius: 2 }] },
+          options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { ticks: { maxTicksLimit: 6 } } }, animation: { duration: 300 } } });
+      } else timelineWrap.appendChild(h('div', { class: 'empty' }, 'Pas encore de vote.'));
+
+      // Scores par poste
+      E.clear(rolesWrap);
+      roles.forEach(role => {
+        const rows = (results || []).filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
+        const max = Math.max(1, ...rows.map(r => r.votes));
+        const block = h('div', { class: 'chart-wrap' });
+        block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, role.icon),
+          h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste' + (role.seats > 1 ? 's' : '') + ' · ' + rows.reduce((a, r) => a + r.votes, 0) + ' voix')),
+          rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat·e' + (rows.length > 1 ? 's' : '')) : null));
+        if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e pour ce poste.')); rolesWrap.appendChild(block); return; }
+        // Sièges : les N premiers, ex æquo signalés si la frontière est partagée
+        const cutoff = rows[role.seats - 1] ? rows[role.seats - 1].votes : -1;
+        const tied = rows.filter(r => r.votes === cutoff).length > 1 && rows[role.seats] && rows[role.seats].votes === cutoff;
+        const list = h('div', { class: 'bar-list' });
+        rows.forEach((r, i) => {
+          const elected = r.votes > 0 && (i < role.seats) && !(tied && r.votes === cutoff);
+          const exaequo = tied && r.votes === cutoff && r.votes > 0;
+          list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
+            E.avatarEl({ username: r.telegram_username, displayName: r.display_name, avatarUrl: r.avatar_url, provider: r.provider }),
+            h('div', { class: 'who', title: r.display_name }, (elected ? '🏆 ' : exaequo ? '⚖️ ' : '') + r.display_name),
+            h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
+            h('div', { class: 'n' }, r.votes + ' voix')));
+        });
+        block.appendChild(list);
+        if (tied) block.appendChild(h('div', { class: 'small muted mt-8' }, '⚖️ Égalité sur le dernier siège : départage à prévoir par le staff.'));
+        rolesWrap.appendChild(block);
+      });
+      updated.textContent = 'Dernière mise à jour : ' + new Date().toLocaleTimeString('fr-FR') + (part && part.last_vote_at ? ' · dernier vote le ' + E.fmtDateTime(part.last_vote_at) : '');
+    }
+
+    await refresh();
+    E.subscribe(['ballots', 'ballot_choices', 'candidates', 'elections'], E.debounce(() => refresh(), 600));
+    setInterval(() => refresh(), 60000);
+  })();
+  </script>
+</body>
+</html>

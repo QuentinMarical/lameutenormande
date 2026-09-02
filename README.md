@@ -26,6 +26,7 @@ Le site propose les sections suivantes :
 - **[Événements](https://lameutenormande.fr/events.html)** - Calendrier des événements à venir
 - **[Actus](https://lameutenormande.fr/actus.html)** - Actualités du groupe
 - **[Contact](https://lameutenormande.fr/contact.html)** - Formulaire de contact
+- **[Élections](https://lameutenormande.fr/elections/)** - Candidatures, vote et résultats en direct pour le staff (réservé aux membres)
 
 ## 🔧 Technologie
 
@@ -43,6 +44,16 @@ Le site se met à jour automatiquement :
 2. Si des changements sont détectés, le fichier `events.ics` est mis à jour
 3. Le site est automatiquement redéployé avec les nouvelles données
 4. Les modifications sont disponibles sur le site en quelques minutes
+
+## 🗳️ Élections du staff
+
+Le dossier [`elections/`](elections/) contient un outil de vote complet : connexion Telegram / Discord réservée aux membres du groupe, candidatures libres, un bulletin par compte (modifiable), résultats et participation en direct, panel admin (phases, invalidation des bulletins suspects, journal d'audit, procès-verbal) et annonces automatiques sur Telegram.
+
+- Front : pages statiques dans `elections/` (aucun build)
+- Données : projet Supabase (schéma dans `elections/supabase/schema.sql`, Edge Functions dans `elections/supabase/functions/`)
+- Compteur de membres Telegram : workflow `update-telegram-count.yml` (bot) → `elections/telegram.json`
+
+👉 Guide d'installation pas à pas : [`elections/supabase/README.md`](elections/supabase/README.md)
 
 ## 📄 Licence
 

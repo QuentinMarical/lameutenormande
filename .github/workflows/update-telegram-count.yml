@@ -1,0 +1,70 @@
+name: Update Telegram Member Count
+
+on:
+  schedule:
+    # Toutes les heures (comme le calendrier)
+    - cron: '30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  count-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v5
+
+      - name: Fetch member count from the Telegram bot API
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TELEGRAM_BOT_TOKEN:-}" ] || [ -z "${TELEGRAM_CHAT_ID:-}" ]; then
+            echo "Secrets TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID manquants, rien à faire."
+            exit 0
+          fi
+          resp=$(curl --fail --show-error --silent --retry 3 --retry-delay 5 \
+            "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChatMemberCount?chat_id=${TELEGRAM_CHAT_ID}")
+          ok=$(echo "$resp" | jq -r '.ok')
+          if [ "$ok" != "true" ]; then
+            echo "Réponse Telegram invalide : $resp"
+            exit 1
+          fi
+          members=$(echo "$resp" | jq -r '.result')
+          if ! [[ "$members" =~ ^[0-9]+$ ]] || [ "$members" -le 0 ]; then
+            echo "Nombre de membres invalide : $members"
+            exit 1
+          fi
+          # Ne pas réécrire le fichier si le nombre n'a pas changé (évite un commit par heure)
+          current=$(jq -r '.members // 0' elections/telegram.json 2>/dev/null || echo 0)
+          if [ "$current" = "$members" ]; then
+            echo "Nombre inchangé ($members)."
+            exit 0
+          fi
+          jq -n --argjson members "$members" --arg updated_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            '{members: $members, updated_at: $updated_at, source: "getChatMemberCount"}' > elections/telegram.json
+          cat elections/telegram.json
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          if ! git diff --quiet -- elections/telegram.json; then
+            git add elections/telegram.json
+            git commit -m "chore: auto-update telegram count"
+            git push
+            echo "COUNT_UPDATED=true" >> $GITHUB_ENV
+          else
+            echo "No change."
+          fi
+
+      - name: Trigger deployment
+        if: env.COUNT_UPDATED == 'true'
+        run: gh workflow run static.yml --ref main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

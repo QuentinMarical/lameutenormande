@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Voter — Élections de la Meute Normande</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/elections.css">
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
+      <h1>Bulletin de vote</h1>
+      <div class="sub" id="subtitle">Un bulletin par membre, modifiable jusqu'à la clôture</div>
+    </header>
+    <nav class="nav" id="nav"></nav>
+    <div class="content" id="app"><div class="loader">Chargement…</div></div>
+    <footer class="footer" id="footer"></footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/roles.js"></script>
+  <script src="assets/common.js"></script>
+  <script src="assets/auth.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    E.footer();
+    await E.renderNav('voter.html');
+    const profile = await E.requireMember(app, { verb: 'voter' });
+    if (!profile) return;
+
+    const election = await E.electionFromUrl();
+    await E.loadRoles();
+    E.clear(app);
+    if (!election) { app.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin disponible.')); return; }
+    E.qs('#subtitle').textContent = election.title;
+    const st = E.electionState(election);
+    const q = '?e=' + encodeURIComponent(election.slug);
+
+    if (st.phase !== 'vote') {
+      app.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'icon' }, '🔒'), h('div', { class: 'body' },
+        h('div', { class: 'title' }, st.phase === 'closed' || st.phase === 'archived' ? 'Les votes sont terminés' : 'Les votes ne sont pas encore ouverts'),
+        h('div', { class: 'desc' }, election.voting_closes_at && st.phase !== 'closed' ? 'Ouverture annoncée sur Telegram. Clôture prévue le ' + E.fmtDateTime(election.voting_closes_at) + '.' : 'Consulte les résultats ou reviens plus tard.'),
+        h('div', { class: 'btn-row' }, h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 Résultats'),
+          election.candidacy_open ? h('a', { class: 'btn', href: 'candidater.html' + q }, '🐾 Candidater') : null))));
+      return;
+    }
+
+    const [candidates, myBallotRes] = await Promise.all([E.publicCandidates(election.id), E.sb.rpc('my_ballot', { p_election: election.id })]);
+    const myBallot = myBallotRes.data && myBallotRes.data !== 'null' ? myBallotRes.data : null;
+    const selection = {}; // role -> Set(candidate_id)
+    const roles = E.rolesOf(election);
+    roles.forEach(r => selection[r.id] = new Set((myBallot && myBallot.choices && myBallot.choices[r.id]) || []));
+
+    // Bandeau
+    const banner = h('div', { class: 'card ok column' },
+      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, E.phaseBadge(election),
+        election.voting_closes_at ? h('span', { class: 'small muted' }, 'Clôture le ' + E.fmtDateTime(election.voting_closes_at)) : null));
+    if (election.voting_closes_at) { const cd = h('div'); banner.appendChild(cd); E.countdown(cd, election.voting_closes_at, () => location.reload()); }
+    if (myBallot) banner.appendChild(h('div', { class: 'desc' }, (myBallot.invalidated ? '⚠️ Ton bulletin précédent a été invalidé par le staff. ' : '✅ Tu as déjà voté le ' + E.fmtDateTime(myBallot.submitted_at) + '. ') + 'Envoyer un nouveau bulletin remplacera le précédent.'));
+    else banner.appendChild(h('div', { class: 'desc' }, 'Pour chaque poste, choisis ton ou tes candidat·es. Tu peux laisser un poste vide (vote blanc). Ton bulletin est modifiable jusqu\'à la clôture.'));
+    app.appendChild(banner);
+
+    // Blocs par rôle
+    const submitBtn = h('button', { class: 'btn', type: 'button' }, '🗳️ Envoyer mon bulletin');
+    const counter = h('div', { class: 'small muted' });
+    function refreshCounter() {
+      const n = roles.reduce((a, r) => a + selection[r.id].size, 0);
+      counter.textContent = n ? `${n} choix sur ${roles.length} poste${roles.length > 1 ? 's' : ''}` : 'Aucun choix pour l\'instant';
+      submitBtn.disabled = n === 0;
+    }
+
+    roles.forEach(role => {
+      const block = h('div', { class: 'role-block' });
+      const rule = role.max_choices > 1 ? `Jusqu'à ${role.max_choices} choix · ${role.seats} postes` : '1 choix · 1 poste';
+      block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, role.icon),
+        h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.description || '')),
+        h('span', { class: 'badge muted rule' }, rule)));
+      const list = h('div', { class: 'cands' });
+      const cands = candidates.filter(c => c.role === role.id);
+      if (!cands.length) list.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e pour ce poste.'));
+      const cards = new Map();
+      cands.forEach(c => {
+        const card = h('div', { class: 'cand selectable', tabindex: '0', role: role.max_choices > 1 ? 'checkbox' : 'radio', 'aria-checked': 'false' });
+        card.appendChild(E.avatarEl({ username: c.telegram_username, displayName: c.display_name, avatarUrl: c.avatar_url, provider: c.provider }));
+        const body = h('div', { class: 'body' });
+        body.appendChild(h('div', { class: 'name' }, c.display_name, h('span', { class: 'badge ' + c.provider }, c.provider === 'telegram' ? 'Telegram' : 'Discord')));
+        const handles = h('div', { class: 'handles' });
+        if (c.telegram_username) handles.appendChild(h('a', { href: 'https://t.me/' + encodeURIComponent(c.telegram_username), target: '_blank', rel: 'noopener', onClick: e => e.stopPropagation() }, '✈ @' + c.telegram_username));
+        if (c.discord_username) handles.appendChild(h('span', null, '🎧 ' + c.discord_username));
+        body.appendChild(handles);
+        if (c.bio) {
+          const bio = h('div', { class: 'bio clamp', text: c.bio });
+          body.appendChild(bio);
+          if (c.bio.length > 140) body.appendChild(h('button', { class: 'more', type: 'button', onClick: e => { e.stopPropagation(); bio.classList.toggle('clamp'); e.target.textContent = bio.classList.contains('clamp') ? 'Lire la suite' : 'Réduire'; } }, 'Lire la suite'));
+        }
+        card.appendChild(body);
+        card.appendChild(h('div', { class: 'tick' }, '✓'));
+        const toggle = () => {
+          const set = selection[role.id];
+          if (set.has(c.id)) set.delete(c.id);
+          else {
+            if (role.max_choices === 1) set.clear();
+            else if (set.size >= role.max_choices) { E.toast(`Maximum ${role.max_choices} choix pour ${role.label}.`, 'error'); return; }
+            set.add(c.id);
+          }
+          paint();
+        };
+        card.addEventListener('click', toggle);
+        card.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
+        cards.set(c.id, card);
+        list.appendChild(card);
+      });
+      function paint() {
+        cards.forEach((card, id) => { const on = selection[role.id].has(id); card.classList.toggle('selected', on); card.setAttribute('aria-checked', on ? 'true' : 'false'); });
+        refreshCounter();
+      }
+      paint();
+      block.appendChild(list);
+      app.appendChild(block);
+    });
+
+    // Envoi
+    const foot = h('div', { class: 'card info column' }, counter, h('div', { class: 'btn-row' }, submitBtn, h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 Voir les résultats')));
+    app.appendChild(foot);
+    refreshCounter();
+
+    submitBtn.addEventListener('click', () => {
+      const recap = h('div', { class: 'recap' });
+      roles.forEach(r => {
+        const names = [...selection[r.id]].map(id => (candidates.find(c => c.id === id) || {}).display_name).filter(Boolean);
+        recap.appendChild(h('div', null, h('span', null, r.label), h('span', null, names.length ? names.join(', ') : '— vote blanc')));
+      });
+      const bg = h('div', { class: 'modal-bg' });
+      const confirm = h('button', { class: 'btn', type: 'button' }, myBallot ? 'Remplacer mon bulletin' : 'Confirmer mon vote');
+      const modal = h('div', { class: 'modal' }, h('h3', null, 'Récapitulatif'), recap,
+        h('div', { class: 'btn-row' }, confirm, h('button', { class: 'btn secondary', type: 'button', onClick: () => bg.remove() }, 'Modifier')));
+      bg.appendChild(modal); document.body.appendChild(bg);
+      confirm.addEventListener('click', async () => {
+        confirm.disabled = true; confirm.textContent = 'Envoi…';
+        const choices = {};
+        roles.forEach(r => { if (selection[r.id].size) choices[r.id] = [...selection[r.id]]; });
+        const { data, error } = await E.sb.rpc('cast_ballot', { p_election: election.id, p_choices: choices });
+        bg.remove();
+        if (error) { E.toast(E.errMsg(error), 'error'); return; }
+        E.clear(app);
+        app.appendChild(h('div', { class: 'card ok column' },
+          h('div', { class: 'title', style: { fontSize: '18px' } }, data.replaced ? '🔁 Bulletin remplacé' : '✅ Bulletin enregistré'),
+          h('div', { class: 'desc' }, 'Merci ' + (profile.display_name || profile.username || '') + ' ! Ton vote compte pour ' + Object.keys(choices).length + ' poste(s). Tu peux revenir modifier ton bulletin jusqu\'à la clôture.'),
+          h('div', { class: 'btn-row' }, h('a', { class: 'btn', href: 'resultats.html' + q }, '📊 Suivre les résultats'), h('a', { class: 'btn secondary', href: 'voter.html' + q }, '✏️ Modifier mon bulletin'))));
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  })();
+  </script>
+</body>
+</html>
