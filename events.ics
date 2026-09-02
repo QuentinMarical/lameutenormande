@@ -1659,6 +1659,24 @@ DTSTAMP:20260104T042141Z
 URL:https://ticketevent.fr/gdc25/public-1
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Le Havre Mangakaï Festival
+DESCRIPTION:
+DTSTART:20260912T073000Z
+DTEND:20260913T160000Z
+LOCATION:NEF - Le Havre\,45–51 Rue Pierre Semard\, 76600 Le Havre\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ab490d81339d495fb169134c0d00beb1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260902T184553Z
+LAST-MODIFIED:20260902T184553Z
+DTSTAMP:20260902T184554Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.billetweb.fr/le-havre-mangakai-festival-2026
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Fête Médiévale 1412
 DESCRIPTION:Programme :\n\nCampements médiévaux avec chevaliers\, artisans et reconstitueurs\n\nDémonstrations de combat\, joutes\, maniement d’armes\n\nMarché artisanal (forgerons\, potiers\, tailleurs de pierre…)\n\nExpositions sur la vie quotidienne en 1412\n\nAnimations enfants : tir à l’arc\, jeux\, contes\n\nRestauration sur place inspirée de l’époque\n\nSpectacles déambulatoires et musiciens\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Programme&nbsp\;:<br/></div><div>Campements médiévaux avec chevaliers\, artisans et reconstitueurs<br/></div><div>Démonstrations de combat\, joutes\, maniement d’armes<br/></div><div>Marché artisanal (forgerons\, potiers\, tailleurs de pierre…)<br/></div><div>Expositions sur la vie quotidienne en 1412<br/></div><div>Animations enfants : tir à l’arc\, jeux\, contes<br/></div><div>Restauration sur place inspirée de l’époque<br/></div><div>Spectacles déambulatoires et musiciens<br/></div><div><br/></div>
