@@ -295,7 +295,23 @@
     const bar = nav.parentElement;
     E.qsa('.actions', bar).forEach(n => n.remove());
     const actions = E.h('div', { class: 'actions' });
-    actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + suffix + '#code', title: 'Saisir mon code de vote' }, 'Mon code'));
+    // Le menu résout lui-même le scrutin (même logique que chaque page) : la puce « Mon code » fonctionne
+    // partout, y compris sur une page qui n'affiche rien elle-même (ex. le seul scrutin existant est encore
+    // en brouillon). S'il n'existe vraiment aucun scrutin publié, il n'y a rien à proposer : le bouton est masqué.
+    const navElection = E.ready ? await E.electionFromUrl() : null;
+    if (navElection) {
+      const codeSuffix = '?e=' + encodeURIComponent(navElection.slug);
+      const stored = E.getCode(navElection.id);
+      let info = null;
+      if (stored) { try { info = await E.checkCode(stored, navElection.id); } catch { E.clearCode(navElection.id); } }
+      if (info) {
+        actions.appendChild(E.h('span', { class: 'account', id: 'codeSlot' },
+          E.h('span', { class: 'code-pill' }, info.code), info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
+          E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(navElection.id); location.reload(); } }, 'changer')));
+      } else {
+        actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + codeSuffix + '#code', title: 'Saisir mon code de vote' }, 'Mon code'));
+      }
+    }
     const admin = E.ready && await E.adminSession();
     actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : E.icon('gear')));
     bar.appendChild(actions);
