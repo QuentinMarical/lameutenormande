@@ -49,13 +49,13 @@ Deno.serve(async (req) => {
         (c.bio ? `\n<i>${esc(c.bio.slice(0, 300))}${c.bio.length > 300 ? "…" : ""}</i>` : "") +
         `\n\n👉 Voir les candidats : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}`);
     } else if (p.type === "reminder") {
-      const { data: part } = await db.from("participation").select("voters").eq("election_id", election.id).maybeSingle();
+      const { data: part } = await db.rpc("participation", { p_election: election.id }).maybeSingle();
       const closes = election.voting_closes_at ? new Date(election.voting_closes_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`⏰ <b>Dernières 24 h pour voter !</b> — ${esc(election.title)}\n` +
         `Clôture : <b>${esc(closes)}</b>. ${part?.voters ?? 0} membre(s) ont déjà voté.\n\n🗳 Voter : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}`);
     } else if (p.type === "results") {
-      const { data: results } = await db.from("results").select("*").eq("election_id", election.id);
-      const { data: part } = await db.from("participation").select("voters").eq("election_id", election.id).maybeSingle();
+      const { data: results } = await db.rpc("results", { p_election: election.id });
+      const { data: part } = await db.rpc("participation", { p_election: election.id }).maybeSingle();
       const lines: string[] = [];
       for (const rid of (election.roles as string[])) {
         const rows = (results ?? []).filter((r) => r.role === rid).sort((a, b) => b.votes - a.votes);
