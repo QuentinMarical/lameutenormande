@@ -150,7 +150,7 @@ create or replace function public.gen_code(p_prefix text)
 returns text language plpgsql volatile set search_path = public as $$
 declare alphabet text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; s text := ''; i int; b bytea;
 begin
-  b := gen_random_bytes(8);
+  b := extensions.gen_random_bytes(8);
   for i in 1..8 loop s := s || substr(alphabet, 1 + (get_byte(b, i - 1) % length(alphabet)), 1); end loop;
   return upper(coalesce(nullif(trim(p_prefix), ''), 'MEUTE')) || '-' || substr(s, 1, 4) || '-' || substr(s, 5, 4);
 end $$;
