@@ -157,6 +157,13 @@
     opts = opts || {};
     if (!E.ready) { E.notConfigured(container); return null; }
     const urlCode = new URLSearchParams(location.search).get('code');
+    // Un code arrivé par lien (?code=...) n'est utilisé qu'une fois : on le retire aussitôt de l'adresse,
+    // sinon il resterait indéfiniment dans l'URL et reviendrait à chaque rechargement (le bouton
+    // « changer » ne pourrait alors jamais s'en débarrasser).
+    if (urlCode) {
+      const u = new URL(location.href); u.searchParams.delete('code');
+      history.replaceState(null, '', u.pathname + u.search + u.hash);
+    }
     const stored = urlCode || E.getCode(election.id);
     if (stored) {
       try { const info = await E.checkCode(stored, election.id); E.setCode(election.id, info.code); info.code = info.code || stored; return info; }
@@ -311,9 +318,13 @@
         E.h('a', { class: 'btn telegram small', href: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, target: '_blank', rel: 'noopener' }, 'Telegram'),
         E.h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(url); E.toast('Lien copié !', 'success'); } catch { E.toast(url); } } }, 'Copier le lien')));
     wrap.appendChild(body);
-    if (window.QRCode) {
-      const canvas = document.createElement('canvas'); qr.appendChild(canvas);
-      window.QRCode.toCanvas(canvas, url, { width: 116, margin: 0, color: { dark: '#0d0d1a', light: '#ffffff' } }, () => {});
+    if (window.qrcode) {
+      try {
+        const q = window.qrcode(0, 'M'); q.addData(url); q.make();
+        const img = E.h('img', { alt: 'QR code vers ' + url, width: '116', height: '116' });
+        img.src = q.createDataURL(4, 0);
+        qr.appendChild(img);
+      } catch { qr.textContent = 'QR'; }
     } else qr.textContent = 'QR';
     return wrap;
   };
