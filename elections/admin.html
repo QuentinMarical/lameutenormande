@@ -314,12 +314,13 @@
     async function pv() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const [{ data: part }, { data: voters }, { data: choices }, { data: cands }, telegram] = await Promise.all([
-        E.sb.from('participation').select('*').eq('election_id', current.id).maybeSingle(),
+      const [{ data: partRows }, { data: voters }, { data: choices }, { data: cands }, telegram] = await Promise.all([
+        E.sb.rpc('participation', { p_election: current.id }),
         E.sb.from('admin_voters').select('*').eq('election_id', current.id),
         E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false),
         E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false),
         E.loadTelegramCount()]);
+      const part = partRows && partRows[0] || null;
       const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
       const roles = E.rolesOf(current);
       const voters_n = (part && part.voters) || 0, codes_n = (part && part.codes_issued) || 0;
