@@ -66,7 +66,7 @@
         election.voting_closes_at ? h('span', { class: 'small muted' }, 'Clôture le ' + E.fmtDateTime(election.voting_closes_at)) : null));
     if (election.voting_closes_at) { const cd = h('div'); banner.appendChild(cd); E.countdown(cd, election.voting_closes_at, () => location.reload()); }
     if (myBallot) banner.appendChild(h('div', { class: 'desc' }, (myBallot.invalidated ? 'Ton bulletin précédent a été invalidé par le staff. ' : 'Tu as déjà voté le ' + E.fmtDateTime(myBallot.submitted_at) + '. ') + 'Envoyer un nouveau bulletin remplacera le précédent.'));
-    else banner.appendChild(h('div', { class: 'desc' }, 'Pour chaque poste, choisis ton ou tes candidat·es. Tu peux laisser un poste vide (vote blanc). Ton bulletin est modifiable jusqu\'à la clôture.'));
+    else banner.appendChild(h('div', { class: 'desc' }, 'Pour chaque poste, choisis tes candidats. Tu peux laisser un poste vide (vote blanc). Ton bulletin est modifiable jusqu\'à la clôture.'));
     app.appendChild(banner);
 
     const submitBtn = h('button', { class: 'btn', type: 'button' }, 'Envoyer mon bulletin');
@@ -85,7 +85,7 @@
         h('span', { class: 'badge muted rule' }, rule)));
       const list = h('div', { class: 'cands' });
       const cands = candidates.filter(c => c.role === role.id);
-      if (!cands.length) list.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e pour ce poste.'));
+      if (!cands.length) list.appendChild(h('div', { class: 'empty' }, 'Aucun candidat pour ce poste.'));
       const cards = new Map();
       cands.forEach(c => {
         const card = h('div', { class: 'cand selectable', tabindex: '0', role: role.max_choices > 1 ? 'checkbox' : 'radio', 'aria-checked': 'false' });

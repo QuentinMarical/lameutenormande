@@ -64,7 +64,7 @@
 
       const row = h('div', { class: 'btn-row' });
       if (st.phase === 'vote') row.appendChild(h('a', { class: 'btn', href: 'voter.html' + q }, 'Voter'));
-      if (election.candidacy_open && st.phase !== 'closed') row.appendChild(h('a', { class: 'btn ' + (st.phase === 'vote' ? 'secondary' : ''), href: 'candidater.html' + q }, 'Se porter candidat·e'));
+      if (election.candidacy_open && st.phase !== 'closed') row.appendChild(h('a', { class: 'btn ' + (st.phase === 'vote' ? 'secondary' : ''), href: 'candidater.html' + q }, 'Se porter candidat'));
       row.appendChild(h('a', { class: 'btn secondary', href: 'resultats.html' + q }, st.phase === 'closed' ? 'Résultats' : 'Suivre les votes'));
       card.appendChild(row);
       app.appendChild(card);

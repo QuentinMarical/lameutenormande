@@ -87,7 +87,7 @@
         kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
         kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', 'un code par membre'),
         kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rate != null ? 'des codes distribués' : 'aucun code émis'),
-        kpi('Candidat·es', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
+        kpi('Candidats', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
 
       // Donut participation
       E.clear(partWrap);
@@ -124,8 +124,8 @@
         const block = h('div', { class: 'chart-wrap' });
         block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)),
           h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste' + (role.seats > 1 ? 's' : '') + ' · ' + rows.reduce((a, r) => a + r.votes, 0) + ' voix')),
-          rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat·e' + (rows.length > 1 ? 's' : '')) : null));
-        if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e pour ce poste.')); rolesWrap.appendChild(block); return; }
+          rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat' + (rows.length > 1 ? 's' : '')) : null));
+        if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat pour ce poste.')); rolesWrap.appendChild(block); return; }
         // Sièges : les N premiers, ex æquo signalés si la frontière est partagée
         const cutoff = rows[role.seats - 1] ? rows[role.seats - 1].votes : -1;
         const tied = rows.filter(r => r.votes === cutoff).length > 1 && rows[role.seats] && rows[role.seats].votes === cutoff;

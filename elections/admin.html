@@ -255,7 +255,7 @@
           h('td', { title: c.bio, style: { maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis' } }, c.bio || '—'),
           h('td', null, E.fmtDateTime(c.updated_at)), actions));
       });
-      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat·e', 'Poste', 'Code', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
+      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat', 'Poste', 'Code', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
     }
 
     // ---------- Votants ----------
@@ -338,7 +338,7 @@
         const rs = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes);
         const max = Math.max(1, ...rs.map(r => r.votes));
         const block = h('div', { class: 'chart-wrap' }, h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)), h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste(s)'))));
-        if (!rs.length) block.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e.'));
+        if (!rs.length) block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat.'));
         const list = h('div', { class: 'bar-list' });
         rs.forEach((r, i) => list.appendChild(h('div', { class: 'bar-row' + (i < role.seats && r.votes > 0 ? ' elected' : '') }, h('div', { class: 'who' }, i < role.seats && r.votes > 0 ? E.icon('trophy') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
         block.appendChild(list); doc.appendChild(block);

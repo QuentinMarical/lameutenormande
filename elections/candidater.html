@@ -16,7 +16,7 @@
     </div>
   </header>
   <section class="page-head">
-    <h1>Se porter candidat·e</h1>
+    <h1>Se porter candidat</h1>
     <div class="sub" id="subtitle">Inscription libre, modifiable tant que les candidatures sont ouvertes</div>
   </section>
   <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
@@ -150,11 +150,11 @@
     // ---------- Tous les candidats ----------
     async function listAll() {
       const all = await E.publicCandidates(election.id);
-      app.appendChild(h('h2', { class: 'section-title' }, 'Candidat·es déclaré·es', h('span', { class: 'count' }, all.length)));
+      app.appendChild(h('h2', { class: 'section-title' }, 'Candidats déclarés', h('span', { class: 'count' }, all.length)));
       if (!all.length) { app.appendChild(h('div', { class: 'empty' }, 'Personne pour l\'instant : lance-toi !')); return; }
       roles.forEach(r => {
         const cs = all.filter(c => c.role === r.id); if (!cs.length) return;
-        app.appendChild(h('div', { class: 'role-head', style: { marginTop: '10px' } }, h('div', { class: 'icon-circle' }, E.icon(r.icon)), h('div', null, h('div', { class: 'name' }, r.label), h('div', { class: 'desc' }, cs.length + ' candidat·e' + (cs.length > 1 ? 's' : '')))));
+        app.appendChild(h('div', { class: 'role-head', style: { marginTop: '10px' } }, h('div', { class: 'icon-circle' }, E.icon(r.icon)), h('div', null, h('div', { class: 'name' }, r.label), h('div', { class: 'desc' }, cs.length + ' candidat' + (cs.length > 1 ? 's' : '')))));
         const list = h('div', { class: 'cands' });
         cs.forEach(c => list.appendChild(h('div', { class: 'cand' }, E.avatarEl({ displayName: c.display_name }),
           h('div', { class: 'body' }, h('div', { class: 'name' }, c.display_name), c.bio ? h('div', { class: 'bio clamp', text: c.bio }) : null))));

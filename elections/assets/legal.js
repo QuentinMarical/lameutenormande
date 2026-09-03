@@ -30,8 +30,8 @@
   <thead><tr><th>Donnée</th><th>Finalité</th><th>Qui la voit</th><th>Conservation</th></tr></thead>
   <tbody>
     <tr><td><strong>Code individuel</strong> et son étiquette (pseudo de la personne à qui il a été remis)</td><td>Garantir un bulletin par membre, permettre au staff de savoir qui a reçu un code et qui a voté</td><td>Le staff (administrateurs)</td><td>Jusqu'à la suppression du scrutin après publication des résultats</td></tr>
-    <tr><td><strong>Candidature</strong> : nom affiché, présentation</td><td>Présenter les candidat·es sur le bulletin et les résultats</td><td>Tous les visiteurs de l'outil</td><td>Jusqu'à la suppression du scrutin</td></tr>
-    <tr><td><strong>Bulletin</strong> : choix par poste, horodatage, nombre de modifications</td><td>Calculer les résultats</td><td>Personne individuellement : le staff voit qu'un code a voté et quand, <strong>jamais le contenu du bulletin</strong>. Seuls les totaux par candidat·e sont publiés</td><td>Jusqu'à la suppression du scrutin</td></tr>
+    <tr><td><strong>Candidature</strong> : nom affiché, présentation</td><td>Présenter les candidats sur le bulletin et les résultats</td><td>Tous les visiteurs de l'outil</td><td>Jusqu'à la suppression du scrutin</td></tr>
+    <tr><td><strong>Bulletin</strong> : choix par poste, horodatage, nombre de modifications</td><td>Calculer les résultats</td><td>Personne individuellement : le staff voit qu'un code a voté et quand, <strong>jamais le contenu du bulletin</strong>. Seuls les totaux par candidat sont publiés</td><td>Jusqu'à la suppression du scrutin</td></tr>
     <tr><td><strong>Journal d'activité</strong> : étiquette du code, action (vote, candidature, désistement), date</td><td>Détecter et documenter une fraude, tracer les décisions du staff</td><td>Le staff</td><td>Jusqu'à la suppression du scrutin</td></tr>
     <tr><td><strong>Compte administrateur</strong> : e-mail, mot de passe chiffré</td><td>Accès au panel d'administration</td><td>Supabase et le staff</td><td>Tant que la personne fait partie du staff</td></tr>
   </tbody>
@@ -39,7 +39,7 @@
 </div>
 <h4>Ce qui n'est pas collecté</h4>
 <ul>
-  <li>Aucune adresse e-mail ni numéro de téléphone des votant·es.</li>
+  <li>Aucune adresse e-mail ni numéro de téléphone des votants.</li>
   <li>Aucune adresse IP n'est enregistrée par l'outil. L'hébergeur des données peut conserver des journaux techniques temporaires, conformément à sa propre politique.</li>
   <li>Aucun traceur publicitaire, aucune mesure d'audience.</li>
 </ul>
@@ -50,8 +50,7 @@
   <li><strong>Supabase</strong> (Union européenne) héberge la base de données.</li>
   <li><strong>GitHub Pages</strong> sert les pages.</li>
   <li><strong>Google Fonts</strong> et <strong>jsDelivr</strong> fournissent la police Inter Tight et les bibliothèques d'affichage ; ces services reçoivent votre adresse IP lors du chargement.</li>
-  <li><strong>unavatar.io</strong> peut être sollicité pour afficher la photo de profil Telegram publique d'un·e candidat·e, à partir du pseudo qu'il ou elle a indiqué.</li>
-  <li>Si le staff active les annonces automatiques, le nom affiché des candidat·es et les résultats sont publiés sur le canal Telegram de la Meute.</li>
+  <li>Si le staff active les annonces automatiques, le nom affiché des candidats et les résultats sont publiés sur le canal Telegram de la Meute.</li>
 </ul>
 <h4>Vos droits</h4>
 <p>Vous pouvez demander à tout moment la révocation de votre code, la modification ou le retrait de votre candidature (possible directement depuis la page « Candidater » tant que le scrutin est ouvert), ou la suppression de vos données après le scrutin. Contactez le staff sur Telegram ou via le <a href="https://lameutenormande.fr/contact.html">formulaire de contact</a>.</p>
@@ -70,7 +69,7 @@
   <li><strong>La session administrateur</strong>, uniquement pour les membres du staff connectés au panel. Effacée à la déconnexion.</li>
 </ul>
 <h4>Services tiers</h4>
-<p>Les bibliothèques et polices chargées depuis Google Fonts et jsDelivr, ainsi que les avatars via unavatar.io, peuvent être soumis aux politiques de ces services. Aucun d'eux n'est utilisé pour vous suivre.</p>
+<p>Les bibliothèques et polices chargées depuis Google Fonts et jsDelivr peuvent être soumises aux politiques de ces services. Aucun d'eux n'est utilisé pour vous suivre.</p>
 <h4>Comment tout effacer</h4>
 <p>Dans les paramètres de votre navigateur, supprimez les données du site <strong>lameutenormande.fr</strong>. Le prochain vote vous redemandera simplement votre code.</p>
 <p><em>Dernière mise à jour : septembre 2026.</em></p>`

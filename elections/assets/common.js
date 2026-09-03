@@ -105,22 +105,15 @@
     return () => clearInterval(iv);
   };
 
-  // ---------- Avatars (FNV-1a → couleur, unavatar Telegram en priorité) ----------
+  // ---------- Avatars (FNV-1a → couleur, initiales) ----------
   function hashString(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
   const palette = ['#7AA2FF', '#5865F2', '#FF8A65', '#9CCC65', '#FFB86B', '#8E9AAF', '#A8A29E', '#F06292'];
-  E.avatarEl = function ({ username, displayName, avatarUrl, size, cls }) {
-    const seed = String(username || displayName || '?').toLowerCase();
-    const label = (displayName || username || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  E.avatarEl = function ({ displayName, size, cls }) {
+    const seed = String(displayName || '?').toLowerCase();
+    const label = (displayName || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
     const bg = palette[hashString(seed) % palette.length];
     const wrap = E.h('div', { class: 'icon-circle ' + (cls || ''), style: { background: bg }, 'aria-hidden': 'true' },
       E.h('span', { class: 'initials', text: label }));
-    const src = avatarUrl || (username ? `https://unavatar.io/telegram/${encodeURIComponent(username)}?fallback=false` : null);
-    if (src) {
-      const img = E.h('img', { class: 'avatar', alt: '', loading: 'lazy' });
-      img.onload = () => img.classList.add('loaded');
-      img.onerror = () => img.remove();
-      img.src = src; wrap.appendChild(img);
-    }
     if (size) { wrap.style.width = wrap.style.height = wrap.style.flexBasis = size + 'px'; }
     return wrap;
   };
