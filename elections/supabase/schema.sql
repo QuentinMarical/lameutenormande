@@ -250,16 +250,32 @@ drop policy if exists audit_admin_read on public.audit_log;
 create policy audit_admin_read on public.audit_log for select using (public.is_admin());
 
 -- ---------------------------------------------------------------------
--- 9. Vues publiques (agrégats uniquement, jamais de lien code → choix)
+-- 9. Agrégats publics (RPC security definer, jamais de lien code → choix)
+--    Des fonctions plutôt que des vues : le Security Advisor de Supabase
+--    signale les vues « security definer », alors qu'une fonction qui
+--    n'expose que des agrégats est la forme attendue.
 -- ---------------------------------------------------------------------
-create or replace view public.public_candidates as
+drop view if exists public.public_candidates;
+drop view if exists public.results;
+drop view if exists public.participation;
+drop view if exists public.participation_timeline;
+
+create or replace function public.public_candidates(p_election uuid)
+returns table (id uuid, election_id uuid, role text, display_name text, bio text,
+               telegram_username text, discord_username text, created_at timestamptz, updated_at timestamptz)
+language sql stable security definer set search_path = public as $$
   select c.id, c.election_id, c.role, c.display_name, c.bio,
          c.telegram_username, c.discord_username, c.created_at, c.updated_at
   from public.candidates c
   join public.elections e on e.id = c.election_id
-  where c.withdrawn = false and e.status <> 'draft';
+  where c.election_id = p_election and c.withdrawn = false and e.status <> 'draft'
+  order by c.created_at;
+$$;
 
-create or replace view public.results as
+create or replace function public.results(p_election uuid)
+returns table (election_id uuid, role text, candidate_id uuid, display_name text,
+               telegram_username text, discord_username text, votes int)
+language sql stable security definer set search_path = public as $$
   select c.election_id, c.role, c.id as candidate_id, c.display_name,
          c.telegram_username, c.discord_username,
          count(bc.ballot_id) filter (where b.invalidated = false)::int as votes
@@ -267,10 +283,14 @@ create or replace view public.results as
   join public.elections e on e.id = c.election_id
   left join public.ballot_choices bc on bc.candidate_id = c.id
   left join public.ballots b on b.id = bc.ballot_id
-  where c.withdrawn = false and e.status <> 'draft' and (e.results_public or e.status in ('closed','archived'))
+  where c.election_id = p_election and c.withdrawn = false and e.status <> 'draft'
+    and (e.results_public or e.status in ('closed','archived'))
   group by c.election_id, c.role, c.id, c.display_name, c.telegram_username, c.discord_username;
+$$;
 
-create or replace view public.participation as
+create or replace function public.participation(p_election uuid)
+returns table (election_id uuid, voters int, invalidated int, codes_issued int, last_vote_at timestamptz)
+language sql stable security definer set search_path = public as $$
   select e.id as election_id,
          count(b.id) filter (where b.invalidated = false)::int as voters,
          count(b.id) filter (where b.invalidated = true)::int  as invalidated,
@@ -278,19 +298,23 @@ create or replace view public.participation as
          max(b.submitted_at) as last_vote_at
   from public.elections e
   left join public.ballots b on b.election_id = e.id
-  where e.status <> 'draft'
+  where e.id = p_election and e.status <> 'draft'
   group by e.id;
+$$;
 
-create or replace view public.participation_timeline as
-  select election_id, hour,
-         sum(n) over (partition by election_id order by hour)::int as cumulative
+create or replace function public.participation_timeline(p_election uuid)
+returns table (election_id uuid, hour timestamptz, cumulative int)
+language sql stable security definer set search_path = public as $$
+  select election_id, hour, sum(n) over (partition by election_id order by hour)::int as cumulative
   from (
     select b.election_id, date_trunc('hour', b.first_submitted_at) as hour, count(*) as n
     from public.ballots b
     join public.elections e on e.id = b.election_id
-    where b.invalidated = false and e.status <> 'draft'
+    where b.election_id = p_election and b.invalidated = false and e.status <> 'draft'
     group by b.election_id, date_trunc('hour', b.first_submitted_at)
-  ) t;
+  ) t
+  order by hour;
+$$;
 
 -- Vue admin : bulletins + code + drapeaux (security_invoker => RLS admin)
 create or replace view public.admin_voters with (security_invoker = true) as
@@ -307,7 +331,6 @@ create or replace view public.admin_voters with (security_invoker = true) as
   from public.ballots b
   join public.voter_codes vc on vc.id = b.code_id;
 
-grant select on public.public_candidates, public.results, public.participation, public.participation_timeline to anon, authenticated;
 grant select on public.admin_voters to authenticated;
 
 -- ---------------------------------------------------------------------
