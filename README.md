@@ -47,9 +47,9 @@ Le site se met à jour automatiquement :
 
 ## 🗳️ Élections du staff
 
-Le dossier [`elections/`](elections/) contient un outil de vote complet : connexion Telegram / Discord réservée aux membres du groupe, candidatures libres, un bulletin par compte (modifiable), résultats et participation en direct, panel admin (phases, invalidation des bulletins suspects, journal d'audit, procès-verbal) et annonces automatiques sur Telegram.
+Le dossier [`elections/`](elections/) contient un outil de vote complet : un code individuel remis à chaque membre par le staff (aucun compte à créer), candidatures libres, un bulletin par code (modifiable), résultats et participation en direct, panel admin (phases, invalidation des bulletins suspects, journal d'audit, procès-verbal) et annonces automatiques sur Telegram.
 
-- Front : pages statiques dans `elections/` (aucun build)
+- Front : pages statiques dans `elections/` (aucun build) ; admins connectés par e-mail + mot de passe (Supabase Auth)
 - Données : projet Supabase (schéma dans `elections/supabase/schema.sql`, Edge Functions dans `elections/supabase/functions/`)
 - Compteur de membres Telegram : workflow `update-telegram-count.yml` (bot) → `elections/telegram.json`
 
