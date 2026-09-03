@@ -1,6 +1,6 @@
 # Mise en place de l'outil d'élections
 
-Le site reste 100 % statique (GitHub Pages). Tout ce qui est « vivant » (codes, candidatures, bulletins, résultats) vit dans un projet **Supabase** gratuit. Compte une vingtaine de minutes pour la configuration de base ; le bot Telegram (comptage des membres et annonces) est optionnel.
+Le site reste 100 % statique (GitHub Pages). Tout ce qui est « vivant » (codes, candidatures, bulletins, résultats) vit dans un projet **Supabase** gratuit. Compte une vingtaine de minutes pour la configuration de base ; le bot Telegram (annonces automatiques) est optionnel. Le taux de participation est calculé sur le nombre de codes distribués.
 
 ## Comment ça marche
 
@@ -28,15 +28,11 @@ Le site reste 100 % statique (GitHub Pages). Tout ce qui est « vivant » (codes
 
 Dans l'onglet *Scrutins*, édite le brouillon « Élection du staff 2026 » (ou crée-en un), génère les codes dans l'onglet *Codes*, puis utilise les boutons **1️⃣ Ouvrir les candidatures** → **2️⃣ Ouvrir les votes** → **⏹ Clôturer** (ou laisse la date de clôture automatique faire le travail).
 
-## 3. Bot Telegram (optionnel : comptage + annonces)
+## 3. Bot Telegram (optionnel : annonces automatiques)
 
 1. Sur Telegram, parle à [@BotFather](https://t.me/BotFather) : `/newbot` → note le **token**.
-2. Ajoute le bot **dans le groupe principal** (simple membre suffit pour `getChatMemberCount`) et **dans le canal d'annonces** en tant qu'administrateur (pour publier).
-3. Récupère les identifiants de chat : envoie un message dans le groupe puis ouvre `https://api.telegram.org/bot<TOKEN>/getUpdates` et lis `chat.id` (négatif, du type `-1001234567890`).
-
-### Comptage des membres (taux de participation)
-
-Dans le dépôt GitHub → **Settings → Secrets and variables → Actions** : ajoute `TELEGRAM_BOT_TOKEN` et `TELEGRAM_CHAT_ID`. Le workflow [`update-telegram-count.yml`](../../.github/workflows/update-telegram-count.yml) tourne toutes les heures et écrit `elections/telegram.json`. Lance-le une première fois à la main (onglet *Actions* → *Run workflow*). Sans ça, le taux de participation est calculé sur le nombre de codes distribués.
+2. Ajoute le bot **dans le canal d'annonces** en tant qu'administrateur (pour publier).
+3. Récupère l'identifiant du canal : transfère un message du canal au bot puis ouvre `https://api.telegram.org/bot<TOKEN>/getUpdates` et lis `chat.id` (négatif, du type `-1001234567890`).
 
 ### Annonces automatiques (nouvelle candidature, rappel J-1, résultats)
 
