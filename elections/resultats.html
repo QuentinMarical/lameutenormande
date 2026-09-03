@@ -53,7 +53,7 @@
     const rolesWrap = h('div');
     const updated = h('div', { class: 'small muted center mt-8' });
     app.append(banner, kpis, h('div', { class: 'grid-2' }, partWrap, timelineWrap), h('h2', { class: 'section-title' }, 'Scores par poste'), rolesWrap, updated,
-      h('div', { class: 'btn-row center' }, h('a', { class: 'btn', href: 'voter.html' + q }, '🗳️ Voter'), h('button', { class: 'btn secondary', type: 'button', onClick: () => refresh(true) }, '↻ Actualiser')));
+      h('div', { class: 'btn-row center' }, h('a', { class: 'btn', href: 'voter.html' + q }, 'Voter'), h('button', { class: 'btn secondary', type: 'button', onClick: () => refresh(true) }, 'Actualiser')));
 
     let donut, line;
 
@@ -122,7 +122,7 @@
         const rows = (results || []).filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
         const max = Math.max(1, ...rows.map(r => r.votes));
         const block = h('div', { class: 'chart-wrap' });
-        block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, role.icon),
+        block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)),
           h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste' + (role.seats > 1 ? 's' : '') + ' · ' + rows.reduce((a, r) => a + r.votes, 0) + ' voix')),
           rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat·e' + (rows.length > 1 ? 's' : '')) : null));
         if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e pour ce poste.')); rolesWrap.appendChild(block); return; }
@@ -135,12 +135,12 @@
           const exaequo = tied && r.votes === cutoff && r.votes > 0;
           list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
             E.avatarEl({ username: r.telegram_username, displayName: r.display_name }),
-            h('div', { class: 'who', title: r.display_name }, (elected ? '🏆 ' : exaequo ? '⚖️ ' : '') + r.display_name),
+            h('div', { class: 'who', title: r.display_name }, elected ? E.icon('trophy') : exaequo ? E.icon('scale-balanced') : null, ' ' + r.display_name),
             h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
             h('div', { class: 'n' }, r.votes + ' voix')));
         });
         block.appendChild(list);
-        if (tied) block.appendChild(h('div', { class: 'small muted mt-8' }, '⚖️ Égalité sur le dernier siège : départage à prévoir par le staff.'));
+        if (tied) block.appendChild(h('div', { class: 'small muted mt-8' }, E.icon('scale-balanced'), ' Égalité sur le dernier siège : départage à prévoir par le staff.'));
         rolesWrap.appendChild(block);
       });
       updated.textContent = 'Dernière mise à jour : ' + new Date().toLocaleTimeString('fr-FR') + (part && part.last_vote_at ? ' · dernier vote le ' + E.fmtDateTime(part.last_vote_at) : '');
