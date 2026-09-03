@@ -134,7 +134,7 @@
           const elected = r.votes > 0 && (i < role.seats) && !(tied && r.votes === cutoff);
           const exaequo = tied && r.votes === cutoff && r.votes > 0;
           list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
-            E.avatarEl({ username: r.telegram_username, displayName: r.display_name }),
+            E.avatarEl({ displayName: r.display_name }),
             h('div', { class: 'who', title: r.display_name }, elected ? E.icon('trophy') : exaequo ? E.icon('scale-balanced') : null, ' ' + r.display_name),
             h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
             h('div', { class: 'n' }, r.votes + ' voix')));

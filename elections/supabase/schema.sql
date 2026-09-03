@@ -27,6 +27,7 @@ drop function if exists public.is_active_member();
 drop function if exists public.cast_ballot(uuid, jsonb);
 drop function if exists public.my_ballot(uuid);
 drop function if exists public.upsert_candidacy(uuid, text, text, text, text, text);
+drop function if exists public.upsert_candidacy(text, uuid, text, text, text, text, text);
 drop function if exists public.withdraw_candidacy(uuid);
 drop function if exists public.admin_ban_user(uuid, boolean);
 
@@ -63,21 +64,20 @@ create table if not exists public.role_catalog (
   description  text not null default '',
   seats        int  not null default 1 check (seats > 0),
   max_choices  int  not null default 1 check (max_choices > 0),
-  requires     text check (requires in ('telegram','discord')),
   sort_order   int  not null default 0
 );
 alter table public.role_catalog enable row level security;
 
-insert into public.role_catalog (id,label,description,seats,max_choices,requires,sort_order) values
-  ('tete',          'Tête de meute',                    'Responsable du groupe : coordination générale, représentation de la meute.', 1, 1, null, 10),
-  ('patte_gauche',  'Patte gauche',                     'Responsable adjoint·e : seconde la Tête de meute.',                         1, 1, null, 20),
-  ('patte_droite',  'Patte droite',                     'Responsable adjoint·e : seconde la Tête de meute.',                         1, 1, null, 30),
-  ('communication', 'Responsable de la communication',  'Réseaux sociaux, annonces, site et visibilité de la meute.',                1, 1, null, 40),
-  ('modo_telegram', 'Modérateur·ice Telegram',          'Modération des groupes Telegram (2 postes).',                              2, 2, 'telegram', 50),
-  ('modo_discord',  'Modérateur·ice Discord',           'Modération du serveur Discord (2 postes).',                                2, 2, 'discord', 60)
+insert into public.role_catalog (id,label,description,seats,max_choices,sort_order) values
+  ('tete',          'Tête de meute',                    'Responsable du groupe : coordination générale, représentation de la meute.', 1, 1, 10),
+  ('patte_gauche',  'Patte gauche',                     'Responsable adjoint·e : seconde la Tête de meute.',                         1, 1, 20),
+  ('patte_droite',  'Patte droite',                     'Responsable adjoint·e : seconde la Tête de meute.',                         1, 1, 30),
+  ('communication', 'Responsable de la communication',  'Réseaux sociaux, annonces, site et visibilité de la meute.',                1, 1, 40),
+  ('modo_telegram', 'Modérateur·ice Telegram',          'Modération des groupes Telegram (2 postes).',                              2, 2, 50),
+  ('modo_discord',  'Modérateur·ice Discord',           'Modération du serveur Discord (2 postes).',                                2, 2, 60)
 on conflict (id) do update set
   label = excluded.label, description = excluded.description, seats = excluded.seats,
-  max_choices = excluded.max_choices, requires = excluded.requires, sort_order = excluded.sort_order;
+  max_choices = excluded.max_choices, sort_order = excluded.sort_order;
 
 -- ---------------------------------------------------------------------
 -- 3. Scrutins
@@ -162,8 +162,6 @@ create table if not exists public.candidates (
   role              text not null references public.role_catalog(id),
   display_name      text not null check (char_length(display_name) between 1 and 60),
   bio               text not null default '' check (char_length(bio) <= 600),
-  telegram_username text,
-  discord_username  text,
   withdrawn         boolean not null default false,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now(),
@@ -171,6 +169,10 @@ create table if not exists public.candidates (
 );
 alter table public.candidates enable row level security;
 create index if not exists candidates_election_idx on public.candidates (election_id, role);
+-- On ne conserve aucun identifiant de compte tiers (Telegram/Discord) sur les candidatures.
+alter table public.candidates drop column if exists telegram_username;
+alter table public.candidates drop column if exists discord_username;
+alter table public.role_catalog drop column if exists requires;
 
 -- ---------------------------------------------------------------------
 -- 6. Bulletins et choix (un bulletin par code)
@@ -283,10 +285,10 @@ drop view if exists public.participation_timeline;
 
 create or replace function public.public_candidates(p_election uuid)
 returns table (id uuid, election_id uuid, role text, display_name text, bio text,
-               telegram_username text, discord_username text, created_at timestamptz, updated_at timestamptz)
+               created_at timestamptz, updated_at timestamptz)
 language sql stable security definer set search_path = public as $$
   select c.id, c.election_id, c.role, c.display_name, c.bio,
-         c.telegram_username, c.discord_username, c.created_at, c.updated_at
+         c.created_at, c.updated_at
   from public.candidates c
   join public.elections e on e.id = c.election_id
   where c.election_id = p_election and c.withdrawn = false and e.status <> 'draft'
@@ -294,11 +296,9 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create or replace function public.results(p_election uuid)
-returns table (election_id uuid, role text, candidate_id uuid, display_name text,
-               telegram_username text, discord_username text, votes int)
+returns table (election_id uuid, role text, candidate_id uuid, display_name text, votes int)
 language sql stable security definer set search_path = public as $$
   select c.election_id, c.role, c.id as candidate_id, c.display_name,
-         c.telegram_username, c.discord_username,
          count(bc.ballot_id) filter (where b.invalidated = false)::int as votes
   from public.candidates c
   join public.elections e on e.id = c.election_id
@@ -306,7 +306,7 @@ language sql stable security definer set search_path = public as $$
   left join public.ballots b on b.id = bc.ballot_id
   where c.election_id = p_election and c.withdrawn = false and e.status <> 'draft'
     and (e.results_public or e.status in ('closed','archived'))
-  group by c.election_id, c.role, c.id, c.display_name, c.telegram_username, c.discord_username;
+  group by c.election_id, c.role, c.id, c.display_name;
 $$;
 
 create or replace function public.participation(p_election uuid)
@@ -388,8 +388,7 @@ begin
 end $$;
 
 create or replace function public.upsert_candidacy(
-  p_code text, p_election uuid, p_role text, p_display_name text, p_bio text,
-  p_telegram_username text default null, p_discord_username text default null
+  p_code text, p_election uuid, p_role text, p_display_name text, p_bio text
 ) returns public.candidates
 language plpgsql security definer set search_path = public as $$
 declare
@@ -404,15 +403,11 @@ begin
   if v_election.status <> 'open' or not v_election.candidacy_open then raise exception 'CANDIDACY_CLOSED'; end if;
   if not (v_election.roles ? p_role) then raise exception 'ROLE_NOT_IN_ELECTION'; end if;
   select * into v_role from public.role_catalog where id = p_role;
-  if v_role.requires = 'telegram' and coalesce(trim(p_telegram_username),'') = '' then raise exception 'TELEGRAM_USERNAME_REQUIRED'; end if;
-  if v_role.requires = 'discord'  and coalesce(trim(p_discord_username),'') = ''  then raise exception 'DISCORD_USERNAME_REQUIRED'; end if;
 
-  insert into public.candidates (election_id, code_id, role, display_name, bio, telegram_username, discord_username)
-  values (p_election, v_code.id, p_role, trim(p_display_name), coalesce(p_bio,''),
-          nullif(ltrim(trim(p_telegram_username), '@'), ''), nullif(trim(p_discord_username), ''))
+  insert into public.candidates (election_id, code_id, role, display_name, bio)
+  values (p_election, v_code.id, p_role, trim(p_display_name), coalesce(p_bio,''))
   on conflict (election_id, code_id, role) do update set
     display_name = excluded.display_name, bio = excluded.bio,
-    telegram_username = excluded.telegram_username, discord_username = excluded.discord_username,
     withdrawn = false, updated_at = now()
   returning * into v_row;
 
@@ -723,7 +718,7 @@ begin
 end $$;
 grant execute on function
   public.check_code(text, uuid), public.code_lookup(text), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
-  public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text, text, text),
+  public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text),
   public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
   public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
   to anon, authenticated;

@@ -89,13 +89,9 @@
       const cards = new Map();
       cands.forEach(c => {
         const card = h('div', { class: 'cand selectable', tabindex: '0', role: role.max_choices > 1 ? 'checkbox' : 'radio', 'aria-checked': 'false' });
-        card.appendChild(E.avatarEl({ username: c.telegram_username, displayName: c.display_name }));
+        card.appendChild(E.avatarEl({ displayName: c.display_name }));
         const body = h('div', { class: 'body' });
         body.appendChild(h('div', { class: 'name' }, c.display_name));
-        const handles = h('div', { class: 'handles' });
-        if (c.telegram_username) handles.appendChild(h('a', { href: 'https://t.me/' + encodeURIComponent(c.telegram_username), target: '_blank', rel: 'noopener', onClick: e => e.stopPropagation() }, E.icon('paper-plane'), ' @' + c.telegram_username));
-        if (c.discord_username) handles.appendChild(h('span', null, E.icon('headset'), ' ' + c.discord_username));
-        body.appendChild(handles);
         if (c.bio) {
           const bio = h('div', { class: 'bio clamp', text: c.bio });
           body.appendChild(bio);

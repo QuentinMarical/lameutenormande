@@ -22,18 +22,18 @@
     VC(7, 'MEUTE-N2FX-8TRA', null, 0), VC(8, 'MEUTE-Z6CM-5UQB', 'Yellow', 0), VC(9, 'MEUTE-H5LJ-9EDS', 'Dragos', 0, { revoked: true, revoked_reason: 'Envoyé à la mauvaise personne' })];
   const codeOf = (n) => uid(30 + n);
 
-  const C = (n, code, role, name, bio, tg, dc) => ({ id: uid(20 + n), election_id: ELECTION, code_id: codeOf(code), role, display_name: name, bio, telegram_username: tg, discord_username: dc, withdrawn: false, created_at: iso(now - 864e5 * 3 + n * 36e5), updated_at: iso(now - 864e5 * 3 + n * 36e5) });
+  const C = (n, code, role, name, bio) => ({ id: uid(20 + n), election_id: ELECTION, code_id: codeOf(code), role, display_name: name, bio, withdrawn: false, created_at: iso(now - 864e5 * 3 + n * 36e5), updated_at: iso(now - 864e5 * 3 + n * 36e5) });
   const candidates = [
-    C(1, 2, 'tete', 'Kitjune', 'Membre depuis le début, je veux continuer à faire grandir la meute avec des rassemblements réguliers et une équipe soudée. On a plein d\'idées pour 2026 : week-end à la mer, stand aux conventions, et plus de soirées jeux.', 'KITJUNE', 'kitjune'),
-    C(2, 3, 'tete', 'Spyro The Bat', 'Je m\'occupe déjà du calendrier, je propose de coordonner davantage.', 'spyro_the_bat', null),
-    C(3, 3, 'communication', 'Spyro The Bat', 'Annonces, Instagram, site : je continue !', 'spyro_the_bat', null),
-    C(4, 1, 'patte_gauche', 'Nitra', 'Je gère le site, je peux seconder sur la logistique.', 'nitrafox', 'nitra'),
-    C(5, 4, 'modo_discord', 'Froxy', 'Présent tous les soirs sur le Discord, calme et diplomate.', 'TheFoxFurieFR', 'froxy'),
-    C(6, 6, 'modo_discord', 'AzOwO', 'Musique, bonne humeur et bans quand il faut.', 'AzOwO_Music', 'azowo'),
-    C(7, 6, 'modo_telegram', 'AzOwO', '', 'AzOwO_Music', 'azowo'),
-    C(8, 2, 'modo_telegram', 'Kitjune', 'Déjà modo, je rempile.', 'KITJUNE', 'kitjune'),
-    C(10, 3, 'modo_discord', 'Spyro The Bat', 'Je peux aussi aider côté Discord.', 'spyro_the_bat', 'spyro')];
-  candidates.push(Object.assign(C(9, 4, 'patte_droite', 'Froxy', 'Finalement non.', 'TheFoxFurieFR', 'froxy'), { withdrawn: true }));
+    C(1, 2, 'tete', 'Kitjune', 'Membre depuis le début, je veux continuer à faire grandir la meute avec des rassemblements réguliers et une équipe soudée. On a plein d\'idées pour 2026 : week-end à la mer, stand aux conventions, et plus de soirées jeux.'),
+    C(2, 3, 'tete', 'Spyro The Bat', 'Je m\'occupe déjà du calendrier, je propose de coordonner davantage.'),
+    C(3, 3, 'communication', 'Spyro The Bat', 'Annonces, Instagram, site : je continue !'),
+    C(4, 1, 'patte_gauche', 'Nitra', 'Je gère le site, je peux seconder sur la logistique.'),
+    C(5, 4, 'modo_discord', 'Froxy', 'Présent tous les soirs sur le Discord, calme et diplomate.'),
+    C(6, 6, 'modo_discord', 'AzOwO', 'Musique, bonne humeur et bans quand il faut.'),
+    C(7, 6, 'modo_telegram', 'AzOwO', ''),
+    C(8, 2, 'modo_telegram', 'Kitjune', 'Déjà modo, je rempile.'),
+    C(10, 3, 'modo_discord', 'Spyro The Bat', 'Je peux aussi aider côté Discord.')];
+  candidates.push(Object.assign(C(9, 4, 'patte_droite', 'Froxy', 'Finalement non.'), { withdrawn: true }));
 
   const ballots = [], choices = [];
   const B = (n, code, hoursAgo, ch, inval, subs) => { const id = uid(40 + n); ballots.push({ id, election_id: ELECTION, code_id: codeOf(code), first_submitted_at: iso(now - 36e5 * hoursAgo), submitted_at: iso(now - 36e5 * (hoursAgo - 1)), submissions: subs || 1, invalidated: !!inval, invalidated_by: null, invalidated_reason: inval || null }); Object.entries(ch).forEach(([role, ids]) => ids.forEach(c => choices.push({ ballot_id: id, role, candidate_id: uid(20 + c) }))); };
@@ -56,7 +56,7 @@
     audit_log_readable: () => audit.map(a => Object.assign({ actor_label: a.actor.startsWith('admin:') ? 'Nitra' : a.actor.startsWith('code:') ? a.actor.slice(5) : a.actor }, a)),
     app_settings: () => settings,
     public_candidates: () => candidates.filter(c => !c.withdrawn),
-    results: () => candidates.filter(c => !c.withdrawn).map(c => ({ election_id: c.election_id, role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, discord_username: c.discord_username,
+    results: () => candidates.filter(c => !c.withdrawn).map(c => ({ election_id: c.election_id, role: c.role, candidate_id: c.id, display_name: c.display_name,
       votes: choices.filter(x => x.candidate_id === c.id && !ballots.find(b => b.id === x.ballot_id).invalidated).length })),
     participation: () => elections.map(e => ({ election_id: e.id, voters: ballots.filter(b => b.election_id === e.id && !b.invalidated).length, invalidated: ballots.filter(b => b.election_id === e.id && b.invalidated).length, codes_issued: codes.filter(c => c.election_id === e.id && !c.revoked).length, last_vote_at: ballots.filter(b => b.election_id === e.id).map(b => b.submitted_at).sort().pop() || null })),
     participation_timeline: () => { const out = []; elections.forEach(e => { const bs = ballots.filter(b => b.election_id === e.id && !b.invalidated).map(b => new Date(b.first_submitted_at).setMinutes(0, 0, 0)).sort(); let cum = 0; [...new Set(bs)].forEach(hr => { cum += bs.filter(x => x === hr).length; out.push({ election_id: e.id, hour: iso(hr), cumulative: cum }); }); }); return out; },
@@ -110,7 +110,7 @@
       if (!b) { b = { id: uid(60), election_id: p_election, code_id: c.id, first_submitted_at: iso(Date.now()), submitted_at: iso(Date.now()), submissions: 1, invalidated: false }; ballots.push(b); }
       else { b.submitted_at = iso(Date.now()); b.submissions++; b.invalidated = false; for (let i = choices.length - 1; i >= 0; i--) if (choices[i].ballot_id === b.id) choices.splice(i, 1); }
       Object.entries(p_choices).forEach(([role, ids]) => ids.forEach(x => choices.push({ ballot_id: b.id, role, candidate_id: x }))); return { ok: true, replaced, ballot_id: b.id }; },
-    upsert_candidacy: (a) => { const c = resolveCode(a.p_code, a.p_election); let k = candidates.find(x => x.election_id === a.p_election && x.code_id === c.id && x.role === a.p_role); if (!k) { k = C(candidates.length + 1, 1, a.p_role, '', '', null, null); k.code_id = c.id; candidates.push(k); } Object.assign(k, { display_name: a.p_display_name, bio: a.p_bio, telegram_username: a.p_telegram_username, discord_username: a.p_discord_username, withdrawn: false, updated_at: iso(Date.now()) }); return k; },
+    upsert_candidacy: (a) => { const c = resolveCode(a.p_code, a.p_election); let k = candidates.find(x => x.election_id === a.p_election && x.code_id === c.id && x.role === a.p_role); if (!k) { k = C(candidates.length + 1, 1, a.p_role, '', ''); k.code_id = c.id; candidates.push(k); } Object.assign(k, { display_name: a.p_display_name, bio: a.p_bio, withdrawn: false, updated_at: iso(Date.now()) }); return k; },
     withdraw_candidacy: ({ p_code, p_election, p_candidate }) => { const c = resolveCode(p_code, p_election); const k = candidates.find(x => x.id === p_candidate && x.code_id === c.id); if (!k) throw err('CANDIDATE_NOT_FOUND'); k.withdrawn = true; return null; },
     admin_invalidate_ballot: ({ p_ballot, p_reason }) => { const b = ballots.find(x => x.id === p_ballot); b.invalidated = true; b.invalidated_reason = p_reason; return null; },
     admin_restore_ballot: ({ p_ballot }) => { const b = ballots.find(x => x.id === p_ballot); b.invalidated = false; b.invalidated_reason = null; return null; },

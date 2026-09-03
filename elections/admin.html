@@ -249,14 +249,13 @@
           if (!c.withdrawn && !confirm('Retirer la candidature de ' + c.display_name + ' (' + r.label + ') ?')) return;
           const { error } = await E.sb.rpc('admin_withdraw_candidacy', { p_candidate: c.id, p_restore: c.withdrawn }); if (error) E.toast(E.errMsg(error), 'error'); else candidatures(); } }, c.withdrawn ? 'Réactiver' : 'Retirer'));
         tbody.appendChild(h('tr', { class: c.withdrawn ? 'invalid' : '' },
-          h('td', null, E.avatarEl({ username: c.telegram_username, displayName: c.display_name }), c.display_name),
+          h('td', null, E.avatarEl({ displayName: c.display_name }), c.display_name),
           h('td', null, r.label),
           h('td', null, h('span', { class: 'code-pill' }, vc.code || '?'), vc.label ? ' ' + vc.label : '', vc.revoked ? h('span', { class: 'badge danger', style: { marginLeft: '6px' } }, 'code révoqué') : null),
-          h('td', null, [c.telegram_username ? 'Telegram @' + c.telegram_username : null, c.discord_username ? 'Discord ' + c.discord_username : null].filter(Boolean).join(' · ') || '—'),
           h('td', { title: c.bio, style: { maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis' } }, c.bio || '—'),
           h('td', null, E.fmtDateTime(c.updated_at)), actions));
       });
-      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat·e', 'Poste', 'Code', 'Pseudos', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
+      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat·e', 'Poste', 'Code', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
     }
 
     // ---------- Votants ----------
@@ -322,9 +321,9 @@
         E.sb.rpc('participation', { p_election: current.id }),
         E.sb.from('admin_voters').select('*').eq('election_id', current.id),
         E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false),
-        E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false)]);
+        E.sb.from('candidates').select('id, role, display_name, withdrawn').eq('election_id', current.id).eq('withdrawn', false)]);
       const part = partRows && partRows[0] || null;
-      const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
+      const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
       const roles = E.rolesOf(current);
       const voters_n = (part && part.voters) || 0, codes_n = (part && part.codes_issued) || 0;
       const doc = h('div', { class: 'card column', id: 'pv-doc' });
@@ -349,7 +348,7 @@
       doc.appendChild(h('div', { class: 'print-only small', style: { marginTop: '24px' } }, 'Signatures du staff : ________________________    ________________________    ________________________'));
       pane.append(h('div', { class: 'btn-row no-print', style: { marginTop: 0, marginBottom: '12px' } },
         h('button', { class: 'btn', type: 'button', onClick: () => window.print() }, 'Imprimer / PDF'),
-        h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'telegram_username', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, 'Résultats CSV')), doc);
+        h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, 'Résultats CSV')), doc);
     }
 
     // ---------- Réglages ----------

@@ -294,8 +294,6 @@
     CANDIDACY_CLOSED: 'Les candidatures sont fermées.',
     VOTING_CLOSED: 'Les votes sont fermés.',
     ROLE_NOT_IN_ELECTION: 'Ce rôle ne fait pas partie du scrutin.',
-    TELEGRAM_USERNAME_REQUIRED: 'Un pseudo Telegram est requis pour ce rôle.',
-    DISCORD_USERNAME_REQUIRED: 'Un pseudo Discord est requis pour ce rôle.',
     TOO_MANY_CHOICES: 'Trop de candidats cochés pour un rôle.',
     INVALID_CANDIDATE: 'Un des candidats choisis n\'est plus valide (retiré ?). Recharge la page.',
     EMPTY_BALLOT: 'Ton bulletin est vide : choisis au moins un candidat.',

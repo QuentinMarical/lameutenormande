@@ -72,8 +72,6 @@
     const bioCount = h('div', { class: 'hint' });
     const updCount = () => bioCount.textContent = fBio.value.length + ' / 600';
     fBio.addEventListener('input', updCount); updCount();
-    const fTg = h('input', { class: 'input', placeholder: 'pseudo (sans @)', value: (first && first.telegram_username) || '' });
-    const fDc = h('input', { class: 'input', placeholder: 'pseudo Discord', value: (first && first.discord_username) || '' });
     const checks = h('div', { class: 'checks' });
     const roleInputs = {};
     roles.forEach(r => {
@@ -85,10 +83,10 @@
     const preview = h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px' } });
     function paintPreview() {
       E.clear(preview);
-      preview.appendChild(E.avatarEl({ username: fTg.value.trim(), displayName: fName.value, cls: 'lg' }));
-      preview.appendChild(h('div', null, h('div', { style: { fontWeight: 700 } }, fName.value || '—'), h('div', { class: 'small muted' }, 'Aperçu de ta fiche (la photo vient de ton profil Telegram public, si tu en as une)')));
+      preview.appendChild(E.avatarEl({ displayName: fName.value, cls: 'lg' }));
+      preview.appendChild(h('div', null, h('div', { style: { fontWeight: 700 } }, fName.value || '—'), h('div', { class: 'small muted' }, 'Aperçu de ta fiche')));
     }
-    fName.addEventListener('input', paintPreview); fTg.addEventListener('input', paintPreview); paintPreview();
+    fName.addEventListener('input', paintPreview); paintPreview();
 
     const submit = h('button', { class: 'btn', type: 'submit' }, active.length ? 'Mettre à jour mes candidatures' : 'Envoyer ma candidature');
     const form = h('form', null,
@@ -96,9 +94,6 @@
       h('div', { class: 'field' }, h('label', null, 'Nom affiché'), fName, h('div', { class: 'hint' }, 'Le nom que les votants verront sur le bulletin.')),
       h('div', { class: 'field' }, h('label', null, 'Poste(s) visé(s)'), checks, h('div', { class: 'hint' }, 'Tu peux te présenter à plusieurs postes. Décocher un poste retire cette candidature.')),
       h('div', { class: 'field' }, h('label', null, 'Présentation'), fBio, bioCount),
-      h('div', { class: 'grid-2' },
-        h('div', { class: 'field' }, h('label', null, 'Pseudo Telegram'), fTg, h('div', { class: 'hint' }, 'Obligatoire pour Modérateur·ice Telegram.')),
-        h('div', { class: 'field' }, h('label', null, 'Pseudo Discord'), fDc, h('div', { class: 'hint' }, 'Obligatoire pour Modérateur·ice Discord.'))),
       h('div', { class: 'btn-row' }, submit, h('a', { class: 'btn secondary', href: 'index.html' + q }, 'Retour')));
 
     const formCard = h('div', { class: 'card column' },
@@ -112,15 +107,10 @@
       const wanted = roles.filter(r => roleInputs[r.id].checked).map(r => r.id);
       if (!fName.value.trim()) { E.toast('Indique un nom affiché.', 'error'); return; }
       if (!wanted.length && !active.length) { E.toast('Choisis au moins un poste.', 'error'); return; }
-      for (const id of wanted) {
-        const r = E.roleInfo(id);
-        if (r.requires === 'telegram' && !fTg.value.trim()) { E.toast('Pseudo Telegram requis pour ' + r.label + '.', 'error'); return; }
-        if (r.requires === 'discord' && !fDc.value.trim()) { E.toast('Pseudo Discord requis pour ' + r.label + '.', 'error'); return; }
-      }
       submit.disabled = true; submit.textContent = 'Enregistrement…';
       const errors = [];
       for (const id of wanted) {
-        const { error } = await E.sb.rpc('upsert_candidacy', { p_code: info.code, p_election: election.id, p_role: id, p_display_name: fName.value.trim(), p_bio: fBio.value.trim(), p_telegram_username: fTg.value.trim() || null, p_discord_username: fDc.value.trim() || null });
+        const { error } = await E.sb.rpc('upsert_candidacy', { p_code: info.code, p_election: election.id, p_role: id, p_display_name: fName.value.trim(), p_bio: fBio.value.trim() });
         if (error) errors.push(E.roleInfo(id).label + ' : ' + E.errMsg(error));
       }
       for (const c of active) if (!wanted.includes(c.role)) {
@@ -166,7 +156,7 @@
         const cs = all.filter(c => c.role === r.id); if (!cs.length) return;
         app.appendChild(h('div', { class: 'role-head', style: { marginTop: '10px' } }, h('div', { class: 'icon-circle' }, E.icon(r.icon)), h('div', null, h('div', { class: 'name' }, r.label), h('div', { class: 'desc' }, cs.length + ' candidat·e' + (cs.length > 1 ? 's' : '')))));
         const list = h('div', { class: 'cands' });
-        cs.forEach(c => list.appendChild(h('div', { class: 'cand' }, E.avatarEl({ username: c.telegram_username, displayName: c.display_name }),
+        cs.forEach(c => list.appendChild(h('div', { class: 'cand' }, E.avatarEl({ displayName: c.display_name }),
           h('div', { class: 'body' }, h('div', { class: 'name' }, c.display_name), c.bio ? h('div', { class: 'bio clamp', text: c.bio }) : null))));
         app.appendChild(list);
       });
