@@ -56,12 +56,13 @@
     const telegram = await E.loadTelegramCount();
 
     async function refresh(manual) {
-      const [{ data: fresh }, { data: results }, { data: part }, { data: timeline }] = await Promise.all([
+      const [{ data: fresh }, { data: results }, { data: partRows }, { data: timeline }] = await Promise.all([
         E.sb.from('elections').select('*').eq('id', election.id).maybeSingle(),
-        E.sb.from('results').select('*').eq('election_id', election.id),
-        E.sb.from('participation').select('*').eq('election_id', election.id).maybeSingle(),
-        E.sb.from('participation_timeline').select('*').eq('election_id', election.id).order('hour')
+        E.sb.rpc('results', { p_election: election.id }),
+        E.sb.rpc('participation', { p_election: election.id }),
+        E.sb.rpc('participation_timeline', { p_election: election.id })
       ]);
+      const part = partRows && partRows[0] || null;
       if (fresh) election = fresh;
       const st = E.electionState(election);
       const voters = (part && part.voters) || 0;
