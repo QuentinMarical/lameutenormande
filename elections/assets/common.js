@@ -152,7 +152,7 @@
       } catch (err) { E.toast(E.errMsg(err), 'error'); btn.disabled = false; btn.textContent = '➡️ Continuer'; input.focus(); }
     });
     container.appendChild(form);
-    setTimeout(() => input.focus(), 50);
+    if (location.hash === '#code') setTimeout(() => input.focus({ preventScroll: false }), 50);
     return null;
   };
 
@@ -299,6 +299,8 @@
       + '<a href="index.html' + suffix + '">Accueil</a><a href="voter.html' + suffix + '">Voter</a><a href="candidater.html' + suffix + '">Candidater</a><a href="resultats.html' + suffix + '">Résultats</a><a href="admin.html">Administration</a>'
       + '<a href="' + contact + '" target="_blank" rel="noopener">Pas de code ? Contacter le staff</a>'
       + '</div>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
       + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> · le staff voit qui a voté, jamais le contenu d’un bulletin.</p>';
+    f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); });
   };
 })();
