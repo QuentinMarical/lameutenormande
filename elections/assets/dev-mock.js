@@ -52,7 +52,9 @@
   const vc = (id) => codes.find(c => c.id === id) || {};
   const views = {
     role_catalog: () => roleCat, elections: () => elections, voter_codes: () => codes, candidates: () => candidates.map(c => Object.assign({ voter_codes: vc(c.code_id) }, c)),
-    ballots: () => ballots, ballot_choices: () => choices.map(x => Object.assign({ ballots: ballots.find(b => b.id === x.ballot_id) }, x)), audit_log: () => audit, app_settings: () => settings,
+    ballots: () => ballots, ballot_choices: () => choices.map(x => Object.assign({ ballots: ballots.find(b => b.id === x.ballot_id) }, x)), audit_log: () => audit,
+    audit_log_readable: () => audit.map(a => Object.assign({ actor_label: a.actor.startsWith('admin:') ? 'Nitra' : a.actor.startsWith('code:') ? a.actor.slice(5) : a.actor }, a)),
+    app_settings: () => settings,
     public_candidates: () => candidates.filter(c => !c.withdrawn),
     results: () => candidates.filter(c => !c.withdrawn).map(c => ({ election_id: c.election_id, role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, discord_username: c.discord_username,
       votes: choices.filter(x => x.candidate_id === c.id && !ballots.find(b => b.id === x.ballot_id).invalidated).length })),
