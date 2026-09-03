@@ -46,8 +46,8 @@
   const audit = [{ id: 1, at: iso(now - 36e5 * 19), actor: 'admin:' + uid(1), action: 'ballot_invalidated', target: uid(44), details: { reason: 'Étiquette en double' } }, { id: 2, at: iso(now - 36e5 * 40), actor: 'code:Kitjune', action: 'ballot_cast', target: uid(41), details: { choices: 4 } }, { id: 3, at: iso(now - 864e5 * 6), actor: 'admin:' + uid(1), action: 'codes_generated', target: ELECTION, details: { n: 9 } }];
   const settings = [];
   const roleCat = (window.ROLE_CATALOG || []).map((r, i) => Object.assign({ sort_order: i * 10 }, r));
-  if (as === 'member') { try { localStorage.setItem('elections.code.' + ELECTION, 'MEUTE-TEST-0001'); } catch {} }
-  if (as === 'anon') { try { localStorage.removeItem('elections.code.' + ELECTION); } catch {} }
+  if (as === 'member') { try { localStorage.setItem('elections.code', 'MEUTE-TEST-0001'); } catch {} }
+  if (as === 'anon') { try { localStorage.removeItem('elections.code'); } catch {} }
 
   const vc = (id) => codes.find(c => c.id === id) || {};
   const views = {
@@ -103,6 +103,7 @@
     participation_timeline: ({ p_election }) => views.participation_timeline().filter(r => r.election_id === p_election),
     active_election: () => elections.filter(e => e.status === 'open'),
     check_code: ({ p_code, p_election }) => { const c = resolveCode(p_code, p_election); return { ok: true, code: c.code, label: c.label, has_ballot: ballots.some(b => b.code_id === c.id && !b.invalidated), candidacies: candidates.filter(x => x.code_id === c.id && !x.withdrawn).length }; },
+    code_lookup: ({ p_code }) => { const key = String(p_code || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); const c = codes.find(x => x.code_key === key); if (!c) throw err('CODE_INVALID'); if (c.revoked) throw err('CODE_REVOKED'); c.first_used_at = c.first_used_at || iso(now); c.last_used_at = iso(Date.now()); c.uses++; const e = elections.find(x => x.id === c.election_id); return { ok: true, code: c.code, label: c.label, election_id: e.id, election_slug: e.slug, election_title: e.title, election_status: e.status, has_ballot: ballots.some(b => b.code_id === c.id && !b.invalidated), candidacies: candidates.filter(x => x.code_id === c.id && !x.withdrawn).length }; },
     my_ballot: ({ p_code, p_election }) => { const c = resolveCode(p_code, p_election); const b = ballots.find(x => x.election_id === p_election && x.code_id === c.id); if (!b) return 'null'; const ch = {}; choices.filter(x => x.ballot_id === b.id).forEach(x => (ch[x.role] = ch[x.role] || []).push(x.candidate_id)); return { ballot_id: b.id, submitted_at: b.submitted_at, invalidated: b.invalidated, choices: ch }; },
     my_candidacies: ({ p_code, p_election }) => { const c = resolveCode(p_code, p_election); return candidates.filter(x => x.code_id === c.id); },
     cast_ballot: ({ p_code, p_election, p_choices }) => { const c = resolveCode(p_code, p_election); let b = ballots.find(x => x.election_id === p_election && x.code_id === c.id); const replaced = !!b;
