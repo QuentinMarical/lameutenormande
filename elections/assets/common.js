@@ -40,6 +40,36 @@
     return el;
   };
   E.clear = (el) => { while (el.firstChild) el.removeChild(el.firstChild); return el; };
+  /** Petites icônes SVG au trait, dans le style du bouton « défiler » du site (autonomes, pas de police externe). */
+  const ICONS = {
+    ticket: '<path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V8z"/><path d="M13 6v2M13 11v2M13 16v2" stroke-dasharray="1.5 2.2"/>',
+    paw: '<g fill="currentColor" stroke="none"><circle cx="12" cy="15.5" r="4"/><circle cx="5.5" cy="10" r="2"/><circle cx="9.5" cy="5.5" r="2"/><circle cx="14.5" cy="5.5" r="2"/><circle cx="18.5" cy="10" r="2"/></g>',
+    'check-to-slot': '<path d="M4 10h16M4 10v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9M4 10l3-6h10l3 6"/><path d="M9 14.5l2 2 4-4"/>',
+    'chart-simple': '<path d="M4 20V11M10 20V4M16 20v-6M3 20h18"/>',
+    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    crown: '<path d="M4 18h16M5 18l-1-9 5 4 3-6 3 6 5-4-1 9"/>',
+    bullhorn: '<path d="M3 10v4a1 1 0 0 0 1 1h2l4 4V5L6 9H4a1 1 0 0 0-1 1z"/><path d="M14 8a4 4 0 0 1 0 8"/><path d="M17 5.5a8 8 0 0 1 0 13"/>',
+    'paper-plane': '<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
+    headset: '<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4" height="6" rx="1.3"/><rect x="17" y="13" width="4" height="6" rx="1.3"/><path d="M19 19a4 4 0 0 1-4 3h-2"/>',
+    trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H5a2 2 0 0 0 0 4h1M16 5h3a2 2 0 0 1 0 4h-1"/><path d="M12 13v3M9 20h6M10 20v-1.5a2 2 0 0 1 4 0V20"/>',
+    'scale-balanced': '<path d="M12 3v18M4 21h16M6 7h12"/><path d="M6 7l-3 6a3 3 0 0 0 6 0z"/><path d="M18 7l-3 6a3 3 0 0 0 6 0z"/>',
+    'right-from-bracket': '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
+    gear: '<circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7.1 3.3l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V2a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/>',
+    ban: '<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>',
+    'screwdriver-wrench': '<path d="M21 7a4 4 0 0 1-5.4 3.8L7 19.4a2 2 0 1 1-2.8-2.8l8.6-8.6A4 4 0 1 1 21 7z"/>',
+    'circle-info': '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5"/><path d="M10 17h4"/>'
+  };
+  E.icon = (name, cls) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('width', '1em'); svg.setAttribute('height', '1em');
+    svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
+    svg.setAttribute('stroke-width', '1.8'); svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('class', 'e-icon' + (cls ? ' ' + cls : ''));
+    svg.innerHTML = ICONS[name] || '';
+    return svg;
+  };
   E.loader = (txt) => E.h('div', { class: 'loader' }, txt || 'Chargement…');
 
   // ---------- Toasts ----------
@@ -103,10 +133,10 @@
     let rows = [];
     if (E.sb) { const { data } = await E.sb.from('role_catalog').select('*').order('sort_order'); rows = data || []; }
     if (!rows.length) rows = window.ROLE_CATALOG || [];
-    rolesCache = new Map(rows.map(r => [r.id, Object.assign({ icon: '🐾' }, meta.get(r.id) || {}, r)]));
+    rolesCache = new Map(rows.map(r => [r.id, Object.assign({ icon: 'paw' }, meta.get(r.id) || {}, r)]));
     return rolesCache;
   };
-  E.roleInfo = (id) => (rolesCache && rolesCache.get(id)) || (window.ROLE_CATALOG || []).find(r => r.id === id) || { id, label: id, icon: '🐾', seats: 1, max_choices: 1 };
+  E.roleInfo = (id) => (rolesCache && rolesCache.get(id)) || (window.ROLE_CATALOG || []).find(r => r.id === id) || { id, label: id, icon: 'paw', seats: 1, max_choices: 1 };
   E.rolesOf = (election) => (Array.isArray(election.roles) ? election.roles : []).map(E.roleInfo);
 
   // ---------- Codes individuels ----------
@@ -135,9 +165,9 @@
     E.clear(container);
     const input = E.h('input', { class: 'input code-input', placeholder: 'MEUTE-XXXX-XXXX', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', required: true });
     input.addEventListener('input', () => { input.value = E.prettyCode(input.value); });
-    const btn = E.h('button', { class: 'btn', type: 'submit' }, '➡️ Continuer');
+    const btn = E.h('button', { class: 'btn', type: 'submit' }, 'Continuer');
     const form = E.h('form', { class: 'card info column' },
-      E.h('div', { class: 'title' }, '🎟️ Ton code de vote'),
+      E.h('div', { class: 'title' }, 'Ton code de vote'),
       E.h('div', { class: 'desc' }, 'Pour ' + (opts.verb || 'voter') + ', saisis le code individuel que le staff t\'a transmis. Il est personnel : ne le partage pas.'),
       E.h('div', { class: 'field', style: { marginTop: '6px' } }, input),
       E.h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn),
@@ -149,7 +179,7 @@
         E.setCode(election.id, info.code);
         E.toast('Code accepté' + (info.label ? ', bienvenue ' + info.label : '') + ' !', 'success');
         const u = new URL(location.href); u.searchParams.delete('code'); location.href = u.href;
-      } catch (err) { E.toast(E.errMsg(err), 'error'); btn.disabled = false; btn.textContent = '➡️ Continuer'; input.focus(); }
+      } catch (err) { E.toast(E.errMsg(err), 'error'); btn.disabled = false; btn.textContent = 'Continuer'; input.focus(); }
     });
     container.appendChild(form);
     if (location.hash === '#code') setTimeout(() => input.focus({ preventScroll: false }), 50);
@@ -160,7 +190,7 @@
   E.codeChip = function (election, info) {
     const slot = E.qs('.topbar #codeSlot'); if (!slot) return;
     const chip = E.h('span', { class: 'account', id: 'codeSlot' },
-      E.h('span', null, '🎟️'), E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
+      E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
       E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir'));
     slot.replaceWith(chip);
   };
@@ -258,13 +288,13 @@
     const bar = nav.parentElement;
     E.qsa('.actions', bar).forEach(n => n.remove());
     const actions = E.h('div', { class: 'actions' });
-    actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + suffix + '#code', title: 'Saisir mon code de vote' }, '🎟️ Mon code'));
+    actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + suffix + '#code', title: 'Saisir mon code de vote' }, 'Mon code'));
     const admin = E.ready && await E.adminSession();
-    actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? '⚙️ Admin' : '⚙️'));
+    actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : E.icon('gear')));
     bar.appendChild(actions);
   };
   E.notConfigured = function (container) {
-    E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, '🛠️'),
+    E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, E.icon('screwdriver-wrench')),
       E.h('div', { class: 'body' }, E.h('div', { class: 'title' }, 'Outil pas encore configuré'),
         E.h('div', { class: 'desc' }, 'Renseigne SUPABASE_URL et SUPABASE_ANON_KEY dans assets/config.js (voir supabase/README.md).'))));
   };
@@ -278,8 +308,8 @@
       E.h('div', { class: 'title', style: { fontWeight: '700', marginBottom: '6px' } }, 'Partager le scrutin'),
       E.h('div', { class: 'desc muted small' }, url),
       E.h('div', { class: 'btn-row' },
-        E.h('a', { class: 'btn telegram small', href: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, target: '_blank', rel: 'noopener' }, '✈ Telegram'),
-        E.h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(url); E.toast('Lien copié !', 'success'); } catch { E.toast(url); } } }, '📋 Copier le lien')));
+        E.h('a', { class: 'btn telegram small', href: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, target: '_blank', rel: 'noopener' }, 'Telegram'),
+        E.h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(url); E.toast('Lien copié !', 'success'); } catch { E.toast(url); } } }, 'Copier le lien')));
     wrap.appendChild(body);
     if (window.QRCode) {
       const canvas = document.createElement('canvas'); qr.appendChild(canvas);
