@@ -60,7 +60,7 @@
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
       return;
     }
-    E.qs('#nav').appendChild(h('span', { class: 'account' }, h('span', null, '👤 ' + (session.user.email || 'admin')), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏏')));
+    { const slot = E.qs('.topbar .tool.admin'); const chip = h('span', { class: 'account' }, h('span', null, '👤 ' + (session.user.email || 'admin')), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏏')); if (slot) slot.replaceWith(chip); }
 
     const rolesMap = await E.loadRoles();
     const allRoles = [...rolesMap.values()];
@@ -115,7 +115,7 @@
         const old = E.qs('#edit-form'); if (old) old.remove();
         const f = {};
         const inp = (name, attrs) => f[name] = h('input', Object.assign({ class: 'input' }, attrs));
-        inp('title', { value: e ? e.title : '' }); inp('slug', { value: e ? e.slug : 'staff-' + new Date().getFullYear(), pattern: '[a-z0-9-]+' });
+        inp('title', { value: e ? e.title : '' }); inp('slug', { value: e ? e.slug : 'staff-' + new Date().getFullYear(), pattern: '[a-z0-9\\-]+' });
         f.description = h('textarea', { class: 'input', style: { minHeight: '70px' } }); f.description.value = e ? e.description : '';
         f.status = h('select', { class: 'input' }); [['draft', 'Brouillon (invisible)'], ['open', 'Ouvert'], ['closed', 'Clôturé'], ['archived', 'Archivé']].forEach(([v, l]) => { const o = h('option', { value: v }, l); if (e && e.status === v) o.selected = true; f.status.appendChild(o); });
         f.candidacy_open = h('input', { type: 'checkbox' }); f.candidacy_open.checked = !!(e && e.candidacy_open);
