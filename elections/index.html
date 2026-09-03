@@ -78,9 +78,14 @@
     const info = await E.requireCode(box, election, { verb: 'participer' });
     if (info) {
       E.codeChip(info);
+      // La phase (brouillon / en préparation / candidatures / vote / terminé) se déduit du scrutin
+      // résolu localement (election ou, si l'accueil n'en affichait aucun, celui pointé par le code
+      // via info.election_status) plutôt que du seul champ brut renvoyé par check_code/code_lookup.
+      const codeElectionPhase = election ? E.electionState(election).phase : (info.election_status === 'draft' ? 'draft' : null);
+      const notYetStarted = codeElectionPhase === 'draft' || codeElectionPhase === 'pending';
       box.appendChild(h('div', { class: 'card ok' }, h('div', { class: 'body' },
         h('div', { class: 'title' }, info.label ? 'Bienvenue ' + info.label : 'Code reconnu'),
-        h('div', { class: 'desc' }, info.election_status === 'draft'
+        h('div', { class: 'desc' }, notYetStarted
           ? 'Ton code est valide. Le scrutin est encore en préparation par le staff : reviens quand les candidatures ou les votes seront ouverts.'
           : (info.has_ballot ? 'Tu as déjà voté, tu peux modifier ton bulletin jusqu\'à la clôture.' : 'Tu n\'as pas encore voté.') + (info.candidacies ? ` · ${info.candidacies} candidature(s) en lice.` : '')))));
     }

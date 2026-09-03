@@ -41,12 +41,16 @@
     E.qs('#subtitle').textContent = election.title;
     const roles = E.rolesOf(election);
     const q = '?e=' + encodeURIComponent(election.slug);
+    const st = E.electionState(election);
     const open = election.candidacy_open && !['closed', 'archived'].includes(election.status);
 
     if (!open) {
+      const notYetStarted = st.phase === 'draft' || st.phase === 'pending';
       app.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'icon' }, E.icon('lock')), h('div', { class: 'body' },
-        h('div', { class: 'title' }, 'Les candidatures sont fermées'),
-        h('div', { class: 'desc' }, 'La phase de candidature de « ' + election.title + ' » est terminée. Tu peux consulter les candidats sur la page de vote.'),
+        h('div', { class: 'title' }, notYetStarted ? 'Les candidatures ne sont pas encore ouvertes' : 'Les candidatures sont fermées'),
+        h('div', { class: 'desc' }, notYetStarted
+          ? 'La phase de candidature de « ' + election.title + ' » n\'a pas encore commencé. Ouverture annoncée sur Telegram.'
+          : 'La phase de candidature de « ' + election.title + ' » est terminée. Tu peux consulter les candidats sur la page de vote.'),
         h('div', { class: 'btn-row' }, h('a', { class: 'btn secondary', href: 'voter.html' + q }, 'Page de vote'), h('a', { class: 'btn secondary', href: 'resultats.html' + q }, 'Résultats')))));
       await listAll();
       return;
