@@ -143,12 +143,15 @@ begin
   return v;
 end $$;
 
--- Génération : PREFIX-XXXX-XXXX avec un alphabet sans caractères ambigus
+-- Génération : PREFIX-XXXX-XXXX avec un alphabet sans caractères ambigus.
+-- gen_random_bytes (pgcrypto, CSPRNG) plutôt que random() : ces codes sont le seul secret
+-- qui protège un bulletin de vote, ils doivent venir d'une source aléatoire imprévisible.
 create or replace function public.gen_code(p_prefix text)
 returns text language plpgsql volatile set search_path = public as $$
-declare alphabet text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; s text := ''; i int;
+declare alphabet text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; s text := ''; i int; b bytea;
 begin
-  for i in 1..8 loop s := s || substr(alphabet, 1 + floor(random() * length(alphabet))::int, 1); end loop;
+  b := gen_random_bytes(8);
+  for i in 1..8 loop s := s || substr(alphabet, 1 + (get_byte(b, i - 1) % length(alphabet)), 1); end loop;
   return upper(coalesce(nullif(trim(p_prefix), ''), 'MEUTE')) || '-' || substr(s, 1, 4) || '-' || substr(s, 5, 4);
 end $$;
 
