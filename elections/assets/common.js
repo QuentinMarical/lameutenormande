@@ -348,28 +348,6 @@
   };
 
   // ---------- Partage ----------
-  E.shareBlock = function (url, text) {
-    const wrap = E.h('div', { class: 'share' });
-    const qr = E.h('div', { class: 'qr' });
-    wrap.appendChild(qr);
-    const body = E.h('div', { style: { flex: '1', minWidth: '200px' } },
-      E.h('div', { class: 'title', style: { fontWeight: '700', marginBottom: '6px' } }, 'Partager le scrutin'),
-      E.h('div', { class: 'desc muted small' }, url),
-      E.h('div', { class: 'btn-row' },
-        E.h('a', { class: 'btn telegram small', href: `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, target: '_blank', rel: 'noopener' }, 'Telegram'),
-        E.h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(url); E.toast('Lien copié !', 'success'); } catch { E.toast(url); } } }, 'Copier le lien')));
-    wrap.appendChild(body);
-    if (window.qrcode) {
-      try {
-        const q = window.qrcode(0, 'M'); q.addData(url); q.make();
-        const img = E.h('img', { alt: 'QR code vers ' + url, width: '116', height: '116' });
-        img.src = q.createDataURL(4, 0);
-        qr.appendChild(img);
-      } catch { qr.textContent = 'QR'; }
-    } else qr.textContent = 'QR';
-    return wrap;
-  };
-
   E.footer = function () {
     const f = E.qs('#footer'); if (!f) return;
     f.innerHTML = '<div class="footer-divider"></div>'

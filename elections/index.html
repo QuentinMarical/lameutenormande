@@ -24,7 +24,6 @@
   <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
   <script src="assets/config.js"></script>
   <script src="assets/roles.js"></script>
   <script src="assets/common.js"></script>
@@ -101,13 +100,6 @@
     const list = h('div', { class: 'grid-2' });
     steps.forEach(([i, t, d]) => list.appendChild(h('div', { class: 'card', style: { marginBottom: 0 } }, h('div', { class: 'icon' }, E.icon(i)), h('div', { class: 'body' }, h('div', { class: 'title' }, t), h('div', { class: 'desc' }, d)))));
     app.appendChild(list);
-
-    // ----- Partage -----
-    if (election) {
-      app.appendChild(h('h2', { class: 'section-title' }, 'Partager'));
-      const url = (E.cfg.SITE_URL || location.href.replace(/[?#].*$/, '')) + '?e=' + encodeURIComponent(election.slug);
-      app.appendChild(h('div', { class: 'card column' }, E.shareBlock(url, `${election.title} — La Meute Normande`)));
-    }
 
     // ----- Archives -----
     const { data: others } = await E.sb.from('elections').select('id,slug,title,status,voting_closes_at,created_at')
