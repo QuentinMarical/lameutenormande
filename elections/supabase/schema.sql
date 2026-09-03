@@ -727,18 +727,20 @@ begin
     execute format('revoke execute on function %s from public, anon, authenticated', r.sig);
   end loop;
 end $$;
+-- is_admin() doit rester exécutable par anon : les policies RLS elections_read/admins_self
+-- l'appellent lors de toute lecture directe (PostgREST) de ces tables par un visiteur anonyme,
+-- pas seulement quand le client appelle explicitement le RPC is_admin(). Le retirer casse ces
+-- lectures avec "permission denied for function is_admin" (vécu en production, corrigé ici).
 grant execute on function
   public.check_code(text, uuid), public.code_lookup(text), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
   public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text),
-  public.withdraw_candidacy(text, uuid, uuid), public.active_election(),
+  public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
   public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
   to anon, authenticated;
--- is_admin() n'est appelé côté client qu'après vérification d'une session Supabase Auth active
--- (E.isAdmin() dans assets/common.js) : jamais par un visiteur anonyme, donc authenticated seulement.
 grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
-  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.is_admin()
+  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb)
   to authenticated;
 
 -- ---------------------------------------------------------------------
