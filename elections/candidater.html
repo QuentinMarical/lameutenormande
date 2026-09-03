@@ -24,14 +24,12 @@
   <script src="assets/config.js"></script>
   <script src="assets/roles.js"></script>
   <script src="assets/common.js"></script>
-  <script src="assets/auth.js"></script>
   <script>
   (async () => {
     const h = E.h, app = E.qs('#app');
     E.footer();
     await E.renderNav('candidater.html');
-    const profile = await E.requireMember(app, { verb: 'candidater' });
-    if (!profile) return;
+    if (!E.ready) { E.notConfigured(app); return; }
 
     const election = await E.electionFromUrl();
     await E.loadRoles();
@@ -42,25 +40,33 @@
     const q = '?e=' + encodeURIComponent(election.slug);
     const open = election.candidacy_open && !['closed', 'archived'].includes(election.status);
 
-    let mine = [];
-    async function loadMine() {
-      const { data } = await E.sb.from('candidates').select('*').eq('election_id', election.id).eq('user_id', profile.user_id).order('created_at');
-      mine = data || [];
+    if (!open) {
+      app.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'icon' }, '🔒'), h('div', { class: 'body' },
+        h('div', { class: 'title' }, 'Les candidatures sont fermées'),
+        h('div', { class: 'desc' }, 'La phase de candidature de « ' + election.title + ' » est terminée. Tu peux consulter les candidats sur la page de vote.'),
+        h('div', { class: 'btn-row' }, h('a', { class: 'btn secondary', href: 'voter.html' + q }, '🗳️ Page de vote'), h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 Résultats')))));
+      await listAll();
+      return;
     }
-    await loadMine();
 
-    // ---------- Formulaire ----------
-    const formCard = h('div', { class: 'card column' });
+    const info = await E.requireCode(app, election, { verb: 'candidater' });
+    if (!info) return;
+    E.codeChip(election, info);
+
+    const { data: mineData } = await E.sb.rpc('my_candidacies', { p_code: info.code, p_election: election.id });
+    const mine = mineData || [];
     const active = mine.filter(c => !c.withdrawn);
     const first = active[0] || mine[0];
-    const fName = h('input', { class: 'input', maxlength: '60', required: true, value: (first && first.display_name) || profile.display_name || profile.username || '' });
+
+    // ---------- Formulaire ----------
+    const fName = h('input', { class: 'input', maxlength: '60', required: true, value: (first && first.display_name) || info.label || '' });
     const fBio = h('textarea', { class: 'input', maxlength: '600', placeholder: 'Qui tu es, pourquoi tu te présentes, ce que tu veux apporter à la meute…' });
     fBio.value = (first && first.bio) || '';
     const bioCount = h('div', { class: 'hint' });
     const updCount = () => bioCount.textContent = fBio.value.length + ' / 600';
     fBio.addEventListener('input', updCount); updCount();
-    const fTg = h('input', { class: 'input', placeholder: 'pseudo (sans @)', value: (first && first.telegram_username) || (profile.provider === 'telegram' ? profile.username || '' : '') });
-    const fDc = h('input', { class: 'input', placeholder: 'pseudo Discord', value: (first && first.discord_username) || (profile.provider === 'discord' ? profile.username || '' : '') });
+    const fTg = h('input', { class: 'input', placeholder: 'pseudo (sans @)', value: (first && first.telegram_username) || '' });
+    const fDc = h('input', { class: 'input', placeholder: 'pseudo Discord', value: (first && first.discord_username) || '' });
     const checks = h('div', { class: 'checks' });
     const roleInputs = {};
     roles.forEach(r => {
@@ -72,8 +78,8 @@
     const preview = h('div', { style: { display: 'flex', alignItems: 'center', gap: '12px' } });
     function paintPreview() {
       E.clear(preview);
-      preview.appendChild(E.avatarEl({ username: fTg.value.trim() || profile.username, displayName: fName.value, avatarUrl: profile.avatar_url, provider: profile.provider, cls: 'lg' }));
-      preview.appendChild(h('div', null, h('div', { style: { fontWeight: 700 } }, fName.value || '—'), h('div', { class: 'small muted' }, 'Aperçu de ta fiche (l\'avatar vient de ton compte ' + profile.provider + ')')));
+      preview.appendChild(E.avatarEl({ username: fTg.value.trim(), displayName: fName.value, cls: 'lg' }));
+      preview.appendChild(h('div', null, h('div', { style: { fontWeight: 700 } }, fName.value || '—'), h('div', { class: 'small muted' }, 'Aperçu de ta fiche (la photo vient de ton profil Telegram public, si tu en as une)')));
     }
     fName.addEventListener('input', paintPreview); fTg.addEventListener('input', paintPreview); paintPreview();
 
@@ -88,16 +94,10 @@
         h('div', { class: 'field' }, h('label', null, 'Pseudo Discord'), fDc, h('div', { class: 'hint' }, 'Obligatoire pour Modérateur·ice Discord.'))),
       h('div', { class: 'btn-row' }, submit, h('a', { class: 'btn secondary', href: 'index.html' + q }, 'Retour')));
 
-    if (!open) {
-      formCard.classList.add('warn');
-      formCard.appendChild(h('div', { class: 'title' }, '🔒 Les candidatures sont fermées'));
-      formCard.appendChild(h('div', { class: 'desc' }, 'La phase de candidature de « ' + election.title + ' » est terminée. Tu peux consulter les candidats sur la page de vote.'));
-      formCard.appendChild(h('div', { class: 'btn-row' }, h('a', { class: 'btn secondary', href: 'voter.html' + q }, '🗳️ Page de vote'), h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 Résultats')));
-    } else {
-      formCard.appendChild(h('div', { class: 'title' }, (active.length ? '✏️ Modifier ma fiche' : '📝 Ma candidature') + ' — ' + election.title));
-      formCard.appendChild(h('div', { class: 'desc' }, 'Aucune validation préalable : ta candidature apparaît immédiatement sur le bulletin et est annoncée sur Telegram.'));
-      formCard.appendChild(form);
-    }
+    const formCard = h('div', { class: 'card column' },
+      h('div', { class: 'title' }, (active.length ? '✏️ Modifier ma fiche' : '📝 Ma candidature') + ' — ' + election.title),
+      h('div', { class: 'desc' }, 'Aucune validation préalable : ta candidature apparaît immédiatement sur le bulletin et est annoncée sur Telegram.'),
+      form);
     app.appendChild(formCard);
 
     form.addEventListener('submit', async (e) => {
@@ -113,11 +113,11 @@
       submit.disabled = true; submit.textContent = 'Enregistrement…';
       const errors = [];
       for (const id of wanted) {
-        const { error } = await E.sb.rpc('upsert_candidacy', { p_election: election.id, p_role: id, p_display_name: fName.value.trim(), p_bio: fBio.value.trim(), p_telegram_username: fTg.value.trim() || null, p_discord_username: fDc.value.trim() || null });
+        const { error } = await E.sb.rpc('upsert_candidacy', { p_code: info.code, p_election: election.id, p_role: id, p_display_name: fName.value.trim(), p_bio: fBio.value.trim(), p_telegram_username: fTg.value.trim() || null, p_discord_username: fDc.value.trim() || null });
         if (error) errors.push(E.roleInfo(id).label + ' : ' + E.errMsg(error));
       }
       for (const c of active) if (!wanted.includes(c.role)) {
-        const { error } = await E.sb.rpc('withdraw_candidacy', { p_candidate: c.id });
+        const { error } = await E.sb.rpc('withdraw_candidacy', { p_code: info.code, p_election: election.id, p_candidate: c.id });
         if (error) errors.push('Retrait ' + E.roleInfo(c.role).label + ' : ' + E.errMsg(error));
       }
       if (errors.length) { E.toast(errors.join(' · '), 'error'); submit.disabled = false; submit.textContent = 'Réessayer'; return; }
@@ -137,30 +137,33 @@
         card.appendChild(h('div', { class: 'body' },
           h('div', { class: 'name' }, r.label, c.withdrawn ? h('span', { class: 'badge muted' }, 'retirée') : h('span', { class: 'badge ok' }, 'en lice')),
           h('div', { class: 'handles' }, 'Mise à jour le ' + E.fmtDateTime(c.updated_at))));
-        if (open) card.appendChild(c.withdrawn
+        card.appendChild(c.withdrawn
           ? h('button', { class: 'btn secondary small', type: 'button', onClick: () => { roleInputs[c.role].checked = true; form.requestSubmit(); } }, 'Réactiver')
           : h('button', { class: 'btn danger small', type: 'button', onClick: async () => {
               if (!confirm('Retirer ta candidature au poste « ' + r.label + ' » ?')) return;
-              const { error } = await E.sb.rpc('withdraw_candidacy', { p_candidate: c.id });
+              const { error } = await E.sb.rpc('withdraw_candidacy', { p_code: info.code, p_election: election.id, p_candidate: c.id });
               if (error) E.toast(E.errMsg(error), 'error'); else { E.toast('Candidature retirée.', 'success'); setTimeout(() => location.reload(), 700); }
             } }, 'Me désister'));
         list.appendChild(card);
       });
       app.appendChild(list);
     }
+    await listAll();
 
-    // ---------- Autres candidats ----------
-    const all = await E.publicCandidates(election.id);
-    app.appendChild(h('h2', { class: 'section-title' }, 'Candidat·es déclaré·es', h('span', { class: 'count' }, all.length)));
-    if (!all.length) app.appendChild(h('div', { class: 'empty' }, 'Personne pour l\'instant : lance-toi !'));
-    else roles.forEach(r => {
-      const cs = all.filter(c => c.role === r.id); if (!cs.length) return;
-      app.appendChild(h('div', { class: 'role-head', style: { marginTop: '10px' } }, h('div', { class: 'icon-circle' }, r.icon), h('div', null, h('div', { class: 'name' }, r.label), h('div', { class: 'desc' }, cs.length + ' candidat·e' + (cs.length > 1 ? 's' : '')))));
-      const list = h('div', { class: 'cands' });
-      cs.forEach(c => list.appendChild(h('div', { class: 'cand' }, E.avatarEl({ username: c.telegram_username, displayName: c.display_name, avatarUrl: c.avatar_url, provider: c.provider }),
-        h('div', { class: 'body' }, h('div', { class: 'name' }, c.display_name), c.bio ? h('div', { class: 'bio clamp', text: c.bio }) : null))));
-      app.appendChild(list);
-    });
+    // ---------- Tous les candidats ----------
+    async function listAll() {
+      const all = await E.publicCandidates(election.id);
+      app.appendChild(h('h2', { class: 'section-title' }, 'Candidat·es déclaré·es', h('span', { class: 'count' }, all.length)));
+      if (!all.length) { app.appendChild(h('div', { class: 'empty' }, 'Personne pour l\'instant : lance-toi !')); return; }
+      roles.forEach(r => {
+        const cs = all.filter(c => c.role === r.id); if (!cs.length) return;
+        app.appendChild(h('div', { class: 'role-head', style: { marginTop: '10px' } }, h('div', { class: 'icon-circle' }, r.icon), h('div', null, h('div', { class: 'name' }, r.label), h('div', { class: 'desc' }, cs.length + ' candidat·e' + (cs.length > 1 ? 's' : '')))));
+        const list = h('div', { class: 'cands' });
+        cs.forEach(c => list.appendChild(h('div', { class: 'cand' }, E.avatarEl({ username: c.telegram_username, displayName: c.display_name }),
+          h('div', { class: 'body' }, h('div', { class: 'name' }, c.display_name), c.bio ? h('div', { class: 'bio clamp', text: c.bio }) : null))));
+        app.appendChild(list);
+      });
+    }
   })();
   </script>
 </body>
