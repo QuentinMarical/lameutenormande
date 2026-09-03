@@ -25,7 +25,6 @@
   <script src="assets/config.js"></script>
   <script src="assets/roles.js"></script>
   <script src="assets/common.js"></script>
-  <script src="assets/auth.js"></script>
   <script>
   (async () => {
     const h = E.h, app = E.qs('#app');
@@ -66,8 +65,12 @@
       if (fresh) election = fresh;
       const st = E.electionState(election);
       const voters = (part && part.voters) || 0;
+      const codesIssued = (part && part.codes_issued) || 0;
       const members = telegram && telegram.members > 0 ? telegram.members : null;
-      const rate = members ? Math.min(100, Math.round(voters / members * 1000) / 10) : null;
+      const rate = codesIssued ? Math.min(100, Math.round(voters / codesIssued * 1000) / 10) : null;
+      const rateGroup = members ? Math.min(100, Math.round(voters / members * 1000) / 10) : null;
+      const base = members || codesIssued;
+      const shownRate = rateGroup != null ? rateGroup : rate;
 
       // Bandeau
       E.clear(banner);
@@ -81,8 +84,9 @@
       const kpi = (label, value, sub) => h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, value), sub ? h('div', { class: 'sub' }, sub) : null);
       kpis.append(
         kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
+        kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', rate != null ? rate + ' % ont voté' : 'aucun code émis'),
         kpi('Membres Telegram', members ? String(members) : '—', telegram && telegram.updated_at ? 'relevé le ' + E.fmtDate(telegram.updated_at) : 'compteur non disponible'),
-        kpi('Participation', rate != null ? rate + ' %' : '—', members ? 'des membres du groupe principal' : 'en attente du compteur Telegram'),
+        kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rateGroup != null ? 'des membres du groupe Telegram' : rate != null ? 'des codes distribués' : 'en attente de données'),
         kpi('Candidat·es', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
 
       // Donut participation
@@ -92,13 +96,13 @@
         const wrap = h('div', { class: 'donut-wrap' });
         const cv = document.createElement('canvas'); wrap.appendChild(cv);
         const legend = h('div', { class: 'small muted' });
-        if (members) {
-          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, members - voters) + ' membres n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, rate + ' %')));
-        } else legend.textContent = 'Le taux sera calculé dès que le compteur Telegram (bot) aura relevé le nombre de membres.';
+        if (base) {
+          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + (members ? ' membres' : ' codes') + ' n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
+        } else legend.textContent = 'Le taux sera calculé dès que des codes auront été distribués ou que le compteur Telegram aura relevé le nombre de membres.';
         wrap.appendChild(legend); partWrap.appendChild(wrap);
         if (donut) donut.destroy();
-        donut = new Chart(cv, { type: 'doughnut', data: { labels: ['Ont voté', 'N\'ont pas voté'], datasets: [{ data: members ? [voters, Math.max(0, members - voters)] : [voters, Math.max(1, voters ? 0 : 1)], backgroundColor: [C.accent, 'rgba(255,255,255,0.08)'], borderWidth: 0, hoverOffset: 4 }] },
-          options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { enabled: !!members } }, animation: { duration: manual ? 300 : 600 } } });
+        donut = new Chart(cv, { type: 'doughnut', data: { labels: ['Ont voté', 'N\'ont pas voté'], datasets: [{ data: base ? [voters, Math.max(0, base - voters)] : [voters, Math.max(1, voters ? 0 : 1)], backgroundColor: [C.accent, 'rgba(255,255,255,0.08)'], borderWidth: 0, hoverOffset: 4 }] },
+          options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { enabled: !!base } }, animation: { duration: manual ? 300 : 600 } } });
       }
 
       // Timeline
@@ -130,7 +134,7 @@
           const elected = r.votes > 0 && (i < role.seats) && !(tied && r.votes === cutoff);
           const exaequo = tied && r.votes === cutoff && r.votes > 0;
           list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
-            E.avatarEl({ username: r.telegram_username, displayName: r.display_name, avatarUrl: r.avatar_url, provider: r.provider }),
+            E.avatarEl({ username: r.telegram_username, displayName: r.display_name }),
             h('div', { class: 'who', title: r.display_name }, (elected ? '🏆 ' : exaequo ? '⚖️ ' : '') + r.display_name),
             h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
             h('div', { class: 'n' }, r.votes + ' voix')));
