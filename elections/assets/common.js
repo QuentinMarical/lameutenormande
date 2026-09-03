@@ -206,7 +206,7 @@
     return data && data[0] || null;
   };
   E.publicCandidates = async function (electionId) {
-    const { data } = await E.sb.from('public_candidates').select('*').eq('election_id', electionId).order('created_at');
+    const { data } = await E.sb.rpc('public_candidates', { p_election: electionId });
     return data || [];
   };
 
