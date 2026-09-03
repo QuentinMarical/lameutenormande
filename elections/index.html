@@ -69,22 +69,20 @@
       row.appendChild(h('a', { class: 'btn secondary', href: 'resultats.html' + q }, st.phase === 'closed' ? 'Résultats' : 'Suivre les votes'));
       card.appendChild(row);
       app.appendChild(card);
+    }
 
-      // ----- Code individuel : seulement si aucun code valide n'est déjà mémorisé
-      //       (sinon la puce du menu suffit, pas besoin de le répéter ici) -----
-      const stored = E.getCode(election.id);
-      let info = null;
-      if (stored) { try { info = await E.checkCode(stored, election.id); } catch { E.clearCode(election.id); } }
-      if (info) {
-        E.codeChip(election, info);
-      } else {
-        app.appendChild(h('h2', { class: 'section-title', id: 'code' }, 'Ton code de vote'));
-        const box = h('div'); app.appendChild(box);
-        const resolved = await E.requireCode(box, election, { verb: 'participer' });
-        // Un code fourni par lien (?code=...) est validé sans passer par le formulaire :
-        // il faut quand même faire apparaître la puce du menu et rafraîchir la page.
-        if (resolved) { E.codeChip(election, resolved); location.reload(); }
-      }
+    // ----- Code individuel : toujours proposé, que le scrutin ci-dessus soit connu ou non
+    //       (le code identifie lui-même son scrutin, y compris s'il est encore en préparation) -----
+    app.appendChild(h('h2', { class: 'section-title', id: 'code' }, 'Ton code de vote'));
+    const box = h('div'); app.appendChild(box);
+    const info = await E.requireCode(box, election, { verb: 'participer' });
+    if (info) {
+      E.codeChip(info);
+      box.appendChild(h('div', { class: 'card ok' }, h('div', { class: 'body' },
+        h('div', { class: 'title' }, info.label ? 'Bienvenue ' + info.label : 'Code reconnu'),
+        h('div', { class: 'desc' }, info.election_status === 'draft'
+          ? 'Ton code est valide. Le scrutin est encore en préparation par le staff : reviens quand les candidatures ou les votes seront ouverts.'
+          : (info.has_ballot ? 'Tu as déjà voté, tu peux modifier ton bulletin jusqu\'à la clôture.' : 'Tu n\'as pas encore voté.') + (info.candidacies ? ` · ${info.candidacies} candidature(s) en lice.` : '')))));
     }
 
     // ----- Comment ça marche -----
