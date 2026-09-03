@@ -169,10 +169,19 @@ create table if not exists public.candidates (
 );
 alter table public.candidates enable row level security;
 create index if not exists candidates_election_idx on public.candidates (election_id, role);
+-- Couvre la FK candidates.role -> role_catalog(id) (signalée sans index par le linter Supabase).
+create index if not exists candidates_role_idx on public.candidates (role);
+-- Sert le "where code_id = ..." de my_candidacies() et de la cascade de révocation d'admin_update_code().
+create index if not exists candidates_code_id_idx on public.candidates (code_id);
 -- On ne conserve aucun identifiant de compte tiers (Telegram/Discord) sur les candidatures.
 alter table public.candidates drop column if exists telegram_username;
 alter table public.candidates drop column if exists discord_username;
 alter table public.role_catalog drop column if exists requires;
+-- Index orphelins d'une version antérieure du schéma, redondants avec les contraintes/index
+-- ci-dessus (candidates_election_id_code_id_idx est un sous-ensemble de la contrainte unique
+-- (election_id, code_id, role) ; aucune requête ne filtre ballot_choices par role seul).
+drop index if exists public.candidates_election_id_code_id_idx;
+drop index if exists public.ballot_choices_role_idx;
 
 -- ---------------------------------------------------------------------
 -- 6. Bulletins et choix (un bulletin par code)
@@ -190,6 +199,8 @@ create table if not exists public.ballots (
   unique (election_id, code_id)
 );
 alter table public.ballots enable row level security;
+-- Sert le "where code_id = ..." de la cascade de révocation d'admin_update_code().
+create index if not exists ballots_code_id_idx on public.ballots (code_id);
 
 create table if not exists public.ballot_choices (
   ballot_id    uuid not null references public.ballots(id) on delete cascade,
@@ -198,7 +209,7 @@ create table if not exists public.ballot_choices (
   primary key (ballot_id, role, candidate_id)
 );
 alter table public.ballot_choices enable row level security;
-create index if not exists ballot_choices_candidate_idx on public.ballot_choices (candidate_id);
+create index if not exists ballot_choices_candidate_id_idx on public.ballot_choices (candidate_id);
 
 -- ---------------------------------------------------------------------
 -- 7. Journal d'audit
