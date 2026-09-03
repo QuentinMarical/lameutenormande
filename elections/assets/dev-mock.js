@@ -95,6 +95,10 @@
   }
   const rpcs = {
     is_admin: () => as === 'admin',
+    public_candidates: ({ p_election }) => views.public_candidates().filter(c => c.election_id === p_election),
+    results: ({ p_election }) => views.results().filter(r => r.election_id === p_election),
+    participation: ({ p_election }) => views.participation().filter(r => r.election_id === p_election),
+    participation_timeline: ({ p_election }) => views.participation_timeline().filter(r => r.election_id === p_election),
     active_election: () => elections.filter(e => e.status === 'open'),
     check_code: ({ p_code, p_election }) => { const c = resolveCode(p_code, p_election); return { ok: true, code: c.code, label: c.label, has_ballot: ballots.some(b => b.code_id === c.id && !b.invalidated), candidacies: candidates.filter(x => x.code_id === c.id && !x.withdrawn).length }; },
     my_ballot: ({ p_code, p_election }) => { const c = resolveCode(p_code, p_election); const b = ballots.find(x => x.election_id === p_election && x.code_id === c.id); if (!b) return 'null'; const ch = {}; choices.filter(x => x.ballot_id === b.id).forEach(x => (ch[x.role] = ch[x.role] || []).push(x.candidate_id)); return { ballot_id: b.id, submitted_at: b.submitted_at, invalidated: b.invalidated, choices: ch }; },
