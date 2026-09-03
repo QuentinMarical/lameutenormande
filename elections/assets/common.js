@@ -1,4 +1,5 @@
-/* Helpers partagés par toutes les pages de l'outil d'élections. Expose window.E */
+/* Helpers partagés par toutes les pages de l'outil d'élections. Expose window.E
+   Identification des votants par code individuel (aucun compte) ; admins via Supabase Auth e-mail + mot de passe. */
 (function () {
   'use strict';
   const cfg = window.ELECTIONS_CONFIG || {};
@@ -8,7 +9,7 @@
   // ---------- Client Supabase ----------
   E.ready = !!(window.supabase && cfg.SUPABASE_URL && !/VOTRE/.test(cfg.SUPABASE_URL));
   E.sb = E.ready ? window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY, {
-    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
   }) : null;
 
   // Mode démo locale (?mock=1) : données factices en mémoire, aucun appel réseau. Voir assets/dev-mock.js
@@ -74,16 +75,16 @@
     return () => clearInterval(iv);
   };
 
-  // ---------- Avatars (FNV-1a → couleur, unavatar en priorité) ----------
+  // ---------- Avatars (FNV-1a → couleur, unavatar Telegram en priorité) ----------
   function hashString(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
   const palette = ['#7AA2FF', '#5865F2', '#FF8A65', '#9CCC65', '#FFB86B', '#8E9AAF', '#A8A29E', '#F06292'];
-  E.avatarEl = function ({ username, displayName, avatarUrl, provider, size, cls }) {
+  E.avatarEl = function ({ username, displayName, avatarUrl, size, cls }) {
     const seed = String(username || displayName || '?').toLowerCase();
     const label = (displayName || username || '?').trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
     const bg = palette[hashString(seed) % palette.length];
     const wrap = E.h('div', { class: 'icon-circle ' + (cls || ''), style: { background: bg }, 'aria-hidden': 'true' },
       E.h('span', { class: 'initials', text: label }));
-    const src = avatarUrl || (username && provider !== 'discord' ? `https://unavatar.io/telegram/${encodeURIComponent(username)}?fallback=false` : null);
+    const src = avatarUrl || (username ? `https://unavatar.io/telegram/${encodeURIComponent(username)}?fallback=false` : null);
     if (src) {
       const img = E.h('img', { class: 'avatar', alt: '', loading: 'lazy' });
       img.onload = () => img.classList.add('loaded');
@@ -108,19 +109,69 @@
   E.roleInfo = (id) => (rolesCache && rolesCache.get(id)) || (window.ROLE_CATALOG || []).find(r => r.id === id) || { id, label: id, icon: '🐾', seats: 1, max_choices: 1 };
   E.rolesOf = (election) => (Array.isArray(election.roles) ? election.roles : []).map(E.roleInfo);
 
-  // ---------- Session / profil ----------
-  let profileCache;
-  E.getSession = async () => E.sb ? (await E.sb.auth.getSession()).data.session : null;
-  E.getProfile = async function (force) {
-    if (!E.sb) return null;
-    if (profileCache !== undefined && !force) return profileCache;
-    const session = await E.getSession();
-    if (!session) { profileCache = null; return null; }
-    const { data } = await E.sb.from('profiles').select('*').eq('user_id', session.user.id).maybeSingle();
-    profileCache = data || null;
-    return profileCache;
+  // ---------- Codes individuels ----------
+  E.normCode = (s) => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  E.prettyCode = (s) => { const n = E.normCode(s); return n.length > 8 ? n.slice(0, -8) + '-' + n.slice(-8, -4) + '-' + n.slice(-4) : n; };
+  const codeKey = (electionId) => 'elections.code.' + electionId;
+  E.getCode = (electionId) => { try { return localStorage.getItem(codeKey(electionId)) || ''; } catch { return ''; } };
+  E.setCode = (electionId, code) => { try { localStorage.setItem(codeKey(electionId), code); } catch {} };
+  E.clearCode = (electionId) => { try { localStorage.removeItem(codeKey(electionId)); } catch {} };
+  E.checkCode = async (code, electionId) => {
+    const { data, error } = await E.sb.rpc('check_code', { p_code: code, p_election: electionId });
+    if (error) throw error;
+    return data;
   };
-  E.signOut = async function () { if (E.sb) await E.sb.auth.signOut(); profileCache = undefined; location.reload(); };
+
+  /** Garde : renvoie {code, label, has_ballot, candidacies} ou affiche le formulaire de saisie du code et renvoie null. */
+  E.requireCode = async function (container, election, opts) {
+    opts = opts || {};
+    if (!E.ready) { E.notConfigured(container); return null; }
+    const urlCode = new URLSearchParams(location.search).get('code');
+    const stored = urlCode || E.getCode(election.id);
+    if (stored) {
+      try { const info = await E.checkCode(stored, election.id); E.setCode(election.id, info.code); info.code = info.code || stored; return info; }
+      catch (err) { E.clearCode(election.id); if (!/CODE_/.test(err.message || '')) E.toast(E.errMsg(err), 'error'); }
+    }
+    E.clear(container);
+    const input = E.h('input', { class: 'input code-input', placeholder: 'MEUTE-XXXX-XXXX', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', required: true });
+    input.addEventListener('input', () => { input.value = E.prettyCode(input.value); });
+    const btn = E.h('button', { class: 'btn', type: 'submit' }, '➡️ Continuer');
+    const form = E.h('form', { class: 'card info column' },
+      E.h('div', { class: 'title' }, '🎟️ Ton code de vote'),
+      E.h('div', { class: 'desc' }, 'Pour ' + (opts.verb || 'voter') + ', saisis le code individuel que le staff t\'a transmis. Il est personnel : ne le partage pas.'),
+      E.h('div', { class: 'field', style: { marginTop: '6px' } }, input),
+      E.h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn),
+      E.h('div', { class: 'hint' }, 'Pas de code ? Demande-le à un membre du staff sur ', E.h('a', { href: cfg.TELEGRAM_INVITE || '#', target: '_blank', rel: 'noopener' }, 'Telegram'), '.'));
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); btn.disabled = true; btn.textContent = 'Vérification…';
+      try {
+        const info = await E.checkCode(input.value, election.id);
+        E.setCode(election.id, info.code);
+        E.toast('Code accepté' + (info.label ? ', bienvenue ' + info.label : '') + ' !', 'success');
+        const u = new URL(location.href); u.searchParams.delete('code'); location.href = u.href;
+      } catch (err) { E.toast(E.errMsg(err), 'error'); btn.disabled = false; btn.textContent = '➡️ Continuer'; input.focus(); }
+    });
+    container.appendChild(form);
+    setTimeout(() => input.focus(), 50);
+    return null;
+  };
+
+  /** Puce « code » dans la navigation, avec bouton pour changer de code. */
+  E.codeChip = function (election, info) {
+    const nav = E.qs('#nav'); if (!nav) return;
+    E.qsa('.account', nav).forEach(n => n.remove());
+    nav.appendChild(E.h('span', { class: 'account' },
+      E.h('span', null, '🎟️ ' + (info && info.label ? info.label : (info ? info.code : 'Sans code'))),
+      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir')));
+  };
+
+  // ---------- Admin (Supabase Auth) ----------
+  E.adminSession = async () => E.sb ? (await E.sb.auth.getSession()).data.session : null;
+  E.isAdmin = async function () {
+    const s = await E.adminSession(); if (!s) return false;
+    const { data } = await E.sb.rpc('is_admin'); return !!data;
+  };
+  E.signOut = async function () { if (E.sb) await E.sb.auth.signOut(); location.reload(); };
 
   // ---------- Scrutins ----------
   E.electionState = function (e) {
@@ -160,7 +211,7 @@
   };
 
   // ---------- Realtime ----------
-  /** Abonnement aux changements : broadcast public « elections » émis par les triggers SQL (fonctionne aussi pour les visiteurs anonymes). */
+  /** Abonnement aux changements : broadcast public « elections » émis par les triggers SQL. */
   E.subscribe = function (tables, cb) {
     if (!E.sb) return null;
     const ch = E.sb.channel('elections', { config: { private: false } })
@@ -176,14 +227,14 @@
       const r = await fetch(cfg.TELEGRAM_JSON || 'telegram.json', { cache: 'no-store' });
       if (!r.ok) return null;
       const j = await r.json();
-      return (j && typeof j.members === 'number') ? j : null;
+      return (j && typeof j.members === 'number' && j.members > 0) ? j : null;
     } catch { return null; }
   };
 
   // ---------- Erreurs RPC → français ----------
   const ERR = {
-    AUTH_REQUIRED: 'Connecte-toi pour continuer.',
-    NOT_MEMBER: 'Ton compte n\'est pas reconnu comme membre du groupe.',
+    CODE_INVALID: 'Code inconnu pour ce scrutin. Vérifie la saisie.',
+    CODE_REVOKED: 'Ce code a été désactivé par le staff.',
     ELECTION_NOT_FOUND: 'Scrutin introuvable.',
     ELECTION_NOT_OPEN: 'Ce scrutin n\'est pas ouvert.',
     CANDIDACY_CLOSED: 'Les candidatures sont fermées.',
@@ -196,7 +247,9 @@
     EMPTY_BALLOT: 'Ton bulletin est vide : choisis au moins un candidat.',
     ADMIN_REQUIRED: 'Réservé aux administrateurs.',
     BALLOT_NOT_FOUND: 'Bulletin introuvable.',
-    CANDIDATE_NOT_FOUND: 'Candidature introuvable.'
+    CANDIDATE_NOT_FOUND: 'Candidature introuvable.',
+    BAD_COUNT: 'Nombre de codes invalide (1 à 1000).',
+    'Invalid login credentials': 'E-mail ou mot de passe incorrect.'
   };
   E.errMsg = function (err) {
     const m = (err && (err.message || err.error_description || String(err))) || 'Erreur inconnue';
@@ -208,56 +261,16 @@
   E.renderNav = async function (active) {
     const nav = E.qs('#nav'); if (!nav) return;
     const links = [['index.html', 'Accueil'], ['voter.html', 'Voter'], ['candidater.html', 'Candidater'], ['resultats.html', 'Résultats']];
+    const q = location.search.match(/[?&]e=([^&]+)/); const suffix = q ? '?e=' + q[1] : '';
     E.clear(nav);
-    links.forEach(([href, label]) => nav.appendChild(E.h('a', { href, class: active === href ? 'active' : '' }, label)));
+    links.forEach(([href, label]) => nav.appendChild(E.h('a', { href: href + suffix, class: active === href ? 'active' : '' }, label)));
     nav.appendChild(E.h('span', { class: 'spacer' }));
-    const p = await E.getProfile();
-    if (p) {
-      if (p.is_admin) nav.appendChild(E.h('a', { href: 'admin.html', class: active === 'admin.html' ? 'active' : '' }, '⚙️ Admin'));
-      nav.appendChild(E.h('span', { class: 'account' },
-        E.avatarEl({ username: p.username, displayName: p.display_name, avatarUrl: p.avatar_url, provider: p.provider }),
-        E.h('span', null, p.display_name || p.username || 'Membre'),
-        E.h('span', { class: 'badge ' + p.provider }, p.provider === 'telegram' ? 'TG' : 'DC'),
-        E.h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏏')));
-    } else if (E.ready && active !== 'index.html') {
-      nav.appendChild(E.h('a', { href: 'index.html#connexion' }, 'Se connecter'));
-    }
+    if (E.ready && await E.adminSession()) nav.appendChild(E.h('a', { href: 'admin.html', class: active === 'admin.html' ? 'active' : '' }, '⚙️ Admin'));
   };
   E.notConfigured = function (container) {
     E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, '🛠️'),
       E.h('div', { class: 'body' }, E.h('div', { class: 'title' }, 'Outil pas encore configuré'),
         E.h('div', { class: 'desc' }, 'Renseigne SUPABASE_URL et SUPABASE_ANON_KEY dans assets/config.js (voir supabase/README.md).'))));
-  };
-
-  /** Garde : renvoie le profil membre, sinon affiche l'écran de connexion / non-membre dans container. */
-  E.requireMember = async function (container, opts) {
-    opts = opts || {};
-    if (!E.ready) { E.notConfigured(container); return null; }
-    const session = await E.getSession();
-    if (!session) {
-      E.clear(container);
-      container.appendChild(E.h('div', { class: 'card info column' },
-        E.h('div', { class: 'title' }, '🔐 Connexion requise'),
-        E.h('div', { class: 'desc' }, 'Pour ' + (opts.verb || 'voter') + ', connecte-toi avec le compte Telegram ou Discord avec lequel tu es membre de la Meute. Aucun mot de passe : on vérifie juste que tu fais partie du groupe.')));
-      const box = E.h('div'); container.appendChild(box);
-      window.A && A.renderLogin(box, { returnTo: location.pathname.split('/').pop() + location.search });
-      return null;
-    }
-    const p = await E.getProfile(true);
-    if (!p) { E.clear(container).appendChild(E.h('div', { class: 'card danger' }, E.h('div', { class: 'body' }, E.h('div', { class: 'title' }, 'Profil introuvable'), E.h('div', { class: 'desc' }, 'Déconnecte-toi puis reconnecte-toi.')))); return null; }
-    if (p.banned) { E.clear(container).appendChild(E.h('div', { class: 'card danger' }, E.h('div', { class: 'icon' }, '⛔'), E.h('div', { class: 'body' }, E.h('div', { class: 'title' }, 'Compte suspendu'), E.h('div', { class: 'desc' }, 'Ce compte a été exclu du scrutin par l\'équipe. Contacte le staff si tu penses qu\'il s\'agit d\'une erreur.')))); return null; }
-    if (!p.is_member && !opts.allowNonMember) {
-      E.clear(container);
-      container.appendChild(E.h('div', { class: 'card warn column' },
-        E.h('div', { class: 'title' }, '🚪 Tu dois être membre du groupe'),
-        E.h('div', { class: 'desc' }, `Ton compte ${p.provider === 'telegram' ? 'Telegram' : 'Discord'} (${p.username || p.display_name || ''}) n'a pas été trouvé dans ${p.provider === 'telegram' ? 'le groupe Telegram principal' : 'le serveur Discord'} de la Meute. Rejoins-le puis reconnecte-toi pour relancer la vérification.`),
-        E.h('div', { class: 'btn-row' },
-          E.h('a', { class: 'btn telegram', href: cfg.TELEGRAM_INVITE, target: '_blank', rel: 'noopener' }, '✈ Groupe Telegram'),
-          E.h('a', { class: 'btn discord', href: cfg.DISCORD_INVITE, target: '_blank', rel: 'noopener' }, '🎧 Serveur Discord'),
-          E.h('button', { class: 'btn secondary', type: 'button', onClick: E.signOut }, '↻ Se reconnecter pour revérifier'))));
-      return null;
-    }
-    return p;
   };
 
   // ---------- Partage ----------
@@ -281,6 +294,6 @@
 
   E.footer = function () {
     const f = E.qs('#footer'); if (!f) return;
-    f.innerHTML = 'Outil d\'élections de <a href="https://lameutenormande.fr">La Meute Normande</a> · identité vérifiée via Telegram / Discord · <a href="resultats.html">résultats en direct</a>';
+    f.innerHTML = 'Outil d\'élections de <a href="https://lameutenormande.fr">La Meute Normande</a> · un code individuel par membre · <a href="resultats.html">résultats en direct</a>';
   };
 })();
