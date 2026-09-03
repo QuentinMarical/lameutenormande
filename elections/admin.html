@@ -40,7 +40,7 @@
     if (!session) {
       const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
       const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
-      const btn = h('button', { class: 'btn', type: 'submit' }, '🔐 Se connecter');
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
       const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
         h('div', { class: 'title' }, 'Connexion administrateur'),
         h('div', { class: 'desc' }, 'Compte créé dans Supabase → Authentication → Users, puis ajouté à la table admins.'),
@@ -56,12 +56,12 @@
       return;
     }
     if (!(await E.isAdmin())) {
-      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, '⛔'), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, E.icon('ban')), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
         h('div', { class: 'desc' }, 'Dans l\'éditeur SQL Supabase : insert into public.admins (user_id, label) values (\'' + session.user.id + '\', \'' + (session.user.email || '') + '\');'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
       return;
     }
-    { const slot = E.qs('.topbar .tool.admin'); const chip = h('span', { class: 'account' }, h('span', null, '👤 ' + (session.user.email || 'admin')), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏏')); if (slot) slot.replaceWith(chip); }
+    { const slot = E.qs('.topbar .tool.admin'); const chip = h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, E.icon('right-from-bracket'))); if (slot) slot.replaceWith(chip); }
 
     const rolesMap = await E.loadRoles();
     const allRoles = [...rolesMap.values()];
@@ -79,7 +79,7 @@
     await loadElections();
 
     // ---------- Tabs ----------
-    const tabs = [['scrutins', '🗂️ Scrutins'], ['codes', '🎟️ Codes'], ['candidatures', '🐾 Candidatures'], ['votants', '🧑‍🤝‍🧑 Votants'], ['audit', '📜 Audit'], ['pv', '📄 Procès-verbal'], ['reglages', '⚙️ Réglages']];
+    const tabs = [['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     const selector = h('select', { class: 'input', style: { width: 'auto', maxWidth: '100%' } });
@@ -124,10 +124,10 @@
         f.results_public = h('input', { type: 'checkbox' }); f.results_public.checked = e ? e.results_public : true;
         inp('voting_closes_at', { type: 'datetime-local', value: toLocalInput(e && e.voting_closes_at) });
         const roleChecks = h('div', { class: 'checks' }); const roleInputs = {};
-        allRoles.forEach(r => { const c = h('input', { type: 'checkbox', value: r.id }); c.checked = e ? (e.roles || []).includes(r.id) : true; roleInputs[r.id] = c; roleChecks.appendChild(h('label', { class: 'check' }, c, h('span', null, r.icon + ' ' + r.label))); });
-        const save = h('button', { class: 'btn', type: 'submit' }, e ? '💾 Enregistrer' : '＋ Créer');
+        allRoles.forEach(r => { const c = h('input', { type: 'checkbox', value: r.id }); c.checked = e ? (e.roles || []).includes(r.id) : true; roleInputs[r.id] = c; roleChecks.appendChild(h('label', { class: 'check' }, c, h('span', null, r.label))); });
+        const save = h('button', { class: 'btn', type: 'submit' }, e ? 'Enregistrer' : 'Créer');
         const form = h('form', { id: 'edit-form', class: 'card column mt-16' },
-          h('div', { class: 'title' }, e ? '✏️ ' + e.title : '🆕 Nouveau scrutin'),
+          h('div', { class: 'title' }, e ? e.title : 'Nouveau scrutin'),
           h('div', { class: 'grid-2' }, h('div', { class: 'field' }, h('label', null, 'Titre'), f.title), h('div', { class: 'field' }, h('label', null, 'Identifiant (URL)'), f.slug, h('div', { class: 'hint' }, 'minuscules, chiffres, tirets'))),
           h('div', { class: 'field' }, h('label', null, 'Description'), f.description),
           h('div', { class: 'field' }, h('label', null, 'Postes du scrutin'), roleChecks),
@@ -136,7 +136,7 @@
             h('label', { class: 'switch' }, f.candidacy_open, 'Candidatures ouvertes'), h('label', { class: 'switch' }, f.voting_open, 'Votes ouverts'), h('label', { class: 'switch' }, f.results_public, 'Scores publics pendant le vote')),
           h('div', { class: 'btn-row' }, save, e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: true, voting_open: false, status: 'open' }) }, '1️⃣ Ouvrir les candidatures') : null,
             e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: false, voting_open: true, status: 'open' }) }, '2️⃣ Ouvrir les votes') : null,
-            e ? h('button', { class: 'btn danger', type: 'button', onClick: () => confirm('Clôturer le scrutin maintenant ? Les résultats seront annoncés sur Telegram.') && quick(e, { candidacy_open: false, voting_open: false, status: 'closed' }) }, '⏹ Clôturer') : null));
+            e ? h('button', { class: 'btn danger', type: 'button', onClick: () => confirm('Clôturer le scrutin maintenant ? Les résultats seront annoncés sur Telegram.') && quick(e, { candidacy_open: false, voting_open: false, status: 'closed' }) }, 'Clôturer') : null));
         form.addEventListener('submit', async ev => {
           ev.preventDefault();
           const payload = { id: e ? e.id : undefined, title: f.title.value.trim(), slug: f.slug.value.trim(), description: f.description.value.trim(), status: f.status.value,
@@ -169,9 +169,9 @@
       const nInput = h('input', { class: 'input', type: 'number', min: '1', max: '1000', value: '20', style: { width: '90px' } });
       const prefix = h('input', { class: 'input', value: 'MEUTE', maxlength: '10', style: { width: '120px' } });
       const labels = h('textarea', { class: 'input', placeholder: 'Optionnel : un pseudo par ligne (le code n°1 ira au premier, etc.). Si rempli, le nombre de codes = nombre de lignes.', style: { minHeight: '80px' } });
-      const gen = h('button', { class: 'btn', type: 'submit' }, '✨ Générer');
+      const gen = h('button', { class: 'btn', type: 'submit' }, 'Générer');
       const genForm = h('form', { class: 'card column' },
-        h('div', { class: 'title' }, '🎟️ Générer des codes pour « ' + current.title + ' »'),
+        h('div', { class: 'title' }, 'Générer des codes pour « ' + current.title + ' »'),
         h('div', { class: 'desc' }, 'Un code = un membre = un bulletin. Distribue-les en message privé (Telegram / Discord). Chaque code donne aussi accès à la candidature.'),
         h('div', { class: 'filters', style: { marginBottom: 0 } }, h('span', { class: 'small muted' }, 'Nombre'), nInput, h('span', { class: 'small muted' }, 'Préfixe'), prefix, gen),
         h('div', { class: 'field', style: { marginBottom: 0 } }, h('label', null, 'Étiquettes (à qui remettre chaque code)'), labels));
@@ -192,11 +192,11 @@
       const used = rows.filter(r => r.first_used_at).length, revoked = rows.filter(r => r.revoked).length, distributed = rows.filter(r => r.distributed).length;
       const search = h('input', { class: 'input', placeholder: 'Rechercher un code ou une étiquette…' });
       const filter = h('select', { class: 'input', style: { width: 'auto' } }, h('option', { value: '' }, 'Tous'), h('option', { value: 'unused' }, 'Jamais utilisés'), h('option', { value: 'used' }, 'Utilisés'), h('option', { value: 'undistributed' }, 'Non distribués'), h('option', { value: 'revoked' }, 'Révoqués'));
-      const csvBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('codes-' + current.slug + '.csv', ['code', 'label', 'lien', 'distributed', 'first_used_at', 'uses', 'revoked'], rows.map(r => Object.assign({}, r, { lien: voteLink(r) }))) }, '⬇ CSV');
+      const csvBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('codes-' + current.slug + '.csv', ['code', 'label', 'lien', 'distributed', 'first_used_at', 'uses', 'revoked'], rows.map(r => Object.assign({}, r, { lien: voteLink(r) }))) }, 'CSV');
       const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
         const txt = shown().map(r => (r.label ? r.label + ' : ' : '') + r.code + '  →  ' + voteLink(r)).join('\n');
         try { await navigator.clipboard.writeText(txt); E.toast('Liste copiée (' + shown().length + ' lignes).', 'success'); } catch { E.toast('Copie impossible.', 'error'); }
-      } }, '📋 Copier la liste affichée');
+      } }, 'Copier la liste affichée');
       const summary = h('div', { class: 'small muted' }, `${rows.length} codes · ${distributed} distribués · ${used} utilisés · ${revoked} révoqués`);
       const grid = h('div', { class: 'codes-grid' });
       pane.append(h('div', { class: 'filters' }, search, filter, csvBtn, copyBtn, summary), grid);
@@ -221,7 +221,7 @@
               r.first_used_at ? h('span', { class: 'badge ok' }, 'utilisé ×' + r.uses) : h('span', { class: 'badge muted' }, 'jamais utilisé'),
               r.revoked ? h('span', { class: 'badge danger', title: r.revoked_reason || '' }, 'révoqué') : null),
             h('div', { class: 'btn-row', style: { marginTop: '8px', gap: '6px' } },
-              h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(voteLink(r)); E.toast('Lien copié.', 'success'); } catch { E.toast(voteLink(r)); } } }, '🔗 Lien'),
+              h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(voteLink(r)); E.toast('Lien copié.', 'success'); } catch { E.toast(voteLink(r)); } } }, 'Lien'),
               r.revoked
                 ? h('button', { class: 'btn ok small', type: 'button', onClick: async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: false }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Réactiver')
                 : h('button', { class: 'btn danger small', type: 'button', onClick: async () => { const reason = prompt('Révoquer ce code ? Son bulletin et ses candidatures seront invalidés. Motif :', 'Code compromis'); if (reason === null) return; const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: true, p_reason: reason }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Révoquer')));
@@ -249,9 +249,9 @@
           const { error } = await E.sb.rpc('admin_withdraw_candidacy', { p_candidate: c.id, p_restore: c.withdrawn }); if (error) E.toast(E.errMsg(error), 'error'); else candidatures(); } }, c.withdrawn ? 'Réactiver' : 'Retirer'));
         tbody.appendChild(h('tr', { class: c.withdrawn ? 'invalid' : '' },
           h('td', null, E.avatarEl({ username: c.telegram_username, displayName: c.display_name }), c.display_name),
-          h('td', null, r.icon + ' ' + r.label),
+          h('td', null, r.label),
           h('td', null, h('span', { class: 'code-pill' }, vc.code || '?'), vc.label ? ' ' + vc.label : '', vc.revoked ? h('span', { class: 'badge danger', style: { marginLeft: '6px' } }, 'code révoqué') : null),
-          h('td', null, [c.telegram_username ? '✈ @' + c.telegram_username : null, c.discord_username ? '🎧 ' + c.discord_username : null].filter(Boolean).join(' · ') || '—'),
+          h('td', null, [c.telegram_username ? 'Telegram @' + c.telegram_username : null, c.discord_username ? 'Discord ' + c.discord_username : null].filter(Boolean).join(' · ') || '—'),
           h('td', { title: c.bio, style: { maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis' } }, c.bio || '—'),
           h('td', null, E.fmtDateTime(c.updated_at)), actions));
       });
@@ -267,7 +267,7 @@
       const rows = data || [];
       const search = h('input', { class: 'input', placeholder: 'Rechercher un code ou une étiquette…' });
       const onlySusp = h('input', { type: 'checkbox' });
-      const csv = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('votants-' + current.slug + '.csv', ['code', 'label', 'first_submitted_at', 'submitted_at', 'submissions', 'uses', 'invalidated', 'invalidated_reason', 'suspicion'], rows.map(r => Object.assign({}, r, { suspicion: (r.suspicion || []).join('|') }))) }, '⬇ CSV');
+      const csv = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('votants-' + current.slug + '.csv', ['code', 'label', 'first_submitted_at', 'submitted_at', 'submissions', 'uses', 'invalidated', 'invalidated_reason', 'suspicion'], rows.map(r => Object.assign({}, r, { suspicion: (r.suspicion || []).join('|') }))) }, 'CSV');
       const summary = h('div', { class: 'small muted' });
       const tbody = h('tbody');
       pane.append(h('div', { class: 'filters' }, search, h('label', { class: 'switch' }, onlySusp, 'Suspects seulement'), csv, summary),
@@ -307,9 +307,9 @@
       const rows = data || [];
       const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié' };
       const tbody = h('tbody');
-      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, (r.actor || '—').replace(/^admin:/, '👤 ').replace(/^code:/, '🎟️ ')), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
+      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, (r.actor || '—').replace(/^admin:/, 'Admin ').replace(/^code:/, 'Code ')), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
         h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '360px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)))));
-      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, '⬇ CSV')),
+      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
         h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails'].map(t => h('th', null, t)))), tbody)));
     }
 
@@ -337,18 +337,18 @@
       roles.forEach(role => {
         const rs = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes);
         const max = Math.max(1, ...rs.map(r => r.votes));
-        const block = h('div', { class: 'chart-wrap' }, h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, role.icon), h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste(s)'))));
+        const block = h('div', { class: 'chart-wrap' }, h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)), h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste(s)'))));
         if (!rs.length) block.appendChild(h('div', { class: 'empty' }, 'Aucun·e candidat·e.'));
         const list = h('div', { class: 'bar-list' });
-        rs.forEach((r, i) => list.appendChild(h('div', { class: 'bar-row' + (i < role.seats && r.votes > 0 ? ' elected' : '') }, h('div', { class: 'who' }, (i < role.seats && r.votes > 0 ? '🏆 ' : '') + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
+        rs.forEach((r, i) => list.appendChild(h('div', { class: 'bar-row' + (i < role.seats && r.votes > 0 ? ' elected' : '') }, h('div', { class: 'who' }, i < role.seats && r.votes > 0 ? E.icon('trophy') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
         block.appendChild(list); doc.appendChild(block);
       });
       const invalid = (voters || []).filter(v => v.invalidated);
       if (invalid.length) doc.appendChild(h('div', { class: 'small muted' }, 'Bulletins invalidés : ' + invalid.map(v => (v.label || v.code) + ' (' + (v.invalidated_reason || 'sans motif') + ')').join(' ; ')));
       doc.appendChild(h('div', { class: 'print-only small', style: { marginTop: '24px' } }, 'Signatures du staff : ________________________    ________________________    ________________________'));
       pane.append(h('div', { class: 'btn-row no-print', style: { marginTop: 0, marginBottom: '12px' } },
-        h('button', { class: 'btn', type: 'button', onClick: () => window.print() }, '🖨️ Imprimer / PDF'),
-        h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'telegram_username', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, '⬇ Résultats CSV')), doc);
+        h('button', { class: 'btn', type: 'button', onClick: () => window.print() }, 'Imprimer / PDF'),
+        h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'telegram_username', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, 'Résultats CSV')), doc);
     }
 
     // ---------- Réglages ----------
@@ -358,8 +358,8 @@
       const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
       const url = h('input', { class: 'input', value: map.notify_url || '', placeholder: (E.cfg.SUPABASE_URL || 'https://xxx.supabase.co') + '/functions/v1/telegram-notify' });
       const secret = h('input', { class: 'input', type: 'password', value: map.notify_secret || '', placeholder: 'même valeur que le secret NOTIFY_SECRET de la function' });
-      const save = h('button', { class: 'btn', type: 'submit' }, '💾 Enregistrer');
-      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, '📣 Annonces Telegram automatiques (optionnel)'),
+      const save = h('button', { class: 'btn', type: 'submit' }, 'Enregistrer');
+      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, 'Annonces Telegram automatiques (optionnel)'),
         h('div', { class: 'desc' }, 'Postgres appelle l\'Edge Function telegram-notify (nouvelle candidature, rappel J-1, résultats). Laisse vide pour désactiver.'),
         h('div', { class: 'field' }, h('label', null, 'URL de la function'), url), h('div', { class: 'field' }, h('label', null, 'Secret partagé'), secret), h('div', { class: 'btn-row' }, save));
       form.addEventListener('submit', async ev => {
