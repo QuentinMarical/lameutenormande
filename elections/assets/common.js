@@ -158,11 +158,11 @@
 
   /** Puce « code » dans la navigation, avec bouton pour changer de code. */
   E.codeChip = function (election, info) {
-    const nav = E.qs('#nav'); if (!nav) return;
-    E.qsa('.account', nav).forEach(n => n.remove());
-    nav.appendChild(E.h('span', { class: 'account' },
-      E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', null, info.label) : null,
-      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir')));
+    const slot = E.qs('.topbar #codeSlot'); if (!slot) return;
+    const chip = E.h('span', { class: 'account', id: 'codeSlot' },
+      E.h('span', null, '🎟️'), E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
+      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir'));
+    slot.replaceWith(chip);
   };
 
   // ---------- Admin (Supabase Auth) ----------
@@ -254,8 +254,14 @@
     const q = location.search.match(/[?&]e=([^&]+)/); const suffix = q ? '?e=' + q[1] : '';
     E.clear(nav);
     links.forEach(([href, label]) => nav.appendChild(E.h('a', { href: href + suffix, class: active === href ? 'active' : '' }, label)));
-    nav.appendChild(E.h('span', { class: 'spacer' }));
-    if (E.ready && await E.adminSession()) nav.appendChild(E.h('a', { href: 'admin.html', class: active === 'admin.html' ? 'active' : '' }, '⚙️ Admin'));
+    // À droite, à la place des réseaux sociaux du site : accès par code et accès admin
+    const bar = nav.parentElement;
+    E.qsa('.actions', bar).forEach(n => n.remove());
+    const actions = E.h('div', { class: 'actions' });
+    actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + suffix + '#code', title: 'Saisir mon code de vote' }, '🎟️ Mon code'));
+    const admin = E.ready && await E.adminSession();
+    actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? '⚙️ Admin' : '⚙️'));
+    bar.appendChild(actions);
   };
   E.notConfigured = function (container) {
     E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, '🛠️'),
@@ -284,8 +290,15 @@
 
   E.footer = function () {
     const f = E.qs('#footer'); if (!f) return;
+    const q = location.search.match(/[?&]e=([^&]+)/); const suffix = q ? '?e=' + q[1] : '';
+    const contact = cfg.TELEGRAM_INVITE || 'https://lameutenormande.fr/contact.html';
     f.innerHTML = '<div class="footer-divider"></div>'
-      + '<p>Site réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> &amp; outil d\'élections de <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a></p>'
-      + '<p class="legal"><a href="https://lameutenormande.fr/contact.html">Contact</a> · <a href="resultats.html">Résultats en direct</a> · un code individuel par membre, aucun compte</p>';
+      + '<div class="footer-title">Élections de la Meute</div>'
+      + '<p>Outil de vote interne de <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a> · un code individuel par membre, aucun compte à créer · résultats en direct.</p>'
+      + '<div class="footer-links">'
+      + '<a href="index.html' + suffix + '">Accueil</a><a href="voter.html' + suffix + '">Voter</a><a href="candidater.html' + suffix + '">Candidater</a><a href="resultats.html' + suffix + '">Résultats</a><a href="admin.html">Administration</a>'
+      + '<a href="' + contact + '" target="_blank" rel="noopener">Pas de code ? Contacter le staff</a>'
+      + '</div>'
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> · le staff voit qui a voté, jamais le contenu d’un bulletin.</p>';
   };
 })();
