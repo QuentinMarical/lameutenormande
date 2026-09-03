@@ -161,7 +161,7 @@
     const nav = E.qs('#nav'); if (!nav) return;
     E.qsa('.account', nav).forEach(n => n.remove());
     nav.appendChild(E.h('span', { class: 'account' },
-      E.h('span', null, '🎟️ ' + (info && info.label ? info.label : (info ? info.code : 'Sans code'))),
+      E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', null, info.label) : null,
       E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir')));
   };
 
@@ -220,16 +220,6 @@
     return ch;
   };
   E.debounce = function (fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms || 400); }; };
-
-  // ---------- Telegram (compteur écrit par GitHub Actions) ----------
-  E.loadTelegramCount = async function () {
-    try {
-      const r = await fetch(cfg.TELEGRAM_JSON || 'telegram.json', { cache: 'no-store' });
-      if (!r.ok) return null;
-      const j = await r.json();
-      return (j && typeof j.members === 'number' && j.members > 0) ? j : null;
-    } catch { return null; }
-  };
 
   // ---------- Erreurs RPC → français ----------
   const ERR = {
@@ -294,6 +284,8 @@
 
   E.footer = function () {
     const f = E.qs('#footer'); if (!f) return;
-    f.innerHTML = 'Outil d\'élections de <a href="https://lameutenormande.fr">La Meute Normande</a> · un code individuel par membre · <a href="resultats.html">résultats en direct</a>';
+    f.innerHTML = '<div class="footer-divider"></div>'
+      + '<p>Site réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> &amp; outil d\'élections de <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a></p>'
+      + '<p class="legal"><a href="https://lameutenormande.fr/contact.html">Contact</a> · <a href="resultats.html">Résultats en direct</a> · un code individuel par membre, aucun compte</p>';
   };
 })();
