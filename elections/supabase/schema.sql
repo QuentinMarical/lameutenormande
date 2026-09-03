@@ -367,7 +367,7 @@ begin
   v_code := public.resolve_code(p_code, p_election);
   select * into v_election from public.elections where id = p_election;
   if v_election is null or v_election.status = 'draft' then raise exception 'ELECTION_NOT_FOUND'; end if;
-  if not v_election.candidacy_open then raise exception 'CANDIDACY_CLOSED'; end if;
+  if v_election.status <> 'open' or not v_election.candidacy_open then raise exception 'CANDIDACY_CLOSED'; end if;
   if not (v_election.roles ? p_role) then raise exception 'ROLE_NOT_IN_ELECTION'; end if;
   select * into v_role from public.role_catalog where id = p_role;
   if v_role.requires = 'telegram' and coalesce(trim(p_telegram_username),'') = '' then raise exception 'TELEGRAM_USERNAME_REQUIRED'; end if;
@@ -391,6 +391,8 @@ returns void language plpgsql security definer set search_path = public as $$
 declare v_code public.voter_codes;
 begin
   v_code := public.resolve_code(p_code, p_election);
+  -- Pas de désistement après la clôture : les résultats sont figés
+  if not exists (select 1 from public.elections where id = p_election and status = 'open') then raise exception 'ELECTION_NOT_OPEN'; end if;
   update public.candidates set withdrawn = true, updated_at = now() where id = p_candidate and code_id = v_code.id;
   if not found then raise exception 'CANDIDATE_NOT_FOUND'; end if;
   perform public.log_audit('code:' || coalesce(v_code.label, v_code.code), 'candidacy_withdraw', p_candidate::text);
@@ -612,7 +614,7 @@ begin
     update public.elections set reminder_sent = true where id = e.id;
   end loop;
 
-  update public.elections set voting_open = false, status = 'closed', updated_at = now()
+  update public.elections set voting_open = false, candidacy_open = false, status = 'closed', updated_at = now()
   where status = 'open' and voting_closes_at is not null and now() >= voting_closes_at;
 
   for e in select * from public.elections where status = 'closed' and not results_sent loop
