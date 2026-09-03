@@ -123,7 +123,7 @@ create index if not exists voter_codes_election_idx on public.voter_codes (elect
 
 -- Normalisation de la saisie utilisateur : majuscules, sans espaces ni tirets
 create or replace function public.norm_code(p text)
-returns text language sql immutable as $$
+returns text language sql immutable set search_path = public as $$
   select upper(regexp_replace(coalesce(p, ''), '[^A-Za-z0-9]', '', 'g'));
 $$;
 
@@ -145,7 +145,7 @@ end $$;
 
 -- Génération : PREFIX-XXXX-XXXX avec un alphabet sans caractères ambigus
 create or replace function public.gen_code(p_prefix text)
-returns text language plpgsql volatile as $$
+returns text language plpgsql volatile set search_path = public as $$
 declare alphabet text := 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; s text := ''; i int;
 begin
   for i in 1..8 loop s := s || substr(alphabet, 1 + floor(random() * length(alphabet))::int, 1); end loop;
@@ -225,7 +225,7 @@ drop policy if exists app_settings_admin on public.app_settings;
 create policy app_settings_admin on public.app_settings for all using (public.is_admin()) with check (public.is_admin());
 
 drop policy if exists admins_self on public.admins;
-create policy admins_self on public.admins for select using (user_id = auth.uid() or public.is_admin());
+create policy admins_self on public.admins for select using (user_id = (select auth.uid()) or public.is_admin());
 
 drop policy if exists role_catalog_read on public.role_catalog;
 create policy role_catalog_read on public.role_catalog for select using (true);
@@ -233,7 +233,12 @@ create policy role_catalog_read on public.role_catalog for select using (true);
 drop policy if exists elections_read on public.elections;
 create policy elections_read on public.elections for select using (status <> 'draft' or public.is_admin());
 drop policy if exists elections_admin_write on public.elections;
-create policy elections_admin_write on public.elections for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists elections_admin_insert on public.elections;
+drop policy if exists elections_admin_update on public.elections;
+drop policy if exists elections_admin_delete on public.elections;
+create policy elections_admin_insert on public.elections for insert with check (public.is_admin());
+create policy elections_admin_update on public.elections for update using (public.is_admin()) with check (public.is_admin());
+create policy elections_admin_delete on public.elections for delete using (public.is_admin());
 
 drop policy if exists voter_codes_admin on public.voter_codes;
 create policy voter_codes_admin on public.voter_codes for all using (public.is_admin()) with check (public.is_admin());
@@ -656,24 +661,29 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------
--- 14. Privilèges : seules les RPC destinées au front restent appelables
---     via l'API. Les helpers internes ne sont exécutables que par postgres
---     (appels depuis les fonctions security definer, cron, triggers).
+-- 14. Privilèges d'exécution : tout est révoqué, puis accordé explicitement.
+--     Votants / public : anon + authenticated. Admin : authenticated seulement
+--     (les fonctions vérifient en plus is_admin()). Helpers internes : postgres.
 -- ---------------------------------------------------------------------
+alter default privileges for role postgres in schema public revoke execute on functions from public, anon, authenticated;
 do $$
-declare f text;
+declare r record;
 begin
-  foreach f in array array[
-    'public.resolve_code(text, uuid, boolean)', 'public.gen_code(text)', 'public.norm_code(text)',
-    'public.log_audit(text, text, text, jsonb)', 'public.notify_telegram(jsonb)', 'public.elections_tick()',
-    'public.on_candidate_insert()', 'public.broadcast_change()'
-  ] loop
-    execute format('revoke execute on function %s from public, anon, authenticated', f);
+  for r in select p.oid::regprocedure as sig from pg_proc p where p.pronamespace = 'public'::regnamespace loop
+    execute format('revoke execute on function %s from public, anon, authenticated', r.sig);
   end loop;
 end $$;
--- Les RPC publiques restent accessibles (comportement par défaut) :
---   check_code, my_ballot, my_candidacies, cast_ballot, upsert_candidacy, withdraw_candidacy,
---   active_election, is_admin, admin_* (protégées par is_admin()).
+grant execute on function
+  public.check_code(text, uuid), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
+  public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text, text, text),
+  public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
+  public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
+  to anon, authenticated;
+grant execute on function
+  public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text),
+  public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
+  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb)
+  to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 15. Scrutin d'exemple (brouillon, à ouvrir depuis le panel admin)
