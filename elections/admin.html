@@ -6,20 +6,22 @@
   <meta name="color-scheme" content="dark">
   <meta name="robots" content="noindex, nofollow">
   <title>Administration — Élections de la Meute Normande</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
   <link rel="stylesheet" href="assets/elections.css">
 </head>
 <body>
-  <main class="container wide">
-    <header class="header">
-      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
-      <h1>Administration des élections</h1>
-      <div class="sub">Scrutins · codes · candidatures · votants · audit · procès-verbal</div>
-    </header>
-    <nav class="nav" id="nav"></nav>
-    <div class="content" id="app"><div class="loader">Chargement…</div></div>
-    <footer class="footer" id="footer"></footer>
-  </main>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Élections"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Administration des élections</h1>
+    <div class="sub">Scrutins · codes · candidatures · votants · audit · procès-verbal</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="assets/config.js"></script>
@@ -314,12 +316,11 @@
     async function pv() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const [{ data: partRows }, { data: voters }, { data: choices }, { data: cands }, telegram] = await Promise.all([
+      const [{ data: partRows }, { data: voters }, { data: choices }, { data: cands }] = await Promise.all([
         E.sb.rpc('participation', { p_election: current.id }),
         E.sb.from('admin_voters').select('*').eq('election_id', current.id),
         E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false),
-        E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false),
-        E.loadTelegramCount()]);
+        E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false)]);
       const part = partRows && partRows[0] || null;
       const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
       const roles = E.rolesOf(current);
@@ -330,8 +331,8 @@
         h('div', { class: 'kpis' },
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins valides'), h('div', { class: 'value' }, String(voters_n))),
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins invalidés'), h('div', { class: 'value' }, String((part && part.invalidated) || 0))),
-          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Codes émis'), h('div', { class: 'value' }, String(codes_n)), h('div', { class: 'sub' }, codes_n ? Math.round(voters_n / codes_n * 1000) / 10 + ' % de participation' : '')),
-          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Membres Telegram'), h('div', { class: 'value' }, telegram ? String(telegram.members) : '—'), h('div', { class: 'sub' }, telegram ? Math.round(voters_n / telegram.members * 1000) / 10 + ' % du groupe' : ''))));
+          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Codes émis'), h('div', { class: 'value' }, String(codes_n))),
+          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Participation'), h('div', { class: 'value' }, codes_n ? Math.round(voters_n / codes_n * 1000) / 10 + ' %' : '—'), h('div', { class: 'sub' }, 'des codes émis'))));
       roles.forEach(role => {
         const rs = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes);
         const max = Math.max(1, ...rs.map(r => r.votes));
