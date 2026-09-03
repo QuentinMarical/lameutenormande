@@ -53,7 +53,7 @@
 
     const info = await E.requireCode(app, election, { verb: 'voter' });
     if (!info) return;
-    E.codeChip(election, info);
+    E.codeChip(info);
 
     const [candidates, myBallotRes] = await Promise.all([E.publicCandidates(election.id), E.sb.rpc('my_ballot', { p_code: info.code, p_election: election.id })]);
     const myBallot = myBallotRes.data && myBallotRes.data !== 'null' ? myBallotRes.data : null;
