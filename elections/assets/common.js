@@ -280,6 +280,7 @@
 
   // ---------- Erreurs RPC → français ----------
   const ERR = {
+    elections_slug_key: 'Cet identifiant (URL) est déjà utilisé par un autre scrutin : choisis-en un autre.',
     CODE_INVALID: 'Code inconnu pour ce scrutin. Vérifie la saisie.',
     CODE_REVOKED: 'Ce code a été désactivé par le staff.',
     ELECTION_NOT_FOUND: 'Scrutin introuvable.',
