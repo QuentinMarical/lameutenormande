@@ -369,6 +369,24 @@ begin
     'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
 end $$;
 
+-- Résout un code SANS connaître son scrutin à l'avance (le code identifie son scrutin de façon
+-- unique). Permet à la page d'accueil de proposer la saisie d'un code même quand aucun scrutin
+-- n'est autrement visible publiquement (ex. le scrutin est encore en préparation par le staff).
+create or replace function public.code_lookup(p_code text)
+returns jsonb language plpgsql security definer set search_path = public as $$
+declare v public.voter_codes; e public.elections;
+begin
+  select * into v from public.voter_codes where code_key = public.norm_code(p_code);
+  if v.id is null then raise exception 'CODE_INVALID'; end if;
+  if v.revoked then raise exception 'CODE_REVOKED'; end if;
+  select * into e from public.elections where id = v.election_id;
+  update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
+  return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
+    'election_id', e.id, 'election_slug', e.slug, 'election_title', e.title, 'election_status', e.status,
+    'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
+    'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
+end $$;
+
 create or replace function public.upsert_candidacy(
   p_code text, p_election uuid, p_role text, p_display_name text, p_bio text,
   p_telegram_username text default null, p_discord_username text default null
@@ -692,7 +710,7 @@ begin
   end loop;
 end $$;
 grant execute on function
-  public.check_code(text, uuid), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
+  public.check_code(text, uuid), public.code_lookup(text), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
   public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text, text, text),
   public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
   public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
