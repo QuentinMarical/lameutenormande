@@ -235,7 +235,7 @@
     if (!e) return { phase: 'none', label: 'Aucun scrutin', cls: 'muted' };
     const closesPassed = e.voting_closes_at && Date.now() >= new Date(e.voting_closes_at).getTime();
     if (e.status === 'archived') return { phase: 'archived', label: 'Archivé', cls: 'muted' };
-    if (e.status === 'closed' || (e.status === 'open' && !e.voting_open && !e.candidacy_open && closesPassed)) return { phase: 'closed', label: 'Terminé', cls: 'muted' };
+    if (e.status === 'closed' || (e.status === 'open' && closesPassed && (e.voting_open || !e.candidacy_open))) return { phase: 'closed', label: 'Terminé', cls: 'muted' };
     if (e.status === 'draft') return { phase: 'draft', label: 'Brouillon', cls: 'warn' };
     if (e.voting_open && !closesPassed) return { phase: 'vote', label: 'Vote en cours', cls: 'ok live' };
     if (e.candidacy_open) return { phase: 'candidatures', label: 'Candidatures ouvertes', cls: 'ok' };
