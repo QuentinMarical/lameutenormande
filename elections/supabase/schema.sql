@@ -272,19 +272,31 @@ create policy audit_admin_read on public.audit_log for select using (public.is_a
 
 -- Journal d'audit avec un nom lisible plutôt que l'identifiant technique de l'acteur
 -- ('admin:<uuid>' → étiquette ou e-mail de l'admin, 'code:<x>' → x tel quel).
--- security_invoker : hérite de la RLS de la table de base (admin uniquement).
-create or replace view public.audit_log_readable with (security_invoker = true) as
-  select al.id, al.at, al.actor, al.action, al.target, al.details,
-    case
-      when al.actor like 'admin:%' then coalesce(
-        (select coalesce(a.label, u.email) from public.admins a join auth.users u on u.id = a.user_id
-         where a.user_id::text = substring(al.actor from 7)),
-        al.actor)
-      when al.actor like 'code:%' then substring(al.actor from 6)
-      else al.actor
-    end as actor_label
-  from public.audit_log al;
-grant select on public.audit_log_readable to authenticated;
+-- Fonction security definer (pas une vue security_invoker) : la résolution de l'e-mail admin
+-- lit auth.users, table à laquelle le rôle authenticated n'a pas accès direct — seul le
+-- propriétaire de la fonction (postgres) le peut. is_admin() reproduit la restriction RLS
+-- perdue en passant d'une vue à une fonction.
+drop view if exists public.audit_log_readable;
+create or replace function public.audit_log_readable()
+returns table (id bigint, at timestamptz, actor text, action text, target text, details jsonb, actor_label text)
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  return query
+    select al.id, al.at, al.actor, al.action, al.target, al.details,
+      case
+        when al.actor like 'admin:%' then coalesce(
+          (select coalesce(a.label, u.email) from public.admins a join auth.users u on u.id = a.user_id
+           where a.user_id::text = substring(al.actor from 7)),
+          al.actor)
+        when al.actor like 'code:%' then substring(al.actor from 6)
+        else al.actor
+      end as actor_label
+    from public.audit_log al
+    order by al.at desc
+    limit 300;
+end $$;
+grant execute on function public.audit_log_readable() to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 9. Agrégats publics (RPC security definer, jamais de lien code → choix)
