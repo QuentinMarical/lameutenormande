@@ -5,20 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>Résultats — Élections de la Meute Normande</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
   <link rel="stylesheet" href="assets/elections.css">
 </head>
 <body>
-  <main class="container wide">
-    <header class="header">
-      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
-      <h1 id="title">Résultats</h1>
-      <div class="sub" id="subtitle">Participation et scores mis à jour en direct</div>
-    </header>
-    <nav class="nav" id="nav"></nav>
-    <div class="content" id="app"><div class="loader">Chargement…</div></div>
-    <footer class="footer" id="footer"></footer>
-  </main>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Élections"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1 id="title">Résultats</h1>
+    <div class="sub" id="subtitle">Participation et scores mis à jour en direct</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -53,7 +55,6 @@
       h('div', { class: 'btn-row center' }, h('a', { class: 'btn', href: 'voter.html' + q }, '🗳️ Voter'), h('button', { class: 'btn secondary', type: 'button', onClick: () => refresh(true) }, '↻ Actualiser')));
 
     let donut, line;
-    const telegram = await E.loadTelegramCount();
 
     async function refresh(manual) {
       const [{ data: fresh }, { data: results }, { data: partRows }, { data: timeline }] = await Promise.all([
@@ -67,11 +68,9 @@
       const st = E.electionState(election);
       const voters = (part && part.voters) || 0;
       const codesIssued = (part && part.codes_issued) || 0;
-      const members = telegram && telegram.members > 0 ? telegram.members : null;
       const rate = codesIssued ? Math.min(100, Math.round(voters / codesIssued * 1000) / 10) : null;
-      const rateGroup = members ? Math.min(100, Math.round(voters / members * 1000) / 10) : null;
-      const base = members || codesIssued;
-      const shownRate = rateGroup != null ? rateGroup : rate;
+      const base = codesIssued;
+      const shownRate = rate;
 
       // Bandeau
       E.clear(banner);
@@ -85,9 +84,8 @@
       const kpi = (label, value, sub) => h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, value), sub ? h('div', { class: 'sub' }, sub) : null);
       kpis.append(
         kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
-        kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', rate != null ? rate + ' % ont voté' : 'aucun code émis'),
-        kpi('Membres Telegram', members ? String(members) : '—', telegram && telegram.updated_at ? 'relevé le ' + E.fmtDate(telegram.updated_at) : 'compteur non disponible'),
-        kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rateGroup != null ? 'des membres du groupe Telegram' : rate != null ? 'des codes distribués' : 'en attente de données'),
+        kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', 'un code par membre'),
+        kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rate != null ? 'des codes distribués' : 'aucun code émis'),
         kpi('Candidat·es', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
 
       // Donut participation
@@ -98,8 +96,8 @@
         const cv = document.createElement('canvas'); wrap.appendChild(cv);
         const legend = h('div', { class: 'small muted' });
         if (base) {
-          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + (members ? ' membres' : ' codes') + ' n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
-        } else legend.textContent = 'Le taux sera calculé dès que des codes auront été distribués ou que le compteur Telegram aura relevé le nombre de membres.';
+          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + ' codes n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
+        } else legend.textContent = 'Le taux sera calculé dès que des codes auront été distribués.';
         wrap.appendChild(legend); partWrap.appendChild(wrap);
         if (donut) donut.destroy();
         donut = new Chart(cv, { type: 'doughnut', data: { labels: ['Ont voté', 'N\'ont pas voté'], datasets: [{ data: base ? [voters, Math.max(0, base - voters)] : [voters, Math.max(1, voters ? 0 : 1)], backgroundColor: [C.accent, 'rgba(255,255,255,0.08)'], borderWidth: 0, hoverOffset: 4 }] },
