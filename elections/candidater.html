@@ -5,20 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>Candidater — Élections de la Meute Normande</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
   <link rel="stylesheet" href="assets/elections.css">
 </head>
 <body>
-  <main class="container">
-    <header class="header">
-      <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
-      <h1>Se porter candidat·e</h1>
-      <div class="sub" id="subtitle">Inscription libre, modifiable tant que les candidatures sont ouvertes</div>
-    </header>
-    <nav class="nav" id="nav"></nav>
-    <div class="content" id="app"><div class="loader">Chargement…</div></div>
-    <footer class="footer" id="footer"></footer>
-  </main>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Élections"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Se porter candidat·e</h1>
+    <div class="sub" id="subtitle">Inscription libre, modifiable tant que les candidatures sont ouvertes</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="assets/config.js"></script>
