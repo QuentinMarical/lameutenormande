@@ -549,6 +549,18 @@ begin
                            jsonb_strip_nulls(jsonb_build_object('label', p_label, 'distributed', p_distributed, 'revoked', p_revoked, 'reason', p_reason)));
 end $$;
 
+create or replace function public.admin_delete_code(p_code_id uuid)
+returns void language plpgsql security definer set search_path = public as $$
+declare v_revoked boolean; v_election uuid;
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  select revoked, election_id into v_revoked, v_election from public.voter_codes where id = p_code_id;
+  if v_election is null then raise exception 'CODE_NOT_FOUND'; end if;
+  if not v_revoked then raise exception 'CODE_NOT_REVOKED'; end if;
+  delete from public.voter_codes where id = p_code_id;
+  perform public.log_audit('admin:' || auth.uid()::text, 'code_deleted', v_election::text, jsonb_build_object('code_id', p_code_id));
+end $$;
+
 create or replace function public.admin_invalidate_ballot(p_ballot uuid, p_reason text)
 returns void language plpgsql security definer set search_path = public as $$
 begin
@@ -716,7 +728,7 @@ grant execute on function
   public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
   to anon, authenticated;
 grant execute on function
-  public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text),
+  public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
   public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb)
   to authenticated;
