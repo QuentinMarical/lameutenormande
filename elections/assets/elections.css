@@ -308,3 +308,10 @@ a:focus-visible,button:focus-visible,.check:focus-within,.cand:focus-within{outl
   .print-only{display:block !important}
 }
 .print-only{display:none}
+
+/* ---------- Codes individuels ---------- */
+.code-input{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:20px;letter-spacing:2px;text-align:center;text-transform:uppercase}
+.code-pill{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:8px;padding:3px 8px;font-size:12px;letter-spacing:1px}
+.codes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.code-card{background:var(--card-surface);border:1px solid var(--border-color);border-radius:12px;padding:10px 12px;font-size:12px}
+.code-card .code-pill{font-size:15px;display:block;text-align:center;margin-bottom:6px;padding:6px}
