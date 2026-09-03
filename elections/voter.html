@@ -44,7 +44,7 @@
         h('div', { class: 'title' }, st.phase === 'closed' || st.phase === 'archived' ? 'Les votes sont terminés' : 'Les votes ne sont pas encore ouverts'),
         h('div', { class: 'desc' }, election.voting_closes_at && st.phase !== 'closed' ? 'Ouverture annoncée sur Telegram. Clôture prévue le ' + E.fmtDateTime(election.voting_closes_at) + '.' : 'Consulte les résultats ou reviens plus tard.'),
         h('div', { class: 'btn-row' }, h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 Résultats'),
-          election.candidacy_open ? h('a', { class: 'btn', href: 'candidater.html' + q }, '🐾 Candidater') : null))));
+          election.candidacy_open && election.status === 'open' ? h('a', { class: 'btn', href: 'candidater.html' + q }, '🐾 Candidater') : null))));
       return;
     }
 
