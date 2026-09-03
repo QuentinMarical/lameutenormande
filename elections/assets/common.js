@@ -142,17 +142,39 @@
   // ---------- Codes individuels ----------
   E.normCode = (s) => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
   E.prettyCode = (s) => { const n = E.normCode(s); return n.length > 8 ? n.slice(0, -8) + '-' + n.slice(-8, -4) + '-' + n.slice(-4) : n; };
-  const codeKey = (electionId) => 'elections.code.' + electionId;
-  E.getCode = (electionId) => { try { return localStorage.getItem(codeKey(electionId)) || ''; } catch { return ''; } };
-  E.setCode = (electionId, code) => { try { localStorage.setItem(codeKey(electionId), code); } catch {} };
-  E.clearCode = (electionId) => { try { localStorage.removeItem(codeKey(electionId)); } catch {} };
+  // Un seul code actif à la fois, stocké sous une clé globale (un code identifie son scrutin de façon
+  // unique, pas besoin de le scoper par élection). Migration douce depuis l'ancien format scopé
+  // ('elections.code.<uuid>'), pour ne pas faire perdre son code à un membre déjà connecté.
+  const CODE_KEY = 'elections.code';
+  (function migrateOldCodeKey() {
+    try {
+      if (localStorage.getItem(CODE_KEY)) return;
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.indexOf('elections.code.') === 0) { localStorage.setItem(CODE_KEY, localStorage.getItem(k)); localStorage.removeItem(k); break; }
+      }
+    } catch {}
+  })();
+  E.getCode = () => { try { return localStorage.getItem(CODE_KEY) || ''; } catch { return ''; } };
+  E.setCode = (code) => { try { localStorage.setItem(CODE_KEY, code); } catch {} };
+  E.clearCode = () => { try { localStorage.removeItem(CODE_KEY); } catch {} };
   E.checkCode = async (code, electionId) => {
     const { data, error } = await E.sb.rpc('check_code', { p_code: code, p_election: electionId });
     if (error) throw error;
     return data;
   };
+  /** Résout un code sans connaître son scrutin à l'avance (retourne aussi election_id/slug/title/status). */
+  E.codeLookup = async (code) => {
+    const { data, error } = await E.sb.rpc('code_lookup', { p_code: code });
+    if (error) throw error;
+    return data;
+  };
 
-  /** Garde : renvoie {code, label, has_ballot, candidacies} ou affiche le formulaire de saisie du code et renvoie null. */
+  /**
+   * Garde : renvoie {code, label, has_ballot, candidacies, ...} ou affiche le formulaire de saisie
+   * du code et renvoie null. `election` peut être null (page d'accueil sans scrutin publiable connu
+   * à l'avance) : le code saisi résout alors lui-même son propre scrutin.
+   */
   E.requireCode = async function (container, election, opts) {
     opts = opts || {};
     if (!E.ready) { E.notConfigured(container); return null; }
@@ -164,10 +186,14 @@
       const u = new URL(location.href); u.searchParams.delete('code');
       history.replaceState(null, '', u.pathname + u.search + u.hash);
     }
-    const stored = urlCode || E.getCode(election.id);
+    const stored = urlCode || E.getCode();
     if (stored) {
-      try { const info = await E.checkCode(stored, election.id); E.setCode(election.id, info.code); info.code = info.code || stored; return info; }
-      catch (err) { E.clearCode(election.id); if (!/CODE_/.test(err.message || '')) E.toast(E.errMsg(err), 'error'); }
+      try {
+        const info = election ? await E.checkCode(stored, election.id) : await E.codeLookup(stored);
+        E.setCode(info.code || stored);
+        if (opts.onResolved) opts.onResolved(info);
+        return info;
+      } catch (err) { E.clearCode(); if (!/CODE_/.test(err.message || '')) E.toast(E.errMsg(err), 'error'); }
     }
     E.clear(container);
     const input = E.h('input', { class: 'input code-input', placeholder: 'MEUTE-XXXX-XXXX', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', required: true });
@@ -182,9 +208,10 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault(); btn.disabled = true; btn.textContent = 'Vérification…';
       try {
-        const info = await E.checkCode(input.value, election.id);
-        E.setCode(election.id, info.code);
+        const info = election ? await E.checkCode(input.value, election.id) : await E.codeLookup(input.value);
+        E.setCode(info.code);
         E.toast('Code accepté' + (info.label ? ', bienvenue ' + info.label : '') + ' !', 'success');
+        if (opts.onResolved) { opts.onResolved(info); return; }
         const u = new URL(location.href); u.searchParams.delete('code'); location.href = u.href;
       } catch (err) { E.toast(E.errMsg(err), 'error'); btn.disabled = false; btn.textContent = 'Continuer'; input.focus(); }
     });
@@ -194,11 +221,11 @@
   };
 
   /** Puce « code » dans la navigation, avec bouton pour changer de code. */
-  E.codeChip = function (election, info) {
+  E.codeChip = function (info) {
     const slot = E.qs('.topbar #codeSlot'); if (!slot) return;
     const chip = E.h('span', { class: 'account', id: 'codeSlot' },
       E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
-      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(election.id); location.reload(); } }, info ? 'changer' : 'saisir'));
+      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(); location.reload(); } }, info ? 'changer' : 'saisir'));
     slot.replaceWith(chip);
   };
 
@@ -295,21 +322,19 @@
     const bar = nav.parentElement;
     E.qsa('.actions', bar).forEach(n => n.remove());
     const actions = E.h('div', { class: 'actions' });
-    // Le menu résout lui-même le scrutin (même logique que chaque page) : la puce « Mon code » fonctionne
-    // partout, y compris sur une page qui n'affiche rien elle-même (ex. le seul scrutin existant est encore
-    // en brouillon). S'il n'existe vraiment aucun scrutin publié, il n'y a rien à proposer : le bouton est masqué.
-    const navElection = E.ready ? await E.electionFromUrl() : null;
-    if (navElection) {
-      const codeSuffix = '?e=' + encodeURIComponent(navElection.slug);
-      const stored = E.getCode(navElection.id);
+    // La puce « code » du menu ne dépend d'aucun scrutin affiché sur la page : un code identifie
+    // lui-même son scrutin (code_lookup), donc le bouton « Mon code » fonctionne toujours, même si
+    // le seul scrutin existant est encore en préparation et invisible ailleurs sur le site.
+    if (E.ready) {
+      const stored = E.getCode();
       let info = null;
-      if (stored) { try { info = await E.checkCode(stored, navElection.id); } catch { E.clearCode(navElection.id); } }
+      if (stored) { try { info = await E.codeLookup(stored); } catch { E.clearCode(); } }
       if (info) {
         actions.appendChild(E.h('span', { class: 'account', id: 'codeSlot' },
           E.h('span', { class: 'code-pill' }, info.code), info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
-          E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(navElection.id); location.reload(); } }, 'changer')));
+          E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(); location.reload(); } }, 'changer')));
       } else {
-        actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html' + codeSuffix + '#code', title: 'Saisir mon code de vote' }, 'Mon code'));
+        actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html#code', title: 'Saisir mon code de vote' }, 'Mon code'));
       }
     }
     const admin = E.ready && await E.adminSession();
@@ -347,17 +372,10 @@
 
   E.footer = function () {
     const f = E.qs('#footer'); if (!f) return;
-    const q = location.search.match(/[?&]e=([^&]+)/); const suffix = q ? '?e=' + q[1] : '';
-    const contact = cfg.TELEGRAM_INVITE || 'https://lameutenormande.fr/contact.html';
     f.innerHTML = '<div class="footer-divider"></div>'
       + '<div class="footer-title">Élections de la Meute</div>'
-      + '<p>Outil de vote interne de <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a> · un code individuel par membre, aucun compte à créer · résultats en direct.</p>'
-      + '<div class="footer-links">'
-      + '<a href="index.html' + suffix + '">Accueil</a><a href="voter.html' + suffix + '">Voter</a><a href="candidater.html' + suffix + '">Candidater</a><a href="resultats.html' + suffix + '">Résultats</a><a href="admin.html">Administration</a>'
-      + '<a href="' + contact + '" target="_blank" rel="noopener">Pas de code ? Contacter le staff</a>'
-      + '</div>'
       + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
-      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> · le staff voit qui a voté, jamais le contenu d’un bulletin.</p>';
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
     f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); });
   };
 })();
