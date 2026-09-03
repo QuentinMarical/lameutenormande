@@ -26,7 +26,6 @@
   <script src="assets/config.js"></script>
   <script src="assets/roles.js"></script>
   <script src="assets/common.js"></script>
-  <script src="assets/auth.js"></script>
   <script>
   (async () => {
     const app = E.qs('#app');
@@ -35,8 +34,7 @@
     if (!E.ready) { E.notConfigured(app); return; }
 
     const h = E.h;
-    const slug = new URLSearchParams(location.search).get('e');
-    const [election, profile] = await Promise.all([E.electionFromUrl(), E.getProfile()]);
+    const election = await E.electionFromUrl();
     await E.loadRoles();
     E.clear(app);
 
@@ -68,35 +66,31 @@
       row.appendChild(h('a', { class: 'btn secondary', href: 'resultats.html' + q }, '📊 ' + (st.phase === 'closed' ? 'Résultats' : 'Suivre les votes')));
       card.appendChild(row);
       app.appendChild(card);
-    }
 
-    // ----- Connexion / état du compte -----
-    app.appendChild(h('h2', { class: 'section-title', id: 'connexion' }, 'Ton compte'));
-    if (!profile) {
-      app.appendChild(h('div', { class: 'desc muted small', style: { marginBottom: '10px' } },
-        'Pour voter ou candidater, connecte-toi avec le compte Telegram ou Discord avec lequel tu es membre. On vérifie uniquement que tu fais partie du groupe : aucun mot de passe, aucun accès à tes messages.'));
+      // ----- Code individuel -----
+      app.appendChild(h('h2', { class: 'section-title', id: 'code' }, 'Ton code de vote'));
+      const stored = E.getCode(election.id);
       const box = h('div'); app.appendChild(box);
-      A.renderLogin(box, { returnTo: 'index.html' + (slug ? '?e=' + encodeURIComponent(slug) : '') });
-    } else {
-      const ok = profile.is_member && !profile.banned;
-      app.appendChild(h('div', { class: 'card ' + (ok ? 'ok' : 'warn') },
-        E.avatarEl({ username: profile.username, displayName: profile.display_name, avatarUrl: profile.avatar_url, provider: profile.provider, cls: 'lg' }),
-        h('div', { class: 'body' },
-          h('div', { class: 'title' }, profile.display_name || profile.username || 'Membre', ' ', h('span', { class: 'badge ' + profile.provider }, profile.provider)),
-          h('div', { class: 'desc' }, profile.banned ? '⛔ Compte suspendu pour ce scrutin.' : ok ? '✅ Membre vérifié : tu peux voter et candidater.' : '⚠️ Compte non trouvé dans le groupe. Rejoins-le puis reconnecte-toi.'),
-          !ok && !profile.banned ? h('div', { class: 'btn-row' },
-            h('a', { class: 'btn telegram small', href: E.cfg.TELEGRAM_INVITE, target: '_blank', rel: 'noopener' }, '✈ Telegram'),
-            h('a', { class: 'btn discord small', href: E.cfg.DISCORD_INVITE, target: '_blank', rel: 'noopener' }, '🎧 Discord'),
-            h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, '↻ Revérifier')) : null)));
+      if (stored) {
+        let info = null;
+        try { info = await E.checkCode(stored, election.id); } catch { E.clearCode(election.id); }
+        if (info) {
+          E.codeChip(election, info);
+          box.appendChild(h('div', { class: 'card ok' }, h('div', { class: 'icon' }, '🎟️'), h('div', { class: 'body' },
+            h('div', { class: 'title' }, 'Code enregistré sur cet appareil', ' ', h('span', { class: 'code-pill' }, info.code)),
+            h('div', { class: 'desc' }, (info.label ? 'Remis à ' + info.label + '. ' : '') + (info.has_ballot ? '✅ Tu as déjà voté, tu peux modifier ton bulletin jusqu\'à la clôture.' : 'Tu n\'as pas encore voté.') + (info.candidacies ? ` · ${info.candidacies} candidature(s) en lice.` : '')),
+            h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => { E.clearCode(election.id); location.reload(); } }, 'Utiliser un autre code')))));
+        } else await E.requireCode(box, election, { verb: 'participer' });
+      } else await E.requireCode(box, election, { verb: 'participer' });
     }
 
     // ----- Comment ça marche -----
     app.appendChild(h('h2', { class: 'section-title' }, 'Comment ça marche'));
     const steps = [
-      ['🔐', 'Connexion vérifiée', 'Telegram ou Discord. Seuls les comptes présents dans le groupe / serveur de la Meute peuvent participer.'],
+      ['🎟️', 'Un code par membre', 'Le staff remet à chaque membre un code individuel (par message privé). Ce code sert de bulletin : garde-le pour toi.'],
       ['🐾', 'Candidatures libres', 'Pendant la phase de candidature, chaque membre peut se présenter à un ou plusieurs postes et modifier sa fiche.'],
-      ['🗳️', 'Un bulletin par membre', 'Tu peux revoter tant que le scrutin est ouvert : ton dernier bulletin remplace le précédent.'],
-      ['📊', 'Résultats en direct', 'Participation et scores sont visibles en temps réel. Les bulletins suspects (double compte) peuvent être invalidés par le staff.']
+      ['🗳️', 'Un bulletin par code', 'Tu peux revoter tant que le scrutin est ouvert : ton dernier bulletin remplace le précédent.'],
+      ['📊', 'Résultats en direct', 'Participation et scores sont visibles en temps réel. Le staff peut invalider un bulletin suspect, tout est journalisé.']
     ];
     const list = h('div', { class: 'grid-2' });
     steps.forEach(([i, t, d]) => list.appendChild(h('div', { class: 'card', style: { marginBottom: 0 } }, h('div', { class: 'icon' }, i), h('div', { class: 'body' }, h('div', { class: 'title' }, t), h('div', { class: 'desc' }, d)))));
