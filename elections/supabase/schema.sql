@@ -254,6 +254,22 @@ create policy ballot_choices_admin on public.ballot_choices for select using (pu
 drop policy if exists audit_admin_read on public.audit_log;
 create policy audit_admin_read on public.audit_log for select using (public.is_admin());
 
+-- Journal d'audit avec un nom lisible plutôt que l'identifiant technique de l'acteur
+-- ('admin:<uuid>' → étiquette ou e-mail de l'admin, 'code:<x>' → x tel quel).
+-- security_invoker : hérite de la RLS de la table de base (admin uniquement).
+create or replace view public.audit_log_readable with (security_invoker = true) as
+  select al.id, al.at, al.actor, al.action, al.target, al.details,
+    case
+      when al.actor like 'admin:%' then coalesce(
+        (select coalesce(a.label, u.email) from public.admins a join auth.users u on u.id = a.user_id
+         where a.user_id::text = substring(al.actor from 7)),
+        al.actor)
+      when al.actor like 'code:%' then substring(al.actor from 6)
+      else al.actor
+    end as actor_label
+  from public.audit_log al;
+grant select on public.audit_log_readable to authenticated;
+
 -- ---------------------------------------------------------------------
 -- 9. Agrégats publics (RPC security definer, jamais de lien code → choix)
 --    Des fonctions plutôt que des vues : le Security Advisor de Supabase
