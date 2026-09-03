@@ -51,7 +51,6 @@ Le dossier [`elections/`](elections/) contient un outil de vote complet : un cod
 
 - Front : pages statiques dans `elections/` (aucun build) ; admins connectés par e-mail + mot de passe (Supabase Auth)
 - Données : projet Supabase (schéma dans `elections/supabase/schema.sql`, Edge Functions dans `elections/supabase/functions/`)
-- Compteur de membres Telegram : workflow `update-telegram-count.yml` (bot) → `elections/telegram.json`
 
 👉 Guide d'installation pas à pas : [`elections/supabase/README.md`](elections/supabase/README.md)
 
