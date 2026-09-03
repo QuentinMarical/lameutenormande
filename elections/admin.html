@@ -134,8 +134,8 @@
           h('div', { class: 'grid-2' }, h('div', { class: 'field' }, h('label', null, 'Statut'), f.status), h('div', { class: 'field' }, h('label', null, 'Clôture automatique des votes'), f.voting_closes_at, h('div', { class: 'hint' }, 'Heure locale. Rappel Telegram 24 h avant, clôture et résultats automatiques.'))),
           h('div', { class: 'btn-row', style: { marginTop: 0 } },
             h('label', { class: 'switch' }, f.candidacy_open, 'Candidatures ouvertes'), h('label', { class: 'switch' }, f.voting_open, 'Votes ouverts'), h('label', { class: 'switch' }, f.results_public, 'Scores publics pendant le vote')),
-          h('div', { class: 'btn-row' }, save, e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: true, voting_open: false, status: 'open' }) }, '1️⃣ Ouvrir les candidatures') : null,
-            e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: false, voting_open: true, status: 'open' }) }, '2️⃣ Ouvrir les votes') : null,
+          h('div', { class: 'btn-row' }, save, e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: true, voting_open: false, status: 'open' }) }, 'Ouvrir les candidatures') : null,
+            e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: false, voting_open: true, status: 'open' }) }, 'Ouvrir les votes') : null,
             e ? h('button', { class: 'btn danger', type: 'button', onClick: () => confirm('Clôturer le scrutin maintenant ? Les résultats seront annoncés sur Telegram.') && quick(e, { candidacy_open: false, voting_open: false, status: 'closed' }) }, 'Clôturer') : null));
         form.addEventListener('submit', async ev => {
           ev.preventDefault();
@@ -302,14 +302,14 @@
     // ---------- Audit ----------
     async function audit() {
       E.clear(pane);
-      const { data, error } = await E.sb.from('audit_log').select('*').order('at', { ascending: false }).limit(300);
+      const { data, error } = await E.sb.from('audit_log_readable').select('*').order('at', { ascending: false }).limit(300);
       if (error) throw error;
       const rows = data || [];
       const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié' };
       const tbody = h('tbody');
-      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, (r.actor || '—').replace(/^admin:/, 'Admin ').replace(/^code:/, 'Code ')), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
+      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, r.actor_label || r.actor || '—'), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
         h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '360px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)))));
-      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
+      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
         h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails'].map(t => h('th', null, t)))), tbody)));
     }
 
