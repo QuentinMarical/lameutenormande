@@ -14,7 +14,7 @@
     <header class="header">
       <img class="logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="130" height="54">
       <h1>Administration des élections</h1>
-      <div class="sub">Scrutins · candidatures · votants · audit · procès-verbal</div>
+      <div class="sub">Scrutins · codes · candidatures · votants · audit · procès-verbal</div>
     </header>
     <nav class="nav" id="nav"></nav>
     <div class="content" id="app"><div class="loader">Chargement…</div></div>
@@ -25,19 +25,41 @@
   <script src="assets/config.js"></script>
   <script src="assets/roles.js"></script>
   <script src="assets/common.js"></script>
-  <script src="assets/auth.js"></script>
   <script>
   (async () => {
     const h = E.h, app = E.qs('#app');
     E.footer();
     await E.renderNav('admin.html');
-    const profile = await E.requireMember(app, { verb: 'administrer', allowNonMember: true });
-    if (!profile) return;
-    if (!profile.is_admin) {
-      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, '⛔'), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Accès réservé aux administrateurs'),
-        h('div', { class: 'desc' }, 'Un administrateur peut te donner l\'accès en exécutant dans Supabase : update profiles set is_admin = true where user_id = \'' + profile.user_id + '\';'))));
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // ---------- Connexion admin (e-mail + mot de passe Supabase Auth) ----------
+    const session = await E.adminSession();
+    if (!session) {
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
+      const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
+      const btn = h('button', { class: 'btn', type: 'submit' }, '🔐 Se connecter');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Connexion administrateur'),
+        h('div', { class: 'desc' }, 'Compte créé dans Supabase → Authentication → Users, puis ajouté à la table admins.'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); btn.disabled = true;
+        const { error } = await E.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        location.reload();
+      });
+      E.clear(app).appendChild(form);
       return;
     }
+    if (!(await E.isAdmin())) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, '⛔'), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+        h('div', { class: 'desc' }, 'Dans l\'éditeur SQL Supabase : insert into public.admins (user_id, label) values (\'' + session.user.id + '\', \'' + (session.user.email || '') + '\');'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    E.qs('#nav').appendChild(h('span', { class: 'account' }, h('span', null, '👤 ' + (session.user.email || 'admin')), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏏')));
+
     const rolesMap = await E.loadRoles();
     const allRoles = [...rolesMap.values()];
     E.clear(app);
@@ -54,7 +76,7 @@
     await loadElections();
 
     // ---------- Tabs ----------
-    const tabs = [['scrutins', '🗂️ Scrutins'], ['candidatures', '🐾 Candidatures'], ['votants', '🧑‍🤝‍🧑 Votants'], ['audit', '📜 Audit'], ['pv', '📄 Procès-verbal'], ['reglages', '⚙️ Réglages']];
+    const tabs = [['scrutins', '🗂️ Scrutins'], ['codes', '🎟️ Codes'], ['candidatures', '🐾 Candidatures'], ['votants', '🧑‍🤝‍🧑 Votants'], ['audit', '📜 Audit'], ['pv', '📄 Procès-verbal'], ['reglages', '⚙️ Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     const selector = h('select', { class: 'input', style: { width: 'auto', maxWidth: '100%' } });
@@ -70,12 +92,12 @@
     function show(id) {
       E.qsa('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       E.clear(pane).appendChild(E.loader());
-      ({ scrutins, candidatures, votants, audit, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+      ({ scrutins, codes, candidatures, votants, audit, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
     }
 
     const toLocalInput = iso => { if (!iso) return ''; const d = new Date(iso); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
     const fromLocalInput = v => v ? new Date(v).toISOString() : null;
-    const who = p => p ? (p.display_name || p.username || p.user_id.slice(0, 8)) : '—';
+    const siteUrl = (E.cfg.SITE_URL || location.href.replace(/[^/]*$/, ''));
 
     // ---------- Scrutins ----------
     async function scrutins() {
@@ -131,33 +153,106 @@
       }
     }
 
+    // ---------- Codes ----------
+    async function codes() {
+      E.clear(pane);
+      if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
+      const { data, error } = await E.sb.from('voter_codes').select('*').eq('election_id', current.id).order('created_at');
+      if (error) throw error;
+      const rows = data || [];
+      const voteLink = (c) => siteUrl + 'voter.html?e=' + encodeURIComponent(current.slug) + '&code=' + encodeURIComponent(c.code);
+
+      // Génération
+      const nInput = h('input', { class: 'input', type: 'number', min: '1', max: '1000', value: '20', style: { width: '90px' } });
+      const prefix = h('input', { class: 'input', value: 'MEUTE', maxlength: '10', style: { width: '120px' } });
+      const labels = h('textarea', { class: 'input', placeholder: 'Optionnel : un pseudo par ligne (le code n°1 ira au premier, etc.). Si rempli, le nombre de codes = nombre de lignes.', style: { minHeight: '80px' } });
+      const gen = h('button', { class: 'btn', type: 'submit' }, '✨ Générer');
+      const genForm = h('form', { class: 'card column' },
+        h('div', { class: 'title' }, '🎟️ Générer des codes pour « ' + current.title + ' »'),
+        h('div', { class: 'desc' }, 'Un code = un membre = un bulletin. Distribue-les en message privé (Telegram / Discord). Chaque code donne aussi accès à la candidature.'),
+        h('div', { class: 'filters', style: { marginBottom: 0 } }, h('span', { class: 'small muted' }, 'Nombre'), nInput, h('span', { class: 'small muted' }, 'Préfixe'), prefix, gen),
+        h('div', { class: 'field', style: { marginBottom: 0 } }, h('label', null, 'Étiquettes (à qui remettre chaque code)'), labels));
+      genForm.addEventListener('submit', async ev => {
+        ev.preventDefault();
+        const list = labels.value.split('\n').map(s => s.trim()).filter(Boolean);
+        const n = list.length || parseInt(nInput.value, 10);
+        if (!n || n < 1) { E.toast('Nombre invalide.', 'error'); return; }
+        gen.disabled = true;
+        const { error } = await E.sb.rpc('admin_generate_codes', { p_election: current.id, p_n: n, p_prefix: prefix.value.trim() || 'MEUTE', p_labels: list.length ? list : null });
+        gen.disabled = false;
+        if (error) { E.toast(E.errMsg(error), 'error'); return; }
+        E.toast(n + ' code(s) généré(s).', 'success'); codes();
+      });
+      pane.appendChild(genForm);
+
+      // Liste
+      const used = rows.filter(r => r.first_used_at).length, revoked = rows.filter(r => r.revoked).length, distributed = rows.filter(r => r.distributed).length;
+      const search = h('input', { class: 'input', placeholder: 'Rechercher un code ou une étiquette…' });
+      const filter = h('select', { class: 'input', style: { width: 'auto' } }, h('option', { value: '' }, 'Tous'), h('option', { value: 'unused' }, 'Jamais utilisés'), h('option', { value: 'used' }, 'Utilisés'), h('option', { value: 'undistributed' }, 'Non distribués'), h('option', { value: 'revoked' }, 'Révoqués'));
+      const csvBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('codes-' + current.slug + '.csv', ['code', 'label', 'lien', 'distributed', 'first_used_at', 'uses', 'revoked'], rows.map(r => Object.assign({}, r, { lien: voteLink(r) }))) }, '⬇ CSV');
+      const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
+        const txt = shown().map(r => (r.label ? r.label + ' : ' : '') + r.code + '  →  ' + voteLink(r)).join('\n');
+        try { await navigator.clipboard.writeText(txt); E.toast('Liste copiée (' + shown().length + ' lignes).', 'success'); } catch { E.toast('Copie impossible.', 'error'); }
+      } }, '📋 Copier la liste affichée');
+      const summary = h('div', { class: 'small muted' }, `${rows.length} codes · ${distributed} distribués · ${used} utilisés · ${revoked} révoqués`);
+      const grid = h('div', { class: 'codes-grid' });
+      pane.append(h('div', { class: 'filters' }, search, filter, csvBtn, copyBtn, summary), grid);
+      function shown() {
+        const q = search.value.trim().toLowerCase(), f = filter.value;
+        return rows.filter(r => (!q || (r.code + ' ' + (r.label || '')).toLowerCase().includes(q))
+          && (f === '' || (f === 'unused' && !r.first_used_at && !r.revoked) || (f === 'used' && r.first_used_at) || (f === 'undistributed' && !r.distributed && !r.revoked) || (f === 'revoked' && r.revoked)));
+      }
+      function paint() {
+        E.clear(grid);
+        if (!rows.length) { grid.appendChild(h('div', { class: 'empty', style: { gridColumn: '1/-1' } }, 'Aucun code pour ce scrutin : génère-en ci-dessus.')); return; }
+        shown().forEach(r => {
+          const lab = h('input', { class: 'input', value: r.label || '', placeholder: 'Étiquette (pseudo)', style: { padding: '6px 8px', fontSize: '12px' } });
+          lab.addEventListener('change', async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_label: lab.value }); if (error) E.toast(E.errMsg(error), 'error'); else { r.label = lab.value.trim(); E.toast('Étiquette enregistrée.', 'success'); } });
+          const dist = h('input', { type: 'checkbox' }); dist.checked = r.distributed;
+          dist.addEventListener('change', async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_distributed: dist.checked }); if (error) E.toast(E.errMsg(error), 'error'); else r.distributed = dist.checked; });
+          const card = h('div', { class: 'code-card', style: r.revoked ? { opacity: .5 } : null },
+            h('span', { class: 'code-pill', style: r.revoked ? { textDecoration: 'line-through' } : null }, r.code),
+            lab,
+            h('div', { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', gap: '6px', flexWrap: 'wrap' } },
+              h('label', { class: 'switch', style: { fontSize: '11px' } }, dist, 'remis'),
+              r.first_used_at ? h('span', { class: 'badge ok' }, 'utilisé ×' + r.uses) : h('span', { class: 'badge muted' }, 'jamais utilisé'),
+              r.revoked ? h('span', { class: 'badge danger', title: r.revoked_reason || '' }, 'révoqué') : null),
+            h('div', { class: 'btn-row', style: { marginTop: '8px', gap: '6px' } },
+              h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(voteLink(r)); E.toast('Lien copié.', 'success'); } catch { E.toast(voteLink(r)); } } }, '🔗 Lien'),
+              r.revoked
+                ? h('button', { class: 'btn ok small', type: 'button', onClick: async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: false }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Réactiver')
+                : h('button', { class: 'btn danger small', type: 'button', onClick: async () => { const reason = prompt('Révoquer ce code ? Son bulletin et ses candidatures seront invalidés. Motif :', 'Code compromis'); if (reason === null) return; const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: true, p_reason: reason }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Révoquer')));
+          grid.appendChild(card);
+        });
+      }
+      search.addEventListener('input', paint); filter.addEventListener('change', paint); paint();
+    }
+
     // ---------- Candidatures ----------
     async function candidatures() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const { data, error } = await E.sb.from('candidates').select('*, profiles(username, provider, display_name, avatar_url, is_member)').eq('election_id', current.id).order('role').order('created_at');
+      const { data, error } = await E.sb.from('candidates').select('*, voter_codes(code, label, revoked)').eq('election_id', current.id).order('role').order('created_at');
       if (error) throw error;
       const rows = data || [];
       if (!rows.length) { pane.appendChild(h('div', { class: 'empty' }, 'Aucune candidature.')); return; }
       const tbody = h('tbody');
       rows.forEach(c => {
-        const p = c.profiles || {};
+        const vc = c.voter_codes || {};
         const r = E.roleInfo(c.role);
         const actions = h('td', { class: 'actions' });
-        if (!c.withdrawn) actions.appendChild(h('button', { class: 'btn danger small', type: 'button', onClick: async () => {
-          if (!confirm('Retirer la candidature de ' + c.display_name + ' (' + r.label + ') ?')) return;
-          const { error } = await E.sb.rpc('withdraw_candidacy', { p_candidate: c.id }); if (error) E.toast(E.errMsg(error), 'error'); else candidatures(); } }, 'Retirer'));
-        else actions.appendChild(h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
-          const { error } = await E.sb.from('candidates').update({ withdrawn: false, updated_at: new Date().toISOString() }).eq('id', c.id); if (error) E.toast(E.errMsg(error), 'error'); else { await E.sb.rpc('log_audit', { p_action: 'candidacy_restored', p_target: c.id }); candidatures(); } } }, 'Réactiver'));
+        actions.appendChild(h('button', { class: 'btn ' + (c.withdrawn ? 'secondary' : 'danger') + ' small', type: 'button', onClick: async () => {
+          if (!c.withdrawn && !confirm('Retirer la candidature de ' + c.display_name + ' (' + r.label + ') ?')) return;
+          const { error } = await E.sb.rpc('admin_withdraw_candidacy', { p_candidate: c.id, p_restore: c.withdrawn }); if (error) E.toast(E.errMsg(error), 'error'); else candidatures(); } }, c.withdrawn ? 'Réactiver' : 'Retirer'));
         tbody.appendChild(h('tr', { class: c.withdrawn ? 'invalid' : '' },
-          h('td', null, E.avatarEl({ username: c.telegram_username, displayName: c.display_name, avatarUrl: p.avatar_url, provider: p.provider }), c.display_name),
+          h('td', null, E.avatarEl({ username: c.telegram_username, displayName: c.display_name }), c.display_name),
           h('td', null, r.icon + ' ' + r.label),
-          h('td', null, h('span', { class: 'badge ' + (p.provider || 'muted') }, p.provider || '?'), ' ', p.username || ''),
-          h('td', null, p.is_member ? h('span', { class: 'badge ok' }, 'membre') : h('span', { class: 'badge danger' }, 'non membre')),
+          h('td', null, h('span', { class: 'code-pill' }, vc.code || '?'), vc.label ? ' ' + vc.label : '', vc.revoked ? h('span', { class: 'badge danger', style: { marginLeft: '6px' } }, 'code révoqué') : null),
+          h('td', null, [c.telegram_username ? '✈ @' + c.telegram_username : null, c.discord_username ? '🎧 ' + c.discord_username : null].filter(Boolean).join(' · ') || '—'),
           h('td', { title: c.bio, style: { maxWidth: '260px', overflow: 'hidden', textOverflow: 'ellipsis' } }, c.bio || '—'),
           h('td', null, E.fmtDateTime(c.updated_at)), actions));
       });
-      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat·e', 'Poste', 'Compte', 'Statut', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
+      pane.appendChild(h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Candidat·e', 'Poste', 'Code', 'Pseudos', 'Présentation', 'Mis à jour', ''].map(t => h('th', null, t)))), tbody)));
     }
 
     // ---------- Votants ----------
@@ -167,38 +262,34 @@
       const { data, error } = await E.sb.from('admin_voters').select('*').eq('election_id', current.id).order('submitted_at', { ascending: false });
       if (error) throw error;
       const rows = data || [];
-      const search = h('input', { class: 'input', placeholder: 'Rechercher un pseudo…' });
+      const search = h('input', { class: 'input', placeholder: 'Rechercher un code ou une étiquette…' });
       const onlySusp = h('input', { type: 'checkbox' });
-      const csv = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('votants-' + current.slug + '.csv', ['provider', 'provider_id', 'username', 'display_name', 'is_member', 'account_created_at', 'first_submitted_at', 'submitted_at', 'invalidated', 'invalidated_reason', 'suspicion'], rows.map(r => Object.assign({}, r, { suspicion: (r.suspicion || []).join('|') }))) }, '⬇ CSV');
+      const csv = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('votants-' + current.slug + '.csv', ['code', 'label', 'first_submitted_at', 'submitted_at', 'submissions', 'uses', 'invalidated', 'invalidated_reason', 'suspicion'], rows.map(r => Object.assign({}, r, { suspicion: (r.suspicion || []).join('|') }))) }, '⬇ CSV');
       const summary = h('div', { class: 'small muted' });
       const tbody = h('tbody');
       pane.append(h('div', { class: 'filters' }, search, h('label', { class: 'switch' }, onlySusp, 'Suspects seulement'), csv, summary),
-        h('div', { class: 'card info', style: { padding: '10px 14px' } }, h('div', { class: 'desc' }, 'Le contenu des bulletins reste secret : seuls le compte, l\'horodatage et les drapeaux sont affichés. Invalider un bulletin le retire des résultats sans le supprimer (réversible). Bannir invalide aussi tous ses bulletins.')),
-        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Votant', 'Compte', 'Membre', 'Compte créé', 'Vote', 'Drapeaux', 'Choix', ''].map(t => h('th', null, t)))), tbody)));
-      const SUSP = { nouveau_compte: ['warn', 'compte récent'], non_membre: ['danger', 'non membre'], doublon_pseudo: ['danger', 'même pseudo sur l\'autre plateforme'] };
+        h('div', { class: 'card info', style: { padding: '10px 14px' } }, h('div', { class: 'desc' }, 'Le contenu des bulletins reste secret : seuls le code, l\'étiquette, l\'horodatage et les drapeaux sont affichés. Invalider un bulletin le retire des résultats sans le supprimer (réversible). Pour exclure définitivement une personne, révoque son code dans l\'onglet Codes.')),
+        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Code', 'Étiquette', 'Vote', 'Soumissions', 'Drapeaux', 'Choix', ''].map(t => h('th', null, t)))), tbody)));
+      const SUSP = { sans_etiquette: ['warn', 'code sans étiquette'], nombreuses_soumissions: ['warn', 'bulletin modifié ≥ 5 fois'], code_tres_utilise: ['danger', 'code saisi ≥ 20 fois'], etiquette_en_double: ['danger', 'étiquette en double'] };
       function paint() {
         E.clear(tbody);
         const q = search.value.trim().toLowerCase();
-        const shown = rows.filter(r => (!onlySusp.checked || (r.suspicion || []).length) && (!q || [r.username, r.display_name, r.provider_id].some(v => (v || '').toLowerCase().includes(q))));
+        const shown = rows.filter(r => (!onlySusp.checked || (r.suspicion || []).length) && (!q || [r.code, r.label].some(v => (v || '').toLowerCase().includes(q))));
         summary.textContent = shown.length + ' / ' + rows.length + ' bulletins · ' + rows.filter(r => !r.invalidated).length + ' valides · ' + rows.filter(r => (r.suspicion || []).length).length + ' suspects';
         shown.forEach(r => {
           const flags = h('td', null, ...(r.suspicion || []).map(s => h('span', { class: 'badge ' + (SUSP[s] || ['muted'])[0], style: { marginRight: '4px' } }, (SUSP[s] || [0, s])[1])));
           const actions = h('td', { class: 'actions' });
           if (!r.invalidated) actions.appendChild(h('button', { class: 'btn danger small', type: 'button', onClick: async () => {
-            const reason = prompt('Motif d\'invalidation du bulletin de ' + (r.display_name || r.username) + ' :', (r.suspicion || []).map(s => (SUSP[s] || [0, s])[1]).join(', '));
+            const reason = prompt('Motif d\'invalidation du bulletin ' + (r.label || r.code) + ' :', (r.suspicion || []).map(s => (SUSP[s] || [0, s])[1]).join(', '));
             if (reason === null) return;
             const { error } = await E.sb.rpc('admin_invalidate_ballot', { p_ballot: r.ballot_id, p_reason: reason }); if (error) E.toast(E.errMsg(error), 'error'); else { E.toast('Bulletin invalidé.', 'success'); votants(); } } }, 'Invalider'));
           else actions.appendChild(h('button', { class: 'btn ok small', type: 'button', title: r.invalidated_reason || '', onClick: async () => {
             const { error } = await E.sb.rpc('admin_restore_ballot', { p_ballot: r.ballot_id }); if (error) E.toast(E.errMsg(error), 'error'); else { E.toast('Bulletin restauré.', 'success'); votants(); } } }, 'Restaurer'));
-          actions.appendChild(h('button', { class: 'btn secondary small', type: 'button', style: { marginLeft: '4px' }, onClick: async () => {
-            if (!confirm((r.banned ? 'Réhabiliter ' : 'Bannir ') + (r.display_name || r.username) + ' ?')) return;
-            const { error } = await E.sb.rpc('admin_ban_user', { p_user: r.user_id, p_banned: !r.banned }); if (error) E.toast(E.errMsg(error), 'error'); else votants(); } }, r.banned ? 'Réhabiliter' : 'Bannir'));
           tbody.appendChild(h('tr', { class: r.invalidated ? 'invalid' : '' },
-            h('td', null, E.avatarEl({ username: r.username, displayName: r.display_name, avatarUrl: r.avatar_url, provider: r.provider }), r.display_name || r.username || '—', r.banned ? h('span', { class: 'badge danger', style: { marginLeft: '6px' } }, 'banni') : null),
-            h('td', null, h('span', { class: 'badge ' + r.provider }, r.provider), ' ', r.username ? '@' + r.username : '', h('div', { class: 'small muted' }, 'id ' + r.provider_id)),
-            h('td', null, r.is_member ? h('span', { class: 'badge ok' }, 'oui') : h('span', { class: 'badge danger' }, 'non')),
-            h('td', null, r.account_created_at ? E.fmtDate(r.account_created_at) : h('span', { class: 'muted' }, 'inconnu')),
+            h('td', null, h('span', { class: 'code-pill' }, r.code), r.revoked ? h('span', { class: 'badge danger', style: { marginLeft: '6px' } }, 'révoqué') : null),
+            h('td', null, r.label || h('span', { class: 'muted' }, '—')),
             h('td', { title: 'Premier vote : ' + E.fmtDateTime(r.first_submitted_at) }, E.fmtDateTime(r.submitted_at), r.invalidated ? h('div', { class: 'small muted', style: { textDecoration: 'none' } }, 'invalidé : ' + (r.invalidated_reason || '')) : null),
+            h('td', null, r.submissions + ' (code saisi ×' + r.uses + ')'),
             flags, h('td', null, String(r.nb_choix)), actions));
         });
       }
@@ -211,12 +302,9 @@
       const { data, error } = await E.sb.from('audit_log').select('*').order('at', { ascending: false }).limit(300);
       if (error) throw error;
       const rows = data || [];
-      const ids = [...new Set(rows.map(r => r.actor).filter(Boolean))];
-      const { data: profs } = ids.length ? await E.sb.from('profiles').select('user_id, username, display_name').in('user_id', ids) : { data: [] };
-      const byId = new Map((profs || []).map(p => [p.user_id, p]));
-      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', user_banned: 'Bannissement', user_unbanned: 'Réhabilitation' };
+      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié' };
       const tbody = h('tbody');
-      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, who(byId.get(r.actor))), h('td', null, h('span', { class: 'badge ' + (/invalid|bann/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
+      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, (r.actor || '—').replace(/^admin:/, '👤 ').replace(/^code:/, '🎟️ ')), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
         h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '360px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)))));
       pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, '⬇ CSV')),
         h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails'].map(t => h('th', null, t)))), tbody)));
@@ -226,27 +314,23 @@
     async function pv() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const [{ data: results }, { data: part }, { data: voters }, telegram] = await Promise.all([
-        E.sb.from('results').select('*').eq('election_id', current.id),
+      const [{ data: part }, { data: voters }, { data: choices }, { data: cands }, telegram] = await Promise.all([
         E.sb.from('participation').select('*').eq('election_id', current.id).maybeSingle(),
         E.sb.from('admin_voters').select('*').eq('election_id', current.id),
+        E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false),
+        E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false),
         E.loadTelegramCount()]);
-      // Les résultats bruts (vue "results") masquent les scores si results_public=false : on recalcule côté admin via ballot_choices
-      let rows = results || [];
-      if (!current.results_public) {
-        const { data: choices } = await E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false);
-        const { data: cands } = await E.sb.from('candidates').select('id, role, display_name, telegram_username, withdrawn').eq('election_id', current.id).eq('withdrawn', false);
-        rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
-      }
+      const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, telegram_username: c.telegram_username, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
       const roles = E.rolesOf(current);
+      const voters_n = (part && part.voters) || 0, codes_n = (part && part.codes_issued) || 0;
       const doc = h('div', { class: 'card column', id: 'pv-doc' });
       doc.append(h('div', { class: 'title', style: { fontSize: '18px' } }, 'Procès-verbal — ' + current.title),
-        h('div', { class: 'desc' }, 'La Meute Normande · généré le ' + E.fmtDateTime(new Date()) + ' par ' + who(profile) + ' · statut : ' + E.electionState(current).label + (current.voting_closes_at ? ' · clôture ' + E.fmtDateTime(current.voting_closes_at) : '')),
+        h('div', { class: 'desc' }, 'La Meute Normande · généré le ' + E.fmtDateTime(new Date()) + ' par ' + (session.user.email || 'admin') + ' · statut : ' + E.electionState(current).label + (current.voting_closes_at ? ' · clôture ' + E.fmtDateTime(current.voting_closes_at) : '')),
         h('div', { class: 'kpis' },
-          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins valides'), h('div', { class: 'value' }, String((part && part.voters) || 0))),
+          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins valides'), h('div', { class: 'value' }, String(voters_n))),
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins invalidés'), h('div', { class: 'value' }, String((part && part.invalidated) || 0))),
-          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Membres Telegram'), h('div', { class: 'value' }, telegram && telegram.members ? String(telegram.members) : '—')),
-          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Participation'), h('div', { class: 'value' }, telegram && telegram.members ? Math.round(((part && part.voters) || 0) / telegram.members * 1000) / 10 + ' %' : '—'))));
+          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Codes émis'), h('div', { class: 'value' }, String(codes_n)), h('div', { class: 'sub' }, codes_n ? Math.round(voters_n / codes_n * 1000) / 10 + ' % de participation' : '')),
+          h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Membres Telegram'), h('div', { class: 'value' }, telegram ? String(telegram.members) : '—'), h('div', { class: 'sub' }, telegram ? Math.round(voters_n / telegram.members * 1000) / 10 + ' % du groupe' : ''))));
       roles.forEach(role => {
         const rs = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes);
         const max = Math.max(1, ...rs.map(r => r.votes));
@@ -257,22 +341,22 @@
         block.appendChild(list); doc.appendChild(block);
       });
       const invalid = (voters || []).filter(v => v.invalidated);
-      if (invalid.length) doc.appendChild(h('div', { class: 'small muted' }, 'Bulletins invalidés : ' + invalid.map(v => (v.display_name || v.username) + ' (' + (v.invalidated_reason || 'sans motif') + ')').join(' ; ')));
+      if (invalid.length) doc.appendChild(h('div', { class: 'small muted' }, 'Bulletins invalidés : ' + invalid.map(v => (v.label || v.code) + ' (' + (v.invalidated_reason || 'sans motif') + ')').join(' ; ')));
       doc.appendChild(h('div', { class: 'print-only small', style: { marginTop: '24px' } }, 'Signatures du staff : ________________________    ________________________    ________________________'));
       pane.append(h('div', { class: 'btn-row no-print', style: { marginTop: 0, marginBottom: '12px' } },
         h('button', { class: 'btn', type: 'button', onClick: () => window.print() }, '🖨️ Imprimer / PDF'),
         h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'telegram_username', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, '⬇ Résultats CSV')), doc);
     }
 
-    // ---------- Réglages (notifications Telegram) ----------
+    // ---------- Réglages ----------
     async function reglages() {
       E.clear(pane);
       const { data } = await E.sb.from('app_settings').select('*');
       const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
-      const url = h('input', { class: 'input', value: map.notify_url || (E.cfg.SUPABASE_URL || '').replace('.supabase.co', '.supabase.co/functions/v1/telegram-notify') });
+      const url = h('input', { class: 'input', value: map.notify_url || '', placeholder: (E.cfg.SUPABASE_URL || 'https://xxx.supabase.co') + '/functions/v1/telegram-notify' });
       const secret = h('input', { class: 'input', type: 'password', value: map.notify_secret || '', placeholder: 'même valeur que le secret NOTIFY_SECRET de la function' });
       const save = h('button', { class: 'btn', type: 'submit' }, '💾 Enregistrer');
-      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, '📣 Annonces Telegram automatiques'),
+      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, '📣 Annonces Telegram automatiques (optionnel)'),
         h('div', { class: 'desc' }, 'Postgres appelle l\'Edge Function telegram-notify (nouvelle candidature, rappel J-1, résultats). Laisse vide pour désactiver.'),
         h('div', { class: 'field' }, h('label', null, 'URL de la function'), url), h('div', { class: 'field' }, h('label', null, 'Secret partagé'), secret), h('div', { class: 'btn-row' }, save));
       form.addEventListener('submit', async ev => {
@@ -281,7 +365,7 @@
         if (error) E.toast(E.errMsg(error), 'error'); else E.toast('Réglages enregistrés.', 'success');
       });
       pane.appendChild(form);
-      pane.appendChild(h('div', { class: 'card info' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Donner l\'accès admin'), h('div', { class: 'desc' }, 'Dans l\'éditeur SQL Supabase : update public.profiles set is_admin = true where username = \'pseudo\'; — le compte doit s\'être connecté au moins une fois.'))));
+      pane.appendChild(h('div', { class: 'card info' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ajouter un administrateur'), h('div', { class: 'desc' }, 'Crée le compte dans Supabase → Authentication → Users (e-mail + mot de passe), puis dans l\'éditeur SQL : insert into public.admins (user_id, label) select id, \'Prénom\' from auth.users where email = \'adresse@exemple.fr\';'))));
     }
 
     function downloadCsv(name, cols, rows) {
