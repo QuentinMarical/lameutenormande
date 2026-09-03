@@ -128,14 +128,18 @@ returns text language sql immutable as $$
 $$;
 
 -- Résout un code saisi en ligne voter_codes valide (sinon exception)
-create or replace function public.resolve_code(p_code text, p_election uuid)
+drop function if exists public.resolve_code(text, uuid);
+create or replace function public.resolve_code(p_code text, p_election uuid, p_touch boolean default false)
 returns public.voter_codes language plpgsql security definer set search_path = public as $$
 declare v public.voter_codes;
 begin
   select * into v from public.voter_codes where code_key = public.norm_code(p_code) and election_id = p_election;
   if v.id is null then raise exception 'CODE_INVALID'; end if;
   if v.revoked then raise exception 'CODE_REVOKED'; end if;
-  update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
+  -- p_touch : compter une « saisie » du code (check_code) ; les autres RPC ne gonflent pas le compteur
+  if p_touch then
+    update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
+  end if;
   return v;
 end $$;
 
@@ -315,7 +319,7 @@ create or replace function public.check_code(p_code text, p_election uuid)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v public.voter_codes;
 begin
-  v := public.resolve_code(p_code, p_election);
+  v := public.resolve_code(p_code, p_election, true);
   return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
     'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
     'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
@@ -629,7 +633,27 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------
--- 14. Scrutin d'exemple (brouillon, à ouvrir depuis le panel admin)
+-- 14. Privilèges : seules les RPC destinées au front restent appelables
+--     via l'API. Les helpers internes ne sont exécutables que par postgres
+--     (appels depuis les fonctions security definer, cron, triggers).
+-- ---------------------------------------------------------------------
+do $$
+declare f text;
+begin
+  foreach f in array array[
+    'public.resolve_code(text, uuid, boolean)', 'public.gen_code(text)', 'public.norm_code(text)',
+    'public.log_audit(text, text, text, jsonb)', 'public.notify_telegram(jsonb)', 'public.elections_tick()',
+    'public.on_candidate_insert()', 'public.broadcast_change()'
+  ] loop
+    execute format('revoke execute on function %s from public, anon, authenticated', f);
+  end loop;
+end $$;
+-- Les RPC publiques restent accessibles (comportement par défaut) :
+--   check_code, my_ballot, my_candidacies, cast_ballot, upsert_candidacy, withdraw_candidacy,
+--   active_election, is_admin, admin_* (protégées par is_admin()).
+
+-- ---------------------------------------------------------------------
+-- 15. Scrutin d'exemple (brouillon, à ouvrir depuis le panel admin)
 -- ---------------------------------------------------------------------
 insert into public.elections (slug, title, description, status)
 values ('staff-2026', 'Élection du staff 2026', 'Renouvellement de l''équipe de la Meute Normande.', 'draft')
