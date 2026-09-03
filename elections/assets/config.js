@@ -9,8 +9,5 @@ window.ELECTIONS_CONFIG = {
   TELEGRAM_INVITE: 'https://t.me/+ukmbtqMqWYU1ZWNk',
 
   // URL publique de l'outil (partage, QR code, liens dans les annonces)
-  SITE_URL: 'https://lameutenormande.fr/elections/',
-
-  // Fichier écrit par le workflow GitHub Actions (nombre de membres du groupe Telegram, pour le taux de participation)
-  TELEGRAM_JSON: 'telegram.json'
+  SITE_URL: 'https://lameutenormande.fr/elections/'
 };
