@@ -127,6 +127,17 @@ returns text language sql immutable set search_path = public as $$
   select upper(regexp_replace(coalesce(p, ''), '[^A-Za-z0-9]', '', 'g'));
 $$;
 
+-- Retire les caractères de contrôle bidirectionnels Unicode (LRE/RLE/LRO/RLO/PDF, isolats,
+-- espaces de largeur nulle, BOM) : un candidat pourrait sinon s'en servir pour faire
+-- apparaître un nom trompeur (usurpation visuelle) sur les pages publiques.
+create or replace function public.strip_bidi(p text)
+returns text language sql immutable set search_path = public as $$
+  select regexp_replace(
+    coalesce(p, ''),
+    '[' || chr(8203) || '-' || chr(8207) || chr(8234) || '-' || chr(8238) || chr(8288) || '-' || chr(8297) || chr(65279) || ']',
+    '', 'g');
+$$;
+
 -- Résout un code saisi en ligne voter_codes valide (sinon exception)
 drop function if exists public.resolve_code(text, uuid);
 create or replace function public.resolve_code(p_code text, p_election uuid, p_touch boolean default false)
@@ -433,7 +444,7 @@ begin
   select * into v_role from public.role_catalog where id = p_role;
 
   insert into public.candidates (election_id, code_id, role, display_name, bio)
-  values (p_election, v_code.id, p_role, trim(p_display_name), coalesce(p_bio,''))
+  values (p_election, v_code.id, p_role, trim(public.strip_bidi(p_display_name)), public.strip_bidi(coalesce(p_bio,'')))
   on conflict (election_id, code_id, role) do update set
     display_name = excluded.display_name, bio = excluded.bio,
     withdrawn = false, updated_at = now()
