@@ -194,7 +194,10 @@
       const filter = h('select', { class: 'input', style: { width: 'auto' } }, h('option', { value: '' }, 'Tous'), h('option', { value: 'unused' }, 'Jamais utilisés'), h('option', { value: 'used' }, 'Utilisés'), h('option', { value: 'undistributed' }, 'Non distribués'), h('option', { value: 'revoked' }, 'Révoqués'));
       const csvBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('codes-' + current.slug + '.csv', ['code', 'label', 'lien', 'distributed', 'first_used_at', 'uses', 'revoked'], rows.map(r => Object.assign({}, r, { lien: voteLink(r) }))) }, 'CSV');
       const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
-        const txt = shown().map(r => (r.label ? r.label + ' : ' : '') + r.code + '  →  ' + voteLink(r)).join('\n');
+        // Même neutralisation de formule que downloadCsv : ce texte peut atterrir dans Excel/Sheets
+        // via un collage intelligent (étiquette ou préfixe de code commençant par =, +, -, @).
+        const noFormula = v => /^[=+\-@\t\r]/.test(v) ? "'" + v : v;
+        const txt = shown().map(r => (r.label ? noFormula(r.label) + ' : ' : '') + noFormula(r.code) + '  →  ' + voteLink(r)).join('\n');
         try { await navigator.clipboard.writeText(txt); E.toast('Liste copiée (' + shown().length + ' lignes).', 'success'); } catch { E.toast('Copie impossible.', 'error'); }
       } }, 'Copier la liste affichée');
       const summary = h('div', { class: 'small muted' }, `${rows.length} codes · ${distributed} distribués · ${used} utilisés · ${revoked} révoqués`);
