@@ -346,6 +346,7 @@ language sql stable security definer set search_path = public as $$
   from public.elections e
   left join public.ballots b on b.election_id = e.id
   where e.id = p_election and e.status <> 'draft'
+    and (e.results_public or e.status in ('closed','archived'))
   group by e.id;
 $$;
 
@@ -358,6 +359,7 @@ language sql stable security definer set search_path = public as $$
     from public.ballots b
     join public.elections e on e.id = b.election_id
     where b.election_id = p_election and b.invalidated = false and e.status <> 'draft'
+      and (e.results_public or e.status in ('closed','archived'))
     group by b.election_id, date_trunc('hour', b.first_submitted_at)
   ) t
   order by hour;
