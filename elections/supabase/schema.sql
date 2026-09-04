@@ -229,19 +229,34 @@ create index if not exists ballot_choices_candidate_id_idx on public.ballot_choi
 -- 7. Journal d'audit
 -- ---------------------------------------------------------------------
 create table if not exists public.audit_log (
-  id       bigint generated always as identity primary key,
-  at       timestamptz not null default now(),
-  actor    text,                     -- 'admin:<uuid>' ou 'code:<label|code>'
-  action   text not null,
-  target   text,
-  details  jsonb not null default '{}'::jsonb
+  id         bigint generated always as identity primary key,
+  at         timestamptz not null default now(),
+  actor      text,                     -- 'admin:<uuid>' ou 'code:<label|code>'
+  action     text not null,
+  target     text,
+  details    jsonb not null default '{}'::jsonb,
+  ip         text,                     -- IP telle que vue par PostgREST (proxy Supabase/Cloudflare)
+  user_agent text
 );
 alter table public.audit_log enable row level security;
+alter table public.audit_log add column if not exists ip text;
+alter table public.audit_log add column if not exists user_agent text;
 
+-- IP/navigateur capturés automatiquement depuis les en-têtes HTTP de la requête PostgREST
+-- (absents hors contexte de requête, ex. appel depuis elections_tick() via pg_cron : reste NULL).
+-- Ne JAMAIS faire porter à log_audit() le contenu d'un bulletin (choix/candidat) : seul le nombre
+-- de choix doit être journalisé (voir cast_ballot), jamais qui a été choisi.
 create or replace function public.log_audit(p_actor text, p_action text, p_target text, p_details jsonb default '{}'::jsonb)
-returns void language sql security definer set search_path = public as $$
-  insert into public.audit_log (actor, action, target, details) values (p_actor, p_action, p_target, coalesce(p_details, '{}'::jsonb));
-$$;
+returns void language plpgsql security definer set search_path = public as $$
+declare v_headers json;
+begin
+  v_headers := nullif(current_setting('request.headers', true), '')::json;
+  insert into public.audit_log (actor, action, target, details, ip, user_agent) values (
+    p_actor, p_action, p_target, coalesce(p_details, '{}'::jsonb),
+    nullif(split_part(coalesce(v_headers->>'cf-connecting-ip', v_headers->>'x-forwarded-for', ''), ',', 1), ''),
+    v_headers->>'user-agent'
+  );
+end $$;
 
 -- ---------------------------------------------------------------------
 -- 8. Politiques RLS
@@ -288,8 +303,9 @@ create policy audit_admin_read on public.audit_log for select using (public.is_a
 -- propriétaire de la fonction (postgres) le peut. is_admin() reproduit la restriction RLS
 -- perdue en passant d'une vue à une fonction.
 drop view if exists public.audit_log_readable;
+drop function if exists public.audit_log_readable();
 create or replace function public.audit_log_readable()
-returns table (id bigint, at timestamptz, actor text, action text, target text, details jsonb, actor_label text)
+returns table (id bigint, at timestamptz, actor text, action text, target text, details jsonb, actor_label text, ip text, user_agent text)
 language plpgsql security definer set search_path = public as $$
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
@@ -302,7 +318,8 @@ begin
           al.actor)
         when al.actor like 'code:%' then substring(al.actor from 6)
         else al.actor
-      end as actor_label
+      end as actor_label,
+      al.ip, al.user_agent
     from public.audit_log al
     order by al.at desc
     limit 300;
@@ -632,6 +649,37 @@ begin
   perform public.log_audit('admin:' || auth.uid()::text, case when p_restore then 'candidacy_restored' else 'candidacy_withdraw' end, p_candidate::text);
 end $$;
 
+-- Trace de connexion/déconnexion admin dans le journal d'audit (avec IP/navigateur, capturés par
+-- log_audit lui-même). p_event est restreint à une liste fermée pour éviter tout usage détourné.
+create or replace function public.admin_log_event(p_event text)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  if p_event not in ('login', 'logout') then raise exception 'BAD_EVENT'; end if;
+  perform public.log_audit('admin:' || auth.uid()::text, 'admin_' || p_event, null);
+end $$;
+
+-- Remplace l'upsert direct sur app_settings (onglet Réglages) : trace le changement dans l'audit
+-- SANS jamais y faire figurer le secret en clair, seulement le fait qu'il a changé.
+create or replace function public.admin_save_settings(p_notify_url text, p_notify_secret text)
+returns void language plpgsql security definer set search_path = public as $$
+declare v_url_changed boolean; v_secret_changed boolean;
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  v_url_changed := coalesce((select value from public.app_settings where key = 'notify_url'), '')
+                   is distinct from coalesce(p_notify_url, '');
+  v_secret_changed := coalesce((select value from public.app_settings where key = 'notify_secret'), '')
+                      is distinct from coalesce(p_notify_secret, '');
+  insert into public.app_settings (key, value) values ('notify_url', coalesce(p_notify_url, ''))
+    on conflict (key) do update set value = excluded.value;
+  insert into public.app_settings (key, value) values ('notify_secret', coalesce(p_notify_secret, ''))
+    on conflict (key) do update set value = excluded.value;
+  if v_url_changed or v_secret_changed then
+    perform public.log_audit('admin:' || auth.uid()::text, 'settings_saved', null,
+      jsonb_build_object('notify_url', p_notify_url, 'notify_secret_changed', v_secret_changed));
+  end if;
+end $$;
+
 create or replace function public.admin_save_election(p jsonb)
 returns public.elections language plpgsql security definer set search_path = public as $$
 declare v public.elections;
@@ -794,7 +842,8 @@ grant execute on function
 grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
-  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.audit_log_readable()
+  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.audit_log_readable(),
+  public.admin_log_event(text), public.admin_save_settings(text, text)
   to authenticated;
 
 -- ---------------------------------------------------------------------

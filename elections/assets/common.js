@@ -86,6 +86,15 @@
   const df = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' });
   E.fmtDateTime = (d) => d ? dtf.format(new Date(d)) : '—';
   E.fmtDate = (d) => d ? df.format(new Date(d)) : '—';
+  /** Résumé lisible d'un user-agent pour l'onglet Audit (le texte complet reste en tooltip). */
+  E.shortUa = function (ua) {
+    if (!ua) return '—';
+    const browser = (ua.match(/Edg\/([\d.]+)/) && 'Edge') || (ua.match(/OPR\/([\d.]+)/) && 'Opera') ||
+      (ua.match(/Firefox\/([\d.]+)/) && 'Firefox') || (ua.match(/Chrome\/([\d.]+)/) && 'Chrome') ||
+      (ua.match(/Version\/([\d.]+).*Safari/) && 'Safari') || 'Navigateur';
+    const os = /Windows/.test(ua) ? 'Windows' : /Android/.test(ua) ? 'Android' : /iPhone|iPad/.test(ua) ? 'iOS' : /Mac OS X/.test(ua) ? 'macOS' : /Linux/.test(ua) ? 'Linux' : '';
+    return browser + (os ? ' · ' + os : '');
+  };
   E.countdown = function (el, date, onEnd) {
     const target = new Date(date).getTime();
     const parts = ['j', 'h', 'min', 's'].map(u => ({ b: E.h('b', { text: '0' }), s: E.h('span', { text: u }) }));
@@ -233,7 +242,15 @@
     const s = await E.adminSession(); if (!s) return false;
     const { data } = await E.sb.rpc('is_admin'); return !!data;
   };
-  E.signOut = async function () { if (E.sb) await E.sb.auth.signOut(); location.reload(); };
+  E.signOut = async function () {
+    if (E.sb) {
+      // Trace la déconnexion tant que la session est encore valide (impossible une fois signOut()
+      // passé) ; échec silencieux, ex. compte authentifié mais pas admin.
+      try { await E.sb.rpc('admin_log_event', { p_event: 'logout' }); } catch {}
+      await E.sb.auth.signOut();
+    }
+    location.reload();
+  };
 
   // ---------- Scrutins ----------
   E.electionState = function (e) {

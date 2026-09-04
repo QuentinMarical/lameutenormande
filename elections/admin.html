@@ -50,6 +50,9 @@
         ev.preventDefault(); btn.disabled = true;
         const { error } = await E.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
         if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        // Best-effort : un compte authentifié mais pas admin n'a pas le droit d'écrire dans l'audit
+        // (admin_log_event vérifie is_admin() lui-même), on ne bloque pas la connexion pour ça.
+        try { await E.sb.rpc('admin_log_event', { p_event: 'login' }); } catch {}
         location.reload();
       });
       E.clear(app).appendChild(form);
@@ -308,12 +311,19 @@
       const { data, error } = await E.sb.rpc('audit_log_readable');
       if (error) throw error;
       const rows = data || [];
-      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé' };
+      // Le contenu d'un bulletin (candidat choisi) n'est JAMAIS journalisé : cast_ballot ne log
+      // que le nombre de choix (voir schema.sql), jamais quel candidat a été sélectionné.
+      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés' };
       const tbody = h('tbody');
-      rows.forEach(r => tbody.appendChild(h('tr', null, h('td', null, E.fmtDateTime(r.at)), h('td', null, r.actor_label || r.actor || '—'), h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
-        h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '360px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)))));
-      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
-        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails'].map(t => h('th', null, t)))), tbody)));
+      rows.forEach(r => tbody.appendChild(h('tr', null,
+        h('td', null, E.fmtDateTime(r.at)),
+        h('td', null, r.actor_label || r.actor || '—'),
+        h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid|login/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
+        h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '320px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)),
+        h('td', { class: 'small muted' }, r.ip || '—'),
+        h('td', { class: 'small muted', title: r.user_agent || '', style: { whiteSpace: 'normal', maxWidth: '220px' } }, E.shortUa(r.user_agent)))));
+      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details', 'ip', 'user_agent'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
+        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'IP', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
     }
 
     // ---------- Procès-verbal ----------
@@ -367,7 +377,7 @@
         h('div', { class: 'field' }, h('label', null, 'URL de la function'), url), h('div', { class: 'field' }, h('label', null, 'Secret partagé'), secret), h('div', { class: 'btn-row' }, save));
       form.addEventListener('submit', async ev => {
         ev.preventDefault();
-        const { error } = await E.sb.from('app_settings').upsert([{ key: 'notify_url', value: url.value.trim() }, { key: 'notify_secret', value: secret.value.trim() }]);
+        const { error } = await E.sb.rpc('admin_save_settings', { p_notify_url: url.value.trim(), p_notify_secret: secret.value.trim() });
         if (error) E.toast(E.errMsg(error), 'error'); else E.toast('Réglages enregistrés.', 'success');
       });
       pane.appendChild(form);
