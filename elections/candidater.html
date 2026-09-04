@@ -57,7 +57,7 @@
     }
 
     const info = await E.requireCode(app, election, { verb: 'candidater' });
-    if (!info) return;
+    if (!info) { await listAll(); return; }
     E.codeChip(info);
 
     const { data: mineData } = await E.sb.rpc('my_candidacies', { p_code: info.code, p_election: election.id });
