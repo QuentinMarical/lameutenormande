@@ -295,6 +295,8 @@
     BALLOT_NOT_FOUND: 'Bulletin introuvable.',
     CANDIDATE_NOT_FOUND: 'Candidature introuvable.',
     BAD_COUNT: 'Nombre de codes invalide (1 à 1000).',
+    BAD_PREFIX: 'Préfixe trop long (20 caractères maximum).',
+    BAD_ROLE: 'Poste inconnu dans la liste des rôles.',
     CODE_NOT_FOUND: 'Code introuvable (déjà supprimé ?). Recharge la page.',
     CODE_NOT_REVOKED: 'Ce code n\'est plus révoqué (réactivé entre-temps ?). Recharge la page.',
     'Invalid login credentials': 'E-mail ou mot de passe incorrect.'

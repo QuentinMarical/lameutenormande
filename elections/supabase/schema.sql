@@ -542,6 +542,7 @@ declare i int; v_code text; v_label text;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   if p_n < 1 or p_n > 1000 then raise exception 'BAD_COUNT'; end if;
+  if char_length(coalesce(p_prefix, '')) > 20 then raise exception 'BAD_PREFIX'; end if;
   for i in 1..p_n loop
     v_label := case when p_labels is not null and i <= array_length(p_labels, 1) then nullif(trim(p_labels[i]), '') end;
     loop
@@ -616,6 +617,10 @@ returns public.elections language plpgsql security definer set search_path = pub
 declare v public.elections;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  if p ? 'roles' and exists (
+    select 1 from jsonb_array_elements_text(p->'roles') as t(role_id)
+    where not exists (select 1 from public.role_catalog rc where rc.id = t.role_id)
+  ) then raise exception 'BAD_ROLE'; end if;
   if p->>'id' is null then
     insert into public.elections (slug, title, description, roles, status, candidacy_open, voting_open, voting_closes_at, results_public)
     values (p->>'slug', p->>'title', coalesce(p->>'description',''), coalesce(p->'roles', '[]'::jsonb),
