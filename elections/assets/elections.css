@@ -233,7 +233,7 @@ textarea.input { min-height: 110px; resize: vertical; line-height: 1.5; }
 .role-head .name { font-family: 'PR Viking', 'Inter Tight', sans-serif; font-size: 1.25rem; letter-spacing: .03em; }
 .role-head .desc { font-size: .82rem; color: var(--muted); }
 .role-head .rule { margin-left: auto; flex: 0 0 auto; }
-.cands { display: grid; gap: .6rem; }
+.cands { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; }
 .cand {
   display: flex; align-items: flex-start; gap: .85rem; padding: .9rem 1rem; border-radius: 12px; position: relative;
   background: var(--panel-1); border: 1px solid var(--line); transition: border-color .15s, background .15s;
