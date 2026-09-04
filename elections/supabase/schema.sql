@@ -653,6 +653,13 @@ begin
       voting_open = coalesce((p->>'voting_open')::boolean, voting_open),
       voting_closes_at = case when p ? 'voting_closes_at' then (p->>'voting_closes_at')::timestamptz else voting_closes_at end,
       results_public = coalesce((p->>'results_public')::boolean, results_public),
+      -- Un rappel J-1/résultats déjà envoyés ne doivent pas rester bloqués si l'admin repousse
+      -- l'échéance ou rouvre un scrutin clôturé : sinon elections_tick() ne les renverra jamais.
+      reminder_sent = case when p ? 'voting_closes_at'
+        and (p->>'voting_closes_at')::timestamptz is distinct from voting_closes_at
+        then false else reminder_sent end,
+      results_sent = case when status = 'closed' and coalesce(p->>'status', status) <> 'closed'
+        then false else results_sent end,
       updated_at = now()
     where id = (p->>'id')::uuid returning * into v;
     if v is null then raise exception 'ELECTION_NOT_FOUND'; end if;
