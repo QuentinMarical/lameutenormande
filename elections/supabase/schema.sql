@@ -501,7 +501,7 @@ begin
     if jsonb_typeof(v_ids) <> 'array' then raise exception 'BAD_CHOICES'; end if;
     select max_choices into v_max from public.role_catalog where id = v_role;
     select count(distinct t.v) into v_cnt from jsonb_array_elements_text(v_ids) as t(v);
-    if v_cnt > v_max then raise exception 'TOO_MANY_CHOICES: %', v_role; end if;
+    if v_max is null or v_cnt > v_max then raise exception 'TOO_MANY_CHOICES: %', v_role; end if;
     for v_id in select distinct t.v::uuid from jsonb_array_elements_text(v_ids) as t(v) loop
       if not exists (select 1 from public.candidates c where c.id = v_id and c.election_id = p_election and c.role = v_role and c.withdrawn = false) then
         raise exception 'INVALID_CANDIDATE: %', v_id;
