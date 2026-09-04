@@ -14,6 +14,11 @@ const SITE_URL = (Deno.env.get("SITE_URL") ?? "https://lameutenormande.fr/electi
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+// Candidater/voter demande un code personnel (réservé aux membres de la meute) ; en revanche
+// suivre le déroulement (résultats en direct, etc.) le jour du vote est ouvert à tout le monde.
+const CANDIDACY_NOTE = "\nℹ️ Se porter candidat est réservé aux membres de la meute (code personnel requis).";
+const VOTING_NOTE = "\nℹ️ Voter est réservé aux membres de la meute (code personnel requis) — les autres peuvent suivre le déroulement par curiosité !";
+
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
@@ -48,24 +53,24 @@ Deno.serve(async (req) => {
       await send(`🐾 <b>Nouvelle candidature</b> — ${esc(election.title)}\n` +
         `<b>${esc(c.display_name)}</b> se présente au poste de <b>${esc(roleLabel(c.role))}</b>.` +
         (c.bio ? `\n<i>${esc(c.bio.slice(0, 300))}${c.bio.length > 300 ? "…" : ""}</i>` : "") +
-        `\n\n👉 Voir les candidats : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}`);
+        `\n\n👉 Voir les candidats : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}` + CANDIDACY_NOTE);
     } else if (p.type === "reminder") {
       const { data: part } = await db.rpc("participation", { p_election: election.id }).maybeSingle();
       const closes = election.voting_closes_at ? new Date(election.voting_closes_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`⏰ <b>Dernières 24 h pour voter !</b> — ${esc(election.title)}\n` +
-        `Clôture : <b>${esc(closes)}</b>. ${part?.voters ?? 0} membre(s) ont déjà voté.\n\n🗳 Voter : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}`);
+        `Clôture : <b>${esc(closes)}</b>. ${part?.voters ?? 0} membre(s) ont déjà voté.\n\n🗳 Voter : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}` + VOTING_NOTE);
     } else if (p.type === "reminder_candidacy_open") {
       const at = election.candidacy_opens_at ? new Date(election.candidacy_opens_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`🐾 <b>Candidatures ouvertes dans 24 h</b> — ${esc(election.title)}\n` +
-        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}`);
+        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}` + CANDIDACY_NOTE);
     } else if (p.type === "reminder_candidacy_close") {
       const at = election.candidacy_closes_at ? new Date(election.candidacy_closes_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`⏰ <b>Dernières 24 h pour candidater !</b> — ${esc(election.title)}\n` +
-        `Fermeture des candidatures : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}`);
+        `Fermeture des candidatures : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}` + CANDIDACY_NOTE);
     } else if (p.type === "reminder_voting_open") {
       const at = election.voting_opens_at ? new Date(election.voting_opens_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`🗳 <b>Ouverture des votes dans 24 h</b> — ${esc(election.title)}\n` +
-        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}?e=${encodeURIComponent(election.slug)}`);
+        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}?e=${encodeURIComponent(election.slug)}` + VOTING_NOTE);
     } else if (p.type === "results") {
       const { data: results } = await db.rpc("results", { p_election: election.id });
       const { data: part } = await db.rpc("participation", { p_election: election.id }).maybeSingle();
