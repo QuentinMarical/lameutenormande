@@ -755,7 +755,7 @@ grant execute on function
 grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
-  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb)
+  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.audit_log_readable()
   to authenticated;
 
 -- ---------------------------------------------------------------------
