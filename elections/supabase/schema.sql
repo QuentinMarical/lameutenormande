@@ -398,11 +398,17 @@ grant select on public.admin_voters to authenticated;
 -- ---------------------------------------------------------------------
 
 -- Vérifie un code : renvoie ce que le front a besoin de savoir (jamais d'autre secret)
-create or replace function public.check_code(p_code text, p_election uuid)
+-- p_touch (défaut true, comportement historique préservé) : ne mettre à true que pour une vraie
+-- saisie de code par la personne (formulaire "Continuer"). La revalidation silencieuse d'un code
+-- déjà en localStorage à chaque chargement de page doit passer p_touch=false, sinon "uses" (et le
+-- drapeau de suspicion code_tres_utilise, et le libellé "code saisi ×N" dans l'onglet Votants)
+-- grimpe avec la simple navigation au lieu de refléter de vraies saisies.
+drop function if exists public.check_code(text, uuid);
+create or replace function public.check_code(p_code text, p_election uuid, p_touch boolean default true)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v public.voter_codes;
 begin
-  v := public.resolve_code(p_code, p_election, true);
+  v := public.resolve_code(p_code, p_election, p_touch);
   return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
     'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
     'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
@@ -411,7 +417,8 @@ end $$;
 -- Résout un code SANS connaître son scrutin à l'avance (le code identifie son scrutin de façon
 -- unique). Permet à la page d'accueil de proposer la saisie d'un code même quand aucun scrutin
 -- n'est autrement visible publiquement (ex. le scrutin est encore en préparation par le staff).
-create or replace function public.code_lookup(p_code text)
+drop function if exists public.code_lookup(text);
+create or replace function public.code_lookup(p_code text, p_touch boolean default true)
 returns jsonb language plpgsql security definer set search_path = public as $$
 declare v public.voter_codes; e public.elections;
 begin
@@ -419,7 +426,9 @@ begin
   if v.id is null then raise exception 'CODE_INVALID'; end if;
   if v.revoked then raise exception 'CODE_REVOKED'; end if;
   select * into e from public.elections where id = v.election_id;
-  update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
+  if p_touch then
+    update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
+  end if;
   return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
     'election_id', e.id, 'election_slug', e.slug, 'election_title', e.title, 'election_status', e.status,
     'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
@@ -777,7 +786,7 @@ end $$;
 -- pas seulement quand le client appelle explicitement le RPC is_admin(). Le retirer casse ces
 -- lectures avec "permission denied for function is_admin" (vécu en production, corrigé ici).
 grant execute on function
-  public.check_code(text, uuid), public.code_lookup(text), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
+  public.check_code(text, uuid, boolean), public.code_lookup(text, boolean), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
   public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text),
   public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
   public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)

@@ -151,14 +151,16 @@
   E.getCode = () => { try { return localStorage.getItem(CODE_KEY) || ''; } catch { return ''; } };
   E.setCode = (code) => { try { localStorage.setItem(CODE_KEY, code); } catch {} };
   E.clearCode = () => { try { localStorage.removeItem(CODE_KEY); } catch {} };
-  E.checkCode = async (code, electionId) => {
-    const { data, error } = await E.sb.rpc('check_code', { p_code: code, p_election: electionId });
+  // touch=false pour une revalidation silencieuse (code déjà en localStorage, chargement de page) :
+  // seule une vraie saisie par la personne doit compter dans "uses" / le drapeau code_tres_utilise.
+  E.checkCode = async (code, electionId, touch = true) => {
+    const { data, error } = await E.sb.rpc('check_code', { p_code: code, p_election: electionId, p_touch: touch });
     if (error) throw error;
     return data;
   };
   /** Résout un code sans connaître son scrutin à l'avance (retourne aussi election_id/slug/title/status). */
-  E.codeLookup = async (code) => {
-    const { data, error } = await E.sb.rpc('code_lookup', { p_code: code });
+  E.codeLookup = async (code, touch = true) => {
+    const { data, error } = await E.sb.rpc('code_lookup', { p_code: code, p_touch: touch });
     if (error) throw error;
     return data;
   };
@@ -182,7 +184,10 @@
     const stored = urlCode || E.getCode();
     if (stored) {
       try {
-        const info = election ? await E.checkCode(stored, election.id) : await E.codeLookup(stored);
+        // Un code arrivé par lien (?code=) compte comme une vraie utilisation ; un code déjà en
+        // localStorage ne fait que se revalider silencieusement à chaque page, ça ne doit pas compter.
+        const touch = !!urlCode;
+        const info = election ? await E.checkCode(stored, election.id, touch) : await E.codeLookup(stored, touch);
         E.setCode(info.code || stored);
         if (opts.onResolved) opts.onResolved(info);
         return info;
@@ -324,7 +329,7 @@
     if (E.ready) {
       const stored = E.getCode();
       let info = null;
-      if (stored) { try { info = await E.codeLookup(stored); } catch { E.clearCode(); } }
+      if (stored) { try { info = await E.codeLookup(stored, false); } catch { E.clearCode(); } }
       if (info) {
         actions.appendChild(E.h('span', { class: 'account', id: 'codeSlot' },
           E.h('span', { class: 'code-pill' }, info.code), info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
