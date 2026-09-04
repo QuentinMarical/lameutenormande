@@ -617,10 +617,15 @@ returns public.elections language plpgsql security definer set search_path = pub
 declare v public.elections;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
-  if p ? 'roles' and exists (
-    select 1 from jsonb_array_elements_text(p->'roles') as t(role_id)
-    where not exists (select 1 from public.role_catalog rc where rc.id = t.role_id)
-  ) then raise exception 'BAD_ROLE'; end if;
+  if p ? 'roles' then
+    if exists (
+      select 1 from jsonb_array_elements_text(p->'roles') as t(role_id)
+      where not exists (select 1 from public.role_catalog rc where rc.id = t.role_id)
+    ) then raise exception 'BAD_ROLE'; end if;
+    if (select count(*) from jsonb_array_elements_text(p->'roles')) <>
+       (select count(distinct role_id) from jsonb_array_elements_text(p->'roles') as t(role_id))
+    then raise exception 'BAD_ROLE'; end if;
+  end if;
   if p->>'id' is null then
     insert into public.elections (slug, title, description, roles, status, candidacy_open, voting_open, voting_closes_at, results_public)
     values (p->>'slug', p->>'title', coalesce(p->>'description',''), coalesce(p->'roles', '[]'::jsonb),
