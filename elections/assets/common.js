@@ -227,12 +227,13 @@
     return null;
   };
 
-  /** Puce « code » dans la navigation, avec bouton pour changer de code. */
+  /** Puce « code » dans la navigation, avec bouton pour éjecter (se déconnecter) le code en cours,
+   *  dans le même style que le bouton de déconnexion admin (icône seule + info-bulle). */
   E.codeChip = function (info) {
     const slot = E.qs('.topbar #codeSlot'); if (!slot) return;
     const chip = E.h('span', { class: 'account', id: 'codeSlot' },
       E.h('span', { class: 'code-pill' }, info ? info.code : '—'), info && info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
-      E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(); location.reload(); } }, info ? 'changer' : 'saisir'));
+      E.h('button', { type: 'button', title: 'Éjecter mon code', onClick: () => { E.clearCode(); location.reload(); } }, E.icon('right-from-bracket')));
     slot.replaceWith(chip);
   };
 
@@ -340,6 +341,7 @@
     const bar = nav.parentElement;
     E.qsa('.actions', bar).forEach(n => n.remove());
     const actions = E.h('div', { class: 'actions' });
+    bar.appendChild(actions); // attaché tout de suite : E.codeChip cherche #codeSlot dans le document
     // La puce « code » du menu ne dépend d'aucun scrutin affiché sur la page : un code identifie
     // lui-même son scrutin (code_lookup), donc le bouton « Mon code » fonctionne toujours, même si
     // le seul scrutin existant est encore en préparation et invisible ailleurs sur le site.
@@ -348,16 +350,14 @@
       let info = null;
       if (stored) { try { info = await E.codeLookup(stored, false); } catch { E.clearCode(); } }
       if (info) {
-        actions.appendChild(E.h('span', { class: 'account', id: 'codeSlot' },
-          E.h('span', { class: 'code-pill' }, info.code), info.label ? E.h('span', { class: 'lbl' }, info.label) : null,
-          E.h('button', { type: 'button', title: 'Changer de code', onClick: () => { E.clearCode(); location.reload(); } }, 'changer')));
+        actions.appendChild(E.h('span', { id: 'codeSlot' }));
+        E.codeChip(info);
       } else {
         actions.appendChild(E.h('a', { id: 'codeSlot', class: 'tool primary', href: 'index.html#code', title: 'Saisir mon code de vote' }, 'Mon code'));
       }
     }
     const admin = E.ready && await E.adminSession();
     actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : E.icon('gear')));
-    bar.appendChild(actions);
   };
   E.notConfigured = function (container) {
     E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, E.icon('screwdriver-wrench')),

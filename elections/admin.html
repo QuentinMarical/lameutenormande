@@ -126,25 +126,45 @@
         f.voting_open = h('input', { type: 'checkbox' }); f.voting_open.checked = !!(e && e.voting_open);
         f.results_public = h('input', { type: 'checkbox' }); f.results_public.checked = e ? e.results_public : true;
         inp('voting_closes_at', { type: 'datetime-local', value: toLocalInput(e && e.voting_closes_at) });
+        inp('candidacy_opens_at', { type: 'datetime-local', value: toLocalInput(e && e.candidacy_opens_at) });
+        inp('candidacy_closes_at', { type: 'datetime-local', value: toLocalInput(e && e.candidacy_closes_at) });
+        inp('voting_opens_at', { type: 'datetime-local', value: toLocalInput(e && e.voting_opens_at) });
         const roleChecks = h('div', { class: 'checks' }); const roleInputs = {};
         allRoles.forEach(r => { const c = h('input', { type: 'checkbox', value: r.id }); c.checked = e ? (e.roles || []).includes(r.id) : true; roleInputs[r.id] = c; roleChecks.appendChild(h('label', { class: 'check' }, c, h('span', null, r.label))); });
         const save = h('button', { class: 'btn', type: 'submit' }, e ? 'Enregistrer' : 'Créer');
+        const del = e ? h('button', { class: 'btn danger', type: 'button', onClick: async () => {
+          if (!confirm('Supprimer définitivement « ' + e.title + ' » ? Tous ses codes, candidatures et bulletins seront supprimés avec lui. Irréversible.')) return;
+          const { error } = await E.sb.rpc('admin_delete_election', { p_election: e.id });
+          if (error) { E.toast(E.errMsg(error), 'error'); return; }
+          E.toast('Scrutin supprimé.', 'success'); current = null; await loadElections(); paintSelector(); scrutins();
+        } }, 'Supprimer ce scrutin') : null;
         const form = h('form', { id: 'edit-form', class: 'card column mt-16' },
           h('div', { class: 'title' }, e ? e.title : 'Nouveau scrutin'),
           h('div', { class: 'grid-2' }, h('div', { class: 'field' }, h('label', null, 'Titre'), f.title), h('div', { class: 'field' }, h('label', null, 'Identifiant (URL)'), f.slug, h('div', { class: 'hint' }, 'minuscules, chiffres, tirets'))),
           h('div', { class: 'field' }, h('label', null, 'Description'), f.description),
           h('div', { class: 'field' }, h('label', null, 'Postes du scrutin'), roleChecks),
-          h('div', { class: 'grid-2' }, h('div', { class: 'field' }, h('label', null, 'Statut'), f.status), h('div', { class: 'field' }, h('label', null, 'Clôture automatique des votes'), f.voting_closes_at, h('div', { class: 'hint' }, 'Heure locale. Rappel Telegram 24 h avant, clôture et résultats automatiques.'))),
+          h('div', { class: 'grid-2' }, h('div', { class: 'field' }, h('label', null, 'Statut'), f.status), h('div', { class: 'field' })),
           h('div', { class: 'btn-row', style: { marginTop: 0 } },
             h('label', { class: 'switch' }, f.candidacy_open, 'Candidatures ouvertes'), h('label', { class: 'switch' }, f.voting_open, 'Votes ouverts'), h('label', { class: 'switch' }, f.results_public, 'Scores publics pendant le vote')),
+          h('div', { class: 'field' }, h('label', null, 'Programmation automatique (optionnelle)'),
+            h('div', { class: 'hint', style: { marginBottom: '8px' } }, 'Heure locale. Laisser vide = contrôle 100% manuel via les boutons ci-dessous. Un rappel Telegram est envoyé 24 h avant chaque échéance ; une ouverture programmée publie aussi le scrutin (brouillon → ouvert) si besoin.'),
+            h('div', { class: 'grid-2' },
+              h('div', { class: 'field' }, h('label', null, 'Ouverture des candidatures'), f.candidacy_opens_at),
+              h('div', { class: 'field' }, h('label', null, 'Fermeture des candidatures'), f.candidacy_closes_at)),
+            h('div', { class: 'grid-2' },
+              h('div', { class: 'field' }, h('label', null, 'Ouverture des votes'), f.voting_opens_at),
+              h('div', { class: 'field' }, h('label', null, 'Clôture des votes'), f.voting_closes_at))),
           h('div', { class: 'btn-row' }, save, e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: true, voting_open: false, status: 'open' }) }, 'Ouvrir les candidatures') : null,
             e ? h('button', { class: 'btn secondary', type: 'button', onClick: () => quick(e, { candidacy_open: false, voting_open: true, status: 'open' }) }, 'Ouvrir les votes') : null,
-            e ? h('button', { class: 'btn danger', type: 'button', onClick: () => confirm('Clôturer le scrutin maintenant ? Les résultats seront annoncés sur Telegram.') && quick(e, { candidacy_open: false, voting_open: false, status: 'closed' }) }, 'Clôturer') : null));
+            e ? h('button', { class: 'btn danger', type: 'button', onClick: () => confirm('Clôturer le scrutin maintenant ? Les résultats seront annoncés sur Telegram.') && quick(e, { candidacy_open: false, voting_open: false, status: 'closed' }) }, 'Clôturer') : null,
+            del));
         form.addEventListener('submit', async ev => {
           ev.preventDefault();
           const payload = { id: e ? e.id : undefined, title: f.title.value.trim(), slug: f.slug.value.trim(), description: f.description.value.trim(), status: f.status.value,
             candidacy_open: f.candidacy_open.checked, voting_open: f.voting_open.checked, results_public: f.results_public.checked,
-            voting_closes_at: fromLocalInput(f.voting_closes_at.value), roles: allRoles.filter(r => roleInputs[r.id].checked).map(r => r.id) };
+            candidacy_opens_at: fromLocalInput(f.candidacy_opens_at.value), candidacy_closes_at: fromLocalInput(f.candidacy_closes_at.value),
+            voting_opens_at: fromLocalInput(f.voting_opens_at.value), voting_closes_at: fromLocalInput(f.voting_closes_at.value),
+            roles: allRoles.filter(r => roleInputs[r.id].checked).map(r => r.id) };
           if (!payload.roles.length) { E.toast('Choisis au moins un poste.', 'error'); return; }
           const { data, error } = await E.sb.rpc('admin_save_election', { p: payload });
           if (error) { E.toast(E.errMsg(error), 'error'); return; }
@@ -228,10 +248,10 @@
               r.revoked ? h('span', { class: 'badge danger', title: r.revoked_reason || '' }, 'révoqué') : null),
             h('div', { class: 'btn-row', style: { marginTop: '8px', gap: '6px' } },
               h('button', { class: 'btn secondary small', type: 'button', onClick: async () => { try { await navigator.clipboard.writeText(voteLink(r)); E.toast('Lien copié.', 'success'); } catch { E.toast(voteLink(r)); } } }, 'Lien'),
-              r.revoked
-                ? [h('button', { class: 'btn ok small', type: 'button', onClick: async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: false }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Réactiver'),
-                   h('button', { class: 'btn danger small', type: 'button', onClick: async () => { if (!confirm('Supprimer définitivement ce code révoqué (' + r.code + ') ? Son bulletin et ses candidatures seront supprimés avec lui. Irréversible.')) return; const { error } = await E.sb.rpc('admin_delete_code', { p_code_id: r.id }); if (error) E.toast(E.errMsg(error), 'error'); else { E.toast('Code supprimé.', 'success'); codes(); } } }, 'Supprimer')]
-                : h('button', { class: 'btn danger small', type: 'button', onClick: async () => { const reason = prompt('Révoquer ce code ? Son bulletin et ses candidatures seront invalidés. Motif :', 'Code compromis'); if (reason === null) return; const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: true, p_reason: reason }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Révoquer')));
+              r.revoked ? h('button', { class: 'btn ok small', type: 'button', onClick: async () => { const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: false }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Réactiver')
+                : h('button', { class: 'btn danger small', type: 'button', onClick: async () => { const reason = prompt('Révoquer ce code ? Son bulletin et ses candidatures seront invalidés. Motif :', 'Code compromis'); if (reason === null) return; const { error } = await E.sb.rpc('admin_update_code', { p_code_id: r.id, p_revoked: true, p_reason: reason }); if (error) E.toast(E.errMsg(error), 'error'); else codes(); } }, 'Révoquer'),
+              // Suppression directe possible sans révocation préalable tant que le code n'a jamais servi (aucune trace de vote à motiver).
+              (r.revoked || !r.first_used_at) ? h('button', { class: 'btn danger small', type: 'button', onClick: async () => { if (!confirm('Supprimer définitivement ce code (' + r.code + ') ? ' + (r.revoked ? 'Son bulletin et ses candidatures seront supprimés avec lui. ' : '') + 'Irréversible.')) return; const { error } = await E.sb.rpc('admin_delete_code', { p_code_id: r.id }); if (error) E.toast(E.errMsg(error), 'error'); else { E.toast('Code supprimé.', 'success'); codes(); } } }, 'Supprimer') : null));
           grid.appendChild(card);
         });
       }
@@ -313,7 +333,7 @@
       const rows = data || [];
       // Le contenu d'un bulletin (candidat choisi) n'est JAMAIS journalisé : cast_ballot ne log
       // que le nombre de choix (voir schema.sql), jamais quel candidat a été sélectionné.
-      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés' };
+      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', election_deleted: 'Scrutin supprimé', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés' };
       const tbody = h('tbody');
       rows.forEach(r => tbody.appendChild(h('tr', null,
         h('td', null, E.fmtDateTime(r.at)),
@@ -394,6 +414,8 @@
 
     show(tabs.some(t => t[0] === activeTab) ? activeTab : 'scrutins');
     E.subscribe(['ballots', 'candidates', 'elections'], E.debounce(async () => { await loadElections(); paintSelector(); if (['votants', 'candidatures'].includes(activeTab)) show(activeTab); }, 1200));
+    // Actualisation périodique de l'onglet Audit (IP/navigateur/acteurs ne passent pas par le broadcast realtime).
+    setInterval(() => { if (activeTab === 'audit') audit().catch(() => {}); }, 15000);
   })();
   </script>
 </body>

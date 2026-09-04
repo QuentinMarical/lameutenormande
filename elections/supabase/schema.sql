@@ -91,9 +91,16 @@ create table if not exists public.elections (
   status            text not null default 'draft' check (status in ('draft','open','closed','archived')),
   candidacy_open    boolean not null default false,
   voting_open       boolean not null default false,
-  voting_closes_at  timestamptz,
+  candidacy_opens_at   timestamptz,  -- programmation optionnelle : ouverture/fermeture auto (elections_tick)
+  candidacy_closes_at  timestamptz,
+  voting_opens_at      timestamptz,
+  voting_closes_at     timestamptz,
+  voting_started_at    timestamptz, -- horodatage réel de la dernière ouverture des votes (ancre du graphique « votants dans le temps »)
   results_public    boolean not null default true,
-  reminder_sent     boolean not null default false,
+  reminder_sent                  boolean not null default false, -- rappel J-1 clôture des votes
+  candidacy_open_reminder_sent   boolean not null default false, -- rappel J-1 ouverture des candidatures
+  candidacy_close_reminder_sent  boolean not null default false, -- rappel J-1 fermeture des candidatures
+  voting_open_reminder_sent      boolean not null default false, -- rappel J-1 ouverture des votes
   results_sent      boolean not null default false,
   created_at        timestamptz not null default now(),
   updated_at        timestamptz not null default now()
@@ -378,17 +385,22 @@ language sql stable security definer set search_path = public as $$
   group by e.id;
 $$;
 
+-- Pas de 15 min (plutôt que par heure) et ancré sur voting_started_at : vue de la journée de vote
+-- depuis l'instant précis où les votes ont été ouverts (plutôt que tout l'historique du scrutin).
 create or replace function public.participation_timeline(p_election uuid)
 returns table (election_id uuid, hour timestamptz, cumulative int)
 language sql stable security definer set search_path = public as $$
   select election_id, hour, sum(n) over (partition by election_id order by hour)::int as cumulative
   from (
-    select b.election_id, date_trunc('hour', b.first_submitted_at) as hour, count(*) as n
+    select b.election_id,
+           date_trunc('hour', b.first_submitted_at) + (floor(extract(minute from b.first_submitted_at) / 15) * interval '15 min') as hour,
+           count(*) as n
     from public.ballots b
     join public.elections e on e.id = b.election_id
     where b.election_id = p_election and b.invalidated = false and e.status <> 'draft'
       and (e.results_public or e.status in ('closed','archived'))
-    group by b.election_id, date_trunc('hour', b.first_submitted_at)
+      and (e.voting_started_at is null or b.first_submitted_at >= e.voting_started_at)
+    group by b.election_id, 2
   ) t
   order by hour;
 $$;
@@ -610,16 +622,30 @@ begin
                            jsonb_strip_nulls(jsonb_build_object('label', p_label, 'distributed', p_distributed, 'revoked', p_revoked, 'reason', p_reason)));
 end $$;
 
+-- Suppression manuelle d'un code : directe s'il n'a jamais servi (aucun risque de perdre une trace
+-- de vote/candidature sans motif de révocation), sinon il doit d'abord être révoqué (avec motif).
 create or replace function public.admin_delete_code(p_code_id uuid)
 returns void language plpgsql security definer set search_path = public as $$
-declare v_revoked boolean; v_election uuid;
+declare v_revoked boolean; v_election uuid; v_never_used boolean;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
-  select revoked, election_id into v_revoked, v_election from public.voter_codes where id = p_code_id;
+  select revoked, election_id, first_used_at is null into v_revoked, v_election, v_never_used from public.voter_codes where id = p_code_id;
   if v_election is null then raise exception 'CODE_NOT_FOUND'; end if;
-  if not v_revoked then raise exception 'CODE_NOT_REVOKED'; end if;
+  if not v_revoked and not v_never_used then raise exception 'CODE_NOT_REVOKED'; end if;
   delete from public.voter_codes where id = p_code_id;
   perform public.log_audit('admin:' || auth.uid()::text, 'code_deleted', v_election::text, jsonb_build_object('code_id', p_code_id));
+end $$;
+
+-- Suppression manuelle complète d'un scrutin (cascade : codes, candidatures, bulletins).
+create or replace function public.admin_delete_election(p_election uuid)
+returns void language plpgsql security definer set search_path = public as $$
+declare v_slug text;
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  select slug into v_slug from public.elections where id = p_election;
+  if v_slug is null then raise exception 'ELECTION_NOT_FOUND'; end if;
+  delete from public.elections where id = p_election;
+  perform public.log_audit('admin:' || auth.uid()::text, 'election_deleted', p_election::text, jsonb_build_object('slug', v_slug));
 end $$;
 
 create or replace function public.admin_invalidate_ballot(p_ballot uuid, p_reason text)
@@ -682,7 +708,7 @@ end $$;
 
 create or replace function public.admin_save_election(p jsonb)
 returns public.elections language plpgsql security definer set search_path = public as $$
-declare v public.elections;
+declare v public.elections; v_voting_open boolean; v_prev_voting_open boolean;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   if p ? 'roles' then
@@ -695,26 +721,50 @@ begin
     then raise exception 'BAD_ROLE'; end if;
   end if;
   if p->>'id' is null then
-    insert into public.elections (slug, title, description, roles, status, candidacy_open, voting_open, voting_closes_at, results_public)
+    v_voting_open := coalesce((p->>'voting_open')::boolean, false);
+    insert into public.elections (slug, title, description, roles, status, candidacy_open, voting_open,
+        candidacy_opens_at, candidacy_closes_at, voting_opens_at, voting_closes_at, voting_started_at, results_public)
     values (p->>'slug', p->>'title', coalesce(p->>'description',''), coalesce(p->'roles', '[]'::jsonb),
             coalesce(p->>'status','draft'), coalesce((p->>'candidacy_open')::boolean,false),
-            coalesce((p->>'voting_open')::boolean,false), (p->>'voting_closes_at')::timestamptz,
+            v_voting_open,
+            (p->>'candidacy_opens_at')::timestamptz, (p->>'candidacy_closes_at')::timestamptz,
+            (p->>'voting_opens_at')::timestamptz, (p->>'voting_closes_at')::timestamptz,
+            case when v_voting_open then now() else null end,
             coalesce((p->>'results_public')::boolean,true))
     returning * into v;
   else
+    select voting_open into v_prev_voting_open from public.elections where id = (p->>'id')::uuid;
+    v_voting_open := coalesce((p->>'voting_open')::boolean, v_prev_voting_open);
     update public.elections set
       slug = coalesce(p->>'slug', slug), title = coalesce(p->>'title', title),
       description = coalesce(p->>'description', description), roles = coalesce(p->'roles', roles),
       status = coalesce(p->>'status', status),
       candidacy_open = coalesce((p->>'candidacy_open')::boolean, candidacy_open),
-      voting_open = coalesce((p->>'voting_open')::boolean, voting_open),
+      voting_open = v_voting_open,
+      candidacy_opens_at = case when p ? 'candidacy_opens_at' then (p->>'candidacy_opens_at')::timestamptz else candidacy_opens_at end,
+      candidacy_closes_at = case when p ? 'candidacy_closes_at' then (p->>'candidacy_closes_at')::timestamptz else candidacy_closes_at end,
+      voting_opens_at = case when p ? 'voting_opens_at' then (p->>'voting_opens_at')::timestamptz else voting_opens_at end,
       voting_closes_at = case when p ? 'voting_closes_at' then (p->>'voting_closes_at')::timestamptz else voting_closes_at end,
+      -- Ancre du graphique « votants dans le temps » : horodatée à chaque passage fermé → ouvert,
+      -- effacée à la fermeture (pour repartir propre si les votes rouvrent plus tard).
+      voting_started_at = case when v_voting_open and not coalesce(v_prev_voting_open, false) then now()
+                                when not v_voting_open then null
+                                else voting_started_at end,
       results_public = coalesce((p->>'results_public')::boolean, results_public),
       -- Un rappel J-1/résultats déjà envoyés ne doivent pas rester bloqués si l'admin repousse
       -- l'échéance ou rouvre un scrutin clôturé : sinon elections_tick() ne les renverra jamais.
       reminder_sent = case when p ? 'voting_closes_at'
         and (p->>'voting_closes_at')::timestamptz is distinct from voting_closes_at
         then false else reminder_sent end,
+      candidacy_open_reminder_sent = case when p ? 'candidacy_opens_at'
+        and (p->>'candidacy_opens_at')::timestamptz is distinct from candidacy_opens_at
+        then false else candidacy_open_reminder_sent end,
+      candidacy_close_reminder_sent = case when p ? 'candidacy_closes_at'
+        and (p->>'candidacy_closes_at')::timestamptz is distinct from candidacy_closes_at
+        then false else candidacy_close_reminder_sent end,
+      voting_open_reminder_sent = case when p ? 'voting_opens_at'
+        and (p->>'voting_opens_at')::timestamptz is distinct from voting_opens_at
+        then false else voting_open_reminder_sent end,
       results_sent = case when status = 'closed' and coalesce(p->>'status', status) <> 'closed'
         then false else results_sent end,
       updated_at = now()
@@ -756,10 +806,39 @@ end $$;
 drop trigger if exists candidates_notify on public.candidates;
 create trigger candidates_notify after insert on public.candidates for each row execute function public.on_candidate_insert();
 
+-- Programmation optionnelle : si candidacy_opens_at/closes_at ou voting_opens_at/closes_at sont
+-- renseignés, ce tick (toutes les 15 min) ouvre/ferme les phases tout seul, envoie un rappel
+-- Telegram 24h avant chaque échéance, et publie les résultats dès la clôture (existant).
+-- Un scrutin sans aucune date programmée reste 100% manuel, comme avant.
 create or replace function public.elections_tick()
 returns void language plpgsql security definer set search_path = public as $$
 declare e record;
 begin
+  -- Rappels J-1 (candidatures : ouverture, fermeture ; votes : ouverture, fermeture)
+  for e in select * from public.elections
+           where status in ('draft','open') and not candidacy_open and not candidacy_open_reminder_sent
+             and candidacy_opens_at is not null
+             and candidacy_opens_at between now() + interval '23 hours' and now() + interval '25 hours' loop
+    perform public.notify_telegram(jsonb_build_object('type','reminder_candidacy_open','election_id', e.id));
+    update public.elections set candidacy_open_reminder_sent = true where id = e.id;
+  end loop;
+
+  for e in select * from public.elections
+           where status = 'open' and candidacy_open and not candidacy_close_reminder_sent
+             and candidacy_closes_at is not null
+             and candidacy_closes_at between now() + interval '23 hours' and now() + interval '25 hours' loop
+    perform public.notify_telegram(jsonb_build_object('type','reminder_candidacy_close','election_id', e.id));
+    update public.elections set candidacy_close_reminder_sent = true where id = e.id;
+  end loop;
+
+  for e in select * from public.elections
+           where status = 'open' and not voting_open and not voting_open_reminder_sent
+             and voting_opens_at is not null
+             and voting_opens_at between now() + interval '23 hours' and now() + interval '25 hours' loop
+    perform public.notify_telegram(jsonb_build_object('type','reminder_voting_open','election_id', e.id));
+    update public.elections set voting_open_reminder_sent = true where id = e.id;
+  end loop;
+
   for e in select * from public.elections
            where status = 'open' and voting_open and not reminder_sent
              and voting_closes_at is not null
@@ -768,9 +847,28 @@ begin
     update public.elections set reminder_sent = true where id = e.id;
   end loop;
 
+  -- Ouverture/fermeture automatiques des candidatures. L'ouverture programmée publie aussi le
+  -- scrutin (draft -> open) : c'est le but d'une programmation posée à l'avance sur un brouillon.
+  update public.elections set candidacy_open = true, status = case when status = 'draft' then 'open' else status end, updated_at = now()
+  where status in ('draft','open') and not candidacy_open
+    and candidacy_opens_at is not null and now() >= candidacy_opens_at
+    and (candidacy_closes_at is null or now() < candidacy_closes_at);
+
+  update public.elections set candidacy_open = false, updated_at = now()
+  where status = 'open' and candidacy_open
+    and candidacy_closes_at is not null and now() >= candidacy_closes_at;
+
+  -- Ouverture automatique des votes (ferme aussi les candidatures, comme le bouton manuel « Ouvrir les votes »)
+  update public.elections set voting_open = true, candidacy_open = false, voting_started_at = now(), updated_at = now()
+  where status = 'open' and not voting_open
+    and voting_opens_at is not null and now() >= voting_opens_at
+    and (voting_closes_at is null or now() < voting_closes_at);
+
+  -- Fermeture automatique des votes (existant)
   update public.elections set voting_open = false, candidacy_open = false, status = 'closed', updated_at = now()
   where status = 'open' and voting_closes_at is not null and now() >= voting_closes_at;
 
+  -- Publication des résultats sur Telegram dès la clôture (existant)
   for e in select * from public.elections where status = 'closed' and not results_sent loop
     perform public.notify_telegram(jsonb_build_object('type','results','election_id', e.id));
     update public.elections set results_sent = true where id = e.id;
@@ -842,7 +940,7 @@ grant execute on function
 grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
-  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.audit_log_readable(),
+  public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.admin_delete_election(uuid), public.audit_log_readable(),
   public.admin_log_event(text), public.admin_save_settings(text, text)
   to authenticated;
 

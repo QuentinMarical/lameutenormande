@@ -1,4 +1,5 @@
-// Edge Function : annonces Telegram (nouvelle candidature, rappel J-1, résultats finaux).
+// Edge Function : annonces Telegram (nouvelle candidature, rappels J-1 ouverture/fermeture
+// candidatures et votes, résultats finaux à la clôture).
 // Appelée depuis Postgres (pg_net) par notify_telegram() avec l'en-tête x-notify-secret.
 //
 // Secrets requis : TELEGRAM_BOT_TOKEN, TELEGRAM_ANNOUNCE_CHAT_ID, NOTIFY_SECRET, SITE_URL (optionnel).
@@ -53,6 +54,18 @@ Deno.serve(async (req) => {
       const closes = election.voting_closes_at ? new Date(election.voting_closes_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
       await send(`⏰ <b>Dernières 24 h pour voter !</b> — ${esc(election.title)}\n` +
         `Clôture : <b>${esc(closes)}</b>. ${part?.voters ?? 0} membre(s) ont déjà voté.\n\n🗳 Voter : ${SITE_URL}voter.html?e=${encodeURIComponent(election.slug)}`);
+    } else if (p.type === "reminder_candidacy_open") {
+      const at = election.candidacy_opens_at ? new Date(election.candidacy_opens_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
+      await send(`🐾 <b>Candidatures ouvertes dans 24 h</b> — ${esc(election.title)}\n` +
+        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}`);
+    } else if (p.type === "reminder_candidacy_close") {
+      const at = election.candidacy_closes_at ? new Date(election.candidacy_closes_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
+      await send(`⏰ <b>Dernières 24 h pour candidater !</b> — ${esc(election.title)}\n` +
+        `Fermeture des candidatures : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}candidater.html?e=${encodeURIComponent(election.slug)}`);
+    } else if (p.type === "reminder_voting_open") {
+      const at = election.voting_opens_at ? new Date(election.voting_opens_at).toLocaleString("fr-FR", { timeZone: "Europe/Paris", dateStyle: "long", timeStyle: "short" }) : "bientôt";
+      await send(`🗳 <b>Ouverture des votes dans 24 h</b> — ${esc(election.title)}\n` +
+        `Ouverture : <b>${esc(at)}</b>.\n\n👉 ${SITE_URL}?e=${encodeURIComponent(election.slug)}`);
     } else if (p.type === "results") {
       const { data: results } = await db.rpc("results", { p_election: election.id });
       const { data: part } = await db.rpc("participation", { p_election: election.id }).maybeSingle();
