@@ -42,7 +42,7 @@
     const roles = E.rolesOf(election);
     const q = '?e=' + encodeURIComponent(election.slug);
     const css = getComputedStyle(document.documentElement);
-    const C = { accent: css.getPropertyValue('--accent').trim(), accent2: css.getPropertyValue('--accent-2').trim(), muted: css.getPropertyValue('--muted').trim(), text: css.getPropertyValue('--text').trim(), grid: 'rgba(255,255,255,0.06)' };
+    const C = { accent: css.getPropertyValue('--orange-2').trim(), accent2: css.getPropertyValue('--orange').trim(), muted: css.getPropertyValue('--muted').trim(), text: css.getPropertyValue('--text').trim(), grid: 'rgba(255,255,255,0.06)' };
     if (window.Chart) { Chart.defaults.color = C.muted; Chart.defaults.font.family = 'Inter, system-ui, sans-serif'; Chart.defaults.borderColor = C.grid; }
 
     // ---------- Structure ----------
