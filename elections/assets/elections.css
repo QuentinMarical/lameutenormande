@@ -37,7 +37,7 @@
   --radius: 20px;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; overflow-wrap: break-word; }
 html { scroll-behavior: smooth; }
 body {
   margin: 0;
@@ -237,6 +237,7 @@ textarea.input { min-height: 110px; resize: vertical; line-height: 1.5; }
 .cand {
   display: flex; align-items: flex-start; gap: .85rem; padding: .9rem 1rem; border-radius: 12px; position: relative;
   background: var(--panel-1); border: 1px solid var(--line); transition: border-color .15s, background .15s;
+  min-width: 0;
 }
 .cand.selectable { cursor: pointer; }
 .cand.selectable:hover { border-color: var(--violet-line); background: var(--panel-2); }
