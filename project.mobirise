@@ -67,7 +67,7 @@
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "8quxops7ef",
+    "mbrsiteDomain": "bh4dryxa3j",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
@@ -83,8 +83,8 @@
       "underlineLink": true,
       "opacityOverlay": "0",
       "bgOpacity": "100",
-      "text": "We use cookies to give you the best experience as specified in the <a href='privacy.html'>cookie policy</a>.",
-      "textButton": "GOT IT",
+      "text": "Ce site utilise des cookies techniques nécessaires à son fonctionnement, comme décrit dans notre <a href='privacy.html'>politique de cookies</a>.",
+      "textButton": "OK",
       "rejectText": "REJECT"
     },
     "witsec-white-label": true,
@@ -92,8 +92,8 @@
     "robotsText": "User-agent: *\nDisallow: /cgi-bin\n<<<<<<< HEAD\n\n\n=======\nDisallow: /elections/\nDisallow: /votes/\n>>>>>>> 9f502ec1206799b34f777b3d2ba08b6545c3f058\n\n",
     "site_lang": "fr",
     "cookiesAlertType": "1",
-    "gdpr": false,
-    "global_header_custom": "<script>\ndocument.addEventListener('click', function (e) {\n  var lien = e.target.closest(\"a[href='privacy.html'], a[href$='/privacy.html']\");\n  if (!lien) return;\n  var bouton = document.querySelector(\".footer-legal-btn[data-legal='cookies']\");\n  if (bouton) { e.preventDefault(); bouton.click(); }\n});\ndocument.addEventListener('click', function (e) {\n  var btn = e.target.closest('#impliedsubmit, #explicitsubmit');\n  if (!btn) return;\n  var d = new Date();\n  d.setTime(d.getTime() + 365 * 86400000);\n  document.cookie = 'cookiesDirective=1; expires=' + d.toUTCString() + '; path=/';\n});\n</script>"
+    "global_header_custom": "<script>\ndocument.addEventListener('click', function (e) {\n  var lien = e.target.closest(\"a[href='privacy.html'], a[href$='/privacy.html']\");\n  if (!lien) return;\n  var bouton = document.querySelector(\".footer-legal-btn[data-legal='cookies']\");\n  if (bouton) { e.preventDefault(); bouton.click(); }\n});\ndocument.addEventListener('click', function (e) {\n  var btn = e.target.closest('#impliedsubmit, #explicitsubmit');\n  if (!btn) return;\n  var d = new Date();\n  d.setTime(d.getTime() + 365 * 86400000);\n  document.cookie = 'cookiesDirective=1; expires=' + d.toUTCString() + '; path=/';\n});\n</script>",
+    "gdpr": false
   },
   "pages": {
     "index.html": {
