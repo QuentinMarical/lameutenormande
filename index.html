@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=bGDGY3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=bGDGY3" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=W6Zc4D"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=W6Zc4D" type="text/css">
 
   
   <script>
@@ -267,7 +267,11 @@ document.addEventListener('click', function (e) {
             s.textContent = ''
                 /* --- z-index global quand modal ouverte --- */
                 + 'body.modal-open{overflow:hidden}'
-                + 'body.modal-open>*:not(.module-artiste):not(.artistgallery1):not(.carousel-fullscreen):not(.pricing-fullscreen){z-index:0!important;position:relative}'
+                // Exclut aussi les conteneurs de la modale légale (.legal-modal) : sinon cette règle,
+                // plus spécifique que l'exception ligne suivante (4 :not() contre 1 seul :has()),
+                // l'emporte quand même malgré !important et repasse la modale à z-index:0 — elle
+                // se retrouvait alors sous le bandeau cookies (z-index:1050, hors de ce reset).
+                + 'body.modal-open>*:not(.module-artiste):not(.artistgallery1):not(.carousel-fullscreen):not(.pricing-fullscreen):not(:has(.legal-modal)){z-index:0!important;position:relative}'
                 + 'body.modal-open>.module-artiste{z-index:0!important;position:relative}'
                 + 'body.modal-open>.artistgallery1{z-index:0!important;position:relative}'
                 + 'body.modal-open>.module-artiste:has(.artist-modal.show){z-index:2147483647!important}'
