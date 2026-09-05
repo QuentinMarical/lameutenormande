@@ -184,6 +184,22 @@ begin
   return coalesce(v, 'null'::jsonb);
 end $$;
 
+-- Retire sa propre réponse (même logique de propriété que respond()/my_response : seul le
+-- device_token qui l'a créée peut la supprimer, jamais un admin ni personne d'autre via ce chemin).
+-- Autorisé tant que le sondage est ouvert, comme la modification.
+create or replace function votes.delete_response(p_poll uuid, p_device_token text)
+returns void language plpgsql security definer set search_path = votes, public as $$
+declare v_poll votes.polls; v_id uuid;
+begin
+  select * into v_poll from votes.polls where id = p_poll;
+  if v_poll.id is null or v_poll.status <> 'open' then raise exception 'POLL_NOT_OPEN'; end if;
+  if v_poll.closes_at is not null and now() >= v_poll.closes_at then raise exception 'POLL_CLOSED'; end if;
+  select id into v_id from votes.responses where poll_id = p_poll and device_token = p_device_token;
+  if v_id is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
+  delete from votes.responses where id = v_id;
+  perform public.log_audit('poll:self', 'response_deleted_by_voter', v_poll.slug, jsonb_build_object('response_id', v_id));
+end $$;
+
 -- ---------------------------------------------------------------------
 -- 7. RPC admin
 -- ---------------------------------------------------------------------
@@ -279,7 +295,7 @@ begin
     execute format('revoke execute on function %s from public, anon, authenticated', r.sig);
   end loop;
 end $$;
-grant execute on function votes.respond(uuid, text, text, jsonb), votes.my_response(uuid, text), votes.poll_results(uuid) to anon, authenticated;
+grant execute on function votes.respond(uuid, text, text, jsonb), votes.my_response(uuid, text), votes.poll_results(uuid), votes.delete_response(uuid, text) to anon, authenticated;
 grant execute on function votes.admin_save_poll(jsonb), votes.admin_save_questions(uuid, jsonb), votes.admin_delete_poll(uuid), votes.admin_delete_response(uuid) to authenticated;
 
 -- Tables : select direct nécessaire pour .from('polls')/.from('questions') côté client (RLS filtre

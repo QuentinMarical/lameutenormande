@@ -113,8 +113,18 @@
         const row = h('div', { class: 'btn-row' });
         if (st.phase === 'open') row.appendChild(h('button', { class: 'btn secondary', type: 'button', onClick: () => renderForm() }, myResp ? 'Modifier ma réponse' : 'Répondre'));
         row.appendChild(h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Actualiser'));
+        if (st.phase === 'open' && myResp) row.appendChild(h('button', { class: 'btn danger', type: 'button', onClick: supprimerMaReponse }, 'Supprimer ma réponse'));
         zone.appendChild(row);
       });
+    }
+
+    async function supprimerMaReponse() {
+      if (!confirm('Supprimer ta réponse à ce sondage ?')) return;
+      const { error } = await V.vsb.rpc('delete_response', { p_poll: poll.id, p_device_token: device });
+      if (error) { V.toast(V.errMsg(error), 'error'); return; }
+      myResp = null;
+      V.toast('Réponse supprimée.', 'success');
+      renderForm();
     }
 
     function renderForm() {
