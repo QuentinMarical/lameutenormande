@@ -67,7 +67,7 @@
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "peglh7nzzw",
+    "mbrsiteDomain": "grhezhyb10",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
@@ -83,7 +83,7 @@
       "underlineLink": true,
       "opacityOverlay": "0",
       "bgOpacity": "100",
-      "text": "Ce site utilise des cookies techniques nécessaires à son fonctionnement, comme décrit dans notre <a href='privacy.html'>politique de cookies</a>.\n<script>\ndocument.addEventListener('click', function (e) {\n  var lien = e.target.closest('a[href=\\'privacy.html\\'], a[href$=\\'/privacy.html\\']');\n  if (!lien) return;\n  var bouton = document.querySelector('.footer-legal-btn[data-legal=\\'cookies\\']');\n  if (bouton) { e.preventDefault(); bouton.click(); }\n});\n</script>",
+      "text": "Ce site utilise des cookies techniques nécessaires à son fonctionnement, comme décrit dans notre <a href='privacy.html'>politique de cookies</a>.",
       "textButton": "OK",
       "rejectText": "REJECT"
     },
@@ -92,7 +92,8 @@
     "robotsText": "User-agent: *\nDisallow: /cgi-bin\n<<<<<<< HEAD\n\n\n=======\nDisallow: /elections/\nDisallow: /votes/\n>>>>>>> 9f502ec1206799b34f777b3d2ba08b6545c3f058\n\n",
     "site_lang": "fr",
     "cookiesAlertType": "1",
-    "gdpr": false
+    "gdpr": false,
+    "global_header_custom": "<script>\ndocument.addEventListener('click', function (e) {\n  var lien = e.target.closest(\"a[href='privacy.html'], a[href$='/privacy.html']\");\n  if (!lien) return;\n  var bouton = document.querySelector(\".footer-legal-btn[data-legal='cookies']\");\n  if (bouton) { e.preventDefault(); bouton.click(); }\n});\n</script>"
   },
   "pages": {
     "index.html": {
