@@ -62,38 +62,24 @@
         "file": "@PROJECT_PATH@/fonts/PR%20Viking/font.ttf"
       }
     ],
-    "uniqCompNum": 84,
+    "uniqCompNum": 85,
     "versionPublish": "6.0.6",
     "imageResize": true,
     "screenshot": "screenshot.png",
     "favicon": "@PROJECT_PATH@/assets/images/macaron-128x128-128x128.png",
-    "mbrsiteDomain": "bh4dryxa3j",
+    "mbrsiteDomain": "ck9f6hatku",
     "usedWebp": true,
     "robotsSwitcher": true,
     "sitemapSwitcher": true,
     "sitemapSwitcherAuto": "on",
     "siteUrl": "https://lameutenormande.fr",
-    "cookiesAlert": {
-      "customDialogSelector": false,
-      "colorText": "#edefeb",
-      "colorBg": "#000000",
-      "colorButton": "#fb0000",
-      "rejectColor": "#ffffff",
-      "colorLink": "#ffa600",
-      "underlineLink": true,
-      "opacityOverlay": "0",
-      "bgOpacity": "100",
-      "text": "Ce site utilise des cookies techniques nécessaires à son fonctionnement, comme décrit dans notre <a href='privacy.html'>politique de cookies</a>.",
-      "textButton": "OK",
-      "rejectText": "REJECT"
-    },
     "witsec-white-label": true,
     "publishChangesOnly": true,
     "robotsText": "User-agent: *\nDisallow: /cgi-bin\n<<<<<<< HEAD\n\n\n=======\nDisallow: /elections/\nDisallow: /votes/\n>>>>>>> 9f502ec1206799b34f777b3d2ba08b6545c3f058\n\n",
     "site_lang": "fr",
-    "cookiesAlertType": "1",
     "global_header_custom": "<script>\ndocument.addEventListener('click', function (e) {\n  var lien = e.target.closest(\"a[href='privacy.html'], a[href$='/privacy.html']\");\n  if (!lien) return;\n  var bouton = document.querySelector(\".footer-legal-btn[data-legal='cookies']\");\n  if (bouton) { e.preventDefault(); bouton.click(); }\n});\ndocument.addEventListener('click', function (e) {\n  var btn = e.target.closest('#impliedsubmit, #explicitsubmit');\n  if (!btn) return;\n  var d = new Date();\n  d.setTime(d.getTime() + 365 * 86400000);\n  document.cookie = 'cookiesDirective=1; expires=' + d.toUTCString() + '; path=/';\n});\n</script>",
-    "gdpr": false
+    "gdpr": false,
+    "cookiesAlert": false
   },
   "pages": {
     "index.html": {
@@ -1223,167 +1209,11 @@
           },
           "_name": "header13",
           "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\" class=\"header13\" group=\"Headers\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{\n    'mbr-fullscreen': fullScreen,\n    'mbr-parallax-background': bg.parallax}\">\n  <mbr-parameters>\n    <header>Size</header>\n    <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\">\n    <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n    <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n    <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"0\" condition=\"fullScreen == false\">\n    <input type=\"range\" name=\"imageWidth\" title=\"Image Width\" min=\"1\" max=\"12\" step=\"1\" value=\"6\" condition=\"showImage\">\n    <header>Show/Hide</header>\n    <input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n    <input type=\"checkbox\" title=\"Text\" name=\"showText\" checked>\n    <input type=\"checkbox\" title=\"Buttons\" name=\"showButtons\" checked>\n    <input type=\"checkbox\" title=\"Image\" name=\"showImage\">\n    <header>Background</header>\n    <fieldset type=\"background\" name=\"bg\" parallax>\n      <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/photo-5870547891188252494-y-1-1280x960.webp\" parallax selected>\n      <input type=\"color\" title=\"Color\" value=\"#a6a99c\">\n      <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n    </fieldset>\n    <header condition=\"bg.type === 'video'\">Fallback Image</header>\n    <input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n    <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n    <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#000000\" condition=\"overlay && bg.type !== 'color'\">\n    <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.6\" condition=\"overlay && bg.type !== 'color'\">\n  </mbr-parameters>\n\n  <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n  <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n  <div class=\"align-center\" mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n    <div class=\"row justify-content-center\" mbr-if=\"showTitle || showText || showButtons\">\n      <div class=\"col-md-12 mb-5 content-head\">\n        <h1 class=\"mbr-section-title mbr-fonts-style\" data-app-selector=\".mbr-section-title\" mbr-theme-style=\"display-1\" mbr-if=\"showTitle\"><b>Bienvenue dans la meute !</b></h1>\n        <p class=\"mbr-text mbr-fonts-style mt-4\" mbr-theme-style=\"display-7\" mbr-if=\"showText\" data-app-selector=\".mbr-text, .mbr-section-btn\">Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, nous nous retrouvons pour participer à des événements ensemble assez régulièrement.\n<br>\n<br>Des conventions animées aux rassemblements locaux, nous sommes toujours prêts pour l'aventure.\n<br>\n<br>Notre groupe, c'est une famille où chacun trouve sa place et exprime sa créativité.</p>\n        <div mbr-buttons mbr-theme-style=\"display-7\" class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-info\" href=\"contact.html\" data-app-placeholder=\"Type Text\">Nous rejoindre</a></div>\n      </div>\n    </div>\n\n    <div class=\"row justify-content-center\">\n      <div class=\"col-12 col-md-{{imageWidth}}\" mbr-if=\"showImage\">\n        <img src=\"../_images/hightlights/6.jpg\" alt=\"Mobirise Website Builder\" title>\n      </div>\n    </div>\n  </div>\n  <a class=\"scroll-down-btn\" href=\"#\" onclick=\"this.closest('section').nextElementSibling.scrollIntoView({behavior:'smooth'}); return false;\" aria-label=\"Défiler vers le bas\">\n    <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 40 40\" width=\"40\" height=\"40\">\n      <circle cx=\"20\" cy=\"20\" r=\"18\" fill=\"rgba(0,0,0,0.28)\" stroke=\"rgba(255,255,255,0.45)\" stroke-width=\"1.5\"></circle>\n      <polyline points=\"13,17 20,25 27,17\" fill=\"none\" stroke=\"#ffffff\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></polyline>\n    </svg>\n  </a>\n</section>",
+          "_customHTML": "<section data-bs-version=\"5.1\" class=\"header13\" group=\"Headers\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{\n    'mbr-fullscreen': fullScreen,\n    'mbr-parallax-background': bg.parallax}\">\n  <mbr-parameters>\n    <header>Size</header>\n    <input type=\"checkbox\" title=\"Full Screen\" name=\"fullScreen\" checked>\n    <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\" checked>\n    <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"12\" step=\"1\" value=\"6\" condition=\"fullScreen == false\">\n    <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"12\" step=\"1\" value=\"7\" condition=\"fullScreen == false\">\n    <input type=\"range\" name=\"imageWidth\" title=\"Image Width\" min=\"1\" max=\"12\" step=\"1\" value=\"6\" condition=\"showImage\">\n    <header>Show/Hide</header>\n    <input type=\"checkbox\" title=\"Title\" name=\"showTitle\" checked>\n    <input type=\"checkbox\" title=\"Text\" name=\"showText\" checked>\n    <input type=\"checkbox\" title=\"Buttons\" name=\"showButtons\" checked>\n    <input type=\"checkbox\" title=\"Image\" name=\"showImage\">\n    <header>Background</header>\n    <fieldset type=\"background\" name=\"bg\" parallax>\n      <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/photo-5870547891188252494-y-1-1280x960.webp\" parallax selected>\n      <input type=\"color\" title=\"Color\" value=\"#a6a99c\">\n      <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n    </fieldset>\n    <header condition=\"bg.type === 'video'\">Fallback Image</header>\n    <input type=\"image\" title=\"Fallback Image\" value=\"../_images/background1.jpg\" name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n    <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n    <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#000000\" condition=\"overlay && bg.type !== 'color'\">\n    <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.6\" condition=\"overlay && bg.type !== 'color'\">\n  </mbr-parameters>\n\n  <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n  <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n  <div class=\"align-center\" mbr-class=\"{'container': !fullWidth, 'container-fluid': fullWidth}\">\n    <div class=\"row justify-content-center\" mbr-if=\"showTitle || showText || showButtons\">\n      <div class=\"col-md-12 mb-5 content-head\">\n        <h1 class=\"mbr-section-title mbr-fonts-style\" data-app-selector=\".mbr-section-title\" mbr-theme-style=\"display-1\" mbr-if=\"showTitle\"><b>Bienvenue dans la meute !</b></h1>\n        <p class=\"mbr-text mbr-fonts-style mt-4\" mbr-theme-style=\"display-7\" mbr-if=\"showText\" data-app-selector=\".mbr-text, .mbr-section-btn\">Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, nous nous retrouvons pour participer à des événements ensemble assez régulièrement.\n<br>\n<br>Des conventions animées aux rassemblements locaux, nous sommes toujours prêts pour l'aventure.\n<br>\n<br>Notre groupe, c'est une famille où chacun trouve sa place et exprime sa créativité.</p>\n        <div mbr-buttons mbr-theme-style=\"display-7\" class=\"mbr-section-btn mt-4\" mbr-if=\"showButtons\" data-toolbar=\"-mbrBtnMove\"><a class=\"btn btn-info\" href=\"contact.html\" data-app-placeholder=\"Type Text\">Nous rejoindre</a></div>\n      </div>\n    </div>\n\n    <div class=\"row justify-content-center\">\n      <div class=\"col-12 col-md-{{imageWidth}}\" mbr-if=\"showImage\">\n        <img src=\"../_images/hightlights/6.jpg\" alt=\"Mobirise Website Builder\" title>\n      </div>\n    </div>\n  </div>\n</section>",
           "_cid": "vjIECNypTg",
           "_anchor": "header13-1v",
           "_PHPplaceholders": [],
           "_JSplaceholders": [],
-          "_protectedParams": [],
-          "_global": false,
-          "_once": false,
-          "_params": {}
-        },
-        {
-          "alias": false,
-          "_styles": {
-            "position": "relative",
-            "padding-top": "(@paddingTop * 1rem)",
-            "padding-bottom": "(@paddingBottom * 1rem)",
-            "& when (@bg-type = 'image')": {
-              "background-image": "url(@bg-value)"
-            },
-            "& when (@bg-type = 'color')": {
-              "background-color": "@bg-value"
-            },
-            ".mbr-fallback-image.disabled": {
-              "display": "none"
-            },
-            ".mbr-fallback-image": {
-              "display": "block",
-              "background-size": "cover",
-              "background-position": "center center",
-              "width": "100%",
-              "height": "100%",
-              "position": "absolute",
-              "top": "0",
-              "& when (@bg-type = 'video')": {
-                "background-image": "url(@fallBackImage)"
-              }
-            },
-            ".mbr-section-title": {
-              "color": "#ffffff",
-              "text-align": "center"
-            },
-            ".mbr-section-subtitle": {
-              "color": "rgba(255, 255, 255, 0.65)",
-              "text-align": "center"
-            },
-            ".faq-header": {
-              "margin-bottom": "2rem"
-            },
-            ".faq-title": {
-              "color": "#ffffff",
-              "font-size": "2.5rem",
-              "font-weight": "bold",
-              "text-align": "center"
-            },
-            ".faq-subtitle": {
-              "color": "rgba(255, 255, 255, 0.75)",
-              "font-size": "1.25rem",
-              "text-align": "center"
-            },
-            ".faq-cards": {
-              "display": "flex",
-              "flex-direction": "column",
-              "gap": "2.5rem",
-              "padding-bottom": "3rem"
-            },
-            ".faq-card": {
-              "background": "rgba(0, 0, 0, 0.55)",
-              "backdrop-filter": "blur(6px)",
-              "-webkit-backdrop-filter": "blur(6px)",
-              "border-radius": "12px",
-              "padding": "1.5rem",
-              "border": "1px solid rgba(255, 255, 255, 0.1)",
-              "border-top": "2px solid #ffa43c",
-              "box-shadow": "0 4px 24px rgba(0, 0, 0, 0.25)",
-              "transition": "transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease",
-              "cursor": "pointer"
-            },
-            ".faq-card:hover": {
-              "background": "rgba(0, 0, 0, 0.7)",
-              "transform": "translateY(-5px)",
-              "box-shadow": "0 6px 28px rgba(0, 0, 0, 0.4)"
-            },
-            ".faq-question": {
-              "display": "flex",
-              "align-items": "center",
-              "justify-content": "space-between",
-              "width": "100%",
-              "background": "none",
-              "border": "none",
-              "padding": "0",
-              "font-size": "1.25rem",
-              "font-weight": "bold",
-              "color": "#ffa43c",
-              "cursor": "pointer",
-              "text-align": "left",
-              "gap": "1rem"
-            },
-            ".faq-icon": {
-              "flex-shrink": "0",
-              "color": "#ffa43c",
-              "transition": "transform 0.3s ease"
-            },
-            ".faq-card.open .faq-icon": {
-              "transform": "rotate(180deg)"
-            },
-            ".faq-answer": {
-              "font-size": "1rem",
-              "color": "rgba(255, 255, 255, 0.8)",
-              "line-height": "1.7",
-              "max-height": "0",
-              "overflow": "hidden",
-              "transition": "max-height 0.4s ease, padding-top 0.3s ease",
-              "padding-top": "0"
-            },
-            ".faq-card.open .faq-answer": {
-              "max-height": "600px",
-              "padding-top": "0.75rem"
-            },
-            ".faq-answer p": {
-              "margin": "0 0 0.75rem 0",
-              "color": "rgba(255, 255, 255, 0.8)",
-              "line-height": "1.7"
-            },
-            ".faq-answer p:last-child": {
-              "margin-bottom": "0"
-            },
-            ".faq-answer a": {
-              "color": "#ffa43c",
-              "text-decoration": "underline",
-              "text-underline-offset": "3px"
-            },
-            ".faq-answer a:hover": {
-              "color": "#ffbe70"
-            },
-            "@media (max-width: 768px)": {
-              ".faq-title": {
-                "font-size": "2rem"
-              },
-              ".faq-subtitle": {
-                "font-size": "1rem"
-              },
-              ".faq-card": {
-                "padding": "1rem 1.25rem"
-              },
-              ".faq-question": {
-                "font-size": "1.1rem"
-              },
-              ".faq-answer": {
-                "font-size": "0.9rem"
-              }
-            }
-          },
-          "_name": "list05",
-          "_sourceTheme": "startm5",
-          "_customHTML": "<section data-bs-version=\"5.1\" class=\"parallax-faq\" group=\"FAQ\" data-bg-video=\"{{bg.type == 'video' && bg.value.url}}\" mbr-class=\"{'mbr-parallax-background': bg.parallax}\">\n    <mbr-parameters>\n        <header>Size</header>\n        <input type=\"checkbox\" title=\"Full Width\" name=\"fullWidth\">\n        <input type=\"range\" inline title=\"Top\" name=\"paddingTop\" min=\"0\" max=\"10\" step=\"1\" value=\"7\">\n        <input type=\"range\" inline title=\"Bottom\" name=\"paddingBottom\" min=\"0\" max=\"10\" step=\"1\" value=\"3\">\n        <header>Background</header>\n        <fieldset type=\"background\" name=\"bg\" parallax>\n            <input type=\"image\" title=\"Image\" value=\"@PROJECT_PATH@/assets/images/photo-2024-04-27-22-34-50-1280x720.webp\" selected parallax>\n            <input type=\"color\" title=\"Color\" value=\"#090909\">\n            <input type=\"video\" title=\"Video\" value=\"https://vimeo.com/428046504\">\n        </fieldset>\n        <header condition=\"bg.type === 'video'\">Fallback Image</header>\n        <input type=\"image\" title=\"Fallback Image\" value name=\"fallBackImage\" condition=\"bg.type === 'video'\">\n        <input type=\"checkbox\" title=\"Overlay\" name=\"overlay\" condition=\"bg.type !== 'color'\" checked>\n        <input type=\"color\" title=\"Overlay Color\" name=\"overlayColor\" value=\"#000000\" condition=\"overlay && bg.type !== 'color'\">\n        <input type=\"range\" inline title=\"Opacity\" name=\"overlayOpacity\" min=\"0\" max=\"1\" step=\"0.1\" value=\"0.5\" condition=\"overlay && bg.type !== 'color'\">\n        <header>FAQ Settings</header>\n        <input type=\"checkbox\" title=\"Show Title\" name=\"showTitle\" checked>\n        <input type=\"checkbox\" title=\"Show Subtitle\" name=\"showSubtitle\">\n        <input type=\"color\" title=\"Card Background\" name=\"cardBg\" value=\"#1a1a1a\">\n    </mbr-parameters>\n\n    <div class=\"mbr-fallback-image disabled\" mbr-if=\"bg.type == 'video'\"></div>\n    <div class=\"mbr-overlay\" mbr-if=\"overlay && bg.type !== 'color'\" opacity=\"{{overlayOpacity}}\" bg-color=\"{{overlayColor}}\"></div>\n\n    <div class=\"container-fluid\">\n        <div class=\"row justify-content-center\">\n            <div class=\"col-12 col-lg-10\">\n                <div class=\"faq-header text-center\">\n                    <h2 class=\"faq-title\" mbr-if=\"showTitle\">Questions fréquentes</h2>\n                    <p class=\"faq-subtitle\" mbr-if=\"showSubtitle\">Find answers to common questions below</p>\n                </div>\n\n                <div class=\"faq-cards\">\n                    <div class=\"faq-card\">\n                        <button class=\"faq-question\" aria-expanded=\"false\">\n                            <span>Où sommes-nous ?</span>\n                            <svg class=\"faq-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\"><path d=\"M12 15.5l-7-7 1.4-1.4 5.6 5.6 5.6-5.6L19 8.5z\" fill=\"currentColor\"></path></svg>\n                        </button>\n                        <div class=\"faq-answer\">Nous sommes basés principalement en Haute-Normandie, mais nos membres viennent de toute la région et même en dehors de la Normandie pour certains.</div>\n                    </div>\n                    <div class=\"faq-card\">\n                        <button class=\"faq-question\" aria-expanded=\"false\">\n                            <span>Qui sommes-nous ?</span>\n                            <svg class=\"faq-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\"><path d=\"M12 15.5l-7-7 1.4-1.4 5.6 5.6 5.6-5.6L19 8.5z\" fill=\"currentColor\"></path></svg>\n                        </button>\n                        <div class=\"faq-answer\">\n                            <p>La Meute Normande, c'est avant tout un groupe d'amis réunis autour de la culture furry et des univers créatifs qui l'entourent. Furs, cosplayeurs ou les deux, tout le monde y trouve sa place !</p>\n                            <p>Ensemble, nous organisons des sorties, participons à des événements et donnons vie à des villages furry en convention.</p>\n                            <p>Notre premier village furry a vu le jour lors de l'édition 2025 de PontoGeek à Pont-Audemer (27), grâce à l'initiative de Protofactory517 et du staff de la Meute Normande.</p>\n                        </div>\n                    </div>\n                    <div class=\"faq-card\">\n                        <button class=\"faq-question\" aria-expanded=\"false\">\n                            <span>Comment savoir où la Meute sera présente et trouver des événements près de chez moi ?</span>\n                            <svg class=\"faq-icon\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"20\" height=\"20\"><path d=\"M12 15.5l-7-7 1.4-1.4 5.6 5.6 5.6-5.6L19 8.5z\" fill=\"currentColor\"></path></svg>\n                        </button>\n                        <div class=\"faq-answer\">Les trois prochains événements auxquels nous participons sont mis à jour automatiquement sur la page <a href=\"https://lameutenormande.fr/actus\" target=\"_blank\" rel=\"noopener\">Actus</a>. Pour retrouver tous les événements en France et à l'étranger, le staff recense un maximum de conventions et grands événements furry afin que chacun puisse trouver ce qui se passe près de chez soi, direction la page <a href=\"https://lameutenormande.fr/events\" target=\"_blank\" rel=\"noopener\">Événements</a> !</div>\n                    </div>\n                </div>\n\n                [JS_CODE_0]\n            </div>\n        </div>\n    </div>\n</section>",
-          "_cid": "v2D9yvLDaG",
-          "_anchor": "list05-3",
-          "_PHPplaceholders": [],
-          "_JSplaceholders": [
-            "<script>\n                (function() {\n                    var cards = document.querySelectorAll('.parallax-faq .faq-card');\n                    cards.forEach(function(card) {\n                        var btn = card.querySelector('.faq-question');\n                        card.addEventListener('click', function() {\n                            var isOpen = card.classList.contains('open');\n                            cards.forEach(function(c) {\n                                c.classList.remove('open');\n                                c.querySelector('.faq-question').setAttribute('aria-expanded', 'false');\n                            });\n                            if (!isOpen) {\n                                card.classList.add('open');\n                                btn.setAttribute('aria-expanded', 'true');\n                            }\n                        });\n                    });\n                })();\n                </script>"
-          ],
           "_protectedParams": [],
           "_global": false,
           "_once": false,
