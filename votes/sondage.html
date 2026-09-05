@@ -61,6 +61,17 @@
       myResp = data && data !== 'null' ? data : null;
     }
 
+    function showVotersModal(label, matching) {
+      const list = h('div', { class: 'recap' });
+      matching.forEach(r => list.appendChild(h('div', null, h('span', null, r.pseudo), h('span', { class: 'small muted' }, V.fmtDateTime(r.submitted_at)))));
+      const bg = h('div', { class: 'modal-bg' });
+      const modal = h('div', { class: 'modal' }, h('h3', null, label), list,
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary', type: 'button', onClick: () => bg.remove() }, 'Fermer')));
+      bg.appendChild(modal);
+      bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
+      document.body.appendChild(bg);
+    }
+
     function renderResults(highlightMine) {
       V.clear(zone);
       zone.appendChild(h('h2', { class: 'section-title' }, 'Résultats'));
@@ -83,10 +94,12 @@
               const count = matching.length;
               const pct = total ? Math.round((count / total) * 100) : 0;
               const mine = highlightMine && myResp && myResp.answers && (Array.isArray(myResp.answers[q.id]) ? myResp.answers[q.id].includes(val) : myResp.answers[q.id] === val);
-              // Survol = qui a répondu ça (les réponses sont déjà publiques, pas une fuite).
-              const row = h('div', { class: 'poll-result' + (mine ? ' mine' : ''), title: count ? matching.map(r => r.pseudo).join(', ') : null },
+              // Qui a répondu ça (les réponses sont déjà publiques, pas une fuite) : un bouton plutôt
+              // qu'un simple survol, pour que ça marche aussi au toucher sur mobile.
+              const voirBtn = count ? h('button', { class: 'poll-voters-btn', type: 'button', title: 'Voir qui a répondu', onClick: (e) => { e.stopPropagation(); showVotersModal(label, matching); } }, '👥') : null;
+              const row = h('div', { class: 'poll-result' + (mine ? ' mine' : '') },
                 h('div', { class: 'bar-fill', style: { width: pct + '%' } }),
-                h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', null, h('span', { class: 'pct' }, pct + '%'), h('span', { class: 'count' }, ' · ' + count))));
+                h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', { class: 'right' }, h('span', { class: 'pct' }, pct + '%'), h('span', { class: 'count' }, ' · ' + count), voirBtn)));
               block.appendChild(row);
             });
           } else {
@@ -154,6 +167,7 @@
       const submitBtn = h('button', { class: 'btn', type: 'button' }, myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses');
       const foot = h('div', { class: 'btn-row' }, submitBtn, myResp ? h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Annuler') : null);
       zone.appendChild(foot);
+      if (!myResp) zone.appendChild(h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary wide', type: 'button', onClick: () => renderResults(false) }, 'Afficher les résultats')));
 
       form.addEventListener('submit', async (e) => { e.preventDefault(); await submit(); });
       submitBtn.addEventListener('click', async (e) => { e.preventDefault(); await submit(); });
