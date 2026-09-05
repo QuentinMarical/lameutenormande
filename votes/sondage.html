@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Sondage — La Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../elections/assets/elections.css">
+  <link rel="stylesheet" href="assets/votes.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Sondages"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1 id="pageTitle">Sondage</h1>
+    <div class="sub" id="subtitle">Réponds en un clic, sans compte</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/common.js"></script>
+  <script>
+  (async () => {
+    const h = V.h, app = V.qs('#app');
+    V.footer();
+    await V.renderNav('index.html');
+    if (!V.ready) { V.notConfigured(app); return; }
+
+    const slug = new URLSearchParams(location.search).get('p');
+    if (!slug) { V.clear(app).appendChild(h('div', { class: 'empty' }, 'Aucun sondage indiqué.')); return; }
+
+    const { data: poll } = await V.vsb.from('polls').select('*').eq('slug', slug).maybeSingle();
+    V.clear(app);
+    if (!poll) { app.appendChild(h('div', { class: 'empty' }, 'Sondage introuvable.')); return; }
+    V.qs('#pageTitle').textContent = poll.title;
+    V.qs('#subtitle').textContent = poll.description || 'Réponds en un clic, sans compte';
+
+    const { data: questions } = await V.vsb.from('questions').select('*').eq('poll_id', poll.id).order('sort_order');
+    const qs = questions || [];
+    const device = V.deviceToken();
+    const st = V.pollState(poll);
+
+    const banner = h('div', { class: 'card column ' + (st.phase === 'open' ? 'ok' : 'info') },
+      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, V.phaseBadge(poll),
+        poll.closes_at && st.phase === 'open' ? h('span', { class: 'small muted' }, 'Clôture le ' + V.fmtDateTime(poll.closes_at)) : null));
+    if (poll.closes_at && st.phase === 'open') { const cd = h('div'); banner.appendChild(cd); V.countdown(cd, poll.closes_at, () => location.reload()); }
+    app.appendChild(banner);
+
+    const zone = h('div'); app.appendChild(zone);
+
+    let myResp = null;
+    if (st.phase !== 'draft') {
+      const { data } = await V.vsb.rpc('my_response', { p_poll: poll.id, p_device_token: device });
+      myResp = data && data !== 'null' ? data : null;
+    }
+
+    function renderResults(highlightMine) {
+      V.clear(zone);
+      zone.appendChild(h('h2', { class: 'section-title' }, 'Résultats'));
+      Promise.resolve(V.vsb.rpc('poll_results', { p_poll: poll.id })).then(({ data: rows, error }) => {
+        if (error) { zone.appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, V.errMsg(error)))); return; }
+        rows = rows || [];
+        zone.appendChild(h('div', { class: 'small muted', style: { marginBottom: '10px' } }, rows.length + ' réponse' + (rows.length > 1 ? 's' : '')));
+        qs.forEach(q => {
+          const block = h('div', { class: 'poll-question' });
+          block.appendChild(h('div', { class: 'q-label' }, q.label));
+          if (q.type === 'yesno' || q.type === 'choice' || q.type === 'multi_choice') {
+            const options = q.type === 'yesno' ? [['yes', 'Oui'], ['no', 'Non']] : (q.options || []).map(o => [o, o]);
+            const answered = rows.filter(r => r.answers && r.answers[q.id] != null && r.answers[q.id] !== '');
+            const total = answered.length;
+            options.forEach(([val, label]) => {
+              const count = answered.filter(r => {
+                const a = r.answers[q.id];
+                return Array.isArray(a) ? a.includes(val) : a === val;
+              }).length;
+              const pct = total ? Math.round((count / total) * 100) : 0;
+              const mine = highlightMine && myResp && myResp.answers && (Array.isArray(myResp.answers[q.id]) ? myResp.answers[q.id].includes(val) : myResp.answers[q.id] === val);
+              const row = h('div', { class: 'poll-result' + (mine ? ' mine' : '') },
+                h('div', { class: 'bar-fill', style: { width: pct + '%' } }),
+                h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', null, h('span', { class: 'pct' }, pct + '%'), h('span', { class: 'count' }, ' · ' + count))));
+              block.appendChild(row);
+            });
+          } else {
+            const answered = rows.filter(r => r.answers && r.answers[q.id] != null && r.answers[q.id] !== '');
+            if (!answered.length) block.appendChild(h('div', { class: 'small muted' }, 'Aucune réponse pour l\'instant.'));
+            answered.forEach(r => block.appendChild(h('div', { class: 'poll-free-answer' }, h('span', null, r.pseudo), h('span', { class: 'muted' }, String(r.answers[q.id])))));
+          }
+          zone.appendChild(block);
+        });
+        const row = h('div', { class: 'btn-row' });
+        if (st.phase === 'open') row.appendChild(h('button', { class: 'btn secondary', type: 'button', onClick: () => renderForm() }, myResp ? 'Modifier ma réponse' : 'Répondre'));
+        row.appendChild(h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Actualiser'));
+        zone.appendChild(row);
+      });
+    }
+
+    function renderForm() {
+      V.clear(zone);
+      if (st.phase === 'draft') { zone.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Sondage en préparation'), h('div', { class: 'desc' }, 'Ce sondage n\'est pas encore publié.')))); return; }
+      if (st.phase === 'closed') { renderResults(true); return; }
+
+      const answers = {};
+      qs.forEach(q => { if (myResp && myResp.answers && q.id in myResp.answers) answers[q.id] = myResp.answers[q.id]; });
+      const pseudoInput = h('input', { class: 'input', placeholder: 'Ton pseudo', maxlength: '60', value: (myResp && myResp.pseudo) || V.getSavedPseudo(), required: true });
+
+      const form = h('form', { class: 'card column' },
+        h('div', { class: 'title', style: { fontSize: '16px' } }, myResp ? 'Modifier ma réponse' : 'Répondre au sondage'),
+        h('div', { class: 'small muted' }, 'Ton pseudo et tes réponses seront visibles par tous, sur cette page.'),
+        h('div', { class: 'field' }, h('label', null, 'Pseudo'), pseudoInput));
+      zone.appendChild(form);
+
+      qs.forEach(q => {
+        const block = h('div', { class: 'poll-question' });
+        block.appendChild(h('div', { class: 'q-label' }, q.label, q.required ? h('span', { class: 'q-required' }, '*') : null));
+        const optsWrap = h('div');
+        function paint() { V.qsa('.poll-option', optsWrap).forEach(el => el.classList.toggle('selected', el.dataset.on === '1')); }
+        if (q.type === 'yesno' || q.type === 'choice') {
+          const options = q.type === 'yesno' ? [['yes', 'Oui'], ['no', 'Non']] : (q.options || []).map(o => [o, o]);
+          options.forEach(([val, label]) => {
+            const opt = h('div', { class: 'poll-option', dataset: { on: answers[q.id] === val ? '1' : '0' } }, h('span', null, label));
+            opt.addEventListener('click', () => { answers[q.id] = val; V.qsa('.poll-option', optsWrap).forEach(el => el.dataset.on = '0'); opt.dataset.on = '1'; paint(); });
+            optsWrap.appendChild(opt);
+          });
+        } else if (q.type === 'multi_choice') {
+          const set = new Set(Array.isArray(answers[q.id]) ? answers[q.id] : []);
+          (q.options || []).forEach(val => {
+            const opt = h('div', { class: 'poll-option', dataset: { on: set.has(val) ? '1' : '0' } }, h('span', null, val));
+            opt.addEventListener('click', () => { if (set.has(val)) set.delete(val); else set.add(val); answers[q.id] = [...set]; opt.dataset.on = set.has(val) ? '1' : '0'; paint(); });
+            optsWrap.appendChild(opt);
+          });
+        } else if (q.type === 'number') {
+          const inp = h('input', { class: 'input', type: 'number', value: answers[q.id] != null ? answers[q.id] : '' });
+          inp.addEventListener('input', () => { answers[q.id] = inp.value === '' ? null : Number(inp.value); });
+          optsWrap.appendChild(inp);
+        } else {
+          const inp = h('input', { class: 'input', type: 'text', maxlength: '200', value: answers[q.id] || '' });
+          inp.addEventListener('input', () => { answers[q.id] = inp.value; });
+          optsWrap.appendChild(inp);
+        }
+        block.appendChild(optsWrap);
+        paint();
+        zone.appendChild(block);
+      });
+
+      const submitBtn = h('button', { class: 'btn', type: 'button' }, myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses');
+      const foot = h('div', { class: 'btn-row' }, submitBtn, myResp ? h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Annuler') : null);
+      zone.appendChild(foot);
+
+      form.addEventListener('submit', async (e) => { e.preventDefault(); await submit(); });
+      submitBtn.addEventListener('click', async (e) => { e.preventDefault(); await submit(); });
+
+      async function submit() {
+        const pseudo = pseudoInput.value.trim();
+        if (!pseudo) { V.toast('Choisis un pseudo.', 'error'); return; }
+        for (const q of qs) {
+          const v = answers[q.id];
+          const empty = v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0);
+          if (q.required && empty) { V.toast('Réponds à « ' + q.label + ' ».', 'error'); return; }
+        }
+        submitBtn.disabled = true; submitBtn.textContent = 'Envoi…';
+        const payload = {};
+        qs.forEach(q => { const v = answers[q.id]; const empty = v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0); if (!empty) payload[q.id] = v; });
+        const { data, error } = await V.vsb.rpc('respond', { p_poll: poll.id, p_device_token: device, p_pseudo: pseudo, p_answers: payload });
+        if (error) { V.toast(V.errMsg(error), 'error'); submitBtn.disabled = false; submitBtn.textContent = myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses'; return; }
+        V.savePseudo(pseudo);
+        myResp = { pseudo, answers: payload, submitted_at: new Date().toISOString() };
+        V.toast('Réponse enregistrée, merci ' + pseudo + ' !', 'success');
+        renderResults(true);
+      }
+    }
+
+    if (st.phase === 'draft' || (st.phase === 'open' && !myResp)) renderForm();
+    else renderResults(true);
+  })();
+  </script>
+</body>
+</html>

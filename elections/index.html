@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Élections — La Meute Normande</title>
+  <meta name="description" content="Election du staff de La Meute Normande : candidatures, vote et résultats en direct, réservé aux membres.">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/elections.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Élections"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Élections de la Meute</h1>
+    <div class="sub">Candidate, vote et suis les résultats en direct</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/roles.js"></script>
+  <script src="assets/common.js"></script>
+  <script src="assets/legal.js"></script>
+  <script>
+  (async () => {
+    const app = E.qs('#app');
+    E.footer();
+    await E.renderNav('index.html');
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    const h = E.h;
+    const election = await E.electionFromUrl();
+    await E.loadRoles();
+    E.clear(app);
+
+    // ----- Carte du scrutin -----
+    if (!election) {
+      app.appendChild(h('div', { class: 'card info' }, h('div', { class: 'icon' }, E.icon('circle-info')), h('div', { class: 'body' },
+        h('div', { class: 'title' }, 'Aucun scrutin en cours'),
+        h('div', { class: 'desc' }, 'Les prochaines élections seront annoncées sur le canal Telegram de la Meute.'))));
+    } else {
+      const st = E.electionState(election);
+      const q = '?e=' + encodeURIComponent(election.slug);
+      const card = h('div', { class: 'card column ' + (st.phase === 'vote' ? 'ok' : st.phase === 'closed' ? 'info' : '') });
+      card.appendChild(h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
+        h('div', { class: 'title', style: { fontSize: '18px', margin: 0 } }, election.title), E.phaseBadge(election)));
+      if (election.description) card.appendChild(h('div', { class: 'desc' }, election.description));
+      card.appendChild(h('div', { class: 'desc' }, 'Postes à pourvoir : ' + E.rolesOf(election).map(r => r.label + (r.seats > 1 ? ` (${r.seats})` : '')).join(', ') + '.'));
+
+      if (election.voting_closes_at && st.phase === 'vote') {
+        card.appendChild(h('div', { class: 'desc center mt-8' }, 'Clôture des votes le ' + E.fmtDateTime(election.voting_closes_at)));
+        const cd = h('div'); card.appendChild(cd);
+        E.countdown(cd, election.voting_closes_at, () => location.reload());
+      } else if (election.voting_closes_at && st.phase !== 'closed') {
+        card.appendChild(h('div', { class: 'desc' }, 'Clôture prévue le ' + E.fmtDateTime(election.voting_closes_at)));
+      }
+
+      const row = h('div', { class: 'btn-row' });
+      if (st.phase === 'vote') row.appendChild(h('a', { class: 'btn', href: 'voter.html' + q }, 'Voter'));
+      if (election.candidacy_open && st.phase !== 'closed') row.appendChild(h('a', { class: 'btn ' + (st.phase === 'vote' ? 'secondary' : ''), href: 'candidater.html' + q }, 'Se porter candidat'));
+      row.appendChild(h('a', { class: 'btn secondary', href: 'resultats.html' + q }, st.phase === 'closed' ? 'Résultats' : 'Suivre les votes'));
+      card.appendChild(row);
+      app.appendChild(card);
+    }
+
+    // ----- Code individuel : toujours proposé, que le scrutin ci-dessus soit connu ou non
+    //       (le code identifie lui-même son scrutin, y compris s'il est encore en préparation) -----
+    app.appendChild(h('h2', { class: 'section-title', id: 'code' }, 'Ton code de vote'));
+    const box = h('div'); app.appendChild(box);
+    const info = await E.requireCode(box, election, { verb: 'participer' });
+    if (info) {
+      E.codeChip(info);
+      // La phase (brouillon / en préparation / candidatures / vote / terminé) se déduit du scrutin
+      // résolu localement (election ou, si l'accueil n'en affichait aucun, celui pointé par le code
+      // via info.election_status) plutôt que du seul champ brut renvoyé par check_code/code_lookup.
+      const codeElectionPhase = election ? E.electionState(election).phase : (info.election_status === 'draft' ? 'draft' : null);
+      const notYetStarted = codeElectionPhase === 'draft' || codeElectionPhase === 'pending';
+      box.appendChild(h('div', { class: 'card ok' }, h('div', { class: 'body' },
+        h('div', { class: 'title' }, info.label ? 'Bienvenue ' + info.label : 'Code reconnu'),
+        h('div', { class: 'desc' }, notYetStarted
+          ? 'Ton code est valide. Le scrutin est encore en préparation par le staff : reviens quand les candidatures ou les votes seront ouverts.'
+          : (info.has_ballot ? 'Tu as déjà voté, tu peux modifier ton bulletin jusqu\'à la clôture.' : 'Tu n\'as pas encore voté.') + (info.candidacies ? ` · ${info.candidacies} candidature(s) en lice.` : '')))));
+    }
+
+    // ----- Comment ça marche -----
+    app.appendChild(h('h2', { class: 'section-title' }, 'Comment ça marche'));
+    const steps = [
+      ['ticket', 'Un code par membre', 'Le staff remet à chaque membre un code individuel, par message privé. Ce code sert de bulletin : garde-le pour toi.'],
+      ['paw', 'Candidatures libres', 'Pendant la phase de candidature, chaque membre peut se présenter à un ou plusieurs postes et modifier sa fiche.'],
+      ['check-to-slot', 'Un bulletin par code', 'Tu peux revoter tant que le scrutin est ouvert : ton dernier bulletin remplace le précédent.'],
+      ['chart-simple', 'Résultats en direct', 'Participation et scores sont visibles en temps réel. Le staff peut invalider un bulletin suspect, tout est journalisé.']
+    ];
+    const list = h('div', { class: 'grid-2' });
+    steps.forEach(([i, t, d]) => list.appendChild(h('div', { class: 'card', style: { marginBottom: 0 } }, h('div', { class: 'icon' }, E.icon(i)), h('div', { class: 'body' }, h('div', { class: 'title' }, t), h('div', { class: 'desc' }, d)))));
+    app.appendChild(list);
+
+    // ----- Archives -----
+    const { data: others } = await E.sb.from('elections').select('id,slug,title,status,voting_closes_at,created_at')
+      .in('status', ['closed', 'archived']).order('created_at', { ascending: false }).limit(20);
+    const archives = (others || []).filter(e => !election || e.id !== election.id);
+    if (archives.length) {
+      app.appendChild(h('h2', { class: 'section-title' }, 'Scrutins précédents'));
+      const ul = h('div', { class: 'cands' });
+      archives.forEach(e => ul.appendChild(h('a', { class: 'cand selectable', href: 'resultats.html?e=' + encodeURIComponent(e.slug), style: { textDecoration: 'none', color: 'inherit' } },
+        h('div', { class: 'body' }, h('div', { class: 'name' }, e.title, E.phaseBadge(e)), h('div', { class: 'handles' }, 'Clôturé le ' + E.fmtDate(e.voting_closes_at || e.created_at))))));
+      app.appendChild(ul);
+    }
+  })();
+  </script>
+</body>
+</html>

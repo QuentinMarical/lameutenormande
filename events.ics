@@ -256,6 +256,23 @@ DTSTAMP:20260712T082453Z
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Vandoeuvre In-Game 7ème édition
+DESCRIPTION:Lien vers la billetterie : https://www.vandoeuvreingame.fr/billeterie-2/\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Lien vers la billetterie :&nbsp\;<a target="_blank" href="https://www.vandoeuvreingame.fr/billeterie-2/">https://www.vandoeuvreingame.fr/billeterie-2/</a></div>
+DTSTART:20260905T080000Z
+DTEND:20260906T170000Z
+LOCATION:Parc des Sports de Vandoeuvre. 3 Rue de Gembloux\, 54500 Vandœuvre-lès-Nancy
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1daa58001ef84e369e266019bcd63d26@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T210740Z
+LAST-MODIFIED:20260807T210740Z
+DTSTAMP:20260807T210741Z
+URL:https://www.vandoeuvreingame.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Life Rouen
 DESCRIPTION:
 DTSTART:20270212T230000Z
@@ -405,6 +422,23 @@ CREATED:20260207T152949Z
 LAST-MODIFIED:20260214T093456Z
 DTSTAMP:20260214T093459Z
 URL:https://furagora.com/anthropolis
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:🦊 FurDU (Australie)
+DESCRIPTION:Ouverture des inscriptions le vendredi 4 septembre 2026.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Ouverture des inscriptions le vendredi 4 septembre 2026.</div>
+DTSTART;VALUE=DATE:20270416
+DTEND;VALUE=DATE:20270419
+LOCATION:Crowne Plaza Surfers Paradise\, an IHG Hotel. 2807 Gold Coast Hwy\, Surfers Paradise QLD 4217\, Australie
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2f36da730e7e4352aa4edb71837759e6@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T083828Z
+LAST-MODIFIED:20260818T083828Z
+DTSTAMP:20260818T083829Z
+URL:https://furdu.com.au/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊La meet du dragon d'eau 🐉
@@ -641,6 +675,23 @@ DTSTAMP:20260606T075204Z
 ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
 ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://amisc.fr/montigeek-2025/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Arcadia GeekFest 2
+DESCRIPTION:Entrée gratuite et restauration sur place.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Entrée gratuite et restauration sur place.<br/></div>
+DTSTART:20261017T080000Z
+DTEND:20261018T160000Z
+LOCATION:Salle du Cosec. 63 Rue de Lorraine\, 62510 Arques
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:449da280336e48868fd27c97b8f6b4d1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T204253Z
+LAST-MODIFIED:20260807T210055Z
+DTSTAMP:20260807T210057Z
+URL:https://www.facebook.com/ArcadiaGeekFest/?locale=fr_FR
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Life Laval
@@ -992,6 +1043,23 @@ DTSTAMP:20260406T120532Z
 URL:https://nordicfuzzcon.org
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Boc'N'Geek 2026
+DESCRIPTION:Tarifs journée :\n\n0 / 7 ans : Gratuit\n\n8 / 14 ans : 6 €\n\n15 ans et + : 8 €\n\n\n\nTarifs week-end :\n\n0 / 7 ans : Gratuit\n\n8 / 14 ans : 10 €\n\n15 ans et + : 14 €\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Tarifs journée :<br/></div><ul><li>0 / 7 ans : Gratuit<br/></li><li>8 / 14 ans : 6 €<br/></li><li>15 ans et + : 8 €<br/></li></ul><div><br/></div><div>Tarifs week-end :<br/></div><ul><li>0 / 7 ans : Gratuit<br/></li><li>8 / 14 ans : 10 €<br/></li><li>15 ans et + : 14 €<br/></li></ul>
+DTSTART:20260926T080000Z
+DTEND:20260927T160000Z
+LOCATION:Espace Bocapole. 79300 Bressuire
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:73d16bc8af414431ad7ff0a5ae5d0f1a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T204905Z
+LAST-MODIFIED:20260807T204905Z
+DTSTAMP:20260807T204906Z
+URL:https://www.bocapole.fr/spectacles/79-evenements/576-boc-n-geek-2026
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Manga Expo
 DESCRIPTION:L’équipe de Manga Expo est extrêmement fière et honorée de vous annoncer la présence exclusive de Maxence Cazorla lors de notre prochaine édition !\n\nVéritable artiste interprète aux multiples talents\, Maxence est la voix française magistrale derrière plusieurs personnages clés du jeu vidéo Clair Obscur : Expedition 33.\n\nVenez rencontrer l'homme qui a donné une âme au robuste Gustav \, au mystérieux Verso \, et bien sûr\, au légendaire et unique Esquie .\n\nUne conférence exclusive : Pour plonger dans les coulisses du doublage\, de la performance capture et de la création de l'univers de Clair Obscur\n\nUne séance dédicace : Pour repartir avec votre autographe personnalisé et un souvenir inoubliable.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">L’équipe de<span>&nbsp\;</span><b>Manga Expo</b><span>&nbsp\;</span>est extrêmement fière et honorée de vous annoncer la présence exclusive de Maxence Cazorla lors de notre prochaine édition !<br /></p><p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">Véritable artiste interprète aux multiples talents\, Maxence est la voix française magistrale derrière plusieurs personnages clés du jeu vidéo<span>&nbsp\;</span><b>Clair Obscur : Expedition 33</b>.<br /></p><p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">Venez rencontrer l'homme qui a donné une âme au robuste<span>&nbsp\;</span><b>Gustav</b><span>&nbsp\;</span>\, au mystérieux<span>&nbsp\;</span><b>Verso</b><span>&nbsp\;</span>\, et bien sûr\, au légendaire et unique<span>&nbsp\;</span><b>Esquie</b><span>&nbsp\;</span>.<br /></p><ul style="box-sizing:border-box\; margin:0px\; padding-left:0px\; list-style-type:none\; padding-top:15px\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-size:15px\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)"><li style="box-sizing:border-box\; padding-left:30px"><b>Une conférence exclusive :</b><span>&nbsp\;</span>Pour plonger dans les coulisses du doublage\, de la performance capture et de la création de l'univers de Clair Obscur<br /></li><li style="box-sizing:border-box\; padding-left:30px\; margin-top:10px"><b>Une séance dédicace :</b><span>&nbsp\;</span>Pour repartir avec votre autographe personnalisé et un souvenir inoubliable.<br /></li></ul><div><br /></div>
@@ -1023,6 +1091,23 @@ CREATED:20250924T101321Z
 LAST-MODIFIED:20260123T172233Z
 DTSTAMP:20260123T172234Z
 URL:https://japanotakufestival.com/event/evreux-japan-otaku-festival/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Normannia
+DESCRIPTION:Horaires :\n- Samedi 20 février de 10h à 23h\n\n- Dimanche 21 février de 10h à 18h\n\n\n\nTarifs :\n- Gratuit pour les moins de 3 ans\n\n- Pass 2 jours : 12€\n\n- Plein tarif : 9€ (8€ en e-billet)\n\n- Tarif réduit * : 6€\n\n\n\n* Le tarif réduit est accessible pour les visiteurs costumés\, enfants -12 ans\, PMR +1 accompagnant (au même tarif) et personnes en recherche d'emploi.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p style="font-size:19px" class="font_8 wixui-rich-text__text">Horaires :</p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Samedi 20 février de 10h à 23h</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Dimanche 21 février de 10h à 18h</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text">Tarifs :</p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Gratuit pour les moins de 3 ans</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Pass 2 jours : 12€</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Plein tarif : 9€ (8€ en e-billet)</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:19px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">- Tarif réduit * : 6€</span></span></span><br/></p><p style="font-size:19px" class="font_8 wixui-rich-text__text"><br/></p><p style="font-size:16px" class="font_8 wixui-rich-text__text"><span class="wixui-rich-text__text" style="font-size:16px"><span class="wixui-rich-text__text" style="font-weight:normal"><span class="wixui-rich-text__text" style="font-family:tahoma\, tahoma-w01-regular\, sans-serif">* Le  tarif réduit est accessible pour les visiteurs costumés\, enfants -12  ans\, PMR +1 accompagnant (au même tarif) et personnes en recherche  d'emploi.</span></span></span><br/></p>
+DTSTART:20270220T090000Z
+DTEND:20270221T170000Z
+LOCATION:Parc des Expositions de Rouen\, Parc Expo Rouen\, 46 Avenue des Canadiens\, 76120 Le Grand-Quevilly\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:7a82a056ceb64c3289b4f163b011cf06@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260802T141234Z
+LAST-MODIFIED:20260803T161810Z
+DTSTAMP:20260803T161811Z
+URL:https://www.federation-francaise-medievale.fr/normannia
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Furfurieux 4
@@ -1134,9 +1219,9 @@ STATUS:CONFIRMED
 UID:85cec1bb19ad497782e1dc33c9a044de@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260127T174605Z
-LAST-MODIFIED:20260201T195314Z
-DTSTAMP:20260201T195315Z
-URL:https://halloweenbernay.fr/
+LAST-MODIFIED:20260830T110044Z
+DTSTAMP:20260830T110046Z
+URL:https://samhain.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Lille Winter 2025
@@ -1222,6 +1307,23 @@ CREATED:20251001T154530Z
 LAST-MODIFIED:20251001T155557Z
 DTSTAMP:20260104T042141Z
 URL:https://billetterie.beauvais.fr/beauvais/rgfb2025/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Game Fest Charleville
+DESCRIPTION:Le Game Fest revient pour nouvelle édition les 10 et 11 avril 2027 au Parc des Expositions de Charleville-Mézières.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Le Game Fest revient pour nouvelle édition les 10 et 11 avril 2027 au Parc des Expositions de Charleville-Mézières.</div>
+DTSTART;VALUE=DATE:20270410
+DTEND;VALUE=DATE:20270412
+LOCATION:Parc des Expositions. Rue de la Vieille Meuse\, 08000 Charleville-Mézières
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:92c2fb9befaa47f9af341d5651b32235@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T084511Z
+LAST-MODIFIED:20260818T084511Z
+DTSTAMP:20260818T084511Z
+URL:https://www.gamefest.fr/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Canthrofur
@@ -1357,6 +1459,22 @@ DTSTAMP:20260424T112052Z
 URL:https://www.mangazur.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Furbar de Rouen
+DESCRIPTION:Au programme :\n\nDès 14h30*\, activité : RDV à E.V.A de Mont-Saint-Aignan au 10\, Rue Pierre de Gennes.\n\nDès 19h\, bar : RDV à l'Antre du Malt de Rouen au 14\, Place Martin Luther King.\n\nInscriptions jusqu'au 2 septembre pour l'activité et jusqu'au 9 septembre pour le bar.\n\n\n\n* : Horaire soumis à modification.\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Au programme :<br/></div><ul><li>Dès 14h30*\, activité : RDV à E.V.A de Mont-Saint-Aignan au 10\, Rue Pierre de Gennes.<br/></li><li>Dès 19h\, bar : RDV à l'Antre du Malt de Rouen au 14\, Place Martin Luther King.<br/></li></ul><div>Inscriptions jusqu'au 2 septembre pour l'activité et jusqu'au 9 septembre pour le bar.<br/></div><div><br/></div><div>* : Horaire soumis à modification.<br/></div>
+DTSTART:20260912T123000Z
+DTEND:20260912T215900Z
+LOCATION:L'Antre du Malt-Craft Beer Pub. 14 Place Martin Luther King\, 76000 Rouen
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:987efa0203444d22943b9e74dd8b2c04@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260818T085523Z
+LAST-MODIFIED:20260818T085602Z
+DTSTAMP:20260818T085604Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:TGS Montpellier
 DESCRIPTION:
 DTSTART:20260410T220100Z
@@ -1390,6 +1508,23 @@ ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILT
 URL:https://www.harfleur.fr/la_fete_de_la_scie.html
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:PontaGeek Chapter 7
+DESCRIPTION:Restauration et buvette sur place.\n\n\nTarifs :\n\nEntrée : 8 €\n\nWeek-end : 10 €\n\nEntre 6 et 10 ans : 5 €\n- de 6 ans : Gratuit\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Restauration et buvette sur place.</div><div><br/></div><div>Tarifs :<br/></div><ul><li>Entrée : 8 €<br/></li><li>Week-end : 10 €<br/></li><li>Entre 6 et 10 ans : 5 €</li><li>- de 6 ans : Gratuit<br/></li></ul>
+DTSTART:20260919T080000Z
+DTEND:20260920T160000Z
+LOCATION:Espace René Pourny. Place René Pourny\, 25300 Pontarlier
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:9d1d2265e3cd4a74abcbdc04a943616e@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T205948Z
+LAST-MODIFIED:20260807T205948Z
+DTSTAMP:20260807T205948Z
+URL:https://www.facebook.com/pontageek/?locale=fr_FR
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Gravenchon Geek'Fest
 DESCRIPTION:Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.\n\n\n\nRendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Après une 1ère édition réussie lors des 200 ans de Notre Dame de Gravenchon\, la Gravenchon Geek'Fest revient pour sa 2ème édition.<br/></div><div><br/></div><div>Rendez-vous le 6 et 7 février à la Salle Charles Péguy de Port-Jérôme-sur-Seine (Notre Dame de Gravenchon).</div>
@@ -1413,15 +1548,32 @@ SUMMARY:Le Havre Japan NorthCon'
 DESCRIPTION:
 DTSTART;VALUE=DATE:20270313
 DTEND;VALUE=DATE:20270315
-LOCATION:
+LOCATION:64 Quai de la Réunion\, 76600 Le Havre
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:a246b942fc3e498a95cbe40a43e0097a@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260319T105025Z
-LAST-MODIFIED:20260319T105025Z
-DTSTAMP:20260319T105027Z
+LAST-MODIFIED:20260730T140319Z
+DTSTAMP:20260730T140321Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Albi Games Festival 5ème édition
+DESCRIPTION:Tarifs :\n\nJournée : 6 € à partir de 7 ans\, 4 € pour les 4 / 6 ans\n\nPass week-end : 10 €\n\nGratuit pour les - de 4 ans\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Tarifs :<br/></div><ul><li>Journée : 6 € à partir de 7 ans\, 4 € pour les 4 / 6 ans<br/></li><li>Pass week-end : 10 €<br/></li><li>Gratuit pour les - de 4 ans</li></ul>
+DTSTART:20261031T080000Z
+DTEND:20261101T180000Z
+LOCATION:Albi Expos. Parc des Expositions\, Le Séquestre. 81990 Albi
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a403f80801c9402c82dd1e5716a7a550@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260807T205444Z
+LAST-MODIFIED:20260807T205444Z
+DTSTAMP:20260807T205446Z
+URL:https://www.albi-tourisme.fr/agenda/albi-games-festival/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Geek Days Brest 2025
@@ -1507,6 +1659,24 @@ DTSTAMP:20260104T042141Z
 URL:https://ticketevent.fr/gdc25/public-1
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Le Havre Mangakaï Festival
+DESCRIPTION:
+DTSTART:20260912T073000Z
+DTEND:20260913T160000Z
+LOCATION:NEF - Le Havre\,45–51 Rue Pierre Semard\, 76600 Le Havre\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ab490d81339d495fb169134c0d00beb1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260902T184553Z
+LAST-MODIFIED:20260902T184553Z
+DTSTAMP:20260902T184554Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.billetweb.fr/le-havre-mangakai-festival-2026
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Fête Médiévale 1412
 DESCRIPTION:Programme :\n\nCampements médiévaux avec chevaliers\, artisans et reconstitueurs\n\nDémonstrations de combat\, joutes\, maniement d’armes\n\nMarché artisanal (forgerons\, potiers\, tailleurs de pierre…)\n\nExpositions sur la vie quotidienne en 1412\n\nAnimations enfants : tir à l’arc\, jeux\, contes\n\nRestauration sur place inspirée de l’époque\n\nSpectacles déambulatoires et musiciens\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Programme&nbsp\;:<br/></div><div>Campements médiévaux avec chevaliers\, artisans et reconstitueurs<br/></div><div>Démonstrations de combat\, joutes\, maniement d’armes<br/></div><div>Marché artisanal (forgerons\, potiers\, tailleurs de pierre…)<br/></div><div>Expositions sur la vie quotidienne en 1412<br/></div><div>Animations enfants : tir à l’arc\, jeux\, contes<br/></div><div>Restauration sur place inspirée de l’époque<br/></div><div>Spectacles déambulatoires et musiciens<br/></div><div><br/></div>
@@ -1521,6 +1691,22 @@ TRANSP:TRANSPARENT
 CREATED:20260730T111646Z
 LAST-MODIFIED:20260730T111646Z
 DTSTAMP:20260730T111647Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Fest'In Geek 4
+DESCRIPTION:
+DTSTART:20260828T220000Z
+DTEND:20260830T215900Z
+LOCATION:Centre Socio-Culturel Gabriel Chaine. Place du 8 Mai 1945\, 13440 Cabannes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:b092eafb8a3b46679192e27206039200@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260804T122815Z
+LAST-MODIFIED:20260804T122815Z
+DTSTAMP:20260804T122816Z
+URL:https://www.festingeek.fr
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Turretot Geek Convention
@@ -2069,10 +2255,11 @@ STATUS:CONFIRMED
 UID:e08428f74b23427c804347ebd41a23ae@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20250924T101444Z
-LAST-MODIFIED:20260202T171014Z
-DTSTAMP:20260202T171015Z
-ATTENDEE;CN=;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
-ATTENDEE;CN=Nitra;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+LAST-MODIFIED:20260730T135841Z
+DTSTAMP:20260730T135842Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.cidreetdragon.eu/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Furry BlackLight 2026
@@ -2302,6 +2489,23 @@ CREATED:20260513T184347Z
 LAST-MODIFIED:20260513T184446Z
 DTSTAMP:20260513T184448Z
 URL:https://furagora.com/anthropolis
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Éclipse solaire
+DESCRIPTION:Le mercredi 12 août\, de 19 h à 21 h 15\, la Ville et l’Observatoire de Rouen proposent une observation gratuite de l’éclipse partielle (93 %) sur le pont Boieldieu. Astronomes et médiateurs seront présents. Des lunettes solaires seront distribuées gratuitement : ne jamais regarder à l’œil nu ni avec des instruments non filtrés. Sous réserve de météo favorable\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:-apple-system\; font-size:13pt\; line-height:1.2\; overflow:auto"><p style="margin:0px\; box-sizing:border-box">Le mercredi 12 août\, de 19 h à 21 h 15\, la Ville et l’Observatoire de Rouen proposent une observation gratuite de l’éclipse partielle (93 %) sur le pont Boieldieu. Astronomes et médiateurs seront présents. Des lunettes solaires seront distribuées gratuitement : ne jamais regarder à l’œil nu ni avec des instruments non filtrés. Sous réserve de météo favorable</p></div>
+DTSTART:20260812T170000Z
+DTEND:20260812T191500Z
+LOCATION:Pont Boieldieu\,Pont Boieldieu\, 76000 Rouen\, France
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:f8b1c2ecf71e4bd8a2c7ec5750544484@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260804T122528Z
+LAST-MODIFIED:20260804T122528Z
+DTSTAMP:20260804T122530Z
+URL:https://www.instagram.com/p/DbdspRDiCVR/?igsh=MXYwNmxmYWhicTM0eA==
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 FCD 7 (Fur Calva Dance 7)

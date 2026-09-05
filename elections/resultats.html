@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Résultats — Élections de la Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/elections.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Élections"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1 id="title">Résultats</h1>
+    <div class="sub" id="subtitle">Participation et scores mis à jour en direct</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/roles.js"></script>
+  <script src="assets/common.js"></script>
+  <script src="assets/legal.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    E.footer();
+    await E.renderNav('resultats.html');
+    if (!E.ready) { E.notConfigured(app); return; }
+    let election = await E.electionFromUrl();
+    await E.loadRoles();
+    E.clear(app);
+    if (!election) { app.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin disponible.')); return; }
+    E.qs('#title').textContent = election.title;
+    const roles = E.rolesOf(election);
+    const q = '?e=' + encodeURIComponent(election.slug);
+    const css = getComputedStyle(document.documentElement);
+    const C = { accent: css.getPropertyValue('--orange-2').trim(), accent2: css.getPropertyValue('--orange').trim(), muted: css.getPropertyValue('--muted').trim(), text: css.getPropertyValue('--text').trim(), grid: 'rgba(255,255,255,0.06)' };
+    if (window.Chart) { Chart.defaults.color = C.muted; Chart.defaults.font.family = 'Inter, system-ui, sans-serif'; Chart.defaults.borderColor = C.grid; }
+
+    // ---------- Structure ----------
+    const banner = h('div', { id: 'banner' });
+    const kpis = h('div', { class: 'kpis' });
+    const partWrap = h('div', { class: 'chart-wrap' });
+    const timelineWrap = h('div', { class: 'chart-wrap' });
+    const rolesWrap = h('div');
+    const updated = h('div', { class: 'small muted center mt-8' });
+    app.append(banner, kpis, h('div', { class: 'grid-2' }, partWrap, timelineWrap), h('h2', { class: 'section-title' }, 'Scores par poste'), rolesWrap, updated,
+      h('div', { class: 'btn-row center' }, h('a', { class: 'btn', href: 'voter.html' + q }, 'Voter'), h('button', { class: 'btn secondary', type: 'button', onClick: () => refresh(true) }, 'Actualiser')));
+
+    let donut, line;
+
+    async function refresh(manual) {
+      const [{ data: fresh }, { data: results }, { data: partRows }, { data: timeline }] = await Promise.all([
+        E.sb.from('elections').select('*').eq('id', election.id).maybeSingle(),
+        E.sb.rpc('results', { p_election: election.id }),
+        E.sb.rpc('participation', { p_election: election.id }),
+        E.sb.rpc('participation_timeline', { p_election: election.id })
+      ]);
+      const part = partRows && partRows[0] || null;
+      if (fresh) election = fresh;
+      const st = E.electionState(election);
+      const voters = (part && part.voters) || 0;
+      const codesIssued = (part && part.codes_issued) || 0;
+      const rate = codesIssued ? Math.min(100, Math.round(voters / codesIssued * 1000) / 10) : null;
+      const base = codesIssued;
+      const shownRate = rate;
+
+      // Bandeau
+      E.clear(banner);
+      banner.appendChild(h('div', { class: 'card ' + (st.phase === 'vote' ? 'ok' : 'info') + ' column' },
+        h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, E.phaseBadge(election),
+          h('span', { class: 'small muted' }, st.phase === 'vote' ? 'Résultats provisoires, mis à jour en direct' + (election.voting_closes_at ? ' · clôture le ' + E.fmtDateTime(election.voting_closes_at) : '') : st.phase === 'closed' || st.phase === 'archived' ? 'Résultats définitifs' : 'Le vote n\'a pas encore commencé'))));
+      if (!election.results_public && st.phase !== 'closed') banner.appendChild(h('div', { class: 'card warn' }, h('div', { class: 'body' }, 'Les scores sont masqués jusqu\'à la clôture par décision du staff.')));
+
+      // KPI
+      E.clear(kpis);
+      const kpi = (label, value, sub) => h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, value), sub ? h('div', { class: 'sub' }, sub) : null);
+      kpis.append(
+        kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
+        kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', 'un code par membre'),
+        kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rate != null ? 'des codes distribués' : 'aucun code émis'),
+        kpi('Candidats', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
+
+      // Donut participation
+      E.clear(partWrap);
+      partWrap.appendChild(h('div', { class: 'section-title', style: { margin: '0 0 8px' } }, 'Participation'));
+      if (window.Chart) {
+        const wrap = h('div', { class: 'donut-wrap' });
+        const cv = document.createElement('canvas'); wrap.appendChild(cv);
+        const legend = h('div', { class: 'small muted' });
+        if (base) {
+          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + ' codes n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
+        } else legend.textContent = 'Le taux sera calculé dès que des codes auront été distribués.';
+        wrap.appendChild(legend); partWrap.appendChild(wrap);
+        if (donut) donut.destroy();
+        donut = new Chart(cv, { type: 'doughnut', data: { labels: ['Ont voté', 'N\'ont pas voté'], datasets: [{ data: base ? [voters, Math.max(0, base - voters)] : [voters, Math.max(1, voters ? 0 : 1)], backgroundColor: [C.accent, 'rgba(255,255,255,0.08)'], borderWidth: 0, hoverOffset: 4 }] },
+          options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { enabled: !!base } }, animation: { duration: manual ? 300 : 600 } } });
+      }
+
+      // Timeline : journée de vote, depuis l'instant précis où les votes ont été ouverts (voting_started_at)
+      E.clear(timelineWrap);
+      timelineWrap.appendChild(h('div', { class: 'section-title', style: { margin: '0 0 8px' } }, 'Votants dans le temps', h('span', { class: 'small muted', style: { fontWeight: 400, marginLeft: '6px' } }, election.voting_started_at ? '— depuis l\'ouverture des votes' : '')));
+      let pts = (timeline || []).map(t => ({ x: new Date(t.hour), y: t.cumulative }));
+      if (election.voting_started_at) {
+        const start = new Date(election.voting_started_at);
+        if (!pts.length || pts[0].x > start) pts.unshift({ x: start, y: 0 });
+      }
+      if (window.Chart && pts.length) {
+        const cv = document.createElement('canvas'); cv.height = 140; timelineWrap.appendChild(cv);
+        if (line) line.destroy();
+        // Sur une même journée : heure seule. Sur plusieurs jours (scrutin étalé) : jour + heure.
+        const sameDay = pts.every(p => p.x.toDateString() === pts[0].x.toDateString());
+        const fmt = sameDay ? { hour: '2-digit', minute: '2-digit' } : { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
+        const labels = pts.map(p => p.x.toLocaleString('fr-FR', fmt));
+        line = new Chart(cv, { type: 'line', data: { labels, datasets: [{ label: 'Votants cumulés', data: pts.map(p => p.y), borderColor: C.accent, backgroundColor: 'rgba(122,162,255,0.15)', fill: true, tension: .3, pointRadius: 2 }] },
+          options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { ticks: { maxTicksLimit: 6 } } }, animation: { duration: 300 } } });
+      } else timelineWrap.appendChild(h('div', { class: 'empty' }, 'Pas encore de vote.'));
+
+      // Scores par poste
+      E.clear(rolesWrap);
+      roles.forEach(role => {
+        const rows = (results || []).filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
+        const max = Math.max(1, ...rows.map(r => r.votes));
+        const block = h('div', { class: 'chart-wrap' });
+        block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)),
+          h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste' + (role.seats > 1 ? 's' : '') + ' · ' + rows.reduce((a, r) => a + r.votes, 0) + ' voix')),
+          rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat' + (rows.length > 1 ? 's' : '')) : null));
+        if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat pour ce poste.')); rolesWrap.appendChild(block); return; }
+        // Sièges : les N premiers, ex æquo signalés si la frontière est partagée
+        const cutoff = rows[role.seats - 1] ? rows[role.seats - 1].votes : -1;
+        const tied = rows.filter(r => r.votes === cutoff).length > 1 && rows[role.seats] && rows[role.seats].votes === cutoff;
+        const list = h('div', { class: 'bar-list' });
+        rows.forEach((r, i) => {
+          const elected = r.votes > 0 && (i < role.seats) && !(tied && r.votes === cutoff);
+          const exaequo = tied && r.votes === cutoff && r.votes > 0;
+          list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
+            E.avatarEl({ displayName: r.display_name }),
+            h('div', { class: 'who', title: r.display_name }, elected ? E.icon('trophy') : exaequo ? E.icon('scale-balanced') : null, ' ' + r.display_name),
+            h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
+            h('div', { class: 'n' }, r.votes + ' voix')));
+        });
+        block.appendChild(list);
+        if (tied) block.appendChild(h('div', { class: 'small muted mt-8' }, E.icon('scale-balanced'), ' Égalité sur le dernier siège : départage à prévoir par le staff.'));
+        rolesWrap.appendChild(block);
+      });
+      updated.textContent = 'Dernière mise à jour : ' + new Date().toLocaleTimeString('fr-FR') + (part && part.last_vote_at ? ' · dernier vote le ' + E.fmtDateTime(part.last_vote_at) : '');
+    }
+
+    await refresh();
+    E.subscribe(['ballots', 'ballot_choices', 'candidates', 'elections'], E.debounce(() => refresh(), 600));
+    setInterval(() => refresh(), 60000);
+  })();
+  </script>
+</body>
+</html>
