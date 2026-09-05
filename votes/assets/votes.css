@@ -26,8 +26,16 @@
 }
 .poll-result .row { position: relative; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
 .poll-result .label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+.poll-result .right { display: flex; align-items: center; gap: 4px; }
 .poll-result .pct { font-weight: 700; white-space: nowrap; }
 .poll-result .count { font-size: .8rem; color: var(--muted, #9ca3af); }
+.poll-voters-btn {
+  border: none; background: rgba(255,255,255,.08); color: inherit; cursor: pointer;
+  width: 26px; height: 26px; border-radius: 50%; font-size: .8rem; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center; margin-left: 2px;
+}
+.poll-voters-btn:hover { background: rgba(168,85,247,.25); }
+.btn.wide { display: flex; width: 100%; }
 
 .poll-free-answer { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line, rgba(255,255,255,.08)); }
 .poll-free-answer:last-child { border-bottom: none; }
