@@ -58,8 +58,14 @@
 
     let myResp = null;
     if (st.phase !== 'draft') {
-      const { data } = await V.vsb.rpc('my_response', { p_poll: poll.id, p_device_token: device });
-      myResp = data && data !== 'null' ? data : null;
+      // L'identité d'une réponse est le pseudo (pas l'appareil) : on ne peut pré-détecter une réponse
+      // existante que si ce navigateur a déjà mémorisé un pseudo. Sinon la case pseudo vide en dessous
+      // (blur) prendra le relais dès que la personne tape son pseudo, y compris sur un nouvel appareil.
+      const savedPseudo = V.getSavedPseudo();
+      if (savedPseudo) {
+        const { data } = await V.vsb.rpc('my_response', { p_poll: poll.id, p_pseudo: savedPseudo });
+        myResp = data && data !== 'null' ? data : null;
+      }
     }
 
     function showVotersModal(label, matching) {
@@ -120,7 +126,7 @@
 
     async function supprimerMaReponse() {
       if (!confirm('Supprimer ta réponse à ce sondage ?')) return;
-      const { error } = await V.vsb.rpc('delete_response', { p_poll: poll.id, p_device_token: device });
+      const { error } = await V.vsb.rpc('delete_response', { p_poll: poll.id, p_pseudo: myResp.pseudo });
       if (error) { V.toast(V.errMsg(error), 'error'); return; }
       myResp = null;
       V.toast('Réponse supprimée.', 'success');
@@ -141,6 +147,20 @@
         h('div', { class: 'small muted' }, 'Ton pseudo et tes réponses seront visibles par tous, sur cette page.'),
         h('div', { class: 'field' }, h('label', null, 'Pseudo'), pseudoInput));
       zone.appendChild(form);
+
+      // Reprendre un pseudo déjà utilisé sur ce sondage (même depuis un nouvel appareil) charge et
+      // permet de modifier cette réponse existante, plutôt que d'en créer une seconde.
+      pseudoInput.addEventListener('blur', async () => {
+        const typed = pseudoInput.value.trim();
+        if (!typed || (myResp && myResp.pseudo && myResp.pseudo.toLowerCase() === typed.toLowerCase())) return;
+        const { data } = await V.vsb.rpc('my_response', { p_poll: poll.id, p_pseudo: typed });
+        const found = data && data !== 'null' ? data : null;
+        if (found) {
+          myResp = found;
+          V.toast('Réponse déjà enregistrée pour « ' + found.pseudo + ' », modifie-la si besoin.');
+          renderForm();
+        }
+      });
 
       qs.forEach(q => {
         const block = h('div', { class: 'poll-question' });

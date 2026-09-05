@@ -60,11 +60,18 @@ create table if not exists votes.responses (
   device_token   text not null,
   answers        jsonb not null default '{}'::jsonb,
   submitted_at   timestamptz not null default now(),
-  updated_at     timestamptz not null default now(),
-  unique (poll_id, device_token)
+  updated_at     timestamptz not null default now()
 );
 alter table votes.responses enable row level security;
 create index if not exists responses_poll_idx on votes.responses (poll_id);
+
+-- Identité d'une réponse = pseudo (insensible à la casse), pas l'appareil qui l'a soumise : voir
+-- votes.respond() plus bas pour le choix assumé que ça implique — reprendre le même pseudo modifie
+-- la réponse existante d'où qu'on se connecte (sans compte ni code), mais à l'inverse deux personnes
+-- qui choisiraient le même pseudo sur un même sondage peuvent modifier la réponse l'une de l'autre.
+-- device_token n'est donc plus une clé d'identité : gardé à titre informatif seulement.
+alter table votes.responses drop constraint if exists responses_poll_id_device_token_key;
+create unique index if not exists responses_poll_pseudo_idx on votes.responses (poll_id, lower(pseudo));
 
 -- ---------------------------------------------------------------------
 -- 4. Politiques RLS
@@ -115,9 +122,11 @@ end $$;
 -- 6. RPC publiques
 -- ---------------------------------------------------------------------
 
--- Valide les réponses contre les questions du sondage (type/options/obligatoire) puis
--- upsert par (poll_id, device_token) : une réponse reste modifiable jusqu'à la clôture,
--- comme un bulletin de vote.
+-- Valide les réponses contre les questions du sondage (type/options/obligatoire) puis upsert
+-- par (poll_id, pseudo) — pas par device_token : reprendre le même pseudo sur un autre appareil
+-- modifie la même réponse (une réponse reste modifiable jusqu'à la clôture, d'où qu'on se
+-- connecte, sans compte ni code). Compromis assumé : deux personnes qui choisiraient le même
+-- pseudo sur un même sondage peuvent modifier la réponse l'une de l'autre.
 create or replace function votes.respond(p_poll uuid, p_device_token text, p_pseudo text, p_answers jsonb)
 returns jsonb language plpgsql security definer set search_path = votes, public as $$
 declare
@@ -161,10 +170,10 @@ begin
     end if;
   end loop;
 
-  select * into v_existing from votes.responses where poll_id = p_poll and device_token = p_device_token;
+  select * into v_existing from votes.responses where poll_id = p_poll and lower(pseudo) = lower(v_pseudo);
   if v_existing.id is not null then
     v_replaced := true;
-    update votes.responses set pseudo = v_pseudo, answers = p_answers, updated_at = now() where id = v_existing.id
+    update votes.responses set device_token = p_device_token, answers = p_answers, updated_at = now() where id = v_existing.id
     returning * into v_existing;
   else
     insert into votes.responses (poll_id, device_token, pseudo, answers) values (p_poll, p_device_token, v_pseudo, p_answers)
@@ -174,27 +183,28 @@ begin
   return jsonb_build_object('ok', true, 'replaced', v_replaced, 'response_id', v_existing.id);
 end $$;
 
--- Récupère sa propre réponse (pré-remplissage du formulaire), par device_token.
-create or replace function votes.my_response(p_poll uuid, p_device_token text)
+-- Récupère la réponse d'un pseudo (pré-remplissage du formulaire), pour proposer une modification
+-- même depuis un appareil qui n'a jamais servi à répondre à ce sondage.
+create or replace function votes.my_response(p_poll uuid, p_pseudo text)
 returns jsonb language plpgsql security definer set search_path = votes as $$
 declare v jsonb;
 begin
   select jsonb_build_object('pseudo', pseudo, 'answers', answers, 'submitted_at', submitted_at)
-  into v from votes.responses where poll_id = p_poll and device_token = p_device_token;
+  into v from votes.responses where poll_id = p_poll and lower(pseudo) = lower(coalesce(p_pseudo, ''));
   return coalesce(v, 'null'::jsonb);
 end $$;
 
--- Retire sa propre réponse (même logique de propriété que respond()/my_response : seul le
--- device_token qui l'a créée peut la supprimer, jamais un admin ni personne d'autre via ce chemin).
--- Autorisé tant que le sondage est ouvert, comme la modification.
-create or replace function votes.delete_response(p_poll uuid, p_device_token text)
+-- Retire la réponse d'un pseudo (même logique d'identité que respond()/my_response : quiconque
+-- reprend ce pseudo peut la supprimer, d'où qu'il se connecte). Autorisé tant que le sondage est
+-- ouvert, comme la modification.
+create or replace function votes.delete_response(p_poll uuid, p_pseudo text)
 returns void language plpgsql security definer set search_path = votes, public as $$
 declare v_poll votes.polls; v_id uuid;
 begin
   select * into v_poll from votes.polls where id = p_poll;
   if v_poll.id is null or v_poll.status <> 'open' then raise exception 'POLL_NOT_OPEN'; end if;
   if v_poll.closes_at is not null and now() >= v_poll.closes_at then raise exception 'POLL_CLOSED'; end if;
-  select id into v_id from votes.responses where poll_id = p_poll and device_token = p_device_token;
+  select id into v_id from votes.responses where poll_id = p_poll and lower(pseudo) = lower(coalesce(p_pseudo, ''));
   if v_id is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
   delete from votes.responses where id = v_id;
   perform public.log_audit('poll:self', 'response_deleted_by_voter', v_poll.slug, jsonb_build_object('response_id', v_id));
