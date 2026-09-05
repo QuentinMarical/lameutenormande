@@ -52,7 +52,8 @@
       card.appendChild(h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
         h('div', { class: 'title', style: { fontSize: '18px', margin: 0 } }, election.title), E.phaseBadge(election)));
       if (election.description) card.appendChild(h('div', { class: 'desc' }, election.description));
-      card.appendChild(h('div', { class: 'desc' }, 'Postes à pourvoir : ' + E.rolesOf(election).map(r => r.label + (r.seats > 1 ? ` (${r.seats})` : '')).join(', ') + '.'));
+      const roles = E.rolesOf(election);
+      if (roles.length > 0) card.appendChild(h('div', { class: 'desc' }, 'Postes à pourvoir : ' + roles.map(r => r.label + (r.seats > 1 ? ` (${r.seats})` : '')).join(', ') + '.'));
 
       if (election.voting_closes_at && st.phase === 'vote') {
         card.appendChild(h('div', { class: 'desc center mt-8' }, 'Clôture des votes le ' + E.fmtDateTime(election.voting_closes_at)));
