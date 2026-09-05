@@ -112,6 +112,7 @@
 
       const form = h('form', { class: 'card column' },
         h('div', { class: 'title', style: { fontSize: '16px' } }, myResp ? 'Modifier ma réponse' : 'Répondre au sondage'),
+        h('div', { class: 'small muted' }, 'Ton pseudo et tes réponses seront visibles par tous, sur cette page.'),
         h('div', { class: 'field' }, h('label', null, 'Pseudo'), pseudoInput));
       zone.appendChild(form);
 
