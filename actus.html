@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=1bjJKw"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=1bjJKw" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=apjEyJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=apjEyJ" type="text/css">
 
   
   
@@ -572,12 +572,19 @@
                     const totalQ = answered.length;
                     corps += `<div class="poll-summary-q"><div class="poll-summary-label">${echapperHtml(q.label)}</div>`;
                     options.forEach(([val, label]) => {
-                        const count = answered.filter(r => {
+                        const matching = answered.filter(r => {
                             const a = r.answers[q.id];
                             return Array.isArray(a) ? a.includes(val) : a === val;
-                        }).length;
+                        });
+                        const count = matching.length;
                         const pct = totalQ ? Math.round((count / totalQ) * 100) : 0;
-                        corps += `<div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div><div class="poll-bar-row"><span>${echapperHtml(label)}</span><span>${pct}% · ${count}</span></div></div>`;
+                        // Qui a répondu ça (les réponses sont déjà publiques, pas une fuite) : liste
+                        // dépliable au clic plutôt qu'une modale, plus sûr ici vu que ce bloc est déjà
+                        // imbriqué dans la fenêtre de détail de l'évènement (elle-même un <dialog>).
+                        const btn = count ? `<button type="button" class="poll-voters-btn" data-toggle-voters="1">👥</button>` : '';
+                        const liste = count ? `<div class="poll-voters-list" hidden>${matching.map(r => `<span>${echapperHtml(r.pseudo)}</span>`).join('')}</div>` : '';
+                        const texteCount = count + (count > 1 ? ' réponses' : ' réponse');
+                        corps += `<div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div><div class="poll-bar-row"><span>${echapperHtml(label)}</span><span>${texteCount}${btn}</span></div>${liste}</div>`;
                     });
                     corps += `</div>`;
                 });
@@ -757,6 +764,15 @@
                     if (evenementModal) telechargerIcs(evenementModal);
                 });
             }
+
+            // Bouton "qui a répondu" d'un sondage : déplie/replie la liste juste en dessous, dans le
+            // fil normal de la page (pas de modale imbriquée dans le <dialog> de l'évènement).
+            corpsModale.addEventListener('click', e => {
+                const btn = e.target.closest('[data-toggle-voters]');
+                if (!btn) return;
+                const liste = btn.closest('.poll-bar').querySelector('.poll-voters-list');
+                if (liste) liste.hidden = !liste.hidden;
+            });
 
             boutonFermer.addEventListener('click', fermerModale);
             // Échap : on intercepte pour jouer l'animation de fermeture

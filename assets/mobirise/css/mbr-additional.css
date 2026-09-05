@@ -5677,6 +5677,48 @@ a {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
 }
+.cid-vfPilZdu2W .poll-voters-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.cid-vfPilZdu2W .poll-voters-btn:hover {
+  background: rgba(156, 39, 176, 0.3);
+}
+.cid-vfPilZdu2W .poll-voters-list[hidden] {
+  display: none;
+}
+.cid-vfPilZdu2W .poll-voters-list {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+.cid-vfPilZdu2W .poll-voters-list span::after {
+  content: '·';
+  margin-left: 0.5rem;
+  opacity: 0.5;
+}
+.cid-vfPilZdu2W .poll-voters-list span:last-child::after {
+  content: '';
+  margin-left: 0;
+}
 @keyframes actus3-fadeIn {
   from {
     opacity: 0;
