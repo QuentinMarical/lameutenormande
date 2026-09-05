@@ -763,7 +763,7 @@ end $$;
 
 create or replace function public.admin_save_election(p jsonb)
 returns public.elections language plpgsql security definer set search_path = public as $$
-declare v public.elections; v_voting_open boolean; v_prev_voting_open boolean;
+declare v public.elections; v_voting_open boolean; v_prev_voting_open boolean; v_new_status text;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   if p ? 'roles' then
@@ -776,11 +776,15 @@ begin
     then raise exception 'BAD_ROLE'; end if;
   end if;
   if p->>'id' is null then
-    v_voting_open := coalesce((p->>'voting_open')::boolean, false);
+    v_new_status := coalesce(p->>'status', 'draft');
+    -- Un scrutin créé déjà clôturé/archivé ne peut pas naître avec candidature/vote ouverts :
+    -- état incohérent sinon (résultats "définitifs" mais candidature/vote encore ouverts).
+    v_voting_open := case when v_new_status in ('closed','archived') then false else coalesce((p->>'voting_open')::boolean, false) end;
     insert into public.elections (slug, title, description, roles, status, candidacy_open, voting_open,
         candidacy_opens_at, candidacy_closes_at, voting_opens_at, voting_closes_at, voting_started_at, results_public)
     values (p->>'slug', p->>'title', coalesce(p->>'description',''), coalesce(p->'roles', '[]'::jsonb),
-            coalesce(p->>'status','draft'), coalesce((p->>'candidacy_open')::boolean,false),
+            v_new_status,
+            case when v_new_status in ('closed','archived') then false else coalesce((p->>'candidacy_open')::boolean,false) end,
             v_voting_open,
             (p->>'candidacy_opens_at')::timestamptz, (p->>'candidacy_closes_at')::timestamptz,
             (p->>'voting_opens_at')::timestamptz, (p->>'voting_closes_at')::timestamptz,
@@ -789,12 +793,15 @@ begin
     returning * into v;
   else
     select voting_open into v_prev_voting_open from public.elections where id = (p->>'id')::uuid;
-    v_voting_open := coalesce((p->>'voting_open')::boolean, v_prev_voting_open);
+    v_new_status := coalesce(p->>'status', (select status from public.elections where id = (p->>'id')::uuid));
+    -- Même garde-fou en édition : (ré)ouvrir candidature/vote sur un scrutin qui devient (ou reste)
+    -- clôturé/archivé produirait un scrutin "terminé" affichant pourtant candidature/vote ouverts.
+    v_voting_open := case when v_new_status in ('closed','archived') then false else coalesce((p->>'voting_open')::boolean, v_prev_voting_open) end;
     update public.elections set
       slug = coalesce(p->>'slug', slug), title = coalesce(p->>'title', title),
       description = coalesce(p->>'description', description), roles = coalesce(p->'roles', roles),
-      status = coalesce(p->>'status', status),
-      candidacy_open = coalesce((p->>'candidacy_open')::boolean, candidacy_open),
+      status = v_new_status,
+      candidacy_open = case when v_new_status in ('closed','archived') then false else coalesce((p->>'candidacy_open')::boolean, candidacy_open) end,
       voting_open = v_voting_open,
       candidacy_opens_at = case when p ? 'candidacy_opens_at' then (p->>'candidacy_opens_at')::timestamptz else candidacy_opens_at end,
       candidacy_closes_at = case when p ? 'candidacy_closes_at' then (p->>'candidacy_closes_at')::timestamptz else candidacy_closes_at end,
@@ -820,7 +827,7 @@ begin
       voting_open_reminder_sent = case when p ? 'voting_opens_at'
         and (p->>'voting_opens_at')::timestamptz is distinct from voting_opens_at
         then false else voting_open_reminder_sent end,
-      results_sent = case when status = 'closed' and coalesce(p->>'status', status) <> 'closed'
+      results_sent = case when status = 'closed' and v_new_status <> 'closed'
         then false else results_sent end,
       updated_at = now()
     where id = (p->>'id')::uuid returning * into v;
