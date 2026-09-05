@@ -148,12 +148,12 @@
         zone.appendChild(block);
       });
 
-      const submitBtn = h('button', { class: 'btn', type: 'submit' }, myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses');
+      const submitBtn = h('button', { class: 'btn', type: 'button' }, myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses');
       const foot = h('div', { class: 'btn-row' }, submitBtn, myResp ? h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Annuler') : null);
       zone.appendChild(foot);
 
       form.addEventListener('submit', async (e) => { e.preventDefault(); await submit(); });
-      submitBtn.addEventListener('click', async (e) => { if (submitBtn.type !== 'submit') return; });
+      submitBtn.addEventListener('click', async (e) => { e.preventDefault(); await submit(); });
 
       async function submit() {
         const pseudo = pseudoInput.value.trim();
