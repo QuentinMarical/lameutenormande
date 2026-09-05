@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Sondages — La Meute Normande</title>
+  <meta name="description" content="Sondages de La Meute Normande : présence aux évènements, covoiturage et autres questions rapides, ouverts à tous.">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../elections/assets/elections.css">
+  <link rel="stylesheet" href="assets/votes.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Sondages"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Sondages de la Meute</h1>
+    <div class="sub">Présence aux évènements, covoiturage, et autres questions rapides</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/common.js"></script>
+  <script>
+  (async () => {
+    const h = V.h, app = V.qs('#app');
+    V.footer();
+    await V.renderNav('index.html');
+    if (!V.ready) { V.notConfigured(app); return; }
+
+    const { data: polls } = await V.vsb.from('polls').select('*').order('created_at', { ascending: false });
+    V.clear(app);
+    const list = polls || [];
+    const open = list.filter(p => V.pollState(p).phase === 'open');
+    const others = list.filter(p => V.pollState(p).phase !== 'open');
+
+    function card(p) {
+      const st = V.pollState(p);
+      const c = h('a', { class: 'card column selectable', href: 'sondage.html?p=' + encodeURIComponent(p.slug), style: { textDecoration: 'none', color: 'inherit' } });
+      c.appendChild(h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
+        h('div', { class: 'title', style: { fontSize: '17px', margin: 0 } }, p.title), V.phaseBadge(p)));
+      if (p.description) c.appendChild(h('div', { class: 'desc' }, p.description));
+      if (p.closes_at && st.phase === 'open') c.appendChild(h('div', { class: 'small muted' }, 'Clôture le ' + V.fmtDateTime(p.closes_at)));
+      return c;
+    }
+
+    if (!open.length && !others.length) {
+      app.appendChild(h('div', { class: 'card info' }, h('div', { class: 'body' },
+        h('div', { class: 'title' }, 'Aucun sondage pour l\'instant'),
+        h('div', { class: 'desc' }, 'Les prochains sondages (présence à un évènement, covoiturage…) seront annoncés sur Telegram.'))));
+    }
+    if (open.length) {
+      app.appendChild(h('h2', { class: 'section-title' }, 'En cours'));
+      open.forEach(p => app.appendChild(card(p)));
+    }
+    if (others.length) {
+      app.appendChild(h('h2', { class: 'section-title' }, 'Terminés'));
+      others.forEach(p => app.appendChild(card(p)));
+    }
+  })();
+  </script>
+</body>
+</html>

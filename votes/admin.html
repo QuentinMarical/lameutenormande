@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administration — Sondages de la Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../elections/assets/elections.css">
+  <link rel="stylesheet" href="assets/votes.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Sondages"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Administration des sondages</h1>
+    <div class="sub">Sondages · questions · réponses</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/common.js"></script>
+  <script>
+  (async () => {
+    const h = V.h, app = V.qs('#app');
+    V.footer();
+    await V.renderNav('admin.html');
+    if (!V.ready) { V.notConfigured(app); return; }
+
+    // ---------- Connexion admin (même compte que le panel des élections) ----------
+    const session = await V.adminSession();
+    if (!session) {
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
+      const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Connexion administrateur'),
+        h('div', { class: 'desc' }, 'Même compte que le panel des élections.'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); btn.disabled = true;
+        const { error } = await V.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) { V.toast(V.errMsg(error), 'error'); btn.disabled = false; return; }
+        location.reload();
+      });
+      V.clear(app).appendChild(form);
+      return;
+    }
+    if (!(await V.isAdmin())) {
+      V.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: V.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    { const slot = V.qs('.topbar .tool.admin'); const chip = h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: V.signOut, title: 'Se déconnecter' }, '⏻')); if (slot) slot.replaceWith(chip); }
+
+    V.clear(app);
+    let polls = []; let current = null;
+    async function loadPolls() {
+      const { data } = await V.vsb.from('polls').select('*').order('created_at', { ascending: false });
+      polls = data || [];
+      if (!current || !polls.find(p => p.id === current.id)) current = polls[0] || null;
+      else current = polls.find(p => p.id === current.id);
+    }
+    await loadPolls();
+
+    const tabs = [['sondages', 'Sondages'], ['reponses', 'Réponses']];
+    const tabBar = h('div', { class: 'tabs' });
+    const pane = h('div');
+    const selector = h('select', { class: 'input', style: { width: 'auto', maxWidth: '100%' } });
+    function paintSelector() {
+      V.clear(selector);
+      polls.forEach(p => { const o = h('option', { value: p.id }, p.title + ' (' + V.pollState(p).label + ')'); if (current && p.id === current.id) o.selected = true; selector.appendChild(o); });
+    }
+    paintSelector();
+    selector.addEventListener('change', () => { current = polls.find(p => p.id === selector.value); show(activeTab); });
+    app.append(h('div', { class: 'filters' }, h('span', { class: 'small muted' }, 'Sondage :'), selector), tabBar, pane);
+    let activeTab = location.hash.replace('#', '') || 'sondages';
+    tabs.forEach(([id, label]) => tabBar.appendChild(h('button', { type: 'button', dataset: { tab: id }, onClick: () => { activeTab = id; location.hash = id; show(id); } }, label)));
+    function show(id) {
+      V.qsa('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+      V.clear(pane).appendChild(V.loader());
+      ({ sondages, reponses })[id]().catch(err => { V.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, V.errMsg(err)))); });
+    }
+
+    const toLocalInput = iso => { if (!iso) return ''; const d = new Date(iso); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
+    const fromLocalInput = v => v ? new Date(v).toISOString() : null;
+    const QTYPES = [['yesno', 'Oui / Non'], ['choice', 'Choix unique'], ['multi_choice', 'Choix multiples'], ['number', 'Nombre'], ['text', 'Texte libre']];
+
+    // ---------- Sondages ----------
+    async function sondages() {
+      V.clear(pane);
+      const list = h('div', { class: 'cands' });
+      polls.forEach(p => list.appendChild(h('div', { class: 'cand selectable' + (current && p.id === current.id ? ' selected' : ''), onClick: () => { current = p; paintSelector(); sondages(); } },
+        h('div', { class: 'body' }, h('div', { class: 'name' }, p.title, V.phaseBadge(p), h('span', { class: 'badge muted' }, p.slug)),
+          h('div', { class: 'handles' }, h('span', null, p.closes_at ? 'Clôture ' + V.fmtDateTime(p.closes_at) : 'Pas de date de clôture'))))));
+      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '12px' } }, h('button', { class: 'btn small', type: 'button', onClick: () => editForm(null) }, '＋ Nouveau sondage')), list);
+      if (current) { await editForm(current); await questionsEditor(current); }
+
+      async function editForm(p) {
+        const old = V.qs('#edit-form'); if (old) old.remove();
+        const title = h('input', { class: 'input', value: p ? p.title : '' });
+        const slug = h('input', { class: 'input', value: p ? p.slug : '' });
+        const desc = h('textarea', { class: 'input', rows: '2' }, p ? p.description : '');
+        const status = h('select', { class: 'input' }, ...['draft', 'open', 'closed'].map(s => h('option', { value: s, selected: p && p.status === s }, { draft: 'Brouillon', open: 'Ouvert', closed: 'Clôturé' }[s])));
+        const opensAt = h('input', { class: 'input', type: 'datetime-local', value: p ? toLocalInput(p.opens_at) : '' });
+        const closesAt = h('input', { class: 'input', type: 'datetime-local', value: p ? toLocalInput(p.closes_at) : '' });
+        const saveBtn = h('button', { class: 'btn', type: 'submit' }, p ? 'Enregistrer' : 'Créer');
+        const form = h('form', { id: 'edit-form', class: 'card column', style: { marginTop: '12px' } },
+          h('div', { class: 'title', style: { fontSize: '15px' } }, p ? 'Modifier le sondage' : 'Nouveau sondage'),
+          h('div', { class: 'grid-2' },
+            h('div', { class: 'field' }, h('label', null, 'Titre'), title),
+            h('div', { class: 'field' }, h('label', null, 'Identifiant (URL)'), slug)),
+          h('div', { class: 'field' }, h('label', null, 'Description'), desc),
+          h('div', { class: 'field' }, h('label', null, 'Statut'), status),
+          h('div', { class: 'grid-2' },
+            h('div', { class: 'field' }, h('label', null, 'Ouverture (optionnel)'), opensAt),
+            h('div', { class: 'field' }, h('label', null, 'Clôture (optionnel)'), closesAt)),
+          h('div', { class: 'btn-row' }, saveBtn, p ? h('button', { class: 'btn danger small', type: 'button', onClick: async () => {
+            if (!confirm('Supprimer définitivement ce sondage et toutes ses réponses ?')) return;
+            const { error } = await V.vsb.rpc('admin_delete_poll', { p_poll: p.id });
+            if (error) { V.toast(V.errMsg(error), 'error'); return; }
+            V.toast('Sondage supprimé', 'success'); current = null; await loadPolls(); paintSelector(); sondages();
+          } }, 'Supprimer ce sondage') : null));
+        form.addEventListener('submit', async e => {
+          e.preventDefault(); saveBtn.disabled = true;
+          const payload = { title: title.value.trim(), slug: slug.value.trim(), description: desc.value, status: status.value,
+            opens_at: fromLocalInput(opensAt.value), closes_at: fromLocalInput(closesAt.value) };
+          if (p) payload.id = p.id;
+          const { data, error } = await V.vsb.rpc('admin_save_poll', { p: payload });
+          if (error) { V.toast(V.errMsg(error), 'error'); saveBtn.disabled = false; return; }
+          V.toast('Sondage enregistré', 'success');
+          current = data; await loadPolls(); current = polls.find(x => x.id === data.id); paintSelector(); sondages();
+        });
+        pane.appendChild(form);
+      }
+
+      async function questionsEditor(p) {
+        const old = V.qs('#q-editor'); if (old) old.remove();
+        const { data: qrows } = await V.vsb.from('questions').select('*').eq('poll_id', p.id).order('sort_order');
+        const rows = (qrows || []).map(q => ({ id: q.id, label: q.label, type: q.type, options: (q.options || []).join('\n'), required: q.required }));
+        const wrap = h('div', { id: 'q-editor', class: 'card column', style: { marginTop: '12px' } }, h('div', { class: 'title', style: { fontSize: '15px' } }, 'Questions'));
+        const rowsBox = h('div'); wrap.appendChild(rowsBox);
+        function paintRows() {
+          V.clear(rowsBox);
+          rows.forEach((r, i) => {
+            const labelInp = h('input', { class: 'input', placeholder: 'Intitulé de la question', value: r.label });
+            labelInp.addEventListener('input', () => r.label = labelInp.value);
+            const typeSel = h('select', { class: 'input' }, ...QTYPES.map(([v, l]) => h('option', { value: v, selected: r.type === v }, l)));
+            typeSel.addEventListener('change', () => { r.type = typeSel.value; paintRows(); });
+            const optsInp = h('textarea', { class: 'input', rows: '2', placeholder: 'Une option par ligne', style: { display: (r.type === 'choice' || r.type === 'multi_choice') ? '' : 'none' } }, r.options);
+            optsInp.addEventListener('input', () => r.options = optsInp.value);
+            const reqChk = h('input', { type: 'checkbox' }); reqChk.checked = !!r.required;
+            reqChk.addEventListener('change', () => r.required = reqChk.checked);
+            const rmBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => { rows.splice(i, 1); paintRows(); } }, '✕');
+            rowsBox.appendChild(h('div', { class: 'question-editor' },
+              h('div', { class: 'row' }, labelInp, typeSel, rmBtn),
+              optsInp,
+              h('div', { class: 'row', style: { alignItems: 'center' } }, h('label', { class: 'small' }, reqChk, ' Obligatoire'))));
+          });
+        }
+        paintRows();
+        const addBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => { rows.push({ label: '', type: 'yesno', options: '', required: false }); paintRows(); } }, '＋ Ajouter une question');
+        const saveQBtn = h('button', { class: 'btn small', type: 'button', onClick: async () => {
+          const payload = rows.map(r => ({ label: r.label.trim(), type: r.type, options: r.options.split('\n').map(s => s.trim()).filter(Boolean), required: !!r.required }));
+          if (payload.some(q => !q.label)) { V.toast('Chaque question a besoin d\'un intitulé.', 'error'); return; }
+          const { error } = await V.vsb.rpc('admin_save_questions', { p_poll: p.id, p_questions: payload });
+          if (error) { V.toast(V.errMsg(error), 'error'); return; }
+          V.toast('Questions enregistrées', 'success'); questionsEditor(p);
+        } }, 'Enregistrer les questions');
+        wrap.appendChild(h('div', { class: 'btn-row' }, addBtn, saveQBtn));
+        pane.appendChild(wrap);
+      }
+    }
+
+    // ---------- Réponses ----------
+    async function reponses() {
+      V.clear(pane);
+      if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun sondage sélectionné.')); return; }
+      const { data: qrows } = await V.vsb.from('questions').select('*').eq('poll_id', current.id).order('sort_order');
+      const qmap = new Map((qrows || []).map(q => [q.id, q]));
+      const { data: rows, error } = await V.vsb.rpc('poll_results', { p_poll: current.id });
+      if (error) { pane.appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, V.errMsg(error)))); return; }
+      if (!rows || !rows.length) { pane.appendChild(h('div', { class: 'empty' }, 'Aucune réponse pour l\'instant.')); return; }
+      const list = h('div', { class: 'cands' });
+      rows.forEach(r => {
+        const details = [...qmap.values()].map(q => {
+          const v = r.answers && r.answers[q.id];
+          if (v == null || v === '') return null;
+          const disp = q.type === 'yesno' ? (v === 'yes' ? 'Oui' : 'Non') : Array.isArray(v) ? v.join(', ') : String(v);
+          return q.label + ' : ' + disp;
+        }).filter(Boolean);
+        list.appendChild(h('div', { class: 'cand' }, V.avatarEl(r.pseudo),
+          h('div', { class: 'body' }, h('div', { class: 'name' }, r.pseudo, h('span', { class: 'badge muted' }, V.fmtDateTime(r.submitted_at))),
+            h('div', { class: 'handles' }, details.map(d => h('span', null, d)))),
+          h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
+            if (!confirm('Supprimer la réponse de ' + r.pseudo + ' ?')) return;
+            const { error } = await V.vsb.rpc('admin_delete_response', { p_response: r.id });
+            if (error) { V.toast(V.errMsg(error), 'error'); return; }
+            V.toast('Réponse supprimée', 'success'); reponses();
+          } }, 'Supprimer')));
+      });
+      pane.appendChild(list);
+    }
+
+    show(activeTab);
+  })();
+  </script>
+</body>
+</html>
