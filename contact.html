@@ -27,7 +27,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=AlYgNr"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=AlYgNr" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=q8JVeQ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=q8JVeQ" type="text/css">
 
   
   <script>
@@ -1188,6 +1188,7 @@ document.addEventListener('click', function (e) {
                     + '<h4>Hébergement</h4>'
                     + '<p>Ce site est hébergé par <strong>GitHub Pages</strong> — GitHub Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p>'
                     + '<p>Le nom de domaine <strong>lameutenormande.fr</strong> est enregistré auprès d\'<strong>OVH</strong> — OVHcloud, 2 rue Kellermann, 59100 Roubaix, France.</p>'
+                    + '<p>La base de données utilisée par les sondages de la page Actus est hébergée par <strong>Supabase</strong> (Supabase Inc.), sur une infrastructure Amazon Web Services située à <strong>Francfort, Allemagne (Union européenne)</strong>.</p>'
                     + '<h4>Conception du site</h4>'
                     + '<p>Site conçu avec <strong>Mobirise</strong> (générateur de sites statiques).</p>'
                     + '<p>Développement et intégration : <strong>Nitra</strong> — calendrier des événements : <strong>Spyro the bat</strong>.</p>'
@@ -1219,7 +1220,20 @@ document.addEventListener('click', function (e) {
                     + '<p><strong>Finalité :</strong> répondre à votre demande de contact uniquement.</p>'
                     + '<p><strong>Durée de conservation :</strong> les données sont conservées le temps nécessaire au traitement de la demande, puis supprimées.</p>'
                     + '<h4>Données NON collectées</h4>'
-                    + '<p>En dehors du formulaire de contact, ce site <strong>ne collecte aucune donnée personnelle</strong>. Il n\'y a pas de compte utilisateur, pas de newsletter, pas de base de données, pas de système de commentaires.</p>'
+                    + '<p>En dehors du formulaire de contact et des réponses volontaires aux sondages de la page Actus (voir ci-dessous), ce site <strong>ne collecte aucune donnée personnelle</strong>. Il n\'y a pas de compte utilisateur, pas de newsletter, pas de système de commentaires.</p>'
+                    + '<h4>Sondages de la page Actus</h4>'
+                    + '<p>La page Actus propose parfois des <strong>sondages ponctuels</strong> liés à un événement (ex. « viens-tu ? », covoiturage). Y répondre est entièrement <strong>volontaire</strong> et ne nécessite ni compte ni code d\'accès.</p>'
+                    + '<p>En répondant à un sondage, vous transmettez :</p>'
+                    + '<ul>'
+                    + '<li>Un <strong>pseudo</strong> de votre choix (déclaratif, non vérifié)</li>'
+                    + '<li>Vos réponses aux questions du sondage</li>'
+                    + '<li>La date et l\'heure de votre réponse</li>'
+                    + '</ul>'
+                    + '<p><strong>Base légale :</strong> consentement de l\'utilisateur, exprimé par l\'envoi volontaire du formulaire (article 6.1.a du RGPD).</p>'
+                    + '<p>Ce pseudo et ces réponses sont <strong>visibles publiquement</strong> par toute personne consultant le sondage, aussi longtemps qu\'il reste ouvert. Vous pouvez à tout moment <strong>modifier ou supprimer votre réponse</strong> en reprenant le même pseudo sur le formulaire — y compris depuis un autre appareil, l\'identification reposant uniquement sur le pseudo choisi, et non sur l\'appareil utilisé.</p>'
+                    + '<p><strong>Attention :</strong> ce fonctionnement sans compte ni code implique qu\'une personne reprenant le même pseudo que vous sur un même sondage peut modifier ou supprimer votre réponse. Choisissez un pseudo suffisamment distinctif si cela vous préoccupe.</p>'
+                    + '<p>Ces données sont hébergées par <strong>Supabase</strong>, sur une base de données PostgreSQL dont l\'infrastructure est basée dans l\'Union européenne (Francfort, Allemagne). Par mesure de modération, l\'envoi, la modification ou la suppression d\'une réponse est également consigné dans un <strong>journal technique</strong> (adresse IP, navigateur, horodatage) réservé au staff et jamais rendu public.</p>'
+                    + '<p><strong>Durée de conservation :</strong> les réponses sont conservées tant que le sondage existe, ou jusqu\'à leur suppression par leur auteur ou par le staff.</p>'
                     + '<h4>Stockage local (localStorage)</h4>'
                     + '<p>Le site utilise le <strong>localStorage</strong> de votre navigateur pour :</p>'
                     + '<ul>'
@@ -1240,6 +1254,7 @@ document.addEventListener('click', function (e) {
                     + '<tr><td><strong>UseBasin</strong></td><td>Traitement du formulaire de contact</td><td>Données du formulaire (voir ci-dessus)</td></tr>'
                     + '<tr><td><strong>GitHub Raw</strong></td><td>Récupération du fichier calendrier ICS</td><td>Adresse IP</td></tr>'
                     + '<tr><td><strong>api-adresse.data.gouv.fr</strong></td><td>Géocodage pour les filtres du calendrier (page Événements)</td><td>Nom de ville recherché, adresse IP</td></tr>'
+                    + '<tr><td><strong>Supabase</strong></td><td>Hébergement de la base de données des sondages (page Actus, infrastructure Francfort, UE)</td><td>Pseudo et réponses soumis volontairement, adresse IP, navigateur (journal technique)</td></tr>'
                     + '</tbody></table>'
                     + '<h4>Tracking et publicité</h4>'
                     + '<p>Ce site <strong>n\'utilise aucun outil de tracking, d\'analyse ou de publicité</strong> (pas de Google Analytics, pas de Facebook Pixel, pas de Matomo, pas de publicité ciblée).</p>'
@@ -1255,7 +1270,7 @@ document.addEventListener('click', function (e) {
                     + '<p>Vous pouvez également introduire une réclamation auprès de la <strong>CNIL</strong> (<a href="https://www.cnil.fr" target="_blank" rel="noopener">www.cnil.fr</a>).</p>'
                     + '<h4>Mise à jour</h4>'
                     + '<p>Cette politique peut être modifiée à tout moment. La date de dernière mise à jour est indiquée ci-dessous.</p>'
-                    + '<p><em>Dernière mise à jour : avril 2026</em></p>'
+                    + '<p><em>Dernière mise à jour : septembre 2026</em></p>'
             },
             cookies: {
                 title: 'Politique de cookies',
@@ -1267,6 +1282,8 @@ document.addEventListener('click', function (e) {
                     + '<tbody>'
                     + '<tr><td>localStorage<br><code>calendarFilterSettings</code></td><td>Ce site (lameutenormande.fr)</td><td>Sauvegarde de vos filtres du calendrier (type, région, département)</td><td>Jusqu\'à suppression manuelle</td></tr>'
                     + '<tr><td>localStorage<br><code>calendarFilterSave</code></td><td>Ce site (lameutenormande.fr)</td><td>Mémorise si vous avez activé la sauvegarde des filtres</td><td>Jusqu\'à suppression manuelle</td></tr>'
+                    + '<tr><td>localStorage<br><code>votes.pseudo</code></td><td>Ce site (lameutenormande.fr)</td><td>Mémorise le pseudo utilisé pour répondre à un sondage (page Actus), afin de pré-remplir le formulaire</td><td>Jusqu\'à suppression manuelle</td></tr>'
+                    + '<tr><td>localStorage<br><code>votes.device</code></td><td>Ce site (lameutenormande.fr)</td><td>Identifiant technique de l\'appareil, conservé à titre informatif uniquement (il n\'est plus utilisé pour identifier vos réponses, voir la politique de confidentialité)</td><td>Jusqu\'à suppression manuelle</td></tr>'
                     + '</tbody></table>'
                     + '<h4>Cookies pouvant être déposés par des tiers</h4>'
                     + '<table class="legal-table">'
@@ -1277,6 +1294,7 @@ document.addEventListener('click', function (e) {
                     + '<tr><td>Cloudflare CDN (cdnjs.cloudflare.com)</td><td>Cookie technique</td><td>Chargement de FullCalendar et ical.js</td><td>Variable</td></tr>'
                     + '<tr><td>jsDelivr (cdn.jsdelivr.net)</td><td>Cookie technique</td><td>Chargement de ical.js</td><td>Variable</td></tr>'
                     + '<tr><td>UseBasin (usebasin.com)</td><td>Cookie technique</td><td>Traitement du formulaire de contact</td><td>Session</td></tr>'
+                    + '<tr><td>Supabase (supabase.co)</td><td>Cookie technique</td><td>Chargement des sondages et enregistrement des réponses (page Actus)</td><td>Session</td></tr>'
                     + '</tbody></table>'
                     + '<h4>Cookies analytiques ou publicitaires</h4>'
                     + '<p>Ce site <strong>n\'utilise aucun cookie publicitaire, de tracking ou d\'analyse</strong> (pas de Google Analytics, pas de Facebook Pixel, pas de Matomo, pas de publicité ciblée).</p>'
@@ -1297,7 +1315,7 @@ document.addEventListener('click', function (e) {
                     + '<li>Supprimez les entrées souhaitées ou cliquez sur « Tout effacer »</li>'
                     + '</ul>'
                     + '<p>Vous pouvez aussi effacer les données de navigation de votre navigateur, ce qui supprimera à la fois les cookies et le localStorage.</p>'
-                    + '<p><em>Dernière mise à jour : avril 2026</em></p>'
+                    + '<p><em>Dernière mise à jour : septembre 2026</em></p>'
             }
         };
 
