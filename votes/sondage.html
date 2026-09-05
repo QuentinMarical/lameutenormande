@@ -76,13 +76,15 @@
             const answered = rows.filter(r => r.answers && r.answers[q.id] != null && r.answers[q.id] !== '');
             const total = answered.length;
             options.forEach(([val, label]) => {
-              const count = answered.filter(r => {
+              const matching = answered.filter(r => {
                 const a = r.answers[q.id];
                 return Array.isArray(a) ? a.includes(val) : a === val;
-              }).length;
+              });
+              const count = matching.length;
               const pct = total ? Math.round((count / total) * 100) : 0;
               const mine = highlightMine && myResp && myResp.answers && (Array.isArray(myResp.answers[q.id]) ? myResp.answers[q.id].includes(val) : myResp.answers[q.id] === val);
-              const row = h('div', { class: 'poll-result' + (mine ? ' mine' : '') },
+              // Survol = qui a répondu ça (les réponses sont déjà publiques, pas une fuite).
+              const row = h('div', { class: 'poll-result' + (mine ? ' mine' : ''), title: count ? matching.map(r => r.pseudo).join(', ') : null },
                 h('div', { class: 'bar-fill', style: { width: pct + '%' } }),
                 h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', null, h('span', { class: 'pct' }, pct + '%'), h('span', { class: 'count' }, ' · ' + count))));
               block.appendChild(row);
