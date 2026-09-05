@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=xrb5P3"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=xrb5P3" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=5Bva6d"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=5Bva6d" type="text/css">
 
   
   <script>
@@ -37,6 +37,13 @@ document.addEventListener('click', function (e) {
   if (!lien) return;
   var bouton = document.querySelector(".footer-legal-btn[data-legal='cookies']");
   if (bouton) { e.preventDefault(); bouton.click(); }
+});
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('#impliedsubmit, #explicitsubmit');
+  if (!btn) return;
+  var d = new Date();
+  d.setTime(d.getTime() + 365 * 86400000);
+  document.cookie = 'cookiesDirective=1; expires=' + d.toUTCString() + '; path=/';
 });
 </script>
   
@@ -417,6 +424,6 @@ document.addEventListener('click', function (e) {
 </section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-core.js"></script>  <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-script.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
-<input name="cookieData" type="hidden" data-cookie-cookiesAlertType='1' data-cookie-customDialogSelector='null' data-cookie-colorText='#edefeb' data-cookie-colorBg='rgb(0, 0, 0)' data-cookie-opacityOverlay='0' data-cookie-bgOpacity='100' data-cookie-textButton='OK' data-cookie-rejectText='REJECT' data-cookie-colorButton='#fb0000' data-cookie-rejectColor='#ffffff' data-cookie-colorLink='#ffa600' data-cookie-underlineLink='true' data-cookie-text="Ce site utilise des cookies techniques nécessaires à son fonctionnement, comme décrit dans notre <a href='privacy.html'>politique de cookies</a>.">
+<input name="cookieData" type="hidden" data-cookie-cookiesAlertType='1' data-cookie-customDialogSelector='null' data-cookie-colorText='#edefeb' data-cookie-colorBg='rgb(0, 0, 0)' data-cookie-opacityOverlay='0' data-cookie-bgOpacity='100' data-cookie-textButton='GOT IT' data-cookie-rejectText='REJECT' data-cookie-colorButton='#fb0000' data-cookie-rejectColor='#ffffff' data-cookie-colorLink='#ffa600' data-cookie-underlineLink='true' data-cookie-text="We use cookies to give you the best experience as specified in the <a href='privacy.html'>cookie policy</a>.">
   </body>
 </html>
