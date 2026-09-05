@@ -175,7 +175,7 @@
       }
     }
 
-    if (st.phase === 'open' && !myResp) renderForm();
+    if (st.phase === 'draft' || (st.phase === 'open' && !myResp)) renderForm();
     else renderResults(true);
   })();
   </script>

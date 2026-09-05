@@ -141,6 +141,14 @@ begin
     if v_q.required and (v_val is null or v_val = 'null'::jsonb) then
       raise exception 'MISSING_ANSWER: %', v_q.label;
     end if;
+    -- Une chaîne/tableau vide est traité comme "pas de réponse" (le client filtre déjà ces cas
+    -- avant l'appel, mais le serveur doit faire foi même pour un appel direct de l'API).
+    if v_q.required and v_val is not null and v_val <> 'null'::jsonb and (
+      (jsonb_typeof(v_val) = 'string' and (v_val #>> '{}') = '') or
+      (jsonb_typeof(v_val) = 'array' and jsonb_array_length(v_val) = 0)
+    ) then
+      raise exception 'MISSING_ANSWER: %', v_q.label;
+    end if;
     if v_val is not null and v_val <> 'null'::jsonb then
       if v_q.type = 'choice' and not (v_q.options ? (v_val #>> '{}')) then raise exception 'BAD_CHOICE: %', v_q.label; end if;
       if v_q.type = 'multi_choice' then
@@ -149,6 +157,7 @@ begin
       end if;
       if v_q.type = 'yesno' and (v_val #>> '{}') not in ('yes','no') then raise exception 'BAD_CHOICE: %', v_q.label; end if;
       if v_q.type = 'number' and jsonb_typeof(v_val) <> 'number' then raise exception 'BAD_CHOICE: %', v_q.label; end if;
+      if v_q.type = 'text' and jsonb_typeof(v_val) <> 'string' then raise exception 'BAD_CHOICE: %', v_q.label; end if;
     end if;
   end loop;
 
@@ -203,22 +212,34 @@ begin
   return v;
 end $$;
 
--- Remplace entièrement la liste des questions d'un sondage (volume attendu : quelques
--- questions par sondage, un diff fin n'apporterait rien).
+-- Met à jour la liste des questions d'un sondage : une question déjà existante (identifiée par
+-- son "id" dans p_questions) est modifiée en place — pas recréée — pour ne jamais casser le lien
+-- avec les réponses déjà données (celles-ci référencent l'id de question dans leur jsonb "answers").
+-- Une question sans "id" (nouvelle) est insérée ; une question existante absente de p_questions
+-- est supprimée (et ses réponses sur cette question, orphelines, disparaissent avec elle).
 create or replace function votes.admin_save_questions(p_poll uuid, p_questions jsonb)
 returns setof votes.questions language plpgsql security definer set search_path = votes, public as $$
-declare v_q jsonb; v_i int := 0;
+declare v_q jsonb; v_i int := 0; v_id uuid; v_ids uuid[] := '{}';
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   if not exists (select 1 from votes.polls where id = p_poll) then raise exception 'POLL_NOT_FOUND'; end if;
   if jsonb_typeof(p_questions) <> 'array' then raise exception 'BAD_QUESTIONS'; end if;
-  delete from votes.questions where poll_id = p_poll;
   for v_q in select * from jsonb_array_elements(p_questions) loop
     if not (v_q->>'type' in ('choice','multi_choice','yesno','number','text')) then raise exception 'BAD_QUESTION_TYPE'; end if;
-    insert into votes.questions (poll_id, sort_order, label, type, options, required)
-    values (p_poll, v_i, v_q->>'label', v_q->>'type', coalesce(v_q->'options', '[]'::jsonb), coalesce((v_q->>'required')::boolean, false));
+    if v_q ? 'id' and exists (select 1 from votes.questions q where q.id = (v_q->>'id')::uuid and q.poll_id = p_poll) then
+      v_id := (v_q->>'id')::uuid;
+      update votes.questions set sort_order = v_i, label = v_q->>'label', type = v_q->>'type',
+        options = coalesce(v_q->'options', '[]'::jsonb), required = coalesce((v_q->>'required')::boolean, false)
+      where id = v_id;
+    else
+      insert into votes.questions (poll_id, sort_order, label, type, options, required)
+      values (p_poll, v_i, v_q->>'label', v_q->>'type', coalesce(v_q->'options', '[]'::jsonb), coalesce((v_q->>'required')::boolean, false))
+      returning id into v_id;
+    end if;
+    v_ids := v_ids || v_id;
     v_i := v_i + 1;
   end loop;
+  delete from votes.questions where poll_id = p_poll and not (id = any(v_ids));
   perform public.log_audit('admin:' || auth.uid()::text, 'poll_questions_saved', p_poll::text, jsonb_build_object('n', v_i));
   return query select * from votes.questions where poll_id = p_poll order by sort_order;
 end $$;

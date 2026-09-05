@@ -169,7 +169,7 @@
         paintRows();
         const addBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => { rows.push({ label: '', type: 'yesno', options: '', required: false }); paintRows(); } }, '＋ Ajouter une question');
         const saveQBtn = h('button', { class: 'btn small', type: 'button', onClick: async () => {
-          const payload = rows.map(r => ({ label: r.label.trim(), type: r.type, options: r.options.split('\n').map(s => s.trim()).filter(Boolean), required: !!r.required }));
+          const payload = rows.map(r => ({ id: r.id, label: r.label.trim(), type: r.type, options: r.options.split('\n').map(s => s.trim()).filter(Boolean), required: !!r.required }));
           if (payload.some(q => !q.label)) { V.toast('Chaque question a besoin d\'un intitulé.', 'error'); return; }
           const { error } = await V.vsb.rpc('admin_save_questions', { p_poll: p.id, p_questions: payload });
           if (error) { V.toast(V.errMsg(error), 'error'); return; }

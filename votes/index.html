@@ -36,7 +36,10 @@
 
     const { data: polls } = await V.vsb.from('polls').select('*').order('created_at', { ascending: false });
     V.clear(app);
-    const list = polls || [];
+    // Les brouillons ne sont visibles qu'à l'admin via RLS (pour l'édition dans admin.html) : cette
+    // page publique ne doit jamais les lister, sinon un admin connecté les verrait ici mélangés aux
+    // sondages terminés.
+    const list = (polls || []).filter(p => p.status !== 'draft');
     const open = list.filter(p => V.pollState(p).phase === 'open');
     const others = list.filter(p => V.pollState(p).phase !== 'open');
 
