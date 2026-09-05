@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=cwdPdf"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=cwdPdf" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=1bjJKw"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=1bjJKw" type="text/css">
 
   
   
@@ -195,6 +195,59 @@
             let enChargement = false;
             let dernierFocus = null;
             let evenementModal = null;
+
+            /* ------------------------------------------------------------------
+             * Sondages (lameutenormande.fr/votes) : un sondage associé à un
+             * évènement partage son "slug" avec l'UID de cet évènement dans le
+             * calendrier ICS — c'est le staff qui le crée depuis le panel
+             * d'admin des sondages (bouton de suggestion basé sur les
+             * évènements qui n'en ont pas encore). Si aucun sondage ne
+             * correspond à un évènement — ou si l'outil est injoignable — on
+             * n'affiche rien de plus : ce module reste lisible sans lui.
+             * ------------------------------------------------------------------ */
+            const SONDAGES_URL = 'https://ywqfkldlganqytohqmpk.supabase.co';
+            const SONDAGES_KEY = 'sb_publishable_bQ7BIs2I88E38a_euD_4aA_LkhWjYz_';
+            let supabasePromise = null;
+            function chargerSupabase() {
+                if (window.supabase) return Promise.resolve(window.supabase);
+                if (supabasePromise) return supabasePromise;
+                supabasePromise = new Promise((resolve, reject) => {
+                    const existant = document.querySelector('script[data-actus3-supabase]');
+                    if (existant) { existant.addEventListener('load', () => resolve(window.supabase)); existant.addEventListener('error', reject); return; }
+                    const s = document.createElement('script');
+                    s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+                    s.dataset.actus3Supabase = '1';
+                    s.onload = () => resolve(window.supabase);
+                    s.onerror = reject;
+                    document.head.appendChild(s);
+                });
+                return supabasePromise;
+            }
+
+            // Récupère, pour les évènements actuellement affichés, le sondage éventuellement
+            // associé (même "slug" que leur UID ICS) et un résumé des réponses par question,
+            // puis redessine les tuiles. Échec silencieux (aucun sondage affiché) si l'outil
+            // de sondages est indisponible ou pas encore configuré — jamais bloquant.
+            async function enrichirAvecSondages(evts) {
+                const uids = evts.map(e => e.uid).filter(Boolean);
+                if (!uids.length) return;
+                try {
+                    const sb = (await chargerSupabase()).createClient(SONDAGES_URL, SONDAGES_KEY, { auth: { persistSession: false } });
+                    const vsb = sb.schema('votes');
+                    const { data: polls } = await vsb.from('polls').select('id,slug,status').in('slug', uids);
+                    if (!polls || !polls.length) return;
+                    const parSlug = new Map();
+                    await Promise.all(polls.map(async p => {
+                        const [{ data: questions }, { data: results }] = await Promise.all([
+                            vsb.from('questions').select('*').eq('poll_id', p.id).order('sort_order'),
+                            vsb.rpc('poll_results', { p_poll: p.id })
+                        ]);
+                        parSlug.set(p.slug, { poll: p, questions: questions || [], results: results || [] });
+                    }));
+                    evts.forEach(e => { if (e.uid && parSlug.has(e.uid)) e.sondage = parSlug.get(e.uid); });
+                    rendreTuiles();
+                } catch (e) { console.error('[Actus V3] sondages', e); }
+            }
 
             /* ---------------------- Utilitaires texte ---------------------- */
 
@@ -463,6 +516,8 @@
                     const estFox = /\u{1F98A}/u.test(evt.title || '');
                     const nbJours = nombreJours(evt);
                     const badge = nbJours > 1 ? ` <span class="event-badge">${nbJours} jours</span>` : '';
+                    const nbReponses = evt.sondage ? evt.sondage.results.length : 0;
+                    const puceSondage = evt.sondage ? ` <span class="event-poll-chip">📊 ${nbReponses} réponse${nbReponses > 1 ? 's' : ''}</span>` : '';
                     return `
                         <article class="event-tile is-${statut}${estFox ? ' is-fox' : ''}" tabindex="0" role="button" data-index="${i}"
                                  aria-label="Voir les détails de ${echapperHtml(evt.title || 'cet événement')}">
@@ -473,7 +528,7 @@
                             <div class="event-tile-content">
                                 <h3 class="event-tile-title">${echapperHtml(evt.title || 'Convention')}${badge}</h3>
                                 ${evt.location ? `<p class="event-tile-location"><span aria-hidden="true">📍</span> ${echapperHtml(evt.location)}</p>` : ''}
-                                <p class="event-tile-countdown"><span class="event-chip is-${statut}">${compteARebours(evt)}</span></p>
+                                <p class="event-tile-countdown"><span class="event-chip is-${statut}">${compteARebours(evt)}</span>${puceSondage}</p>
                             </div>
                             <div class="event-tile-arrow" aria-hidden="true">▶</div>
                         </article>`;
@@ -504,6 +559,33 @@
                 return `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">${icone}</span><div class="event-info-content"><div class="event-info-label">${label}</div><div class="event-info-text">${contenuHtml}</div></div></div>`;
             }
 
+            // Résumé des réponses au sondage associé à l'évènement (une barre par option,
+            // pour chaque question à choix) + bouton pour aller répondre/voir le détail.
+            function construireSectionSondage(sondage) {
+                const { poll, questions, results } = sondage;
+                const total = results.length;
+                let corps = `<div class="poll-summary-count">${total} réponse${total > 1 ? 's' : ''}</div>`;
+                questions.forEach(q => {
+                    if (q.type !== 'yesno' && q.type !== 'choice' && q.type !== 'multi_choice') return;
+                    const options = q.type === 'yesno' ? [['yes', 'Oui'], ['no', 'Non']] : (q.options || []).map(o => [o, o]);
+                    const answered = results.filter(r => r.answers && r.answers[q.id] != null && r.answers[q.id] !== '');
+                    const totalQ = answered.length;
+                    corps += `<div class="poll-summary-q"><div class="poll-summary-label">${echapperHtml(q.label)}</div>`;
+                    options.forEach(([val, label]) => {
+                        const count = answered.filter(r => {
+                            const a = r.answers[q.id];
+                            return Array.isArray(a) ? a.includes(val) : a === val;
+                        }).length;
+                        const pct = totalQ ? Math.round((count / totalQ) * 100) : 0;
+                        corps += `<div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div><div class="poll-bar-row"><span>${echapperHtml(label)}</span><span>${pct}% · ${count}</span></div></div>`;
+                    });
+                    corps += `</div>`;
+                });
+                const lien = 'https://lameutenormande.fr/votes/sondage.html?p=' + encodeURIComponent(poll.slug);
+                corps += `<a href="${lien}" class="event-url-button poll-answer-btn" target="_blank" rel="noopener noreferrer">Répondre au sondage</a>`;
+                return ligneInfo('📊', 'Qui vient ?', corps);
+            }
+
             function construireDatesHtml(evt) {
                 const debut = evt.debut.date;
                 const fin = dernierJour(evt);
@@ -529,6 +611,18 @@
                 </div>`;
             }
 
+            // Site officiel : extrait en fonction à part, car sa position dans la grille dépend
+            // de la présence ou non d'un sondage (voir construireCorpsModale).
+            function construireSectionUrl(url) {
+                try {
+                    const u = new URL(url);
+                    if (u.protocol === 'http:' || u.protocol === 'https:') {
+                        return `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${echapperHtml(url)}" target="_blank" rel="noopener noreferrer" class="event-url-button">Visiter le site</a></div></div>`;
+                    }
+                } catch (e) { /* URL invalide : on ignore */ }
+                return '';
+            }
+
             function construireCorpsModale(evt) {
                 let html = '<div class="event-modal-body-grid"><div class="event-modal-left">';
                 html += ligneInfo('📅', nombreJours(evt) > 1 ? 'Dates' : 'Date', construireDatesHtml(evt));
@@ -543,6 +637,11 @@
                         </div></div></div>`;
                 }
 
+                // Quand il y a un sondage : le site officiel rejoint la colonne de gauche (sous le
+                // lieu) et le sondage — plus long — prend toute la colonne de droite, sous la
+                // description. Sans sondage : disposition d'origine (site officiel à droite).
+                if (evt.sondage && evt.url) html += construireSectionUrl(evt.url);
+
                 html += '</div><div class="event-modal-right">';
 
                 if (evt.description) {
@@ -552,14 +651,8 @@
                     html += `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">📝</span><div class="event-info-content"><div class="event-info-label">Description</div><div class="event-info-text event-desc${replier ? ' is-collapsed' : ''}">${lierUrls(evt.description)}</div>${replier ? '<button type="button" class="event-desc-toggle" aria-expanded="false">Voir plus</button>' : ''}</div></div>`;
                 }
 
-                if (evt.url) {
-                    try {
-                        const u = new URL(evt.url);
-                        if (u.protocol === 'http:' || u.protocol === 'https:') {
-                            html += `<div class="event-info-row"><span class="event-info-icon" aria-hidden="true">🔗</span><div class="event-info-content"><div class="event-info-label">Site officiel</div><a href="${echapperHtml(evt.url)}" target="_blank" rel="noopener noreferrer" class="event-url-button">Visiter le site</a></div></div>`;
-                        }
-                    } catch (e) { /* URL invalide : on ignore */ }
-                }
+                if (evt.sondage) html += construireSectionSondage(evt.sondage);
+                else if (evt.url) html += construireSectionUrl(evt.url);
 
                 html += '</div></div>';
                 return html;
@@ -699,6 +792,7 @@
                         if (evs.length) {
                             conventions = evs;
                             rendreTuiles();
+                            enrichirAvecSondages(conventions);
                             return cache.frais;
                         }
                     } catch (e) { /* cache corrompu : on l'ignore */ }
@@ -722,6 +816,7 @@
                     ecrireCache(ics);
                     conventions = filtrerEvenements(parserICS(ics));
                     rendreTuiles();
+                    enrichirAvecSondages(conventions);
                 } catch (e) {
                     console.error('[Actus V3]', e);
                     if (!avaitContenu) afficherErreur(); // erreur seulement si rien à montrer
