@@ -32,7 +32,7 @@
     <tr><td><strong>Code individuel</strong> et son étiquette (pseudo de la personne à qui il a été remis)</td><td>Garantir un bulletin par membre, permettre au staff de savoir qui a reçu un code et qui a voté</td><td>Le staff (administrateurs)</td><td>Jusqu'à la suppression du scrutin après publication des résultats</td></tr>
     <tr><td><strong>Candidature</strong> : nom affiché, présentation</td><td>Présenter les candidats sur le bulletin et les résultats</td><td>Tous les visiteurs de l'outil</td><td>Jusqu'à la suppression du scrutin</td></tr>
     <tr><td><strong>Bulletin</strong> : choix par poste, horodatage, nombre de modifications</td><td>Calculer les résultats</td><td>Personne individuellement : le staff voit qu'un code a voté et quand, <strong>jamais le contenu du bulletin</strong>. Seuls les totaux par candidat sont publiés</td><td>Jusqu'à la suppression du scrutin</td></tr>
-    <tr><td><strong>Journal d'activité</strong> : étiquette du code, action (vote, candidature, désistement), date</td><td>Détecter et documenter une fraude, tracer les décisions du staff</td><td>Le staff</td><td>Jusqu'à la suppression du scrutin</td></tr>
+    <tr><td><strong>Journal d'activité</strong> : étiquette du code, action (vote, candidature, désistement), date, <strong>adresse IP et navigateur</strong></td><td>Détecter et documenter une fraude (ex. plusieurs codes utilisés depuis un même appareil), tracer les décisions du staff</td><td>Le staff (onglet Audit)</td><td>Jusqu'à la suppression du scrutin</td></tr>
     <tr><td><strong>Compte administrateur</strong> : e-mail, mot de passe chiffré</td><td>Accès au panel d'administration</td><td>Supabase et le staff</td><td>Tant que la personne fait partie du staff</td></tr>
   </tbody>
 </table>
@@ -40,7 +40,7 @@
 <h4>Ce qui n'est pas collecté</h4>
 <ul>
   <li>Aucune adresse e-mail ni numéro de téléphone des votants.</li>
-  <li>Aucune adresse IP n'est enregistrée par l'outil. L'hébergeur des données peut conserver des journaux techniques temporaires, conformément à sa propre politique.</li>
+  <li>Votre étiquette (pseudo) est chiffrée dans la base de données : elle n'est lisible qu'à la volée par le panel d'administration, jamais stockée en clair.</li>
   <li>Aucun traceur publicitaire, aucune mesure d'audience.</li>
 </ul>
 <h4>Stockage sur votre appareil</h4>

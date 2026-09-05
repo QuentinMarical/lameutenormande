@@ -281,11 +281,6 @@ textarea.input { min-height: 110px; resize: vertical; line-height: 1.5; }
 .countdown b { display: block; font-family: 'PR Viking', 'Inter Tight', sans-serif; font-size: 1.5rem; font-weight: 400; color: #fff; font-variant-numeric: tabular-nums; }
 .countdown span { font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 
-/* ---------- Partage ---------- */
-.share { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
-.share .qr { width: 132px; height: 132px; padding: 8px; border-radius: 14px; background: #fff; display: flex; align-items: center; justify-content: center; }
-.share .qr canvas, .share .qr img { width: 116px; height: 116px; }
-
 /* ---------- Codes ---------- */
 .code-input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 1.35rem; letter-spacing: 2px; text-align: center; text-transform: uppercase; }
 .code-pill { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; letter-spacing: 1px; padding: .2rem .5rem; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); }
