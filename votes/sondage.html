@@ -97,7 +97,7 @@
               const mine = highlightMine && myResp && myResp.answers && (Array.isArray(myResp.answers[q.id]) ? myResp.answers[q.id].includes(val) : myResp.answers[q.id] === val);
               // Qui a répondu ça (les réponses sont déjà publiques, pas une fuite) : un bouton plutôt
               // qu'un simple survol, pour que ça marche aussi au toucher sur mobile.
-              const voirBtn = count ? h('button', { class: 'poll-voters-btn', type: 'button', title: 'Voir qui a répondu', onClick: (e) => { e.stopPropagation(); showVotersModal(label, matching); } }, '👥') : null;
+              const voirBtn = count ? h('button', { class: 'poll-voters-btn', type: 'button', title: 'Voir qui a répondu', 'aria-label': 'Voir qui a répondu', onClick: (e) => { e.stopPropagation(); showVotersModal(label, matching); } }, '❯') : null;
               const row = h('div', { class: 'poll-result' + (mine ? ' mine' : '') },
                 h('div', { class: 'bar-fill', style: { width: pct + '%' } }),
                 h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', { class: 'right' }, h('span', { class: 'pct' }, count + (count > 1 ? ' réponses' : ' réponse')), voirBtn)));
