@@ -28,7 +28,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=apjEyJ"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=apjEyJ" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=4mWYNi"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=4mWYNi" type="text/css">
 
   
   
@@ -141,6 +141,20 @@
         </div>
     </dialog>
 
+    <!-- Fenêtre pour répondre à un sondage sans quitter la page (empilée au-dessus de la fenêtre
+         de détail de l'évènement : deux <dialog> natifs s'empilent proprement, pas de hack z-index). -->
+    <dialog class="poll-modal">
+        <div class="event-modal-content poll-modal-content">
+            <div class="event-modal-header">
+                <h3 class="poll-modal-title"></h3>
+                <div class="event-modal-actions">
+                    <button type="button" class="event-modal-close poll-modal-close" aria-label="Fermer">×</button>
+                </div>
+            </div>
+            <div class="poll-modal-body"></div>
+        </div>
+    </dialog>
+
     <script>
     (function () {
         'use strict';
@@ -171,6 +185,11 @@
             const corpsModale = modale.querySelector('.event-modal-body');
             const boutonFermer = modale.querySelector('.event-modal-close');
             const supporteDialog = typeof modale.showModal === 'function';
+
+            const pollModale = racine.querySelector('.poll-modal');
+            const pollTitre = pollModale && pollModale.querySelector('.poll-modal-title');
+            const pollCorps = pollModale && pollModale.querySelector('.poll-modal-body');
+            const pollFermer = pollModale && pollModale.querySelector('.poll-modal-close');
 
             // Id unique pour l'accessibilité (évite les collisions entre instances)
             const uid = 'actus3-titre-' + Math.random().toString(36).slice(2, 8);
@@ -224,6 +243,30 @@
                 return supabasePromise;
             }
 
+            // Client Supabase mis en cache (une seule instance, réutilisée par l'enrichissement des
+            // tuiles et par le formulaire de réponse).
+            let clientVotesPromise = null;
+            function obtenirClientVotes() {
+                if (!clientVotesPromise) {
+                    clientVotesPromise = chargerSupabase().then(supa => supa.createClient(SONDAGES_URL, SONDAGES_KEY, { auth: { persistSession: false } }).schema('votes'));
+                }
+                return clientVotesPromise;
+            }
+
+            // Identité de réponse : mêmes clés localStorage que lameutenormande.fr/votes (même
+            // origine, stockage partagé) — un pseudo tapé ici est donc retrouvé sur l'autre page,
+            // et réciproquement. Le device_token n'est qu'une clé d'édition, jamais une identité :
+            // voir votes/supabase/schema.sql pour le détail de cette conception.
+            function obtenirDeviceToken() {
+                try {
+                    let t = localStorage.getItem('votes.device');
+                    if (!t) { t = crypto.randomUUID(); localStorage.setItem('votes.device', t); }
+                    return t;
+                } catch (e) { return 'no-storage-' + Math.random().toString(36).slice(2); }
+            }
+            const pseudoSauvegarde = () => { try { return localStorage.getItem('votes.pseudo') || ''; } catch (e) { return ''; } };
+            const sauvegarderPseudo = (p) => { try { localStorage.setItem('votes.pseudo', p); } catch (e) {} };
+
             // Récupère, pour les évènements actuellement affichés, le sondage éventuellement
             // associé (même "slug" que leur UID ICS) et un résumé des réponses par question,
             // puis redessine les tuiles. Échec silencieux (aucun sondage affiché) si l'outil
@@ -232,8 +275,7 @@
                 const uids = evts.map(e => e.uid).filter(Boolean);
                 if (!uids.length) return;
                 try {
-                    const sb = (await chargerSupabase()).createClient(SONDAGES_URL, SONDAGES_KEY, { auth: { persistSession: false } });
-                    const vsb = sb.schema('votes');
+                    const vsb = await obtenirClientVotes();
                     const { data: polls } = await vsb.from('polls').select('id,slug,status').in('slug', uids);
                     if (!polls || !polls.length) return;
                     const parSlug = new Map();
@@ -581,16 +623,154 @@
                         // Qui a répondu ça (les réponses sont déjà publiques, pas une fuite) : liste
                         // dépliable au clic plutôt qu'une modale, plus sûr ici vu que ce bloc est déjà
                         // imbriqué dans la fenêtre de détail de l'évènement (elle-même un <dialog>).
-                        const btn = count ? `<button type="button" class="poll-voters-btn" data-toggle-voters="1">👥</button>` : '';
+                        const btn = count ? `<button type="button" class="poll-voters-btn" data-toggle-voters="1" aria-label="Voir qui a répondu">❯</button>` : '';
                         const liste = count ? `<div class="poll-voters-list" hidden>${matching.map(r => `<span>${echapperHtml(r.pseudo)}</span>`).join('')}</div>` : '';
                         const texteCount = count + (count > 1 ? ' réponses' : ' réponse');
                         corps += `<div class="poll-bar"><div class="poll-bar-fill" style="width:${pct}%"></div><div class="poll-bar-row"><span>${echapperHtml(label)}</span><span>${texteCount}${btn}</span></div>${liste}</div>`;
                     });
                     corps += `</div>`;
                 });
-                const lien = 'https://lameutenormande.fr/votes/sondage.html?p=' + encodeURIComponent(poll.slug);
-                corps += `<a href="${lien}" class="event-url-button poll-answer-btn" target="_blank" rel="noopener noreferrer">Répondre au sondage</a>`;
+                corps += `<button type="button" class="event-url-button poll-answer-btn" data-poll-id="${echapperHtml(poll.id)}">Répondre au sondage</button>`;
                 return ligneInfo('📊', 'Qui vient ?', corps);
+            }
+
+            /* ---------------------- Répondre à un sondage, sans quitter la page ----------------------
+             * Un second <dialog> natif, empilé au-dessus de celui de l'évènement (les <dialog>
+             * s'empilent proprement dans le top layer, pas de hack z-index nécessaire). ------------- */
+
+            function construireOptionsSondage(q, reponseActuelle) {
+                if (q.type === 'yesno' || q.type === 'choice') {
+                    const options = q.type === 'yesno' ? [['yes', 'Oui'], ['no', 'Non']] : (q.options || []).map(o => [o, o]);
+                    return options.map(([val, label]) => `<div class="poll-option${reponseActuelle === val ? ' is-on' : ''}" data-val="${echapperHtml(val)}">${echapperHtml(label)}</div>`).join('');
+                }
+                if (q.type === 'multi_choice') {
+                    const set = new Set(Array.isArray(reponseActuelle) ? reponseActuelle : []);
+                    return (q.options || []).map(val => `<div class="poll-option${set.has(val) ? ' is-on' : ''}" data-val="${echapperHtml(val)}">${echapperHtml(val)}</div>`).join('');
+                }
+                if (q.type === 'number') {
+                    return `<input type="number" class="poll-form-input" data-num-input="1" value="${reponseActuelle != null ? echapperHtml(String(reponseActuelle)) : ''}">`;
+                }
+                return `<input type="text" maxlength="200" class="poll-form-input" data-text-input="1" value="${reponseActuelle ? echapperHtml(String(reponseActuelle)) : ''}">`;
+            }
+
+            function construireFormulaireSondage(sondage, reponsesInitiales, pseudoInitial) {
+                let html = '<div class="poll-form-error" hidden></div>';
+                html += '<div class="poll-form-note">Ton pseudo et tes réponses seront visibles par tous.</div>';
+                html += `<div class="poll-form-field"><label>Pseudo</label><input type="text" class="poll-form-input" data-pseudo-input="1" maxlength="60" value="${echapperHtml(pseudoInitial || '')}" placeholder="Ton pseudo"></div>`;
+                sondage.questions.forEach(q => {
+                    html += `<div class="poll-question" data-qid="${q.id}" data-qtype="${q.type}">`;
+                    html += `<div class="poll-summary-label">${echapperHtml(q.label)}${q.required ? ' <span class="poll-required">*</span>' : ''}</div>`;
+                    html += construireOptionsSondage(q, reponsesInitiales[q.id]);
+                    html += '</div>';
+                });
+                return html;
+            }
+
+            let sondageEnCours = null; // { poll, questions, evt, reponses, dejaRepondu }
+
+            async function ouvrirSondageModale(pollId) {
+                if (!pollModale) return;
+                const evt = conventions.find(c => c.sondage && c.sondage.poll.id === pollId);
+                if (!evt) return;
+                const sondage = evt.sondage;
+
+                pollTitre.textContent = evt.title || 'Sondage';
+                pollCorps.innerHTML = '<div class="poll-form-note">Chargement…</div>';
+                if (typeof pollModale.showModal === 'function') { if (!pollModale.open) pollModale.showModal(); }
+                else pollModale.setAttribute('open', '');
+                document.body.style.overflow = 'hidden';
+
+                let reponses = {};
+                let pseudo = pseudoSauvegarde();
+                let dejaRepondu = false;
+                try {
+                    const vsb = await obtenirClientVotes();
+                    const { data } = await vsb.rpc('my_response', { p_poll: sondage.poll.id, p_device_token: obtenirDeviceToken() });
+                    if (data && data !== 'null') { dejaRepondu = true; reponses = data.answers || {}; pseudo = data.pseudo || pseudo; }
+                } catch (e) { /* pas grave : on repart d'un formulaire vierge */ }
+
+                sondageEnCours = { poll: sondage.poll, questions: sondage.questions, evt, reponses, dejaRepondu };
+                pollCorps.innerHTML = construireFormulaireSondage(sondage, reponses, pseudo)
+                    + `<button type="button" class="event-url-button poll-submit-btn" id="pollSubmitBtn">${dejaRepondu ? 'Enregistrer mes réponses' : 'Envoyer mes réponses'}</button>`;
+            }
+
+            function fermerSondageModale() {
+                if (!pollModale) return;
+                if (typeof pollModale.close === 'function') { if (pollModale.open) pollModale.close(); }
+                else pollModale.removeAttribute('open');
+                if (!(supporteDialog ? modale.open : modale.classList.contains('fallback-open'))) document.body.style.overflow = '';
+            }
+
+            function montrerErreurSondage(msg) {
+                const el = pollCorps.querySelector('.poll-form-error');
+                if (el) { el.textContent = msg; el.hidden = false; }
+            }
+
+            async function soumettreSondage() {
+                if (!sondageEnCours) return;
+                const btn = pollCorps.querySelector('#pollSubmitBtn');
+                const pseudo = pollCorps.querySelector('[data-pseudo-input]').value.trim();
+                if (!pseudo) { montrerErreurSondage('Choisis un pseudo.'); return; }
+                for (const q of sondageEnCours.questions) {
+                    const v = sondageEnCours.reponses[q.id];
+                    const vide = v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0);
+                    if (q.required && vide) { montrerErreurSondage('Réponds à « ' + q.label + ' ».'); return; }
+                }
+                btn.disabled = true; btn.textContent = 'Envoi…';
+                const payload = {};
+                sondageEnCours.questions.forEach(q => {
+                    const v = sondageEnCours.reponses[q.id];
+                    const vide = v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0);
+                    if (!vide) payload[q.id] = v;
+                });
+                try {
+                    const vsb = await obtenirClientVotes();
+                    const { error } = await vsb.rpc('respond', { p_poll: sondageEnCours.poll.id, p_device_token: obtenirDeviceToken(), p_pseudo: pseudo, p_answers: payload });
+                    if (error) throw error;
+                    sauvegarderPseudo(pseudo);
+                    const [{ data: questions }, { data: results }] = await Promise.all([
+                        vsb.from('questions').select('*').eq('poll_id', sondageEnCours.poll.id).order('sort_order'),
+                        vsb.rpc('poll_results', { p_poll: sondageEnCours.poll.id })
+                    ]);
+                    sondageEnCours.evt.sondage = { poll: sondageEnCours.poll, questions: questions || [], results: results || [] };
+                    if (evenementModal === sondageEnCours.evt) corpsModale.innerHTML = construireCorpsModale(evenementModal);
+                    rendreTuiles();
+                    fermerSondageModale();
+                } catch (e) {
+                    console.error('[Actus V3] réponse au sondage', e);
+                    montrerErreurSondage((e && e.message) || 'Erreur, réessaie plus tard.');
+                    btn.disabled = false; btn.textContent = sondageEnCours.dejaRepondu ? 'Enregistrer mes réponses' : 'Envoyer mes réponses';
+                }
+            }
+
+            if (pollModale) {
+                pollCorps.addEventListener('click', e => {
+                    if (e.target.id === 'pollSubmitBtn') { soumettreSondage(); return; }
+                    const opt = e.target.closest('.poll-option');
+                    if (!opt || !sondageEnCours) return;
+                    const bloc = opt.closest('.poll-question');
+                    const qid = bloc.dataset.qid, qtype = bloc.dataset.qtype, val = opt.dataset.val;
+                    if (qtype === 'multi_choice') {
+                        const set = new Set(Array.isArray(sondageEnCours.reponses[qid]) ? sondageEnCours.reponses[qid] : []);
+                        if (set.has(val)) set.delete(val); else set.add(val);
+                        sondageEnCours.reponses[qid] = [...set];
+                        opt.classList.toggle('is-on');
+                    } else {
+                        sondageEnCours.reponses[qid] = val;
+                        bloc.querySelectorAll('.poll-option').forEach(o => o.classList.remove('is-on'));
+                        opt.classList.add('is-on');
+                    }
+                });
+                pollCorps.addEventListener('input', e => {
+                    const bloc = e.target.closest('.poll-question');
+                    if (!bloc || !sondageEnCours) return;
+                    const qid = bloc.dataset.qid;
+                    if (e.target.dataset.numInput) sondageEnCours.reponses[qid] = e.target.value === '' ? null : Number(e.target.value);
+                    else if (e.target.dataset.textInput) sondageEnCours.reponses[qid] = e.target.value;
+                });
+                pollFermer.addEventListener('click', fermerSondageModale);
+                pollModale.addEventListener('click', e => { if (e.target === pollModale) fermerSondageModale(); });
+                pollModale.addEventListener('cancel', e => { e.preventDefault(); fermerSondageModale(); });
             }
 
             function construireDatesHtml(evt) {
@@ -767,11 +947,16 @@
 
             // Bouton "qui a répondu" d'un sondage : déplie/replie la liste juste en dessous, dans le
             // fil normal de la page (pas de modale imbriquée dans le <dialog> de l'évènement).
+            // Bouton "Répondre au sondage" : ouvre la fenêtre de réponse au-dessus de celle-ci.
             corpsModale.addEventListener('click', e => {
-                const btn = e.target.closest('[data-toggle-voters]');
-                if (!btn) return;
-                const liste = btn.closest('.poll-bar').querySelector('.poll-voters-list');
-                if (liste) liste.hidden = !liste.hidden;
+                const voteBtn = e.target.closest('[data-toggle-voters]');
+                if (voteBtn) {
+                    const liste = voteBtn.closest('.poll-bar').querySelector('.poll-voters-list');
+                    if (liste) { liste.hidden = !liste.hidden; voteBtn.classList.toggle('is-open', !liste.hidden); }
+                    return;
+                }
+                const repondreBtn = e.target.closest('.poll-answer-btn[data-poll-id]');
+                if (repondreBtn) ouvrirSondageModale(repondreBtn.dataset.pollId);
             });
 
             boutonFermer.addEventListener('click', fermerModale);
@@ -1165,8 +1350,9 @@
         }
     })();
     </script>
-</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
+</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-core.js"></script>  <script src="assets/web/assets/cookies-alert-plugin/cookies-alert-script.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
   
   
-</body>
+<input name="cookieData" type="hidden" data-cookie-cookiesAlertType='1' data-cookie-customDialogSelector='null' data-cookie-colorText='#edefeb' data-cookie-colorBg='rgb(0, 0, 0)' data-cookie-opacityOverlay='0' data-cookie-bgOpacity='100' data-cookie-textButton='OK' data-cookie-rejectText='REJECT' data-cookie-colorButton='#1a1a2e' data-cookie-rejectColor='#ffffff' data-cookie-colorLink='#424a4d' data-cookie-underlineLink='true' data-cookie-text="We use cookies to give you the best experience as specified in the <a href='privacy.html'>cookie policy</a>.">
+  </body>
 </html>
