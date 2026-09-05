@@ -5616,6 +5616,67 @@ a {
   box-shadow: 0 6px 20px rgba(240, 100, 147, 0.45);
   color: #fff !important;
 }
+.cid-vfPilZdu2W .event-poll-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.62rem;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  color: #d582e3;
+  background: rgba(156, 39, 176, 0.14);
+  border: 1px solid rgba(156, 39, 176, 0.4);
+}
+.cid-vfPilZdu2W .poll-summary-count {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  margin-bottom: 0.6rem;
+}
+.cid-vfPilZdu2W .poll-summary-q {
+  margin-bottom: 0.8rem;
+}
+.cid-vfPilZdu2W .poll-summary-q:last-of-type {
+  margin-bottom: 0;
+}
+.cid-vfPilZdu2W .poll-summary-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 0.4rem;
+}
+.cid-vfPilZdu2W .poll-bar {
+  position: relative;
+  padding: 0.5rem 0.7rem;
+  border-radius: 10px;
+  margin-bottom: 0.4rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.cid-vfPilZdu2W .poll-bar:last-child {
+  margin-bottom: 0;
+}
+.cid-vfPilZdu2W .poll-bar-fill {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  background: linear-gradient(90deg, rgba(233, 30, 99, 0.3), rgba(156, 39, 176, 0.18));
+  transition: width 0.4s ease;
+}
+.cid-vfPilZdu2W .poll-bar-row {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}
 @keyframes actus3-fadeIn {
   from {
     opacity: 0;
