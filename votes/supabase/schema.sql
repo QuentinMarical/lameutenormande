@@ -104,7 +104,7 @@ returns table (id uuid, pseudo text, answers jsonb, submitted_at timestamptz, up
 language plpgsql security definer set search_path = votes, public as $$
 declare v_status text;
 begin
-  select status into v_status from votes.polls where id = p_poll;
+  select pl.status into v_status from votes.polls pl where pl.id = p_poll;
   if v_status is null then raise exception 'POLL_NOT_FOUND'; end if;
   if v_status = 'draft' and not public.is_admin() then raise exception 'POLL_NOT_OPEN'; end if;
   return query select r.id, r.pseudo, r.answers, r.submitted_at, r.updated_at
