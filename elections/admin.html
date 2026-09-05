@@ -184,7 +184,7 @@
     async function codes() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const { data, error } = await E.sb.from('voter_codes').select('*').eq('election_id', current.id).order('created_at');
+      const { data, error } = await E.sb.from('admin_codes').select('*').eq('election_id', current.id).order('created_at');
       if (error) throw error;
       const rows = data || [];
       const voteLink = (c) => siteUrl + 'voter.html?e=' + encodeURIComponent(current.slug) + '&code=' + encodeURIComponent(c.code);
@@ -263,13 +263,17 @@
     async function candidatures() {
       E.clear(pane);
       if (!current) { pane.appendChild(h('div', { class: 'empty' }, 'Aucun scrutin.')); return; }
-      const { data, error } = await E.sb.from('candidates').select('*, voter_codes(code, label, revoked)').eq('election_id', current.id).order('role').order('created_at');
+      const [{ data, error }, { data: codeRows }] = await Promise.all([
+        E.sb.from('candidates').select('*').eq('election_id', current.id).order('role').order('created_at'),
+        E.sb.from('admin_codes').select('id, code, label, revoked').eq('election_id', current.id)
+      ]);
       if (error) throw error;
+      const codesById = new Map((codeRows || []).map(r => [r.id, r]));
       const rows = data || [];
       if (!rows.length) { pane.appendChild(h('div', { class: 'empty' }, 'Aucune candidature.')); return; }
       const tbody = h('tbody');
       rows.forEach(c => {
-        const vc = c.voter_codes || {};
+        const vc = codesById.get(c.code_id) || {};
         const r = E.roleInfo(c.role);
         const actions = h('td', { class: 'actions' });
         actions.appendChild(h('button', { class: 'btn ' + (c.withdrawn ? 'secondary' : 'danger') + ' small', type: 'button', onClick: async () => {

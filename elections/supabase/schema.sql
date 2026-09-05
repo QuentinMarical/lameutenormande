@@ -11,6 +11,7 @@
 create extension if not exists pgcrypto;
 create extension if not exists pg_net;
 create extension if not exists pg_cron;
+create extension if not exists supabase_vault cascade;
 
 -- Nettoyage de l'ancienne version (connexion Telegram/Discord), sans effet si absente
 drop view if exists public.admin_voters;
@@ -30,6 +31,35 @@ drop function if exists public.upsert_candidacy(uuid, text, text, text, text, te
 drop function if exists public.upsert_candidacy(text, uuid, text, text, text, text, text);
 drop function if exists public.withdraw_candidacy(uuid);
 drop function if exists public.admin_ban_user(uuid, boolean);
+
+-- ---------------------------------------------------------------------
+-- 0-bis. Chiffrement des étiquettes (voter_codes.label_enc). La clé symétrique vit dans
+--   Supabase Vault (jamais dans une table lisible par RLS) ; encrypt_label/decrypt_label sont
+--   des fonctions internes, jamais accordées à anon/authenticated (section 14 les révoque comme
+--   toute fonction du schéma), donc seules les RPC de ce fichier peuvent chiffrer/déchiffrer.
+-- ---------------------------------------------------------------------
+do $$
+begin
+  if not exists (select 1 from vault.secrets where name = 'voter_label_key') then
+    perform vault.create_secret(encode(extensions.gen_random_bytes(32), 'hex'), 'voter_label_key',
+      'Clé symétrique pgcrypto pour voter_codes.label_enc. Ne jamais régénérer : les étiquettes déjà chiffrées deviendraient illisibles.');
+  end if;
+end $$;
+
+create or replace function public.voter_label_key()
+returns text language sql stable security definer set search_path = public, vault as $$
+  select decrypted_secret from vault.decrypted_secrets where name = 'voter_label_key';
+$$;
+
+create or replace function public.encrypt_label(p text)
+returns bytea language sql stable security definer set search_path = public, extensions as $$
+  select case when p is null or p = '' then null else extensions.pgp_sym_encrypt(p, public.voter_label_key()) end;
+$$;
+
+create or replace function public.decrypt_label(p bytea)
+returns text language sql stable security definer set search_path = public, extensions as $$
+  select case when p is null then null else extensions.pgp_sym_decrypt(p, public.voter_label_key()) end;
+$$;
 
 -- ---------------------------------------------------------------------
 -- 0. Réglages internes (URL de la function de notification + secret)
@@ -115,7 +145,7 @@ create table if not exists public.voter_codes (
   election_id    uuid not null references public.elections(id) on delete cascade,
   code           text not null,                                   -- forme affichée, ex. MEUTE-7K3F-Q9XA
   code_key       text generated always as (upper(replace(code, '-', ''))) stored,
-  label          text,                                            -- à qui le code a été remis (pseudo), optionnel
+  label_enc      bytea,                                           -- étiquette (pseudo) CHIFFRÉE (pgp_sym) ; voir encrypt_label/decrypt_label
   distributed    boolean not null default false,
   first_used_at  timestamptz,
   last_used_at   timestamptz,
@@ -127,6 +157,17 @@ create table if not exists public.voter_codes (
 );
 alter table public.voter_codes enable row level security;
 create index if not exists voter_codes_election_idx on public.voter_codes (election_id);
+
+-- Migration : l'étiquette vivait auparavant en clair dans la colonne `label`. Convertit les
+-- valeurs déjà en base vers `label_enc` (chiffré) puis supprime la colonne en clair. Sans effet
+-- sur une base neuve (colonne `label` jamais créée).
+do $$
+begin
+  if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'voter_codes' and column_name = 'label') then
+    execute 'update public.voter_codes set label_enc = public.encrypt_label(label) where label is not null and label_enc is null';
+    execute 'alter table public.voter_codes drop column label';
+  end if;
+end $$;
 
 -- Normalisation de la saisie utilisateur : majuscules, sans espaces ni tirets
 create or replace function public.norm_code(p text)
@@ -405,22 +446,36 @@ language sql stable security definer set search_path = public as $$
   order by hour;
 $$;
 
--- Vue admin : bulletins + code + drapeaux (security_invoker => RLS admin)
+-- Vue admin : bulletins + code + drapeaux (security_invoker => RLS admin). Le label est déchiffré
+-- une seule fois dans la CTE vc2 et réutilisé (jointure + détection de doublon), plutôt que
+-- rappeler decrypt_label() à chaque comparaison.
 create or replace view public.admin_voters with (security_invoker = true) as
+  with vc2 as (
+    select id, election_id, code, distributed, revoked, uses, public.decrypt_label(label_enc) as label
+    from public.voter_codes
+  )
   select b.id as ballot_id, b.election_id, b.code_id, vc.code, vc.label, vc.distributed, vc.revoked, vc.uses,
          b.first_submitted_at, b.submitted_at, b.submissions, b.invalidated, b.invalidated_reason,
          array_remove(array[
            case when vc.label is null or vc.label = '' then 'sans_etiquette' end,
            case when b.submissions >= 5 then 'nombreuses_soumissions' end,
            case when vc.uses >= 20 then 'code_tres_utilise' end,
-           case when exists (select 1 from public.voter_codes v2 where v2.election_id = vc.election_id and v2.id <> vc.id
+           case when exists (select 1 from vc2 v2 where v2.election_id = vc.election_id and v2.id <> vc.id
                              and vc.label is not null and v2.label is not null and lower(trim(v2.label)) = lower(trim(vc.label))) then 'etiquette_en_double' end
          ], null) as suspicion,
          (select count(*) from public.ballot_choices bc where bc.ballot_id = b.id)::int as nb_choix
   from public.ballots b
-  join public.voter_codes vc on vc.id = b.code_id;
+  join vc2 vc on vc.id = b.code_id;
 
 grant select on public.admin_voters to authenticated;
+
+-- Vue admin : mêmes lignes que voter_codes, avec l'étiquette déchiffrée pour l'onglet Codes
+-- (liste, CSV, copie de liste) et la jointure de l'onglet Candidatures.
+create or replace view public.admin_codes with (security_invoker = true) as
+  select id, election_id, code, public.decrypt_label(label_enc) as label, distributed, first_used_at, last_used_at, uses, revoked, revoked_reason, created_at
+  from public.voter_codes;
+
+grant select on public.admin_codes to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 10. RPC votants (identifiés par leur code)
@@ -438,7 +493,7 @@ returns jsonb language plpgsql security definer set search_path = public as $$
 declare v public.voter_codes;
 begin
   v := public.resolve_code(p_code, p_election, p_touch);
-  return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
+  return jsonb_build_object('ok', true, 'code', v.code, 'label', public.decrypt_label(v.label_enc),
     'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
     'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
 end $$;
@@ -458,7 +513,7 @@ begin
   if p_touch then
     update public.voter_codes set first_used_at = coalesce(first_used_at, now()), last_used_at = now(), uses = uses + 1 where id = v.id;
   end if;
-  return jsonb_build_object('ok', true, 'code', v.code, 'label', v.label,
+  return jsonb_build_object('ok', true, 'code', v.code, 'label', public.decrypt_label(v.label_enc),
     'election_id', e.id, 'election_slug', e.slug, 'election_title', e.title, 'election_status', e.status,
     'has_ballot', exists (select 1 from public.ballots b where b.code_id = v.id and not b.invalidated),
     'candidacies', (select count(*) from public.candidates c where c.code_id = v.id and not c.withdrawn));
@@ -488,7 +543,7 @@ begin
     withdrawn = false, updated_at = now()
   returning * into v_row;
 
-  perform public.log_audit('code:' || coalesce(v_code.label, v_code.code), 'candidacy_upsert', v_row.id::text, jsonb_build_object('role', p_role));
+  perform public.log_audit('code:' || coalesce(public.decrypt_label(v_code.label_enc), v_code.code), 'candidacy_upsert', v_row.id::text, jsonb_build_object('role', p_role));
   return v_row;
 end $$;
 
@@ -501,7 +556,7 @@ begin
   if not exists (select 1 from public.elections where id = p_election and status = 'open') then raise exception 'ELECTION_NOT_OPEN'; end if;
   update public.candidates set withdrawn = true, updated_at = now() where id = p_candidate and code_id = v_code.id;
   if not found then raise exception 'CANDIDATE_NOT_FOUND'; end if;
-  perform public.log_audit('code:' || coalesce(v_code.label, v_code.code), 'candidacy_withdraw', p_candidate::text);
+  perform public.log_audit('code:' || coalesce(public.decrypt_label(v_code.label_enc), v_code.code), 'candidacy_withdraw', p_candidate::text);
 end $$;
 
 create or replace function public.my_candidacies(p_code text, p_election uuid)
@@ -564,7 +619,7 @@ begin
   from jsonb_each(p_choices) kv
   cross join lateral (select distinct t.v::uuid as id from jsonb_array_elements_text(kv.value) as t(v)) distinct_ids;
 
-  perform public.log_audit('code:' || coalesce(v_code.label, v_code.code), case when v_replaced then 'ballot_replaced' else 'ballot_cast' end,
+  perform public.log_audit('code:' || coalesce(public.decrypt_label(v_code.label_enc), v_code.code), case when v_replaced then 'ballot_replaced' else 'ballot_cast' end,
                            v_ballot.id::text, jsonb_build_object('choices', v_total));
   return jsonb_build_object('ok', true, 'replaced', v_replaced, 'ballot_id', v_ballot.id);
 end $$;
@@ -598,7 +653,7 @@ begin
       v_code := public.gen_code(p_prefix);
       exit when not exists (select 1 from public.voter_codes where code_key = public.norm_code(v_code));
     end loop;
-    return query insert into public.voter_codes (election_id, code, label) values (p_election, v_code, v_label) returning *;
+    return query insert into public.voter_codes (election_id, code, label_enc) values (p_election, v_code, public.encrypt_label(v_label)) returning *;
   end loop;
   perform public.log_audit('admin:' || auth.uid()::text, 'codes_generated', p_election::text, jsonb_build_object('n', p_n));
 end $$;
@@ -608,7 +663,7 @@ returns void language plpgsql security definer set search_path = public as $$
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   update public.voter_codes set
-    label = case when p_label is not null then nullif(trim(p_label), '') else label end,
+    label_enc = case when p_label is not null then public.encrypt_label(nullif(trim(p_label), '')) else label_enc end,
     distributed = coalesce(p_distributed, distributed),
     revoked = coalesce(p_revoked, revoked),
     revoked_reason = case when p_revoked then coalesce(p_reason, revoked_reason) when p_revoked = false then null else revoked_reason end
@@ -943,6 +998,12 @@ grant execute on function
   public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.admin_delete_election(uuid), public.audit_log_readable(),
   public.admin_log_event(text), public.admin_save_settings(text, text)
   to authenticated;
+-- decrypt_label : nécessaire à authenticated (pas anon) car admin_codes/admin_voters sont des vues
+-- security_invoker (elles s'exécutent avec les droits de l'appelant, pas ceux du propriétaire de la
+-- vue) : l'appelant doit donc lui-même pouvoir exécuter la fonction qu'elles appellent. encrypt_label
+-- et voter_label_key restent 100% internes : seules les RPC ci-dessus (security definer, exécutées
+-- comme postgres) les appellent, jamais un accès direct depuis le client.
+grant execute on function public.decrypt_label(bytea) to authenticated;
 
 -- ---------------------------------------------------------------------
 -- 15. Scrutin d'exemple (brouillon, à ouvrir depuis le panel admin)
