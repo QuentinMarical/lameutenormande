@@ -79,11 +79,62 @@ create table if not exists public.admins (
   created_at timestamptz not null default now()
 );
 alter table public.admins enable row level security;
+-- disabled : compte désactivé par un autre admin (accès coupé instantanément, is_admin() en tient compte).
+-- must_change_password : le mot de passe encore en place est un mot de passe temporaire (création ou
+-- réinitialisation par un autre admin) ; le panel force son changement avant tout accès aux onglets.
+alter table public.admins add column if not exists disabled boolean not null default false;
+alter table public.admins add column if not exists must_change_password boolean not null default false;
 
 create or replace function public.is_admin()
 returns boolean language sql stable security definer set search_path = public as $$
-  select exists (select 1 from public.admins where user_id = auth.uid());
+  select exists (select 1 from public.admins where user_id = auth.uid() and not disabled);
 $$;
+
+-- État propre à l'admin connecté (jamais gated par is_admin() : un compte désactivé doit pouvoir
+-- apprendre qu'il l'est, un mot de passe temporaire doit pouvoir se faire changer avant que
+-- l'accès complet ne soit accordé). Ne renvoie rien si l'appelant n'est pas dans public.admins.
+create or replace function public.my_admin_flags()
+returns table (disabled boolean, must_change_password boolean, label text)
+language sql stable security definer set search_path = public as $$
+  select a.disabled, a.must_change_password, a.label from public.admins a where a.user_id = auth.uid();
+$$;
+
+-- Appelée par l'admin lui-même juste après avoir défini son propre mot de passe
+-- (auth.updateUser, pas besoin de service_role : chacun peut changer son propre mot de passe).
+create or replace function public.clear_must_change_password()
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  update public.admins set must_change_password = false where user_id = auth.uid();
+end $$;
+
+-- Liste des admins avec e-mail (auth.users, inaccessible directement à authenticated).
+create or replace function public.admin_list_admins()
+returns table (user_id uuid, email text, label text, disabled boolean, must_change_password boolean, created_at timestamptz)
+language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  return query
+    select a.user_id, u.email, a.label, a.disabled, a.must_change_password, a.created_at
+    from public.admins a join auth.users u on u.id = a.user_id
+    order by a.created_at;
+end $$;
+
+-- Active/désactive un compte admin. Ne touche jamais Supabase Auth (le compte peut toujours se
+-- connecter) : is_admin() (donc toutes les RPC/RLS admin) se ferme instantanément via la colonne
+-- disabled, ce qui suffit à couper l'accès sans dépendre d'un appel à l'API Admin (service_role).
+create or replace function public.admin_set_disabled(p_user_id uuid, p_disabled boolean)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  if p_disabled and p_user_id = auth.uid() then raise exception 'CANNOT_DISABLE_SELF'; end if;
+  if p_disabled and (select count(*) from public.admins where not disabled and user_id <> p_user_id) = 0 then
+    raise exception 'CANNOT_DISABLE_LAST_ADMIN';
+  end if;
+  update public.admins set disabled = p_disabled where user_id = p_user_id;
+  if not found then raise exception 'ADMIN_NOT_FOUND'; end if;
+  perform public.log_audit('admin:' || auth.uid()::text, case when p_disabled then 'admin_disabled' else 'admin_enabled' end, p_user_id::text);
+end $$;
 
 -- ---------------------------------------------------------------------
 -- 2. Catalogue des rôles (miroir de assets/roles.js)
@@ -1002,8 +1053,13 @@ grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
   public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.admin_delete_election(uuid), public.audit_log_readable(),
-  public.admin_log_event(text), public.admin_save_settings(text, text)
+  public.admin_log_event(text), public.admin_save_settings(text, text),
+  public.admin_list_admins(), public.admin_set_disabled(uuid, boolean), public.clear_must_change_password()
   to authenticated;
+-- my_admin_flags : accordé aussi à anon/authenticated non-admin (utile juste après une connexion,
+-- avant même de savoir si le compte est admin ; ne renvoie de toute façon jamais rien pour un
+-- compte absent de public.admins ou pour un appel anonyme, auth.uid() étant alors null).
+grant execute on function public.my_admin_flags() to anon, authenticated;
 -- decrypt_label : nécessaire à authenticated (pas anon) car admin_codes/admin_voters sont des vues
 -- security_invoker (elles s'exécutent avec les droits de l'appelant, pas ceux du propriétaire de la
 -- vue) : l'appelant doit donc lui-même pouvoir exécuter la fonction qu'elles appellent. encrypt_label
