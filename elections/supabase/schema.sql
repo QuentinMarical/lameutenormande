@@ -347,6 +347,10 @@ create table if not exists public.audit_log (
 alter table public.audit_log enable row level security;
 alter table public.audit_log add column if not exists user_agent text;
 alter table public.audit_log drop column if exists ip;
+-- actor_label : nom lisible figé AU MOMENT de l'action (snapshot), pas recalculé à la lecture.
+-- Sans ça, supprimer un compte admin rendait tout son historique illisible (retombe sur
+-- 'admin:<uuid>') : un journal d'audit doit rester exploitable même après suppression de l'acteur.
+alter table public.audit_log add column if not exists actor_label text;
 
 -- Navigateur capturé automatiquement depuis les en-têtes HTTP de la requête PostgREST
 -- (absent hors contexte de requête, ex. appel depuis elections_tick() via pg_cron : reste NULL).
@@ -355,12 +359,19 @@ alter table public.audit_log drop column if exists ip;
 -- de choix doit être journalisé (voir cast_ballot), jamais qui a été choisi.
 create or replace function public.log_audit(p_actor text, p_action text, p_target text, p_details jsonb default '{}'::jsonb)
 returns void language plpgsql security definer set search_path = public as $$
-declare v_headers json;
+declare v_headers json; v_label text;
 begin
   v_headers := nullif(current_setting('request.headers', true), '')::json;
-  insert into public.audit_log (actor, action, target, details, user_agent) values (
+  -- Résolu et figé ici, pas à la lecture (audit_log_readable) : reste lisible même si le compte
+  -- admin est supprimé ensuite. 'code:%' porte déjà l'étiquette/le code en clair dans p_actor.
+  if p_actor like 'admin:%' then
+    select coalesce(a.label, u.email) into v_label
+    from public.admins a join auth.users u on u.id = a.user_id
+    where a.user_id::text = substring(p_actor from 7);
+  end if;
+  insert into public.audit_log (actor, action, target, details, user_agent, actor_label) values (
     p_actor, p_action, p_target, coalesce(p_details, '{}'::jsonb),
-    v_headers->>'user-agent'
+    v_headers->>'user-agent', v_label
   );
 end $$;
 
@@ -417,14 +428,18 @@ begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   return query
     select al.id, al.at, al.actor, al.action, al.target, al.details,
-      case
-        when al.actor like 'admin:%' then coalesce(
-          (select coalesce(a.label, u.email) from public.admins a join auth.users u on u.id = a.user_id
-           where a.user_id::text = substring(al.actor from 7)),
-          al.actor)
-        when al.actor like 'code:%' then substring(al.actor from 6)
-        else al.actor
-      end as actor_label,
+      -- al.actor_label : snapshot figé par log_audit() au moment de l'action (survit à la
+      -- suppression du compte). Repli sur la résolution live seulement pour les lignes
+      -- écrites avant l'ajout de cette colonne (actor_label alors NULL).
+      coalesce(al.actor_label,
+        case
+          when al.actor like 'admin:%' then coalesce(
+            (select coalesce(a.label, u.email) from public.admins a join auth.users u on u.id = a.user_id
+             where a.user_id::text = substring(al.actor from 7)),
+            al.actor)
+          when al.actor like 'code:%' then substring(al.actor from 6)
+          else al.actor
+        end) as actor_label,
       al.user_agent
     from public.audit_log al
     order by al.at desc
