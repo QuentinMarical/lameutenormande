@@ -1,7 +1,8 @@
 // Edge Function : opérations sur les comptes admin qui nécessitent l'API Admin Supabase
-// (service_role) — impossible à faire depuis Postgres seul. Deux actions :
+// (service_role) — impossible à faire depuis Postgres seul. Trois actions :
 //   - invite         : crée le compte Auth (mot de passe temporaire) + la ligne public.admins.
 //   - reset_password : régénère un mot de passe temporaire pour un compte admin existant.
+//   - delete         : supprime le compte Auth (cascade sur public.admins, cf. FK on delete cascade).
 // Activer/désactiver un compte se fait entièrement en SQL (admin_set_disabled), sans passer ici.
 //
 // Sécurité : le JWT de l'appelant (transmis automatiquement par supabase-js functions.invoke)
@@ -19,7 +20,15 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
+// CORS : la fonction est appelée depuis le navigateur (E.sb.functions.invoke), qui préfixe
+// tout POST cross-origin d'un preflight OPTIONS ; sans ces en-têtes le navigateur bloque la
+// réponse avant même qu'elle atteigne le code de l'app (invisible côté logs de la function).
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
 
 // Alphabet sans caractères ambigus, avec au moins un peu de diversité de classes de caractères.
 const TEMP_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
@@ -29,6 +38,7 @@ function genTempPassword(len = 14) {
 }
 
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const authHeader = req.headers.get("Authorization") || "";
@@ -38,6 +48,7 @@ Deno.serve(async (req) => {
   });
   const { data: isAdmin, error: isAdminErr } = await asCaller.rpc("is_admin");
   if (isAdminErr || !isAdmin) return json({ error: "ADMIN_REQUIRED" }, 403);
+  const { data: { user: caller } } = await asCaller.auth.getUser();
 
   let p: { action?: string; email?: string; label?: string; user_id?: string };
   try { p = await req.json(); } catch { return json({ error: "JSON invalide" }, 400); }
@@ -73,6 +84,21 @@ Deno.serve(async (req) => {
       if (updErr) return json({ error: updErr.message }, 400);
       await admin.from("admins").update({ must_change_password: true }).eq("user_id", userId);
       return json({ ok: true, temp_password: tempPassword });
+    }
+
+    if (p.action === "delete") {
+      const userId = String(p.user_id || "");
+      if (!userId) return json({ error: "BAD_USER" }, 400);
+      if (caller && userId === caller.id) return json({ error: "CANNOT_DELETE_SELF" }, 400);
+      const { data: target } = await admin.from("admins").select("is_dev").eq("user_id", userId).maybeSingle();
+      if (!target) return json({ error: "ADMIN_NOT_FOUND" }, 404);
+      if (target.is_dev) return json({ error: "CANNOT_DELETE_DEV" }, 400);
+      const { count } = await admin.from("admins").select("user_id", { count: "exact", head: true }).eq("disabled", false).neq("user_id", userId);
+      if (!count) return json({ error: "CANNOT_DELETE_LAST_ADMIN" }, 400);
+      // La ligne public.admins disparaît automatiquement (FK user_id ... on delete cascade).
+      const { error: delErr } = await admin.auth.admin.deleteUser(userId);
+      if (delErr) return json({ error: delErr.message }, 400);
+      return json({ ok: true });
     }
 
     return json({ error: "action inconnue" }, 400);
