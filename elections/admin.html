@@ -18,7 +18,6 @@
   </header>
   <section class="page-head">
     <h1>Administration des élections</h1>
-    <div class="sub">Scrutins · codes · candidatures · votants · audit · procès-verbal</div>
   </section>
   <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
   <footer class="site-footer" id="footer"></footer>
@@ -58,10 +57,42 @@
       E.clear(app).appendChild(form);
       return;
     }
-    if (!(await E.isAdmin())) {
+    const { data: flagRows } = await E.sb.rpc('my_admin_flags');
+    const myFlags = flagRows && flagRows[0];
+    if (!myFlags) {
       E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, E.icon('ban')), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
         h('div', { class: 'desc' }, 'Dans l\'éditeur SQL Supabase : insert into public.admins (user_id, label) values (\'' + session.user.id + '\', \'' + (session.user.email || '') + '\');'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    if (myFlags.disabled) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'icon' }, E.icon('ban')), h('div', { class: 'body' }, h('div', { class: 'title' }, 'Compte désactivé'),
+        h('div', { class: 'desc' }, 'Un autre administrateur a désactivé ton accès. Contacte le staff si c\'est une erreur.'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    if (myFlags.must_change_password) {
+      const p1 = h('input', { class: 'input', type: 'password', autocomplete: 'new-password', required: true, minlength: 8 });
+      const p2 = h('input', { class: 'input', type: 'password', autocomplete: 'new-password', required: true, minlength: 8 });
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Définir le mot de passe');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Choisis ton mot de passe'),
+        h('div', { class: 'desc' }, 'Ton compte utilise encore un mot de passe temporaire. Définis-en un nouveau pour continuer (8 caractères minimum).'),
+        h('div', { class: 'field' }, h('label', null, 'Nouveau mot de passe'), p1),
+        h('div', { class: 'field' }, h('label', null, 'Confirme le mot de passe'), p2),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault();
+        if (p1.value.length < 8) { E.toast('8 caractères minimum.', 'error'); return; }
+        if (p1.value !== p2.value) { E.toast('Les deux mots de passe ne correspondent pas.', 'error'); return; }
+        btn.disabled = true;
+        const { error } = await E.sb.auth.updateUser({ password: p1.value });
+        if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        await E.sb.rpc('clear_must_change_password');
+        E.toast('Mot de passe défini.', 'success');
+        location.reload();
+      });
+      E.clear(app).appendChild(form);
       return;
     }
     { const slot = E.qs('.topbar .tool.admin'); const chip = h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, E.icon('right-from-bracket'))); if (slot) slot.replaceWith(chip); }
@@ -83,7 +114,7 @@
     await loadElections();
 
     // ---------- Tabs ----------
-    const tabs = [['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']];
+    const tabs = [['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['utilisateurs', 'Utilisateurs'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     const selector = h('select', { class: 'input', style: { width: 'auto', maxWidth: '100%' } });
@@ -99,7 +130,7 @@
     function show(id) {
       E.qsa('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       E.clear(pane).appendChild(E.loader());
-      ({ scrutins, codes, candidatures, votants, audit, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+      ({ scrutins, codes, candidatures, votants, audit, utilisateurs, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
     }
 
     const toLocalInput = iso => { if (!iso) return ''; const d = new Date(iso); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
@@ -338,12 +369,12 @@
       const rows = data || [];
       // Le contenu d'un bulletin (candidat choisi) n'est JAMAIS journalisé : cast_ballot ne log
       // que le nombre de choix (voir schema.sql), jamais quel candidat a été sélectionné.
-      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', election_deleted: 'Scrutin supprimé', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés' };
+      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', election_deleted: 'Scrutin supprimé', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés', admin_disabled: 'Administrateur désactivé', admin_enabled: 'Administrateur réactivé' };
       const tbody = h('tbody');
       rows.forEach(r => tbody.appendChild(h('tr', null,
         h('td', null, E.fmtDateTime(r.at)),
         h('td', null, r.actor_label || r.actor || '—'),
-        h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid|login/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
+        h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw|admin_disabled/.test(r.action) ? 'danger' : /ballot|candid|login|admin_enabled/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
         h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '320px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)),
         h('td', { class: 'small muted', title: r.user_agent || '', style: { whiteSpace: 'normal', maxWidth: '220px' } }, E.shortUa(r.user_agent)))));
       pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } },
@@ -390,6 +421,79 @@
         h('button', { class: 'btn secondary', type: 'button', onClick: () => downloadCsv('resultats-' + current.slug + '.csv', ['role', 'display_name', 'votes'], rows.map(r => Object.assign({}, r, { role: E.roleInfo(r.role).label }))) }, 'Résultats CSV')), doc);
     }
 
+    // ---------- Utilisateurs (comptes admin) ----------
+    function showTempPassword(email, pwd) {
+      // Affiché une seule fois (jamais reconsultable ensuite) : à transmettre en main propre / canal sûr.
+      pane.prepend(h('div', { class: 'card warn column' }, h('div', { class: 'title' }, 'Mot de passe temporaire pour ' + email),
+        h('div', { class: 'desc' }, 'Transmets-le à la personne par un canal sûr : il ne sera plus jamais affiché. Elle devra le changer à sa première connexion.'),
+        h('div', { class: 'field' }, h('input', { class: 'input', readonly: true, value: pwd, onClick: e => e.target.select() }))));
+    }
+    async function utilisateurs() {
+      E.clear(pane);
+      const { data, error } = await E.sb.rpc('admin_list_admins');
+      if (error) throw error;
+      const rows = data || [];
+
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'off', required: true, placeholder: 'nouvel-admin@exemple.fr' });
+      const label = h('input', { class: 'input', autocomplete: 'off', placeholder: 'Prénom / pseudo (optionnel)' });
+      const inviteBtn = h('button', { class: 'btn', type: 'submit' }, 'Inviter');
+      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, 'Inviter un administrateur'),
+        h('div', { class: 'desc' }, 'Un mot de passe temporaire est généré automatiquement ; la personne devra le changer dès sa première connexion.'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Étiquette'), label),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, inviteBtn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); inviteBtn.disabled = true;
+        try {
+          const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'invite', email: email.value.trim(), label: label.value.trim() } });
+          if (error) throw error;
+          if (data && data.error) throw new Error(data.error);
+          E.toast('Administrateur créé.', 'success');
+          email.value = ''; label.value = '';
+          await utilisateurs();
+          showTempPassword(data.email, data.temp_password);
+        } catch (err) { E.toast(E.errMsg(err), 'error'); } finally { inviteBtn.disabled = false; }
+      });
+
+      const list = h('div', { class: 'cands' });
+      rows.forEach(r => {
+        const isSelf = r.user_id === session.user.id;
+        const resetBtn = h('button', { class: 'btn secondary small', type: 'button' }, 'Réinitialiser le mot de passe');
+        resetBtn.addEventListener('click', async () => {
+          if (!confirm('Réinitialiser le mot de passe de ' + (r.label || r.email) + ' ? Un nouveau mot de passe temporaire sera généré.')) return;
+          resetBtn.disabled = true;
+          try {
+            const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'reset_password', user_id: r.user_id } });
+            if (error) throw error;
+            if (data && data.error) throw new Error(data.error);
+            E.toast('Mot de passe réinitialisé.', 'success');
+            await utilisateurs();
+            showTempPassword(r.email, data.temp_password);
+          } catch (err) { E.toast(E.errMsg(err), 'error'); resetBtn.disabled = false; }
+        });
+        const toggleBtn = h('button', { class: 'btn secondary small', type: 'button', disabled: isSelf, title: isSelf ? 'Impossible de désactiver ton propre compte' : '' }, r.disabled ? 'Réactiver' : 'Désactiver');
+        toggleBtn.addEventListener('click', async () => {
+          if (!confirm((r.disabled ? 'Réactiver' : 'Désactiver') + ' le compte de ' + (r.label || r.email) + ' ?')) return;
+          toggleBtn.disabled = true;
+          try {
+            const { error } = await E.sb.rpc('admin_set_disabled', { p_user_id: r.user_id, p_disabled: !r.disabled });
+            if (error) throw error;
+            E.toast('Compte mis à jour.', 'success');
+            utilisateurs();
+          } catch (err) { E.toast(E.errMsg(err), 'error'); toggleBtn.disabled = isSelf; }
+        });
+        list.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
+          h('div', { class: 'name' }, r.label || r.email,
+            h('span', { class: 'badge ' + (r.disabled ? 'danger' : 'ok') }, r.disabled ? 'Désactivé' : 'Actif'),
+            r.must_change_password ? h('span', { class: 'badge warn' }, 'Mdp temporaire') : null,
+            isSelf ? h('span', { class: 'badge muted' }, 'Toi') : null),
+          h('div', { class: 'handles' }, h('span', null, r.email), h('span', null, 'Depuis le ' + E.fmtDate(r.created_at))),
+          h('div', { class: 'btn-row', style: { marginTop: '.5rem' } }, resetBtn, toggleBtn))));
+      });
+
+      pane.append(form, h('div', { class: 'section-title' }, 'Comptes existants', h('span', { class: 'count' }, rows.length)),
+        rows.length ? list : h('div', { class: 'empty' }, 'Aucun administrateur.'));
+    }
+
     // ---------- Réglages ----------
     async function reglages() {
       E.clear(pane);
@@ -407,7 +511,7 @@
         if (error) E.toast(E.errMsg(error), 'error'); else E.toast('Réglages enregistrés.', 'success');
       });
       pane.appendChild(form);
-      pane.appendChild(h('div', { class: 'card info' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ajouter un administrateur'), h('div', { class: 'desc' }, 'Crée le compte dans Supabase → Authentication → Users (e-mail + mot de passe), puis dans l\'éditeur SQL : insert into public.admins (user_id, label) select id, \'Prénom\' from auth.users where email = \'adresse@exemple.fr\';'))));
+      pane.appendChild(h('div', { class: 'card info' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ajouter un administrateur'), h('div', { class: 'desc' }, 'Depuis l\'onglet ', h('b', null, 'Utilisateurs'), ' : invite une adresse e-mail, un mot de passe temporaire est généré et affiché une fois (à transmettre par un canal sûr) ; la personne devra le changer à sa première connexion.'))));
     }
 
     function downloadCsv(name, cols, rows) {
