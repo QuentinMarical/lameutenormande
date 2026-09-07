@@ -283,15 +283,15 @@ create table if not exists public.audit_log (
   action     text not null,
   target     text,
   details    jsonb not null default '{}'::jsonb,
-  ip         text,                     -- IP telle que vue par PostgREST (proxy Supabase/Cloudflare)
   user_agent text
 );
 alter table public.audit_log enable row level security;
-alter table public.audit_log add column if not exists ip text;
 alter table public.audit_log add column if not exists user_agent text;
+alter table public.audit_log drop column if exists ip;
 
--- IP/navigateur capturés automatiquement depuis les en-têtes HTTP de la requête PostgREST
--- (absents hors contexte de requête, ex. appel depuis elections_tick() via pg_cron : reste NULL).
+-- Navigateur capturé automatiquement depuis les en-têtes HTTP de la requête PostgREST
+-- (absent hors contexte de requête, ex. appel depuis elections_tick() via pg_cron : reste NULL).
+-- L'IP n'est volontairement pas journalisée (vie privée).
 -- Ne JAMAIS faire porter à log_audit() le contenu d'un bulletin (choix/candidat) : seul le nombre
 -- de choix doit être journalisé (voir cast_ballot), jamais qui a été choisi.
 create or replace function public.log_audit(p_actor text, p_action text, p_target text, p_details jsonb default '{}'::jsonb)
@@ -299,9 +299,8 @@ returns void language plpgsql security definer set search_path = public as $$
 declare v_headers json;
 begin
   v_headers := nullif(current_setting('request.headers', true), '')::json;
-  insert into public.audit_log (actor, action, target, details, ip, user_agent) values (
+  insert into public.audit_log (actor, action, target, details, user_agent) values (
     p_actor, p_action, p_target, coalesce(p_details, '{}'::jsonb),
-    nullif(split_part(coalesce(v_headers->>'cf-connecting-ip', v_headers->>'x-forwarded-for', ''), ',', 1), ''),
     v_headers->>'user-agent'
   );
 end $$;
@@ -353,7 +352,7 @@ create policy audit_admin_read on public.audit_log for select using (public.is_a
 drop view if exists public.audit_log_readable;
 drop function if exists public.audit_log_readable();
 create or replace function public.audit_log_readable()
-returns table (id bigint, at timestamptz, actor text, action text, target text, details jsonb, actor_label text, ip text, user_agent text)
+returns table (id bigint, at timestamptz, actor text, action text, target text, details jsonb, actor_label text, user_agent text)
 language plpgsql security definer set search_path = public as $$
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
@@ -367,7 +366,7 @@ begin
         when al.actor like 'code:%' then substring(al.actor from 6)
         else al.actor
       end as actor_label,
-      al.ip, al.user_agent
+      al.user_agent
     from public.audit_log al
     order by al.at desc
     limit 300;
