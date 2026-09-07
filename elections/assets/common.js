@@ -322,7 +322,13 @@
     BAD_ROLE: 'Poste inconnu dans la liste des rôles.',
     CODE_NOT_FOUND: 'Code introuvable (déjà supprimé ?). Recharge la page.',
     CODE_NOT_REVOKED: 'Ce code n\'est plus révoqué (réactivé entre-temps ?). Recharge la page.',
-    'Invalid login credentials': 'E-mail ou mot de passe incorrect.'
+    'Invalid login credentials': 'E-mail ou mot de passe incorrect.',
+    BAD_EMAIL: 'Adresse e-mail invalide.',
+    'User already registered': 'Un compte existe déjà avec cet e-mail.',
+    ADMIN_NOT_FOUND: 'Administrateur introuvable (déjà supprimé ?). Recharge la page.',
+    CANNOT_DISABLE_SELF: 'Impossible de désactiver ton propre compte.',
+    CANNOT_DISABLE_LAST_ADMIN: 'Impossible de désactiver le dernier administrateur actif.',
+    'Password should be at least': 'Mot de passe trop court (8 caractères minimum).'
   };
   E.errMsg = function (err) {
     const m = (err && (err.message || err.error_description || String(err))) || 'Erreur inconnue';
