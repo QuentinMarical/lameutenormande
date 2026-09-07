@@ -345,12 +345,11 @@
         h('td', null, r.actor_label || r.actor || '—'),
         h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw/.test(r.action) ? 'danger' : /ballot|candid|login/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
         h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '320px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)),
-        h('td', { class: 'small muted' }, r.ip || '—'),
         h('td', { class: 'small muted', title: r.user_agent || '', style: { whiteSpace: 'normal', maxWidth: '220px' } }, E.shortUa(r.user_agent)))));
       pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } },
         h('button', { class: 'btn ' + (auditAutoRefresh ? 'secondary' : '') + ' small', type: 'button', title: auditAutoRefresh ? 'Mettre en pause l\'actualisation auto (toutes les 15 s)' : 'Activer l\'actualisation auto (toutes les 15 s)', onClick: () => { auditAutoRefresh = !auditAutoRefresh; audit(); } }, auditAutoRefresh ? '⏸ Actualisation auto' : '▶ Actualisation auto'),
-        h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details', 'ip', 'user_agent'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
-        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'IP', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
+        h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details', 'user_agent'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
+        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
     }
 
     // ---------- Procès-verbal ----------
@@ -421,7 +420,7 @@
 
     show(tabs.some(t => t[0] === activeTab) ? activeTab : 'scrutins');
     E.subscribe(['ballots', 'candidates', 'elections'], E.debounce(async () => { await loadElections(); paintSelector(); if (['votants', 'candidatures'].includes(activeTab)) show(activeTab); }, 1200));
-    // Actualisation périodique de l'onglet Audit (IP/navigateur/acteurs ne passent pas par le broadcast realtime),
+    // Actualisation périodique de l'onglet Audit (navigateur/acteurs ne passent pas par le broadcast realtime),
     // en pause par défaut : n'agit que si l'admin a explicitement cliqué sur "Actualisation auto".
     setInterval(() => { if (activeTab === 'audit' && auditAutoRefresh) audit().catch(() => {}); }, 15000);
   })();
