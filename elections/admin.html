@@ -470,7 +470,8 @@
             showTempPassword(r.email, data.temp_password);
           } catch (err) { E.toast(E.errMsg(err), 'error'); resetBtn.disabled = false; }
         });
-        const toggleBtn = h('button', { class: 'btn secondary small', type: 'button', disabled: isSelf, title: isSelf ? 'Impossible de désactiver ton propre compte' : '' }, r.disabled ? 'Réactiver' : 'Désactiver');
+        const lockedOut = isSelf || r.is_dev;
+        const toggleBtn = h('button', { class: 'btn secondary small', type: 'button', disabled: lockedOut, title: r.is_dev ? 'Ce compte ne peut pas être désactivé' : isSelf ? 'Impossible de désactiver ton propre compte' : '' }, r.disabled ? 'Réactiver' : 'Désactiver');
         toggleBtn.addEventListener('click', async () => {
           if (!confirm((r.disabled ? 'Réactiver' : 'Désactiver') + ' le compte de ' + (r.label || r.email) + ' ?')) return;
           toggleBtn.disabled = true;
@@ -479,10 +480,11 @@
             if (error) throw error;
             E.toast('Compte mis à jour.', 'success');
             utilisateurs();
-          } catch (err) { E.toast(E.errMsg(err), 'error'); toggleBtn.disabled = isSelf; }
+          } catch (err) { E.toast(E.errMsg(err), 'error'); toggleBtn.disabled = lockedOut; }
         });
         list.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
           h('div', { class: 'name' }, r.label || r.email,
+            r.is_dev ? h('span', { class: 'badge ok', title: 'Développeur de l\'outil : compte protégé, ne peut pas être désactivé' }, '🛠 Dev') : null,
             h('span', { class: 'badge ' + (r.disabled ? 'danger' : 'ok') }, r.disabled ? 'Désactivé' : 'Actif'),
             r.must_change_password ? h('span', { class: 'badge warn' }, 'Mdp temporaire') : null,
             isSelf ? h('span', { class: 'badge muted' }, 'Toi') : null),
