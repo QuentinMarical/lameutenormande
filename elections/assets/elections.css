@@ -365,14 +365,26 @@ a:focus-visible, button:focus-visible, .check:focus-within, .cand:focus-within {
 
 /* ---------- Impression (procès-verbal) ---------- */
 @media print {
+  @page { margin: 10mm; }
+  /* Rem-based paddings/margins/font-sizes shrink proportionally with the root size, so the
+     whole procès-verbal (KPIs + une carte par rôle) tient sur une seule page A4. */
+  html { font-size: 12px; }
   body { background: #fff; color: #000; display: block; }
   .topbar, .site-footer, .tabs, .btn, .filters, .no-print { display: none !important; }
-  main.wrap { max-width: 100%; }
+  main.wrap { max-width: 100%; padding: 0; }
+  #pv-doc { padding: 0; border: none; box-shadow: none; gap: .35rem; }
   .card, .kpi, .chart-wrap, .cand { border-color: #ccc; background: #fff; color: #000; box-shadow: none; }
   .kpi .value, .page-head h1 { color: #000; text-shadow: none; }
   .kpi .label, .kpi .sub, .muted, .bar-row .n { color: #444; }
   .bar-row .bar > i { background: #7c3aed !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .print-only { display: block !important; }
+  /* Cartes/KPI plus compactes à l'impression, et jamais coupées à cheval sur deux pages */
+  #pv-doc .kpis { margin-bottom: .4rem; }
+  #pv-doc .kpi { padding: .5rem .7rem; }
+  #pv-doc .chart-wrap { padding: .45rem .7rem; margin-bottom: .3rem; page-break-inside: avoid; break-inside: avoid; }
+  #pv-doc .role-head { margin-bottom: .3rem; }
+  #pv-doc .empty { padding: .4rem; }
+  #pv-doc .bar-list { margin-top: .3rem; gap: .2rem; }
 }
 .print-only { display: none; }
 
