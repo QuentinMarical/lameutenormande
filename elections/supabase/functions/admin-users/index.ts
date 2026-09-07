@@ -30,11 +30,25 @@ const CORS_HEADERS = {
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
 
-// Alphabet sans caractères ambigus, avec au moins un peu de diversité de classes de caractères.
-const TEMP_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789";
+// Sans caractères ambigus. Le projet Supabase exige au moins un caractère de chacune des 4
+// classes (minuscule/majuscule/chiffre/symbole) : un tirage purement aléatoire sur un alphabet
+// mixte ne le garantit pas à coup sûr, donc on force un caractère de chaque classe puis on
+// complète aléatoirement avant de mélanger (sinon Supabase rejette la création/le reset avec
+// "Password should contain at least one character of each: ...").
+const CLASSES = ["ABCDEFGHJKLMNPQRSTUVWXYZ", "abcdefghjkmnpqrstuvwxyz", "23456789", "!@#$%^&*-_+="];
+const ALL_CHARS = CLASSES.join("");
+function randChar(alphabet: string) {
+  return alphabet[crypto.getRandomValues(new Uint32Array(1))[0] % alphabet.length];
+}
 function genTempPassword(len = 14) {
-  const bytes = crypto.getRandomValues(new Uint8Array(len));
-  return Array.from(bytes, (b) => TEMP_ALPHABET[b % TEMP_ALPHABET.length]).join("");
+  const chars = CLASSES.map(randChar);
+  while (chars.length < len) chars.push(randChar(ALL_CHARS));
+  // Fisher-Yates : les 4 caractères garantis ne doivent pas rester groupés en tête.
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = crypto.getRandomValues(new Uint32Array(1))[0] % (i + 1);
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.join("");
 }
 
 Deno.serve(async (req) => {
