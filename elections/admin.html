@@ -444,9 +444,7 @@
       form.addEventListener('submit', async ev => {
         ev.preventDefault(); inviteBtn.disabled = true;
         try {
-          const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'invite', email: email.value.trim(), label: label.value.trim() } });
-          if (error) throw error;
-          if (data && data.error) throw new Error(data.error);
+          const data = await E.invokeAdminUsers({ action: 'invite', email: email.value.trim(), label: label.value.trim() });
           E.toast('Administrateur créé.', 'success');
           email.value = ''; label.value = '';
           await utilisateurs();
@@ -462,9 +460,7 @@
           if (!confirm('Réinitialiser le mot de passe de ' + (r.label || r.email) + ' ? Un nouveau mot de passe temporaire sera généré.')) return;
           resetBtn.disabled = true;
           try {
-            const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'reset_password', user_id: r.user_id } });
-            if (error) throw error;
-            if (data && data.error) throw new Error(data.error);
+            const data = await E.invokeAdminUsers({ action: 'reset_password', user_id: r.user_id });
             E.toast('Mot de passe réinitialisé.', 'success');
             await utilisateurs();
             showTempPassword(r.email, data.temp_password);
@@ -487,9 +483,7 @@
           if (!confirm('Supprimer définitivement le compte admin de ' + (r.label || r.email) + ' ? Irréversible.')) return;
           deleteBtn.disabled = true;
           try {
-            const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'delete', user_id: r.user_id } });
-            if (error) throw error;
-            if (data && data.error) throw new Error(data.error);
+            await E.invokeAdminUsers({ action: 'delete', user_id: r.user_id });
             E.toast('Administrateur supprimé.', 'success');
             utilisateurs();
           } catch (err) { E.toast(E.errMsg(err), 'error'); deleteBtn.disabled = lockedOut; }
