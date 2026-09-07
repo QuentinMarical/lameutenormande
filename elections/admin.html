@@ -482,6 +482,18 @@
             utilisateurs();
           } catch (err) { E.toast(E.errMsg(err), 'error'); toggleBtn.disabled = lockedOut; }
         });
+        const deleteBtn = h('button', { class: 'btn danger small', type: 'button', disabled: lockedOut, title: r.is_dev ? 'Ce compte ne peut pas être supprimé' : isSelf ? 'Impossible de supprimer ton propre compte' : '' }, 'Supprimer');
+        deleteBtn.addEventListener('click', async () => {
+          if (!confirm('Supprimer définitivement le compte admin de ' + (r.label || r.email) + ' ? Irréversible.')) return;
+          deleteBtn.disabled = true;
+          try {
+            const { data, error } = await E.sb.functions.invoke('admin-users', { body: { action: 'delete', user_id: r.user_id } });
+            if (error) throw error;
+            if (data && data.error) throw new Error(data.error);
+            E.toast('Administrateur supprimé.', 'success');
+            utilisateurs();
+          } catch (err) { E.toast(E.errMsg(err), 'error'); deleteBtn.disabled = lockedOut; }
+        });
         list.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
           h('div', { class: 'name' }, r.label || r.email,
             r.is_dev ? h('span', { class: 'badge ok', title: 'Compte de développement' }, '🛠 Dev') : null,
@@ -489,7 +501,7 @@
             r.must_change_password ? h('span', { class: 'badge warn' }, 'Mdp temporaire') : null,
             isSelf ? h('span', { class: 'badge muted' }, 'Toi') : null),
           h('div', { class: 'handles' }, h('span', null, r.email), h('span', null, 'Depuis le ' + E.fmtDate(r.created_at))),
-          h('div', { class: 'btn-row', style: { marginTop: '.5rem' } }, resetBtn, toggleBtn))));
+          h('div', { class: 'btn-row', style: { marginTop: '.5rem' } }, resetBtn, toggleBtn, deleteBtn))));
       });
 
       pane.append(form, h('div', { class: 'section-title' }, 'Comptes existants', h('span', { class: 'count' }, rows.length)),
