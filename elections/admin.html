@@ -484,7 +484,7 @@
         });
         list.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
           h('div', { class: 'name' }, r.label || r.email,
-            r.is_dev ? h('span', { class: 'badge ok', title: 'Développeur de l\'outil : compte protégé, ne peut pas être désactivé' }, '🛠 Dev') : null,
+            r.is_dev ? h('span', { class: 'badge ok', title: 'Compte de développement' }, '🛠 Dev') : null,
             h('span', { class: 'badge ' + (r.disabled ? 'danger' : 'ok') }, r.disabled ? 'Désactivé' : 'Actif'),
             r.must_change_password ? h('span', { class: 'badge warn' }, 'Mdp temporaire') : null,
             isSelf ? h('span', { class: 'badge muted' }, 'Toi') : null),
