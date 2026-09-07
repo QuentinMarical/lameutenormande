@@ -327,6 +327,7 @@
     'User already registered': 'Un compte existe déjà avec cet e-mail.',
     ADMIN_NOT_FOUND: 'Administrateur introuvable (déjà supprimé ?). Recharge la page.',
     CANNOT_DISABLE_SELF: 'Impossible de désactiver ton propre compte.',
+    CANNOT_DISABLE_DEV: 'Ce compte (développeur de l\'outil) ne peut pas être désactivé.',
     CANNOT_DISABLE_LAST_ADMIN: 'Impossible de désactiver le dernier administrateur actif.',
     'Password should be at least': 'Mot de passe trop court (8 caractères minimum).'
   };
