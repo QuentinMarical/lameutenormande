@@ -243,6 +243,19 @@
     const s = await E.adminSession(); if (!s) return false;
     const { data } = await E.sb.rpc('is_admin'); return !!data;
   };
+  /** Appelle l'Edge Function admin-users et lève une erreur avec le vrai message JSON renvoyé
+   *  ({error: "..."}) : par défaut, functions.invoke() masque ce corps derrière un message
+   *  générique ("Edge Function returned a non-2xx status code") dès que le statut n'est pas 2xx. */
+  E.invokeAdminUsers = async function (body) {
+    const { data, error } = await E.sb.functions.invoke('admin-users', { body });
+    if (error) {
+      let msg = error.message;
+      try { const b = await error.context.json(); if (b && b.error) msg = b.error; } catch {}
+      throw new Error(msg);
+    }
+    if (data && data.error) throw new Error(data.error);
+    return data;
+  };
   E.signOut = async function () {
     if (E.sb) {
       // Trace la déconnexion tant que la session est encore valide (impossible une fois signOut()
