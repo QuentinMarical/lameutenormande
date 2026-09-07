@@ -179,7 +179,6 @@ begin
     insert into votes.responses (poll_id, device_token, pseudo, answers) values (p_poll, p_device_token, v_pseudo, p_answers)
     returning * into v_existing;
   end if;
-  perform public.log_audit('poll:' || v_pseudo, case when v_replaced then 'response_updated' else 'response_created' end, v_poll.slug, jsonb_build_object('poll_id', p_poll));
   return jsonb_build_object('ok', true, 'replaced', v_replaced, 'response_id', v_existing.id);
 end $$;
 
@@ -207,7 +206,6 @@ begin
   select id into v_id from votes.responses where poll_id = p_poll and lower(pseudo) = lower(coalesce(p_pseudo, ''));
   if v_id is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
   delete from votes.responses where id = v_id;
-  perform public.log_audit('poll:self', 'response_deleted_by_voter', v_poll.slug, jsonb_build_object('response_id', v_id));
 end $$;
 
 -- ---------------------------------------------------------------------
@@ -234,7 +232,6 @@ begin
     where id = (p->>'id')::uuid returning * into v;
     if v is null then raise exception 'POLL_NOT_FOUND'; end if;
   end if;
-  perform public.log_audit('admin:' || auth.uid()::text, 'poll_saved', v.id::text, p - 'description');
   return v;
 end $$;
 
@@ -266,7 +263,6 @@ begin
     v_i := v_i + 1;
   end loop;
   delete from votes.questions where poll_id = p_poll and not (id = any(v_ids));
-  perform public.log_audit('admin:' || auth.uid()::text, 'poll_questions_saved', p_poll::text, jsonb_build_object('n', v_i));
   return query select * from votes.questions where poll_id = p_poll order by sort_order;
 end $$;
 
@@ -278,7 +274,6 @@ begin
   select slug into v_slug from votes.polls where id = p_poll;
   if v_slug is null then raise exception 'POLL_NOT_FOUND'; end if;
   delete from votes.polls where id = p_poll;
-  perform public.log_audit('admin:' || auth.uid()::text, 'poll_deleted', p_poll::text, jsonb_build_object('slug', v_slug));
 end $$;
 
 create or replace function votes.admin_delete_response(p_response uuid)
@@ -289,7 +284,6 @@ begin
   select poll_id into v_poll from votes.responses where id = p_response;
   if v_poll is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
   delete from votes.responses where id = p_response;
-  perform public.log_audit('admin:' || auth.uid()::text, 'response_deleted', v_poll::text, jsonb_build_object('response_id', p_response));
 end $$;
 
 -- ---------------------------------------------------------------------
