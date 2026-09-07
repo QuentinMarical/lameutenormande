@@ -328,6 +328,9 @@
     ADMIN_NOT_FOUND: 'Administrateur introuvable (déjà supprimé ?). Recharge la page.',
     CANNOT_DISABLE_SELF: 'Impossible de désactiver ton propre compte.',
     CANNOT_DISABLE_DEV: 'Ce compte (développeur de l\'outil) ne peut pas être désactivé.',
+    CANNOT_DELETE_SELF: 'Impossible de supprimer ton propre compte.',
+    CANNOT_DELETE_DEV: 'Ce compte (développeur de l\'outil) ne peut pas être supprimé.',
+    CANNOT_DELETE_LAST_ADMIN: 'Impossible de supprimer le dernier administrateur actif.',
     CANNOT_DISABLE_LAST_ADMIN: 'Impossible de désactiver le dernier administrateur actif.',
     'Password should be at least': 'Mot de passe trop court (8 caractères minimum).'
   };
