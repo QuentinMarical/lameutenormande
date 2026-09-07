@@ -84,6 +84,9 @@ alter table public.admins enable row level security;
 -- réinitialisation par un autre admin) ; le panel force son changement avant tout accès aux onglets.
 alter table public.admins add column if not exists disabled boolean not null default false;
 alter table public.admins add column if not exists must_change_password boolean not null default false;
+-- is_dev : compte du développeur de l'outil. Ni désactivable ni supprimable, par personne
+-- (y compris lui-même) — voir admin_set_disabled() et la policy admins_no_delete_dev ci-dessous.
+alter table public.admins add column if not exists is_dev boolean not null default false;
 
 create or replace function public.is_admin()
 returns boolean language sql stable security definer set search_path = public as $$
@@ -93,10 +96,11 @@ $$;
 -- État propre à l'admin connecté (jamais gated par is_admin() : un compte désactivé doit pouvoir
 -- apprendre qu'il l'est, un mot de passe temporaire doit pouvoir se faire changer avant que
 -- l'accès complet ne soit accordé). Ne renvoie rien si l'appelant n'est pas dans public.admins.
+drop function if exists public.my_admin_flags();
 create or replace function public.my_admin_flags()
-returns table (disabled boolean, must_change_password boolean, label text)
+returns table (disabled boolean, must_change_password boolean, label text, is_dev boolean)
 language sql stable security definer set search_path = public as $$
-  select a.disabled, a.must_change_password, a.label from public.admins a where a.user_id = auth.uid();
+  select a.disabled, a.must_change_password, a.label, a.is_dev from public.admins a where a.user_id = auth.uid();
 $$;
 
 -- Appelée par l'admin lui-même juste après avoir défini son propre mot de passe
@@ -109,24 +113,28 @@ begin
 end $$;
 
 -- Liste des admins avec e-mail (auth.users, inaccessible directement à authenticated).
+drop function if exists public.admin_list_admins();
 create or replace function public.admin_list_admins()
-returns table (user_id uuid, email text, label text, disabled boolean, must_change_password boolean, created_at timestamptz)
+returns table (user_id uuid, email text, label text, disabled boolean, must_change_password boolean, is_dev boolean, created_at timestamptz)
 language plpgsql security definer set search_path = public as $$
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
   return query
-    select a.user_id, u.email, a.label, a.disabled, a.must_change_password, a.created_at
+    select a.user_id, u.email::text, a.label, a.disabled, a.must_change_password, a.is_dev, a.created_at
     from public.admins a join auth.users u on u.id = a.user_id
-    order by a.created_at;
+    order by a.is_dev desc, a.created_at;
 end $$;
 
 -- Active/désactive un compte admin. Ne touche jamais Supabase Auth (le compte peut toujours se
 -- connecter) : is_admin() (donc toutes les RPC/RLS admin) se ferme instantanément via la colonne
 -- disabled, ce qui suffit à couper l'accès sans dépendre d'un appel à l'API Admin (service_role).
+-- Le compte is_dev est protégé contre toute désactivation, y compris par lui-même : c'est le compte
+-- du développeur de l'outil, il ne doit jamais pouvoir se retrouver sans accès au panel qu'il maintient.
 create or replace function public.admin_set_disabled(p_user_id uuid, p_disabled boolean)
 returns void language plpgsql security definer set search_path = public as $$
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  if p_disabled and exists (select 1 from public.admins where user_id = p_user_id and is_dev) then raise exception 'CANNOT_DISABLE_DEV'; end if;
   if p_disabled and p_user_id = auth.uid() then raise exception 'CANNOT_DISABLE_SELF'; end if;
   if p_disabled and (select count(*) from public.admins where not disabled and user_id <> p_user_id) = 0 then
     raise exception 'CANNOT_DISABLE_LAST_ADMIN';
