@@ -58,6 +58,18 @@
       </div>
     </div>
 
+    <div class="card info column" style="margin-top:1rem">
+      <div class="title" style="font-size:16px">Une seconde source, cette fois libre</div>
+      <div class="desc">
+        <a href="https://github.com/jerosajose/onliine" target="_blank" rel="noopener">onliine</a>, par José Enrique,
+        est un simulateur du menu Wii 4.3E entièrement écrit en HTML/CSS/JS et publié sous licence libre
+        (AGPL-3.0) — un vrai projet à code source ouvert, contrairement au dump de firmware ci-dessus. Deux détails
+        de son CSS ont servi de repère pour affiner notre grille : le contour légèrement irrégulier des tuiles
+        (plutôt qu'un rectangle simplement arrondi) et un bref zoom au moment d'ouvrir une case. Repris comme
+        principe uniquement, en CSS original — ni son code, ni ses images, polices ou sons ne sont utilisés ici.
+      </div>
+    </div>
+
     <div class="frame-col" style="margin-top:1.5rem">
       <h3 style="font-size:.95rem;color:var(--violet-2)">Notre écran d'accueil (connexion requise)</h3>
       <iframe src="../" loading="lazy" title="Espace admin La Meute Normande"></iframe>
@@ -102,6 +114,16 @@
           <td>Pas de connexion / de notion de compte</td>
           <td>Connexion Supabase avant d'afficher la grille (même compte que les autres panels admin)</td>
           <td><span class="status na">n/a — spécifique à l'admin</span></td>
+        </tr>
+        <tr>
+          <td>Contour d'une chaîne légèrement irrégulier (pas un simple rectangle arrondi)</td>
+          <td>Même tracé (<code>clip-path: polygon(...)</code>, une géométrie, pas un asset) appliqué à nos tuiles — repéré en comparant avec <a href="https://github.com/jerosajose/onliine" target="_blank" rel="noopener">onliine</a>, simulateur libre (AGPL-3.0)</td>
+          <td><span class="status ok">✓ Repris (CSS original)</span></td>
+        </tr>
+        <tr>
+          <td>Zoom bref au moment d'ouvrir une chaîne, avant de changer d'écran</td>
+          <td>Animation CSS <code>scale(1)→scale(2.4)</code> avec fondu, rejouée avant de naviguer/ouvrir un outil — sauf sur « Retour », qui n'a pas d'équivalent sur la vraie console</td>
+          <td><span class="status ok">✓ Repris (CSS original)</span></td>
         </tr>
       </tbody>
     </table>

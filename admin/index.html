@@ -127,6 +127,7 @@
             h('p', null, 'L\'écran d\'accueil de cet espace admin s\'inspire du menu de la Wii : une grille de « chaînes » colorées qu\'on ouvre pour accéder à leurs actions, plutôt qu\'une liste de liens classique.'),
             h('p', null, 'Repris comme langage visuel, en code et assets 100% originaux : grille de tuiles arrondies, une couleur par outil, tuile active qui se balance légèrement (« wobble »), écran dédié en drill-down par outil avec une tuile « Retour », et un bip de confirmation à chaque déplacement.'),
             h('p', null, h('strong', null, 'Aucun fichier Nintendo n\'est utilisé.'), ' Contrairement à une précédente version de cette page (voir historique), rien n\'a été extrait ou copié d\'un dump de menu Wii réel (icônes, sons, polices, textures) : ce sont des fichiers propriétaires de Nintendo, pas un projet libre. Seuls la disposition et les interactions sont reproduites, avec nos propres icônes, couleurs et bip sonore.'),
+            h('p', null, 'Deux détails affinés par comparaison avec ', h('a', { href: 'https://github.com/jerosajose/onliine', target: '_blank', rel: 'noopener' }, 'onliine'), ', un simulateur libre (AGPL-3.0) du menu Wii 4.3E par José Enrique : le contour légèrement irrégulier des tuiles plutôt qu\'un simple rectangle arrondi, et un bref effet de zoom à l\'ouverture d\'une case. Repris comme principe uniquement (CSS original) — ni son code, ni ses images ou polices ne sont utilisés ici.'),
             h('p', null, 'Les champs et boutons du formulaire de connexion s\'inspirent du skin « Series 60 » du navigateur Opera pour téléphones Symbian (bordure noire fine, dégradé gris à l\'état pressé) — repris en CSS original, aucune image du skin d\'origine (fichiers propriétaires d\'Opera Software) n\'est utilisée.'),
             h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
       document.body.appendChild(bg);
@@ -192,6 +193,17 @@
         location.href = itemHref(panel, item);
       }
 
+      // Zoom bref avant d'ouvrir/naviguer, comme une chaîne Wii qui « avale » l'écran à son
+      // lancement (voir admin.css .wii-tile.launching) — sauf pour « Retour », qui n'a pas
+      // d'équivalent sur la vraie console (elle zoome à l'aller, pas au retour au menu).
+      function launch(i) {
+        const tile = tiles[i], entry = entries[i];
+        if (!tile || !entry) return;
+        playNav();
+        if (entry.accent === 'back') { entry.activate(); return; }
+        tile.classList.add('launching');
+        setTimeout(() => entry.activate(), 180);
+      }
       function render() {
         E.clear(grid);
         entries = currentEntries();
@@ -201,7 +213,7 @@
             h('div', { class: 'wii-tile-label' }, e.label));
           tile.addEventListener('mouseenter', () => { if (focus !== i) { focus = i; paint(); } });
           tile.addEventListener('focus', () => { if (focus !== i) { focus = i; paint(); } });
-          tile.addEventListener('click', () => { focus = i; paint(); playNav(); e.activate(); });
+          tile.addEventListener('click', () => { focus = i; paint(); launch(i); });
           grid.appendChild(tile);
           return tile;
         });
@@ -226,7 +238,7 @@
         else if (e.key === 'ArrowLeft') next = (focus - 1 + n) % n;
         else if (e.key === 'ArrowDown') next = Math.min(focus + cols(), n - 1);
         else if (e.key === 'ArrowUp') next = Math.max(focus - cols(), 0);
-        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playNav(); entries[focus].activate(); return; }
+        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); launch(focus); return; }
         else if ((e.key === 'Escape' || e.key === 'Backspace') && view === 'panel') { e.preventDefault(); goHome(); return; }
         else return;
         e.preventDefault();

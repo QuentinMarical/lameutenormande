@@ -64,8 +64,14 @@ body.wii-body .legal-modal-close:hover { background: linear-gradient(#fff, #dcdc
   html, body { height: 100%; overflow: hidden; } /* pas de scrollbar en desktop, comme un écran d'accueil de console */
 }
 
+/* Contour organique plutôt qu'un simple rectangle arrondi : sur la vraie Wii, une chaîne n'est
+   pas un rectangle mais un « blob » légèrement irrégulier. Le tracé (repris tel quel, il s'agit
+   d'une simple géométrie, pas d'un asset image) vient de la comparaison avec le clip-path utilisé
+   par github.com/jerosajose/onliine, un simulateur libre (AGPL-3.0) du menu Wii 4.3E — voir Crédit. */
 .wii-tile {
-  aspect-ratio: 4 / 3; border: none; border-radius: 16px; padding: .6rem;
+  aspect-ratio: 4 / 3; border: none;
+  clip-path: polygon(2% 7%, 6% 2%, 52% 1%, 95% 3%, 98% 8%, 100% 49%, 98% 92%, 95% 97%, 50% 99%, 5% 97%, 2% 93%, 0 50%);
+  padding: .6rem;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
   cursor: pointer; color: #fff; font: inherit; outline: none;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
@@ -99,6 +105,17 @@ body.wii-body .legal-modal-close:hover { background: linear-gradient(#fff, #dcdc
   50% { transform: rotate(1.4deg) scale(1.06); }
 }
 .wii-tile.active { animation: wiiWobble 1.3s ease-in-out infinite; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.5) inset; }
+
+/* Zoom bref avant de naviguer/ouvrir un écran, comme une chaîne Wii qui « avale » l'écran à son
+   lancement plutôt que de changer de page instantanément (transition rejouée en CSS original,
+   inspirée par la comparaison avec github.com/jerosajose/onliine — voir Crédit). Placée après
+   .active pour l'emporter sur son animation de balancement (même spécificité, priorité au dernier
+   défini). Retiré au retour arrière : la vraie console ne zoome qu'à l'aller. */
+.wii-tile.launching { animation: wiiLaunch .18s ease-in forwards; z-index: 5; }
+@keyframes wiiLaunch {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(2.4); opacity: 0; }
+}
 
 /* Barre de statut : nom + description de la tuile sélectionnée, sous la grille. */
 .wii-status {
