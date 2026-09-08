@@ -17,6 +17,7 @@
        le compte connecté dans le coin horloge plutôt que dans une barre de navigation. -->
   <div class="xmb-clock" id="xmbClock"></div>
   <main id="app"><div class="loader">Chargement…</div></main>
+  <audio id="xmbNav" src="assets/nav.mp3" preload="auto"></audio>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
@@ -24,7 +25,10 @@
   <script src="../elections/assets/legal.js"></script>
   <script>
   (async () => {
-    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#xmbClock');
+    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#xmbClock'), navSound = E.qs('#xmbNav');
+    // Bip de navigation (repris du fork, voir Crédit) — .catch() silencieux : les navigateurs
+    // rejettent play() tant qu'aucune interaction n'a eu lieu sur la page (autoplay bloqué).
+    function playNav() { navSound.currentTime = 0; navSound.play().catch(() => {}); }
 
     // ---------- Horloge (coin haut-droit, façon barre de statut XMB) ----------
     const fmtClock = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
@@ -174,16 +178,16 @@
         if (moveFocus) tiles[col].focus();
       }
       wrap.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); playNav(); setCol(col + 1, true); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); playNav(); setCol(col - 1, true); }
         else if (e.key === 'ArrowDown') {
           if (!subEls.length) return;
-          e.preventDefault();
+          e.preventDefault(); playNav();
           sub = sub === -1 ? 0 : Math.min(sub + 1, subEls.length - 1);
           highlight(); subEls[sub].focus();
         } else if (e.key === 'ArrowUp') {
           if (sub === -1) return;
-          e.preventDefault();
+          e.preventDefault(); playNav();
           sub = sub === 0 ? -1 : sub - 1;
           highlight();
           if (sub === -1) tiles[col].focus(); else subEls[sub].focus();
@@ -250,17 +254,17 @@
         if (moveFocus) cats[col].focus();
       }
       xmb.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); playNav(); setCol(col + 1, true); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); playNav(); setCol(col - 1, true); }
         else if (e.key === 'ArrowDown') {
           if (!subEls.length) return;
-          e.preventDefault();
+          e.preventDefault(); playNav();
           if (zone === 'cat') { zone = 'list'; subIdx = 0; }
           else subIdx = Math.min(subIdx + 1, subEls.length - 1);
           paint(); subEls[subIdx].focus();
         } else if (e.key === 'ArrowUp') {
           if (zone !== 'list') return;
-          e.preventDefault();
+          e.preventDefault(); playNav();
           if (subIdx === 0) { zone = 'cat'; paint(); cats[col].focus(); }
           else { subIdx -= 1; paint(); subEls[subIdx].focus(); }
         }

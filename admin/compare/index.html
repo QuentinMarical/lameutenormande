@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Comparaison XMB — Espace admin</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
+  <style>
+    main.wrap { max-width: 1000px; }
+    .status { display: inline-flex; align-items: center; gap: .35rem; font-weight: 700; white-space: nowrap; }
+    .status.ok { color: var(--ok); }
+    .status.partial { color: var(--orange); }
+    .status.na { color: var(--muted); }
+    table.compare { width: 100%; border-collapse: collapse; margin-top: .5rem; }
+    table.compare th, table.compare td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; font-size: .92rem; }
+    table.compare th { color: var(--violet-2); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
+    table.compare tr:last-child td { border-bottom: none; }
+    .frame-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+    .frame-col { flex: 1 1 420px; min-width: 0; }
+    .frame-col h3 { margin: 0 0 .5rem; font-size: .95rem; color: var(--violet-2); }
+    .frame-col iframe { width: 100%; height: 480px; border: 1px solid var(--line); border-radius: 12px; background: #000; }
+    .frame-note { font-size: .8rem; color: var(--muted); margin-top: .4rem; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Comparaison"><a href="../">Espace admin</a></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Comparaison avec la XMB</h1>
+    <div class="sub">Écran d'accueil de l'espace admin (≥ 1024px) vs référence PlayStation 3</div>
+  </section>
+  <main class="wrap wide">
+
+    <div class="card info column">
+      <div class="title" style="font-size:16px">Référence</div>
+      <div class="desc">
+        Reproduction basée sur <a href="https://github.com/menonparik/xmb-on-web" target="_blank" rel="noopener">menonparik/xmb-on-web</a>,
+        dont un fork corrigé (bugs de navigation, écran de démarrage retiré) vit à
+        <a href="https://github.com/QuentinMarical/xmb-on-web" target="_blank" rel="noopener">github.com/QuentinMarical/xmb-on-web</a>.
+        Voir aussi la case « Crédit » dans <a href="../">l'espace admin</a>.
+      </div>
+    </div>
+
+    <div class="frame-row">
+      <div class="frame-col">
+        <h3>Référence (démo publique du fork original)</h3>
+        <iframe src="https://menonparik.github.io/xmb-on-web/" loading="lazy" title="XMB de référence"></iframe>
+        <div class="frame-note">Flèches ← → pour changer de catégorie, ↑ ↓ pour parcourir ses onglets. Écran de démarrage d'origine (~16 s) conservé ici, corrigé uniquement dans notre fork.</div>
+      </div>
+      <div class="frame-col">
+        <h3>Notre écran d'accueil (connexion requise)</h3>
+        <iframe src="../" loading="lazy" title="Espace admin La Meute Normande"></iframe>
+        <div class="frame-note">Se connecter avec un compte admin pour voir le menu ; mêmes touches fléchées.</div>
+      </div>
+    </div>
+
+    <h2 class="section-title" style="margin-top:2rem">Méthodes d'interaction</h2>
+    <table class="compare">
+      <thead><tr><th>XMB (référence)</th><th>Chez nous</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>← → change la catégorie active</td>
+          <td>Identique — <code>ArrowLeft</code>/<code>ArrowRight</code>, catégorie 0 revient au logo au lieu d'aller hors limites</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>↓ ↑ parcourt les onglets de la catégorie active, un item à la fois</td>
+          <td>Identique, mais généralisé à un nombre d'onglets variable (1 à 7 selon le panel) au lieu de 2-3 codés en dur</td>
+          <td><span class="status ok">✓ Repris et généralisé</span></td>
+        </tr>
+        <tr>
+          <td>Icône active : <code>scale(0.8→1.0)</code>, <code>opacity(0.6→0.85)</code>, ombre portée</td>
+          <td>Mêmes valeurs, sur les icônes de catégories et d'onglets, desktop et mobile</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Libellé de catégorie masqué sauf sur l'active</td>
+          <td>Identique (<code>visibility: hidden/visible</code>)</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Entrée active : titre en grand + description, glow blanc pulsé</td>
+          <td>Identique — mêmes valeurs de <code>text-shadow</code> que <code>glowKeyframes</code> du fork</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Entrées déjà parcourues : remontent au-dessus de la rangée d'icônes plutôt que de disparaître</td>
+          <td>Reproduit via une liste positionnée en absolu (translateY calculé), catégorie au-dessus en z-index</td>
+          <td><span class="status ok">✓ Reproduit</span></td>
+        </tr>
+        <tr>
+          <td>Police Arial/Helvetica, couleur <code>#dadada</code>, ombre portée <code>2px 2px 5px noir</code></td>
+          <td>Identique sur tout l'écran XMB (texte, icônes)</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Bip sonore à chaque déplacement (<code>nav.mp3</code>)</td>
+          <td>Même fichier, rejoué à chaque flèche (silencieux si l'autoplay est bloqué)</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Horloge en haut à droite, cadre clair sans fond</td>
+          <td>Identique ; sert aussi d'emplacement pour la déconnexion (pas d'équivalent côté XMB, qui n'a pas de compte)</td>
+          <td><span class="status ok">✓ Repris</span></td>
+        </tr>
+        <tr>
+          <td>Écran de démarrage (~16 s : titre « WS3 » puis disclaimer)</td>
+          <td>Volontairement absent (retiré aussi dans notre fork) : l'interface charge direct sur le menu</td>
+          <td><span class="status partial">— Volontairement différent</span></td>
+        </tr>
+        <tr>
+          <td>Vidéo de fond en boucle (vagues bleu → rouge)</td>
+          <td>Photo du site (déjà utilisée sur tous les autres outils admin), gardée à la demande</td>
+          <td><span class="status partial">— Volontairement différent</span></td>
+        </tr>
+        <tr>
+          <td>Catégories et onglets codés en dur (6 catégories, 2-3 onglets chacune)</td>
+          <td>Généralisé à des données dynamiques (nombre de catégories/onglets variable) : requis pour coller aux vrais panels admin</td>
+          <td><span class="status partial">— Généralisé</span></td>
+        </tr>
+        <tr>
+          <td>Pas de connexion / de notion de compte</td>
+          <td>Connexion Supabase avant d'afficher le menu (même compte que les autres panels admin)</td>
+          <td><span class="status na">n/a — spécifique à l'admin</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="section-title" style="margin-top:2rem">Incohérences corrigées en le construisant</h2>
+    <table class="compare">
+      <thead><tr><th>Problème constaté</th><th>Correction</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Chevauchement : les entrées remontées se plaçaient <em>sur</em> la rangée d'icônes plutôt qu'au-dessus</td>
+          <td>Écart rangée↔liste agrandi + rangée passée devant en z-index</td>
+        </tr>
+        <tr>
+          <td>Focus clavier jamais posé au chargement (flèches sans effet tant qu'aucun clic n'avait eu lieu)</td>
+          <td>Focus initial explicite sur la première catégorie, desktop et mobile</td>
+        </tr>
+        <tr>
+          <td>Rectangle de focus par défaut du navigateur par-dessus les cases (règle globale du site)</td>
+          <td>Neutralisé sur les éléments XMB ; le grossissement/glow sert déjà d'indicateur de focus</td>
+        </tr>
+        <tr>
+          <td>Double halo : l'ancienne case restait visuellement active pendant le survol d'une autre à la souris</td>
+          <td>État visuel piloté uniquement par une classe <code>.active</code> gérée en JS (plus de <code>:hover</code>/<code>:focus-visible</code> concurrents)</td>
+        </tr>
+        <tr>
+          <td>Palette et police incohérentes avec la référence (violet/cyan, PR Viking) malgré l'inspiration XMB affichée</td>
+          <td>Repassé en gris clair #dadada / Arial partout sur cet écran, fond du site conservé</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </main>
+  <footer class="site-footer" id="footer"></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../../elections/assets/config.js"></script>
+  <script src="../../elections/assets/common.js"></script>
+  <script src="../../elections/assets/legal.js"></script>
+  <script>
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
+      + '<div class="footer-title">Espace admin de la Meute</div>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+  </script>
+</body>
+</html>
