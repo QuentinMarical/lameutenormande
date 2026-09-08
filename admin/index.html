@@ -17,12 +17,12 @@
       <nav id="nav" aria-label="Admin"></nav>
     </div>
   </header>
-  <section class="page-head">
+  <section class="page-head xmb-hide-desktop">
     <h1>Espace administrateur</h1>
     <div class="sub">Connexion unique pour tous les panels du staff</div>
   </section>
   <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
-  <footer class="site-footer" id="footer"></footer>
+  <footer class="site-footer xmb-hide-desktop" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
@@ -66,34 +66,68 @@
     { const slot = E.qs('.topbar .bar'); slot.appendChild(h('div', { class: 'actions' }, h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏻')))); }
 
     // ---------- Panels disponibles ----------
-    // subitems : [id du hash, libellé, description] pour chaque onglet d'un panel, afin d'y aller
-    // directement sans repasser par son écran par défaut. Le premier de la liste (« La Meute
-    // Normande ») ramène au site : pas de sous-catégories, sert juste de première case, comme
-    // l'icône de compte tout à gauche d'un menu XMB.
+    // subitems : { title, desc, hash } pour un onglet du panel (href = panel.href + #hash) — ou
+    // { title, desc, href } pour un lien direct, ou { title, desc, action } pour une action JS
+    // (ouvrir une modale). Le premier panel (« La Meute Normande ») sert de première case, comme
+    // l'icône de compte tout à gauche d'un menu XMB ; ses entrées remplacent le pied de page
+    // (masqué en desktop) : retour au site, pages légales, crédit.
     const LOGO = 'https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png';
     const PANELS = [
-      { key: 'home', label: 'La Meute Normande', desc: '', logo: LOGO, href: 'https://lameutenormande.fr/', subitems: [] },
+      { key: 'home', label: 'La Meute Normande', desc: 'Retour à l\'accueil du site.', logo: LOGO, href: 'https://lameutenormande.fr/', subitems: [
+        { title: 'Retour au site', desc: 'lameutenormande.fr', href: 'https://lameutenormande.fr/' },
+        { title: 'Mentions légales', desc: 'Éditeur, hébergement, propriété intellectuelle.', action: () => E.openLegal('mentions') },
+        { title: 'Politique de confidentialité', desc: 'RGPD : données collectées, droits des visiteurs.', action: () => E.openLegal('confidentialite') },
+        { title: 'Politique de cookies', desc: 'Stockage local utilisé par le site.', action: () => E.openLegal('cookies') },
+        { title: 'Crédit', desc: 'À propos de l\'écran d\'accueil de cet espace admin.', action: () => openCredit() }
+      ] },
       { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', subitems: [
-        ['scrutins', 'Scrutins', 'Créer un scrutin, l\'ouvrir ou le clôturer.'],
-        ['codes', 'Codes', 'Générer les codes de vote et les distribuer.'],
-        ['candidatures', 'Candidatures', 'Voir les candidatures, en retirer si besoin.'],
-        ['votants', 'Votants', 'Bulletins soumis ; invalider un bulletin suspect.'],
-        ['audit', 'Audit', 'Journal des actions du staff sur ce scrutin.'],
-        ['pv', 'Procès-verbal', 'Résultats détaillés, à imprimer ou exporter.'],
-        ['reglages', 'Réglages', 'Annonces automatiques sur Telegram.']
+        { hash: 'scrutins', title: 'Scrutins', desc: 'Créer un scrutin, l\'ouvrir ou le clôturer.' },
+        { hash: 'codes', title: 'Codes', desc: 'Générer les codes de vote et les distribuer.' },
+        { hash: 'candidatures', title: 'Candidatures', desc: 'Voir les candidatures, en retirer si besoin.' },
+        { hash: 'votants', title: 'Votants', desc: 'Bulletins soumis ; invalider un bulletin suspect.' },
+        { hash: 'audit', title: 'Audit', desc: 'Journal des actions du staff sur ce scrutin.' },
+        { hash: 'pv', title: 'Procès-verbal', desc: 'Résultats détaillés, à imprimer ou exporter.' },
+        { hash: 'reglages', title: 'Réglages', desc: 'Annonces automatiques sur Telegram.' }
       ] },
       { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', subitems: [
-        ['sondages', 'Sondages', 'Créer un sondage, l\'ouvrir ou le clôturer.'],
-        ['reponses', 'Réponses', 'Voir les réponses reçues à ce sondage.']
+        { hash: 'sondages', title: 'Sondages', desc: 'Créer un sondage, l\'ouvrir ou le clôturer.' },
+        { hash: 'reponses', title: 'Réponses', desc: 'Voir les réponses reçues à ce sondage.' }
       ] },
       { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', subitems: [
-        ['', 'Comptes administrateurs', 'Inviter, réinitialiser ou désactiver un accès.']
+        { title: 'Comptes administrateurs', desc: 'Inviter, réinitialiser ou désactiver un accès.' }
       ] }
     ];
     const DEFAULT_COL = 1; // Élections plutôt que le logo, au premier chargement
 
     function panelIcon(p) {
       return p.logo ? E.h('img', { src: p.logo, alt: '' }) : E.icon(p.icon);
+    }
+    function itemHref(panel, item) {
+      if (item.action) return '#';
+      if (item.href) return item.href;
+      return panel.href + (item.hash ? '#' + item.hash : '');
+    }
+    function wireItem(a, item) {
+      if (item.action) a.addEventListener('click', (e) => { e.preventDefault(); item.action(); });
+    }
+
+    // ---------- Crédit ----------
+    // Réutilise le même habillage que les modales légales (déjà chargé via elections.css/legal.js).
+    function openCredit() {
+      const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
+      const onKey = (e) => { if (e.key === 'Escape') close(); };
+      const bg = h('div', { class: 'legal-modal-bg', onClick: (e) => { if (e.target === bg) close(); } },
+        h('div', { class: 'legal-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Crédit' },
+          h('div', { class: 'legal-modal-header' }, h('h3', { class: 'legal-modal-title' }, 'Crédit'),
+            h('button', { class: 'legal-modal-close', type: 'button', 'aria-label': 'Fermer', onClick: close }, '×')),
+          h('div', { class: 'legal-modal-body' },
+            h('p', null, 'À partir de 1024px de large, l\'écran d\'accueil de cet espace admin s\'inspire du projet ',
+              h('a', { href: 'https://github.com/menonparik/xmb-on-web', target: '_blank', rel: 'noopener' }, 'xmb-on-web'),
+              ' — une reconstitution du menu XMB de la PlayStation 3 en HTML/CSS/JS.'),
+            h('p', null, 'La disposition (rangée de catégories, liste d\'onglets avec l\'entrée sélectionnée agrandie) et l\'esprit des animations en sont directement inspirés ; le code de cette page reste original et propre à cet outil.'))));
+      document.body.appendChild(bg);
+      document.addEventListener('keydown', onKey);
+      const first = bg.querySelector('.legal-modal-close'); if (first) first.focus();
     }
 
     E.clear(app);
@@ -108,8 +142,9 @@
 
       function renderSubmenu() {
         E.clear(submenu);
-        subEls = PANELS[col].subitems.map(([id, label], i) => {
-          const a = h('a', { class: 'xmb-sub-item', href: PANELS[col].href + (id ? '#' + id : '') }, label);
+        subEls = PANELS[col].subitems.map((item, i) => {
+          const a = h('a', { class: 'xmb-sub-item', href: itemHref(PANELS[col], item) }, item.title);
+          wireItem(a, item);
           a.addEventListener('mouseenter', () => { sub = i; highlight(); });
           a.addEventListener('focus', () => { sub = i; highlight(); });
           submenu.appendChild(a);
@@ -156,16 +191,22 @@
       wrap.append(row, submenu, desc);
       app.appendChild(wrap);
       renderSubmenu(); highlight();
+      tiles[col].focus({ preventScroll: true });
     })();
 
-    // ---------- Version desktop (≥ 1024px) : façon écran d'accueil PS3 ----------
-    // Rangée de catégories en haut (icône + libellé visible seulement sur la case active, comme
-    // le menu XMB) ; en dessous, la liste des onglets de la catégorie active, avec l'entrée
-    // sélectionnée en grand (icône + titre + description) et les autres en petit.
+    // ---------- Version desktop (≥ 1024px) : façon écran d'accueil PS3 (voir Crédit) ----------
+    // Rangée de catégories en haut (icône + libellé visible seulement sur la case active) ; en
+    // dessous, la liste des onglets de la catégorie active dans une fenêtre à hauteur fixe (donc
+    // jamais de scrollbar, quel que soit le nombre d'onglets) : l'entrée sélectionnée glisse en
+    // haut de cette fenêtre et s'affiche en grand (icône + titre + description qui pulse), les
+    // suivantes restent petites en dessous.
     (function buildDesktop() {
+      const ROW_H = 46; // hauteur d'une ligne repliée (doit rester synchro avec admin.css)
       const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
       const catRow = h('div', { class: 'xmb2-row' });
+      const viewport = h('div', { class: 'xmb2-list-viewport' });
       const list = h('div', { class: 'xmb2-list' });
+      viewport.appendChild(list);
       let col = DEFAULT_COL, subIdx = 0, zone = 'cat', subEls = [];
 
       const cats = PANELS.map((p, i) => {
@@ -181,20 +222,25 @@
 
       function renderList() {
         E.clear(list);
-        subEls = PANELS[col].subitems.map(([id, title, idesc], i) => {
-          const a = h('a', { class: 'xmb2-item', href: PANELS[col].href + (id ? '#' + id : '') },
+        subEls = PANELS[col].subitems.map((item, i) => {
+          const a = h('a', { class: 'xmb2-item', href: itemHref(PANELS[col], item) },
             h('div', { class: 'xmb2-item-icon' }, panelIcon(PANELS[col])),
-            h('div', { class: 'xmb2-item-text' }, h('div', { class: 'xmb2-item-title' }, title), h('div', { class: 'xmb2-item-desc' }, idesc || '')));
+            h('div', { class: 'xmb2-item-text' }, h('div', { class: 'xmb2-item-title' }, item.title), h('div', { class: 'xmb2-item-desc' }, item.desc || '')));
+          wireItem(a, item);
           a.addEventListener('mouseenter', () => { subIdx = i; zone = 'list'; paint(); });
           a.addEventListener('focus', () => { subIdx = i; zone = 'list'; paint(); });
           list.appendChild(a);
           return a;
         });
-        list.classList.toggle('open', subEls.length > 0);
+        viewport.classList.toggle('open', subEls.length > 0);
       }
       function paint() {
         cats.forEach((c, i) => c.classList.toggle('active', i === col));
         subEls.forEach((a, i) => a.classList.toggle('active', i === subIdx));
+        // Fait glisser la liste pour amener l'entrée active en haut de la fenêtre visible : tant
+        // que seule une ligne est agrandie à la fois, les lignes qui précèdent mesurent toutes
+        // ROW_H, ce décalage place donc toujours l'entrée active exactement au sommet.
+        list.style.transform = 'translateY(-' + (subIdx * ROW_H) + 'px)';
       }
       function setCol(newCol, moveFocus) {
         col = (newCol + PANELS.length) % PANELS.length; subIdx = 0; zone = 'cat';
@@ -218,9 +264,10 @@
         }
       });
 
-      xmb.append(catRow, list);
+      xmb.append(catRow, viewport);
       app.appendChild(xmb);
       renderList(); paint();
+      cats[col].focus({ preventScroll: true });
     })();
   })();
   </script>

@@ -73,15 +73,24 @@
 @media (min-width: 1024px) {
   .xmb-mobile-only { display: none; }
   .xmb-desktop-only { display: flex; }
+  .xmb-hide-desktop { display: none !important; }
+
+  /* Pas de scrollbar en desktop : la page tient tout entière dans la fenêtre, comme un écran
+     d'accueil de console — page-head et pied de page masqués (leur contenu utile, les pages
+     légales et le crédit, est repris dans la case « La Meute Normande »), fenêtre de la liste
+     à hauteur fixe (voir .xmb2-list-viewport) quel que soit le nombre d'onglets du panel actif. */
+  html, body { height: 100%; overflow: hidden; }
+  main.wrap.wide { display: flex; align-items: center; justify-content: center; padding: 0 1rem; }
 }
 
 /* =====================================================================
-   Version desktop — écran d'accueil façon XMB (PS3) : rangée de
-   catégories en haut, liste des onglets de la catégorie active en
-   dessous (entrée sélectionnée en grand avec sa description, les
-   autres en petit).
+   Version desktop — écran d'accueil façon XMB (PS3), inspiré du projet
+   open source xmb-on-web (github.com/menonparik/xmb-on-web) — voir la
+   case « Crédit ». Rangée de catégories en haut, liste des onglets de
+   la catégorie active en dessous (entrée sélectionnée en grand avec sa
+   description, glissée en haut d'une fenêtre à hauteur fixe).
    ===================================================================== */
-.xmb2 { flex: 1; flex-direction: column; justify-content: center; gap: 2.5rem; padding: 4vh 1rem 6vh; width: 100%; }
+.xmb2 { flex-direction: column; align-items: center; gap: 2.25rem; width: 100%; }
 
 .xmb2-row { display: flex; align-items: flex-end; gap: 1.75rem; }
 
@@ -113,28 +122,33 @@
 }
 .xmb2-cat.active .xmb2-cat-label { opacity: 1; }
 
-.xmb2-list { display: none; flex-direction: column; gap: .1rem; max-width: 640px; }
-.xmb2-list.open { display: flex; }
+/* Fenêtre à hauteur fixe : quel que soit le nombre d'onglets du panel actif, la liste ne fait
+   jamais grandir la page. .xmb2-list glisse verticalement dedans (translateY calculé en JS,
+   voir ROW_H) pour amener l'entrée active en haut, façon liste XMB qui défile. */
+.xmb2-list-viewport { display: none; width: min(640px, 90vw); height: 280px; overflow: hidden; }
+.xmb2-list-viewport.open { display: block; }
+.xmb2-list { display: flex; flex-direction: column; gap: 0; transition: transform .28s cubic-bezier(.25,.46,.45,.94); }
 
 .xmb2-item {
   display: flex; align-items: center; gap: 1.1rem; text-decoration: none; outline: none;
-  padding: .4rem .6rem; border-radius: 14px; transition: padding .22s ease, background .22s ease;
+  height: 46px; box-sizing: border-box; padding: 0 .6rem; border-radius: 14px;
+  transition: height .22s ease, background .22s ease;
 }
 .xmb2-item:focus-visible { outline: none; }
 
 .xmb2-item-icon {
-  flex-shrink: 0; width: 34px; height: 34px; border-radius: 10px;
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   background: var(--panel-1); border: 1px solid transparent; opacity: .55;
   transition: all .22s cubic-bezier(.25,.46,.45,.94);
 }
-.xmb2-item-icon .e-icon, .xmb2-item-icon img { width: 1rem; height: 1rem; color: rgba(255, 255, 255, 0.6); object-fit: contain; transition: all .22s; }
+.xmb2-item-icon .e-icon, .xmb2-item-icon img { width: .95rem; height: .95rem; color: rgba(255, 255, 255, 0.6); object-fit: contain; transition: all .22s; }
 
 .xmb2-item-text { min-width: 0; }
-.xmb2-item-title { font-size: .92rem; font-weight: 600; color: rgba(255, 255, 255, 0.55); transition: all .2s; }
+.xmb2-item-title { font-size: .9rem; font-weight: 600; color: rgba(255, 255, 255, 0.5); transition: all .2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .xmb2-item-desc { display: none; font-size: .82rem; color: var(--muted); margin-top: .2rem; }
 
-.xmb2-item.active { padding: .85rem 1rem; background: rgba(255, 255, 255, 0.03); }
+.xmb2-item.active { height: 108px; background: rgba(255, 255, 255, 0.03); }
 .xmb2-item.active .xmb2-item-icon {
   width: 62px; height: 62px; border-radius: 16px; opacity: 1;
   background: linear-gradient(155deg, rgba(168, 85, 247, 0.28), rgba(56, 189, 248, 0.14));
@@ -142,5 +156,13 @@
   box-shadow: 0 8px 24px rgba(168, 85, 247, 0.2);
 }
 .xmb2-item.active .xmb2-item-icon .e-icon, .xmb2-item.active .xmb2-item-icon img { width: 1.7rem; height: 1.7rem; color: #fff; }
-.xmb2-item.active .xmb2-item-title { font-size: 1.08rem; color: #fff; }
+.xmb2-item.active .xmb2-item-title {
+  font-size: 1.08rem; color: #fff; white-space: normal;
+  animation: xmbGlow 1.6s ease-in-out infinite alternate;
+}
 .xmb2-item.active .xmb2-item-desc { display: block; }
+
+@keyframes xmbGlow {
+  from { text-shadow: 0 0 1px rgba(255, 255, 255, .5), 0 0 2px rgba(168, 85, 247, .3); }
+  to { text-shadow: 0 0 6px rgba(255, 255, 255, .7), 0 0 16px rgba(168, 85, 247, .6); }
+}
