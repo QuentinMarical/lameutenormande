@@ -10,14 +10,19 @@
   <link rel="stylesheet" href="../elections/assets/elections.css">
   <link rel="stylesheet" href="assets/admin.css">
 </head>
-<body class="wii-body">
-  <!-- Pas de bandeau ni de pied de page ici : contrairement aux autres outils admin, cette page
-       reproduit un écran d'accueil façon chaînes de menu Wii (voir Crédit, dans la case « La
-       Meute Normande ») — le retour au site et les pages légales vivent dans cette case plutôt
-       que dans un footer, et le compte connecté dans le coin horloge plutôt qu'une barre de nav. -->
-  <div class="wii-clock" id="wiiClock"></div>
-  <main id="app"><div class="loader">Chargement…</div></main>
-  <audio id="wiiNav" src="assets/nav.mp3" preload="auto"></audio>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <div class="actions" id="topbarActions"></div>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Espace admin</h1>
+    <div class="sub">Les outils d'administration du staff, réunis au même endroit.</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
@@ -25,15 +30,13 @@
   <script src="assets/legal.js"></script>
   <script>
   (async () => {
-    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#wiiClock'), navSound = E.qs('#wiiNav');
-    // Bip de navigation (son original, pas un fichier Nintendo) — .catch() silencieux : les
-    // navigateurs rejettent play() tant qu'aucune interaction n'a eu lieu sur la page.
-    function playNav() { navSound.currentTime = 0; navSound.play().catch(() => {}); }
+    const h = E.h, app = E.qs('#app');
 
-    // ---------- Horloge (coin haut-droit) ----------
-    const fmtClock = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    function tickClock() { clockEl.textContent = fmtClock.format(new Date()).replace('.', ''); }
-    tickClock(); setInterval(tickClock, 1000);
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
+      + '<div class="footer-title">Espace admin de la Meute</div>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
 
     if (!E.ready) { E.notConfigured(app); return; }
 
@@ -53,206 +56,63 @@
         if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
         location.reload();
       });
-      app.classList.add('wii-centered');
       E.clear(app).appendChild(form);
       return;
     }
     const { data: isAdmin } = await E.sb.rpc('is_admin');
     if (!isAdmin) {
-      app.classList.add('wii-centered');
       E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
       return;
     }
-    // Statut connecté, dans le coin horloge plutôt que dans une barre de navigation.
-    clockEl.appendChild(h('button', { type: 'button', class: 'wii-signout', title: 'Se déconnecter (' + (session.user.email || 'admin') + ')', onClick: E.signOut }, '⏻'));
+    // Compte connecté, même pastille que sur les autres panels admin (voir admin/utilisateurs/).
+    E.qs('#topbarActions').appendChild(h('span', { class: 'account' },
+      h('span', null, session.user.email || 'admin'),
+      h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, E.icon('right-from-bracket'))));
 
-    // ---------- Panels disponibles ----------
-    // subitems : { title, desc, hash } pour un onglet du panel (href = panel.href + #hash) — ou
-    // { title, desc, href } pour un lien direct, ou { title, desc, action } pour une action JS
-    // (ouvrir une modale). Le premier panel (« La Meute Normande ») sert de première chaîne,
-    // comme l'icône de compte tout à gauche d'un menu console ; ses entrées remplacent le pied de
-    // page (masqué en desktop) : retour au site, pages légales, crédit. « accent » choisit la
-    // couleur de fond de la chaîne (voir admin.css, palette reprise du site).
-    const LOGO = 'https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png';
-    const PANELS = [
-      { key: 'home', label: 'La Meute Normande', desc: 'Retour à l\'accueil du site.', logo: LOGO, href: 'https://lameutenormande.fr/', accent: 'neutral', subitems: [
-        { title: 'Retour au site', desc: 'lameutenormande.fr', href: 'https://lameutenormande.fr/' },
-        { title: 'Mentions légales', desc: 'Éditeur, hébergement, propriété intellectuelle.', action: () => E.openLegal('mentions') },
-        { title: 'Politique de confidentialité', desc: 'RGPD : données collectées, droits des visiteurs.', action: () => E.openLegal('confidentialite') },
-        { title: 'Politique de cookies', desc: 'Stockage local utilisé par le site.', action: () => E.openLegal('cookies') },
-        { title: 'Crédit', desc: 'À propos de l\'écran d\'accueil de cet espace admin.', action: () => openCredit() }
-      ] },
-      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', accent: 'violet', subitems: [
-        { hash: 'scrutins', title: 'Scrutins', desc: 'Créer un scrutin, l\'ouvrir ou le clôturer.' },
-        { hash: 'codes', title: 'Codes', desc: 'Générer les codes de vote et les distribuer.' },
-        { hash: 'candidatures', title: 'Candidatures', desc: 'Voir les candidatures, en retirer si besoin.' },
-        { hash: 'votants', title: 'Votants', desc: 'Bulletins soumis ; invalider un bulletin suspect.' },
-        { hash: 'audit', title: 'Audit', desc: 'Journal des actions du staff sur ce scrutin.' },
-        { hash: 'pv', title: 'Procès-verbal', desc: 'Résultats détaillés, à imprimer ou exporter.' },
-        { hash: 'reglages', title: 'Réglages', desc: 'Annonces automatiques sur Telegram.' }
-      ] },
-      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', accent: 'orange', subitems: [
-        { hash: 'sondages', title: 'Sondages', desc: 'Créer un sondage, l\'ouvrir ou le clôturer.' },
-        { hash: 'reponses', title: 'Réponses', desc: 'Voir les réponses reçues à ce sondage.' }
-      ] },
-      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', accent: 'teal', subitems: [
-        { title: 'Comptes administrateurs', desc: 'Inviter, réinitialiser ou désactiver un accès.' }
-      ] },
-      { key: 'bureau', label: 'Bureau Meute', desc: 'Groupe Telegram du staff.', icon: 'paper-plane', href: 'https://web.telegram.org/k/#-2361870096', accent: 'blue', subitems: [
-        { title: 'Ouvrir le groupe', desc: 'web.telegram.org — Bureau de la Meute', href: 'https://web.telegram.org/k/#-2361870096' }
-      ] }
+    // ---------- Outils disponibles ----------
+    // links : onglets internes de l'outil (hash sur sa propre page) affichés en accès directs ;
+    // omis pour un outil à page unique (Utilisateurs) ou un raccourci externe (Bureau Meute), qui
+    // affichent un simple bouton « Ouvrir » à la place.
+    const TOOLS = [
+      {
+        key: 'elections', label: 'Élections', icon: 'check-to-slot', accent: 'violet', href: 'elections/',
+        desc: 'Scrutins, candidatures, dépouillement, votants et audit.',
+        links: [
+          { title: 'Scrutins', hash: 'scrutins' }, { title: 'Codes', hash: 'codes' },
+          { title: 'Candidatures', hash: 'candidatures' }, { title: 'Votants', hash: 'votants' },
+          { title: 'Audit', hash: 'audit' }, { title: 'Procès-verbal', hash: 'pv' }, { title: 'Réglages', hash: 'reglages' }
+        ]
+      },
+      {
+        key: 'votes', label: 'Sondages', icon: 'chart-simple', accent: 'orange', href: 'votes/',
+        desc: 'Sondages ponctuels : présence, covoiturage, préférences…',
+        links: [{ title: 'Sondages', hash: 'sondages' }, { title: 'Réponses', hash: 'reponses' }]
+      },
+      {
+        key: 'utilisateurs', label: 'Utilisateurs', icon: 'gear', accent: 'ok', href: 'utilisateurs/',
+        desc: 'Comptes administrateurs, communs à tous les panels ci-dessus.'
+      },
+      {
+        key: 'bureau', label: 'Bureau Meute', icon: 'paper-plane', accent: 'telegram', href: 'https://web.telegram.org/k/#-2361870096', external: true,
+        desc: 'Groupe Telegram du staff, pour échanger en dehors des outils.'
+      }
     ];
-    const DEFAULT_PANEL = 1; // Élections plutôt que le logo, au premier chargement
 
-    function panelIcon(p) {
-      return p.logo ? h('img', { src: p.logo, alt: '' }) : E.icon(p.icon);
-    }
-    function itemHref(panel, item) {
-      if (item.action) return '#';
-      if (item.href) return item.href;
-      return panel.href + (item.hash ? '#' + item.hash : '');
-    }
-
-    // ---------- Crédit ----------
-    // Réutilise le même habillage que les modales légales (déjà chargé via elections.css/assets/legal.js).
-    function openCredit() {
-      const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
-      const onKey = (e) => { if (e.key === 'Escape') close(); };
-      const bg = h('div', { class: 'legal-modal-bg', onClick: (e) => { if (e.target === bg) close(); } },
-        h('div', { class: 'legal-modal', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Crédit' },
-          h('div', { class: 'legal-modal-header' }, h('h3', { class: 'legal-modal-title' }, 'Crédit'),
-            h('button', { class: 'legal-modal-close', type: 'button', 'aria-label': 'Fermer', onClick: close }, '×')),
-          h('div', { class: 'legal-modal-body' },
-            h('p', null, 'L\'écran d\'accueil de cet espace admin s\'inspire du menu de la Wii : une grille de « chaînes » colorées qu\'on ouvre pour accéder à leurs actions, plutôt qu\'une liste de liens classique.'),
-            h('p', null, 'Repris comme langage visuel, en code et assets 100% originaux : grille de tuiles arrondies, une couleur par outil, tuile active qui se balance légèrement (« wobble »), écran dédié en drill-down par outil avec une tuile « Retour », et un bip de confirmation à chaque déplacement.'),
-            h('p', null, h('strong', null, 'Aucun fichier Nintendo n\'est utilisé.'), ' Contrairement à une précédente version de cette page (voir historique), rien n\'a été extrait ou copié d\'un dump de menu Wii réel (icônes, sons, polices, textures) : ce sont des fichiers propriétaires de Nintendo, pas un projet libre. Seuls la disposition et les interactions sont reproduites, avec nos propres icônes, couleurs et bip sonore.'),
-            h('p', null, 'Deux détails affinés par comparaison avec ', h('a', { href: 'https://github.com/jerosajose/onliine', target: '_blank', rel: 'noopener' }, 'onliine'), ', un simulateur libre (AGPL-3.0) du menu Wii 4.3E par José Enrique : le contour légèrement irrégulier des tuiles plutôt qu\'un simple rectangle arrondi, et un bref effet de zoom à l\'ouverture d\'une case. Repris comme principe uniquement (CSS original) — ni son code, ni ses images ou polices ne sont utilisés ici.'),
-            h('p', null, 'Les champs et boutons du formulaire de connexion s\'inspirent du skin « Series 60 » du navigateur Opera pour téléphones Symbian (bordure noire fine, dégradé gris à l\'état pressé) — repris en CSS original, aucune image du skin d\'origine (fichiers propriétaires d\'Opera Software) n\'est utilisée.'),
-            h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
-      document.body.appendChild(bg);
-      document.addEventListener('keydown', onKey);
-      const first = bg.querySelector('.legal-modal-close'); if (first) first.focus();
+    function toolCard(t) {
+      const icon = h('div', { class: 'tool-icon acc-' + t.accent }, E.icon(t.icon));
+      const head = h('div', { class: 'tool-head' }, icon,
+        h('div', null, h('div', { class: 'tool-title' }, t.label), h('div', { class: 'tool-desc' }, t.desc)));
+      if (t.links) {
+        return h('div', { class: 'tool-card' }, head,
+          h('div', { class: 'tool-links' }, t.links.map(l => h('a', { class: 'tool-pill', href: t.href + '#' + l.hash }, l.title))));
+      }
+      return h('div', { class: 'tool-card single' }, head,
+        h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
+          t.external ? 'Ouvrir le groupe' : 'Ouvrir', E.icon('right-from-bracket')));
     }
 
-    E.clear(app);
-
-    // ---------- Écran d'accueil façon menu Wii ----------
-    // Deux « vues » : la grille des outils (home), ou l'écran d'un outil ouvert (panel) listant
-    // ses actions en tuiles, avec une tuile « Retour » en première position — comme ouvrir une
-    // chaîne Wii qui contient elle-même plusieurs éléments (ex. la chaîne Photos). Un outil qui
-    // n'a qu'une seule action (Utilisateurs, Bureau Meute) s'ouvre directement, comme une vraie
-    // chaîne qui lance son contenu sans étape intermédiaire.
-    (function build() {
-      const wrap = h('div', { class: 'wii-wrap' });
-      const grid = h('div', { class: 'wii-grid' });
-      const status = h('div', { class: 'wii-status' });
-      wrap.append(grid, status);
-      app.appendChild(wrap);
-
-      let view = 'panel', panelIdx = DEFAULT_PANEL, focus = 1, tiles = [], entries = [];
-
-      function currentEntries() {
-        if (view === 'home') {
-          return PANELS.map((p, i) => ({ icon: panelIcon(p), label: p.label, desc: p.desc, accent: p.accent, activate: () => openPanel(i) }));
-        }
-        const p = PANELS[panelIdx];
-        const back = { icon: E.icon('arrow-left'), label: 'Retour', desc: 'Menu principal', accent: 'back', activate: goHome };
-        const subs = p.subitems.map(item => ({
-          icon: panelIcon(p), label: item.title, desc: item.desc || '', accent: p.accent,
-          activate: () => activateItem(p, item)
-        }));
-        return [back].concat(subs);
-      }
-      function openPanel(i) {
-        const p = PANELS[i];
-        if (p.subitems.length === 1) { activateItem(p, p.subitems[0]); return; }
-        panelIdx = i; view = 'panel'; focus = 1; render();
-      }
-      function goHome() { view = 'home'; focus = panelIdx; render(); }
-      function activateItem(panel, item) {
-        if (item.action) {
-          // Les modales (légales, crédit) suppriment juste leur <div> à la fermeture, sans jamais
-          // rendre le focus à ce qui était sélectionné avant — il retombe sur <body>, ce qui casse
-          // la navigation clavier de la grille (plus aucune flèche n'a d'effet tant qu'on n'a pas
-          // recliqué une tuile). On restaure donc nous-mêmes le focus une fois la modale fermée.
-          const prev = document.activeElement;
-          item.action();
-          const bg = document.querySelector('.legal-modal-bg');
-          if (bg) {
-            const mo = new MutationObserver(() => {
-              if (!document.body.contains(bg)) {
-                mo.disconnect();
-                if (prev && document.body.contains(prev)) {
-                  // Contrairement à une navigation, on reste sur la grille : la tuile doit
-                  // redevenir visible (retirer le zoom de lancement, resté figé sur son état
-                  // final scale(2.4)/opacity:0 sans ça — sa case restait vide indéfiniment).
-                  prev.classList.remove('launching');
-                  prev.focus({ preventScroll: true });
-                }
-              }
-            });
-            mo.observe(document.body, { childList: true });
-          }
-          return;
-        }
-        location.href = itemHref(panel, item);
-      }
-
-      // Zoom bref avant d'ouvrir/naviguer, comme une chaîne Wii qui « avale » l'écran à son
-      // lancement (voir admin.css .wii-tile.launching) — sauf pour « Retour », qui n'a pas
-      // d'équivalent sur la vraie console (elle zoome à l'aller, pas au retour au menu).
-      function launch(i) {
-        const tile = tiles[i], entry = entries[i];
-        if (!tile || !entry) return;
-        playNav();
-        if (entry.accent === 'back') { entry.activate(); return; }
-        tile.classList.add('launching');
-        setTimeout(() => entry.activate(), 180);
-      }
-      function render() {
-        E.clear(grid);
-        entries = currentEntries();
-        tiles = entries.map((e, i) => {
-          const tile = h('button', { type: 'button', class: 'wii-tile acc-' + e.accent },
-            h('div', { class: 'wii-tile-icon' }, e.icon),
-            h('div', { class: 'wii-tile-label' }, e.label));
-          tile.addEventListener('mouseenter', () => { if (focus !== i) { focus = i; paint(); } });
-          tile.addEventListener('focus', () => { if (focus !== i) { focus = i; paint(); } });
-          tile.addEventListener('click', () => { focus = i; paint(); launch(i); });
-          grid.appendChild(tile);
-          return tile;
-        });
-        if (focus >= tiles.length) focus = 0;
-        paint();
-        if (tiles[focus]) tiles[focus].focus({ preventScroll: true });
-      }
-      function paint() {
-        tiles.forEach((t, i) => t.classList.toggle('active', i === focus));
-        const e = entries[focus];
-        status.textContent = e ? (e.label + (e.desc ? ' — ' + e.desc : '')) : '';
-      }
-      function cols() {
-        if (window.matchMedia('(min-width: 1024px)').matches) return 4;
-        if (window.matchMedia('(min-width: 641px)').matches) return 3;
-        return 2;
-      }
-      wrap.addEventListener('keydown', (e) => {
-        const n = tiles.length; if (!n) return;
-        let next = focus;
-        if (e.key === 'ArrowRight') next = (focus + 1) % n;
-        else if (e.key === 'ArrowLeft') next = (focus - 1 + n) % n;
-        else if (e.key === 'ArrowDown') next = Math.min(focus + cols(), n - 1);
-        else if (e.key === 'ArrowUp') next = Math.max(focus - cols(), 0);
-        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); launch(focus); return; }
-        else if ((e.key === 'Escape' || e.key === 'Backspace') && view === 'panel') { e.preventDefault(); goHome(); return; }
-        else return;
-        e.preventDefault();
-        if (next !== focus) { focus = next; playNav(); paint(); tiles[focus].focus({ preventScroll: true }); }
-      });
-
-      render();
-    })();
+    E.clear(app).appendChild(h('div', { class: 'tool-grid' }, TOOLS.map(toolCard)));
   })();
   </script>
 </body>

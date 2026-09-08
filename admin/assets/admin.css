@@ -1,124 +1,43 @@
-/* Hub admin — écran d'accueil façon menu Wii, sans bandeau ni pied de page (voir Crédit dans la
-   case « La Meute Normande »). Grille de « chaînes » colorées, langage visuel et interactions
-   reproduits en code et assets 100% originaux (voir Crédit) : aucun fichier Nintendo utilisé.
-   Palette reprise des variables du site (elections.css) plutôt qu'un ciel bleu Nintendo. */
+/* Hub admin — tableau de bord des outils du staff. S'appuie entièrement sur le langage visuel déjà
+   établi par elections.css (cartes, palette violet/cyan, police PR Viking, topbar/pied de page du
+   site) plutôt que de réinventer une identité à part : seuls les composants propres à cette page
+   (grille d'outils, pastilles de liens) sont définis ici. */
 
-body.wii-body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-#app { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem; margin: 0; max-width: none; }
-#app.wii-centered { padding: 2rem 1rem; }
-
-/* ---------- Champs et boutons du formulaire de connexion, façon skin Opera « Series 60 » ----------
-   Inspiration visuelle uniquement (voir Crédit) : bordure noire fine, fond clair plat, dégradé
-   gris à l'état pressé/survolé. Rien n'est repris du dossier fourni (fichiers propriétaires
-   Opera Software) — tout est redessiné en CSS, comme pour le langage visuel Wii de la grille.
-   Ne s'applique qu'aux pages avec body.wii-body (cet écran d'accueil), pas au reste du site. */
-body.wii-body .input, body.wii-body textarea.input, body.wii-body select.input {
-  background: #f0f0f0; border: 1px solid #000; border-radius: 2px; color: #111;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
-}
-body.wii-body .input::placeholder { color: rgba(0, 0, 0, 0.45); }
-body.wii-body .input:focus { background: #fff; border-color: #000; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4); }
-body.wii-body .btn {
-  background: linear-gradient(#f8f8f8, #d4d4d4); border: 1px solid #000; border-radius: 3px;
-  color: #111 !important; text-shadow: none; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 1px 2px rgba(0, 0, 0, 0.35);
-  filter: none;
-}
-body.wii-body .btn:hover { background: linear-gradient(#ffffff, #dcdcdc); filter: none; }
-body.wii-body .btn:active { background: linear-gradient(#c6c6c6, #ececec); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45); filter: none; }
-body.wii-body .btn:disabled { filter: grayscale(.3); }
-body.wii-body .btn.secondary { background: linear-gradient(#f8f8f8, #d4d4d4); color: #111 !important; border-color: #000; }
-body.wii-body .btn.danger { background: linear-gradient(#f8f8f8, #d4d4d4); color: #a30000 !important; border-color: #000; }
-body.wii-body .legal-modal-close {
-  background: linear-gradient(#f8f8f8, #d4d4d4); border: 1px solid #000; border-radius: 50%; color: #111;
-}
-body.wii-body .legal-modal-close:hover { background: linear-gradient(#fff, #dcdcdc); transform: none; }
-
-:root { --wii-fg: #dadada; --wii-shadow: 2px 2px 5px rgba(0, 0, 0, 0.85); }
-
-/* Coin horloge (barre de statut). */
-.wii-clock {
-  position: fixed; top: 1.25rem; right: 1.5rem; z-index: 10;
-  display: flex; align-items: center; gap: .6rem;
-  padding: .35rem .9rem; border: 1px solid var(--wii-fg); border-radius: 3px;
-  color: var(--wii-fg); font-family: Arial, Helvetica, sans-serif; font-size: 18px; letter-spacing: 1px;
-  text-shadow: var(--wii-shadow);
-}
-.wii-signout {
-  background: none; border: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer;
-  padding: 0; opacity: .8; transition: opacity .2s;
-}
-.wii-signout:hover, .wii-signout:focus-visible { opacity: 1; outline: none; }
-
-/* ---------- Grille de chaînes ---------- */
-.wii-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.75rem; width: 100%; }
-
-.wii-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem;
-  width: min(560px, 92vw);
-}
-@media (min-width: 641px) {
-  .wii-grid { grid-template-columns: repeat(3, 1fr); gap: 1.4rem; width: min(760px, 90vw); }
-}
-@media (min-width: 1024px) {
-  .wii-grid { grid-template-columns: repeat(4, 1fr); gap: 1.6rem; width: min(900px, 86vw); }
-  html, body { height: 100%; overflow: hidden; } /* pas de scrollbar en desktop, comme un écran d'accueil de console */
+.tool-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
+@media (min-width: 760px) {
+  .tool-grid { grid-template-columns: 1fr 1fr; align-items: start; }
 }
 
-/* Contour organique plutôt qu'un simple rectangle arrondi : sur la vraie Wii, une chaîne n'est
-   pas un rectangle mais un « blob » légèrement irrégulier. Le tracé (repris tel quel, il s'agit
-   d'une simple géométrie, pas d'un asset image) vient de la comparaison avec le clip-path utilisé
-   par github.com/jerosajose/onliine, un simulateur libre (AGPL-3.0) du menu Wii 4.3E — voir Crédit. */
-.wii-tile {
-  aspect-ratio: 4 / 3; border: none;
-  clip-path: polygon(2% 7%, 6% 2%, 52% 1%, 95% 3%, 98% 8%, 100% 49%, 98% 92%, 95% 97%, 50% 99%, 5% 97%, 2% 93%, 0 50%);
-  padding: .6rem;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
-  cursor: pointer; color: #fff; font: inherit; outline: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
-  transition: transform .18s ease, box-shadow .18s ease;
+.tool-card {
+  display: flex; flex-direction: column; gap: 1.15rem;
+  padding: 1.5rem; border-radius: var(--radius);
+  background: var(--panel-1); border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .2s;
 }
-.wii-tile:focus-visible { outline: none; }
+.tool-card:hover { border-color: var(--violet-line); }
+.tool-card.single { flex: 1 1 auto; }
 
-/* Une couleur par outil, dans la palette du site (elections.css) plutôt qu'un ciel bleu Nintendo. */
-.wii-tile.acc-neutral { background: linear-gradient(155deg, #e5e7eb, #9ca3af); color: #1f2937; }
-.wii-tile.acc-violet { background: linear-gradient(155deg, #c084fc, #6d28d9); }
-.wii-tile.acc-orange { background: linear-gradient(155deg, #ffc266, #c2540a); }
-.wii-tile.acc-teal { background: linear-gradient(155deg, #5eead4, #0f766e); }
-.wii-tile.acc-blue { background: linear-gradient(155deg, #7dd3fc, #0369a1); }
-.wii-tile.acc-back { background: linear-gradient(155deg, #3f3f52, #1f1f2c); }
-
-.wii-tile-icon { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)); }
-.wii-tile-icon .e-icon { width: 2rem; height: 2rem; }
-.wii-tile-icon img { width: 2.6rem; height: 2.6rem; object-fit: contain; }
-.wii-tile.acc-neutral .wii-tile-icon .e-icon { color: #1f2937; }
-
-.wii-tile-label {
-  font-family: Arial, Helvetica, sans-serif; font-size: .85rem; font-weight: 700; text-align: center;
-  line-height: 1.2; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55); padding: 0 .2rem;
+.tool-head { display: flex; align-items: flex-start; gap: 1rem; }
+.tool-icon {
+  width: 52px; height: 52px; flex: 0 0 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
 }
-.wii-tile.acc-neutral .wii-tile-label { text-shadow: none; }
+.tool-icon .e-icon { width: 1.5rem; height: 1.5rem; }
+.tool-icon.acc-violet { background: rgba(168, 85, 247, 0.16); color: var(--violet-2); }
+.tool-icon.acc-orange { background: rgba(255, 166, 0, 0.16); color: #ffb833; }
+.tool-icon.acc-ok { background: rgba(46, 187, 136, 0.16); color: #79d8b3; }
+.tool-icon.acc-telegram { background: rgba(0, 172, 237, 0.18); color: #7dd3fc; }
 
-/* Tuile active : léger balancement, comme une chaîne Wii survolée par le pointeur — c'est
-   l'unique indicateur de sélection (pas de rectangle de focus par défaut du navigateur). */
-@keyframes wiiWobble {
-  0%, 100% { transform: rotate(-1.4deg) scale(1.06); }
-  50% { transform: rotate(1.4deg) scale(1.06); }
-}
-.wii-tile.active { animation: wiiWobble 1.3s ease-in-out infinite; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.5) inset; }
+.tool-title { font-size: 1.15rem; font-weight: 700; margin-bottom: .2rem; }
+.tool-desc { font-size: .88rem; color: var(--muted); line-height: 1.5; }
 
-/* Zoom bref avant de naviguer/ouvrir un écran, comme une chaîne Wii qui « avale » l'écran à son
-   lancement plutôt que de changer de page instantanément (transition rejouée en CSS original,
-   inspirée par la comparaison avec github.com/jerosajose/onliine — voir Crédit). Placée après
-   .active pour l'emporter sur son animation de balancement (même spécificité, priorité au dernier
-   défini). Retiré au retour arrière : la vraie console ne zoome qu'à l'aller. */
-.wii-tile.launching { animation: wiiLaunch .18s ease-in forwards; z-index: 5; }
-@keyframes wiiLaunch {
-  from { transform: scale(1); opacity: 1; }
-  to { transform: scale(2.4); opacity: 0; }
+.tool-links { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tool-pill {
+  font-size: .82rem; font-weight: 600; padding: .5rem .95rem; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--line); color: var(--text);
+  text-decoration: none; transition: background .2s, border-color .2s, color .2s;
 }
+.tool-pill:hover { background: rgba(168, 85, 247, 0.16); border-color: var(--violet-line); color: #fff; }
 
-/* Barre de statut : nom + description de la tuile sélectionnée, sous la grille. */
-.wii-status {
-  min-height: 1.4em; text-align: center; color: var(--wii-fg); font-family: Arial, Helvetica, sans-serif;
-  font-size: .92rem; text-shadow: var(--wii-shadow); max-width: 560px;
-}
+.tool-open { align-self: flex-start; }
