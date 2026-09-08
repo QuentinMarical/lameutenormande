@@ -127,6 +127,7 @@
             h('p', null, 'L\'écran d\'accueil de cet espace admin s\'inspire du menu de la Wii : une grille de « chaînes » colorées qu\'on ouvre pour accéder à leurs actions, plutôt qu\'une liste de liens classique.'),
             h('p', null, 'Repris comme langage visuel, en code et assets 100% originaux : grille de tuiles arrondies, une couleur par outil, tuile active qui se balance légèrement (« wobble »), écran dédié en drill-down par outil avec une tuile « Retour », et un bip de confirmation à chaque déplacement.'),
             h('p', null, h('strong', null, 'Aucun fichier Nintendo n\'est utilisé.'), ' Contrairement à une précédente version de cette page (voir historique), rien n\'a été extrait ou copié d\'un dump de menu Wii réel (icônes, sons, polices, textures) : ce sont des fichiers propriétaires de Nintendo, pas un projet libre. Seuls la disposition et les interactions sont reproduites, avec nos propres icônes, couleurs et bip sonore.'),
+            h('p', null, 'Les champs et boutons du formulaire de connexion s\'inspirent du skin « Series 60 » du navigateur Opera pour téléphones Symbian (bordure noire fine, dégradé gris à l\'état pressé) — repris en CSS original, aucune image du skin d\'origine (fichiers propriétaires d\'Opera Software) n\'est utilisée.'),
             h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
       document.body.appendChild(bg);
       document.addEventListener('keydown', onKey);
@@ -169,7 +170,25 @@
       }
       function goHome() { view = 'home'; focus = panelIdx; render(); }
       function activateItem(panel, item) {
-        if (item.action) { item.action(); return; }
+        if (item.action) {
+          // Les modales (légales, crédit) suppriment juste leur <div> à la fermeture, sans jamais
+          // rendre le focus à ce qui était sélectionné avant — il retombe sur <body>, ce qui casse
+          // la navigation clavier de la grille (plus aucune flèche n'a d'effet tant qu'on n'a pas
+          // recliqué une tuile). On restaure donc nous-mêmes le focus une fois la modale fermée.
+          const prev = document.activeElement;
+          item.action();
+          const bg = document.querySelector('.legal-modal-bg');
+          if (bg) {
+            const mo = new MutationObserver(() => {
+              if (!document.body.contains(bg)) {
+                mo.disconnect();
+                if (prev && document.body.contains(prev)) prev.focus({ preventScroll: true });
+              }
+            });
+            mo.observe(document.body, { childList: true });
+          }
+          return;
+        }
         location.href = itemHref(panel, item);
       }
 

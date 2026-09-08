@@ -7,6 +7,32 @@ body.wii-body { margin: 0; min-height: 100vh; display: flex; flex-direction: col
 #app { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem; margin: 0; max-width: none; }
 #app.wii-centered { padding: 2rem 1rem; }
 
+/* ---------- Champs et boutons du formulaire de connexion, façon skin Opera « Series 60 » ----------
+   Inspiration visuelle uniquement (voir Crédit) : bordure noire fine, fond clair plat, dégradé
+   gris à l'état pressé/survolé. Rien n'est repris du dossier fourni (fichiers propriétaires
+   Opera Software) — tout est redessiné en CSS, comme pour le langage visuel Wii de la grille.
+   Ne s'applique qu'aux pages avec body.wii-body (cet écran d'accueil), pas au reste du site. */
+body.wii-body .input, body.wii-body textarea.input, body.wii-body select.input {
+  background: #f0f0f0; border: 1px solid #000; border-radius: 2px; color: #111;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+body.wii-body .input::placeholder { color: rgba(0, 0, 0, 0.45); }
+body.wii-body .input:focus { background: #fff; border-color: #000; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4); }
+body.wii-body .btn {
+  background: linear-gradient(#f8f8f8, #d4d4d4); border: 1px solid #000; border-radius: 3px;
+  color: #111 !important; text-shadow: none; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 1px 2px rgba(0, 0, 0, 0.35);
+  filter: none;
+}
+body.wii-body .btn:hover { background: linear-gradient(#ffffff, #dcdcdc); filter: none; }
+body.wii-body .btn:active { background: linear-gradient(#c6c6c6, #ececec); box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45); filter: none; }
+body.wii-body .btn:disabled { filter: grayscale(.3); }
+body.wii-body .btn.secondary { background: linear-gradient(#f8f8f8, #d4d4d4); color: #111 !important; border-color: #000; }
+body.wii-body .btn.danger { background: linear-gradient(#f8f8f8, #d4d4d4); color: #a30000 !important; border-color: #000; }
+body.wii-body .legal-modal-close {
+  background: linear-gradient(#f8f8f8, #d4d4d4); border: 1px solid #000; border-radius: 50%; color: #111;
+}
+body.wii-body .legal-modal-close:hover { background: linear-gradient(#fff, #dcdcdc); transform: none; }
+
 :root { --wii-fg: #dadada; --wii-shadow: 2px 2px 5px rgba(0, 0, 0, 0.85); }
 
 /* Coin horloge (barre de statut). */
