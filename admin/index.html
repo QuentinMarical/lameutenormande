@@ -22,7 +22,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
   <script src="../elections/assets/common.js"></script>
-  <script src="../elections/assets/legal.js"></script>
+  <script src="assets/legal.js"></script>
   <script>
   (async () => {
     const h = E.h, app = E.qs('#app'), clockEl = E.qs('#xmbClock'), navSound = E.qs('#xmbNav');
@@ -117,7 +117,7 @@
     }
 
     // ---------- Crédit ----------
-    // Réutilise le même habillage que les modales légales (déjà chargé via elections.css/legal.js).
+    // Réutilise le même habillage que les modales légales (déjà chargé via elections.css/assets/legal.js).
     function openCredit() {
       const close = () => { bg.remove(); document.removeEventListener('keydown', onKey); };
       const onKey = (e) => { if (e.key === 'Escape') close(); };
@@ -126,10 +126,12 @@
           h('div', { class: 'legal-modal-header' }, h('h3', { class: 'legal-modal-title' }, 'Crédit'),
             h('button', { class: 'legal-modal-close', type: 'button', 'aria-label': 'Fermer', onClick: close }, '×')),
           h('div', { class: 'legal-modal-body' },
-            h('p', null, 'À partir de 1024px de large, l\'écran d\'accueil de cet espace admin s\'inspire du projet ',
+            h('p', null, 'À partir de 1024px de large, l\'écran d\'accueil de cet espace admin reproduit fidèlement le menu XMB de la PlayStation 3, à partir du projet ',
               h('a', { href: 'https://github.com/menonparik/xmb-on-web', target: '_blank', rel: 'noopener' }, 'xmb-on-web'),
-              ' — une reconstitution du menu XMB de la PlayStation 3 en HTML/CSS/JS.'),
-            h('p', null, 'La disposition (rangée de catégories, liste d\'onglets avec l\'entrée sélectionnée agrandie) et l\'esprit des animations en sont directement inspirés ; le code de cette page reste original et propre à cet outil.'))));
+              ' de Pariksith Menon, dont un fork corrigé (bugs de navigation, écran de démarrage retiré) vit sur ',
+              h('a', { href: 'https://github.com/QuentinMarical/xmb-on-web', target: '_blank', rel: 'noopener' }, 'github.com/QuentinMarical/xmb-on-web'), '.'),
+            h('p', null, 'Repris à l\'identique : disposition (rangée de catégories, liste d\'onglets avec l\'entrée sélectionnée agrandie et glow), palette grise et police Arial, échelle/opacité des icônes, entrées déjà parcourues qui remontent au-dessus de la rangée plutôt que de disparaître, et le bip sonore de navigation. Volontairement différent : pas d\'écran de démarrage, fond du site à la place de la vidéo, et connexion requise (le code de cette page reste original).'),
+            h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
       document.body.appendChild(bg);
       document.addEventListener('keydown', onKey);
       const first = bg.querySelector('.legal-modal-close'); if (first) first.focus();

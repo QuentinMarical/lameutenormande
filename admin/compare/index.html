@@ -66,9 +66,9 @@
       <thead><tr><th>XMB (référence)</th><th>Chez nous</th><th>Statut</th></tr></thead>
       <tbody>
         <tr>
-          <td>← → change la catégorie active</td>
-          <td>Identique — <code>ArrowLeft</code>/<code>ArrowRight</code>, catégorie 0 revient au logo au lieu d'aller hors limites</td>
-          <td><span class="status ok">✓ Repris</span></td>
+          <td>← → change la catégorie active ; le fork original bloque net en butée (première/dernière catégorie)</td>
+          <td>Boucle en continu (dernière → première et inversement), plus proche du vrai comportement console qu'une butée codée en dur</td>
+          <td><span class="status partial">— Amélioré (rebouclage)</span></td>
         </tr>
         <tr>
           <td>↓ ↑ parcourt les onglets de la catégorie active, un item à la fois</td>
@@ -165,7 +165,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../../elections/assets/config.js"></script>
   <script src="../../elections/assets/common.js"></script>
-  <script src="../../elections/assets/legal.js"></script>
+  <script src="../assets/legal.js"></script>
   <script>
     { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
       + '<div class="footer-title">Espace admin de la Meute</div>'
