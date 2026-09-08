@@ -42,21 +42,57 @@
 
 .tool-open { align-self: flex-start; }
 
-/* ---------- Carte de connexion ----------
-   Surface dédiée plutôt que le composant .card générique (accent latéral fin, plutôt pensé pour
-   du contenu informatif) : identité centrée en tête, respiration généreuse, un seul bouton plein
-   largeur bien visible — langage repris de pages de connexion épurées grand public, adapté à la
-   palette sombre du site plutôt qu'une surface claire. */
-.login-shell { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem 3rem; }
+/* ---------- Connexion, façon assistant en deux étapes ----------
+   Surface dédiée plutôt que le composant .card générique : identité centrée en tête, une seule
+   question à la fois (e-mail, puis mot de passe), bouton plein largeur bien visible — repris de
+   l'enchaînement d'une page de connexion grand public fournie en référence, avec nos propres
+   textes/identité/couleurs (aucune marque, logo ou asset de cette référence n'est réutilisé). Les
+   deux formes en arrière-plan sont dessinées pour cette page, pas une reprise de son illustration. */
+.login-shell {
+  position: relative; overflow: hidden; isolation: isolate;
+  flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem 3rem;
+}
+.login-shell::before, .login-shell::after {
+  content: ''; position: absolute; z-index: -1; border-radius: 40px;
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.16), rgba(56, 189, 248, 0.07));
+}
+.login-shell::before { width: 52vw; height: 52vw; max-width: 640px; max-height: 640px; top: -18vw; left: -14vw; transform: rotate(-18deg); }
+.login-shell::after {
+  width: 38vw; height: 38vw; max-width: 460px; max-height: 460px; bottom: -14vw; right: -10vw; transform: rotate(24deg);
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.05));
+}
+
 .login-card {
-  width: 100%; max-width: 420px; padding: 2.75rem 2.25rem; text-align: center;
-  border-radius: 28px; background: linear-gradient(165deg, var(--panel-1), var(--panel-2) 120%);
+  position: relative; width: 100%; max-width: 420px; padding: 2.75rem 2.25rem; text-align: center;
+  border-radius: 16px; background: linear-gradient(165deg, var(--panel-1), var(--panel-2) 120%);
   border: 1px solid var(--violet-line);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 90px rgba(168, 85, 247, 0.08);
 }
-.login-logo { width: 60px; height: 60px; border-radius: 50%; display: block; margin: 0 auto 1.35rem; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); }
-.login-title { font-family: 'PR Viking', 'Inter Tight', sans-serif; font-weight: 400; font-size: 1.65rem; color: #fff; }
-.login-sub { margin: .5rem 0 2rem; color: var(--muted); font-size: .9rem; }
+.login-back {
+  position: absolute; top: 1.4rem; left: 1.4rem; width: 2rem; height: 2rem; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; color: var(--muted); font-size: 1.1rem; cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.login-back:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
+
+.login-logo { width: 56px; height: 56px; border-radius: 50%; display: block; margin: 0 auto 1.1rem; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); }
+.login-title { font-family: 'PR Viking', 'Inter Tight', sans-serif; font-weight: 400; font-size: 1.5rem; color: #fff; }
+.login-sub { margin: .5rem 0 1.75rem; color: var(--muted); font-size: .9rem; }
+.login-email-pill {
+  display: inline-flex; align-items: center; margin: 0 0 1.5rem; padding: .35rem .9rem; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--line); font-size: .85rem; color: var(--text);
+}
 .login-card .field { text-align: left; margin-bottom: 1.15rem; }
+.login-input { border-radius: 6px; }
 .login-card .btn { width: 100%; margin-top: .4rem; padding: .9rem 1.6rem; }
 @media (max-width: 480px) { .login-card { padding: 2.25rem 1.5rem; } }
+
+/* Pied de page minimal pendant la connexion (liens + note, sans le bandeau/crédit du module
+   complet) — voir loginFooter()/fullFooter() dans index.html : colle à une barre utilitaire de
+   bas d'écran plutôt qu'au pied de page habituel une fois dans l'outil. */
+.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1rem; }
+.site-footer.login-footer .legal-links { margin: 0 0 .4rem; }
+.site-footer.login-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
+.site-footer.login-footer .legal-links a:hover { color: #fff; }
+.site-footer.login-footer .legal { font-size: .78rem; }
