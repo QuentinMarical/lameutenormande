@@ -166,8 +166,10 @@
   V.footer = function () {
     const f = V.qs('#footer'); if (!f) return;
     f.innerHTML = '<div class="footer-divider"></div>'
-      + '<div class="footer-title">Sondages de la Meute</div>'
       + '<p class="legal small" style="max-width:520px;margin:0 auto .5rem">Sondage libre, sans compte : ton pseudo et tes réponses sont visibles publiquement une fois envoyés.</p>'
-      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
+      + '<p class="legal">Site réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a>'
+      + ' &amp; calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="link-violet">Spyro the bat🦇</a>.</p>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>';
+    f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && V.openLegal) V.openLegal(b.dataset.legal); });
   };
 })();
