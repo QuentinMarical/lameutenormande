@@ -91,8 +91,8 @@
 /* Pied de page minimal pendant la connexion (liens + note, sans le bandeau/crédit du module
    complet) — voir loginFooter()/fullFooter() dans index.html : colle à une barre utilitaire de
    bas d'écran plutôt qu'au pied de page habituel une fois dans l'outil. */
-.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1rem; }
-.site-footer.login-footer .legal-links { margin: 0 0 .4rem; }
+.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1.5rem; text-align: left; }
+.site-footer.login-footer .legal-links { justify-content: flex-start; margin: 0 0 .4rem; }
 .site-footer.login-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
 .site-footer.login-footer .legal-links a:hover { color: #fff; }
 .site-footer.login-footer .legal { font-size: .78rem; }
