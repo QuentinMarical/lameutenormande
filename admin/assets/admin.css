@@ -1,7 +1,26 @@
-/* Hub admin — tableau de bord des outils du staff. S'appuie entièrement sur le langage visuel déjà
-   établi par elections.css (cartes, palette violet/cyan, police PR Viking, topbar/pied de page du
-   site) plutôt que de réinventer une identité à part : seuls les composants propres à cette page
-   (grille d'outils, pastilles de liens) sont définis ici. */
+/* Hub admin — tableau de bord des outils du staff. S'appuie sur le langage visuel déjà établi par
+   elections.css (cartes, palette violet/cyan, pied de page du site) plutôt que de réinventer une
+   identité à part : seuls les composants propres à cette page sont définis ici. Pas de topbar/
+   page-head séparées (voir index.html) : cette page n'a pas de navigation à y loger, son en-tête
+   est construit dynamiquement pour chaque état (connexion, tableau de bord). */
+
+#app { display: flex; flex-direction: column; flex: 1; }
+
+/* ---------- Tableau de bord (une fois connecté) ---------- */
+.dash-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
+  margin: 2.5rem 0 2rem;
+}
+.dash-brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit; }
+.dash-logo { width: 48px; height: auto; flex-shrink: 0; }
+.dash-title { margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.5rem; color: #fff; }
+.dash-sub { margin-top: .2rem; color: var(--muted); font-size: .9rem; }
+.dash-account { display: flex; align-items: center; gap: .9rem; }
+.dash-email { font-size: .85rem; color: var(--muted); }
+@media (max-width: 640px) {
+  .dash-header { flex-direction: column; align-items: flex-start; margin: 1.5rem 0; }
+  .dash-account { width: 100%; justify-content: space-between; }
+}
 
 .tool-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
 @media (min-width: 760px) {
@@ -76,9 +95,8 @@
 }
 .login-back:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-/* Logo large (celui de la topbar, retirée pendant la connexion — voir hideChrome() dans
-   index.html) plutôt que le macaron rond : pas de recadrage en cercle, juste une largeur maximale
-   raisonnable. */
+/* Même logo que le tableau de bord (.dash-logo) : pas de recadrage en cercle, juste une largeur
+   maximale raisonnable. */
 .login-logo { display: block; width: auto; max-width: 190px; height: auto; max-height: 70px; margin: 0 auto 1.35rem; }
 .login-title { font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 1.4rem; color: #fff; margin: 0 0 1.25rem; }
 .login-email-pill {
@@ -91,23 +109,18 @@
 .login-card .btn.login-secondary { margin-top: .75rem; }
 @media (max-width: 480px) { .login-card { padding: 2.25rem 1.5rem; } }
 
-/* #app en colonne flex qui grandit pour occuper toute la hauteur restante (topbar retirée, page-head
-   masqué pendant la connexion — voir hideChrome() dans index.html) : sans ça, .login-shell n'avait
-   que sa hauteur de contenu et la carte restait collée en haut plutôt que vraiment centrée
-   verticalement, surtout visible sur un écran de mobile haut. Sans effet notable une fois dans
-   l'outil (la grille d'outils n'a pas besoin d'être centrée verticalement). */
-#app { display: flex; flex-direction: column; flex: 1; }
 /* main.wrap (elections.css) a un padding vertical asymétrique (pensé pour une page qui défile,
    pas pour centrer verticalement) : neutralisé pendant la connexion, .login-shell gère seule sa
    propre respiration — sinon la carte se retrouvait décalée vers le haut, le padding-bottom hérité
    comptant en trop dans l'espace « en dessous ». */
 #app.login-mode { padding: 0; }
 
-/* Pied de page minimal pendant la connexion (liens + note, sans le bandeau/crédit du module
-   complet) — voir loginFooter()/fullFooter() dans index.html : colle à une barre utilitaire de
-   bas d'écran plutôt qu'au pied de page habituel une fois dans l'outil. */
-.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1rem; }
-.site-footer.login-footer .legal-links { margin: 0 0 .4rem; }
-.site-footer.login-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
-.site-footer.login-footer .legal-links a:hover { color: #fff; }
-.site-footer.login-footer .legal { font-size: .78rem; }
+/* ---------- Pied de page ----------
+   Même module minimal partout sur cette page (connexion et tableau de bord) : liens utilitaires +
+   note en petits caractères, plutôt que le module complet (bandeau/titre/crédit) utilisé sur les
+   autres panels admin — cette page n'a pas besoin de se présenter deux fois. */
+.site-footer { background: transparent; border-radius: 0; padding: 1.25rem 1rem; }
+.site-footer .legal-links { margin: 0 0 .4rem; }
+.site-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
+.site-footer .legal-links a:hover { color: #fff; }
+.site-footer .legal { font-size: .78rem; }
