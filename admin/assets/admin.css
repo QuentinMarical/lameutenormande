@@ -104,15 +104,19 @@ body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: col
 
 /* Fenêtre à largeur fixe : la rangée de catégories glisse dedans (translateX calculé en JS, voir
    CELL_W) pour garder la catégorie active toujours centrée, comme moveMenu()/xmbMain.marginRight
-   du fork — au lieu d'une rangée statique où seule l'icône active change d'apparence. */
-.xmb2-row-viewport { position: relative; z-index: 2; width: min(600px, 90vw); overflow: hidden; }
-.xmb2-row { display: flex; align-items: flex-end; gap: 1.75rem; transition: transform .3s ease; }
+   du fork. Pas d'overflow:hidden ici (CSS ne permet pas overflow-x:hidden avec overflow-y:visible
+   sur les mêmes axes — le visible est silencieusement converti en auto par la spec, ce qui aurait
+   quand même rogné la liste, enfant de .xmb2-row et qui dépasse sous la rangée). En pratique rien
+   ne déborde de cette largeur avec le nombre de catégories actuel, et le bord de l'écran (voir
+   body en overflow:hidden) finit toujours par rogner ce qui glisserait vraiment trop loin. */
+.xmb2-row-viewport { position: relative; z-index: 2; width: min(600px, 90vw); }
+.xmb2-row { position: relative; display: flex; align-items: flex-end; gap: 1.75rem; transition: transform .3s ease; }
 
 /* min-width:0 est indispensable : sans lui, le min-width:auto par defaut d'un item flex se cale
    sur le contenu (le libelle en nowrap, meme visibility:hidden compte pour la taille intrinseque)
    et rend chaque case plus large que 64px des que son libelle depasse cette largeur — cassant le
    pas fixe (CELL_W en JS) dont translateX a besoin pour centrer la bonne case. */
-.xmb2-cat { flex: 0 0 64px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; text-decoration: none; outline: none; }
+.xmb2-cat { flex: 0 0 64px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; text-decoration: none; outline: none; cursor: pointer; }
 .xmb2-cat:focus-visible { outline: none; }
 
 .xmb2-cat-icon { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.85)); }
@@ -132,18 +136,22 @@ body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: col
 }
 .xmb2-cat.active .xmb2-cat-label { visibility: visible; }
 
-/* La liste doit rester alignée sur l'icône active de la rangée (son icône à elle juste en
-   dessous de l'icône de catégorie), pas centrée indépendamment comme un bloc à part : comme la
-   rangée centre toujours son icône active au milieu de .xmb2-row-viewport, ce milieu est un point
-   fixe sur la page (identique quelle que soit la catégorie) — la liste s'ancre donc en absolu à
-   ce même point (left:50%, sans transform:translateX(-50%) : c'est le bord gauche de la liste,
-   là où se trouve l'icône du premier item, qu'on veut au centre, pas le centre de la liste).
+/* La liste est un enfant de .xmb2-row (pas de .xmb2-row-viewport ni .xmb2) : comme translateX est
+   appliqué à .xmb2-row pour faire défiler les icônes, tout ce que la rangée contient — icônes ET
+   liste — glisse ensemble d'un seul bloc pendant la transition, la liste restant physiquement
+   rattachée à son icône au lieu de « sauter » à sa place une fois la rangée arrivée (vérifié
+   image par image sur une vraie vidéo de XMB PS3 : l'ancienne liste glisse hors champ avec son
+   icône pendant que la nouvelle glisse à l'écran avec la sienne). left est donc calculé en JS en
+   coordonnées LOCALES de la rangée, pas de la page (col*CELL_W + ITEM_W/2, le centre de la case
+   active avant transformation — voir scrollRow()), sans transform:translateX(-50%) : c'est le
+   bord gauche de la liste, là où se trouve l'icône du premier item, qu'on veut à ce centre, pas
+   le centre de la liste elle-même.
    Hauteur nulle plutôt qu'une fenêtre coupée : la liste ne fait jamais grandir la page (hors du
    flux), mais rien n'est masqué — .xmb2-list glisse (translateY calculé en JS, voir ROW_H) pour
    amener l'entrée active juste sous la rangée ; les entrées déjà parcourues remontent au-dessus
    d'elle, en petit, au lieu de disparaître, comme sur la XMB. */
 .xmb2-list-viewport {
-  display: none; position: absolute; z-index: 1; top: 100%; left: 50%; margin-top: 5rem;
+  display: none; position: absolute; z-index: 1; top: 100%; margin-top: 5rem;
   width: min(640px, 90vw); height: 0; overflow: visible;
 }
 .xmb2-list-viewport.open { display: block; }

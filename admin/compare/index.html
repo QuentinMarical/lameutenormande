@@ -172,7 +172,15 @@
         </tr>
         <tr>
           <td>La liste d'onglets était centrée indépendamment de la rangée (deux blocs centrés séparément, mais le contenu de la liste partait de son propre bord gauche) : son icône ne suivait pas celle de la catégorie active, l'écart entre les deux atteignait plus de 250px selon la catégorie</td>
-          <td>La liste s'ancre désormais en absolu au même point horizontal fixe où la rangée centre toujours son icône active (<code>left: 50%</code> sur son bord gauche, pas son centre) : son icône reste alignée sous celle de la catégorie quelle qu'elle soit</td>
+          <td>Premier correctif (insuffisant) : ancrer la liste au même point fixe de la page où la rangée centre toujours sa catégorie active. Suffisant à l'arrêt, mais la liste ne bougeait pas <em>avec</em> son icône pendant la transition — voir ligne suivante</td>
+        </tr>
+        <tr>
+          <td>Pendant le défilement de la rangée, la liste ne suit pas visuellement son icône (vérifié image par image sur une vraie vidéo de XMB PS3 : l'ancienne liste glisse hors champ avec son icône pendant que la nouvelle glisse à l'écran avec la sienne — les deux sont un seul bloc qui bouge ensemble)</td>
+          <td>La liste est désormais un enfant direct de <code>.xmb2-row</code> (l'élément qui reçoit le <code>translateX</code>) plutôt qu'un bloc à part positionné en coordonnées de page : elle hérite du même mouvement que les icônes, comme sur la vraie console</td>
+        </tr>
+        <tr>
+          <td>Les icônes de catégorie n'ouvrent jamais rien directement sur la vraie XMB — seule une entrée précise de la liste (sous-catégorie) est activable</td>
+          <td>Les icônes de catégorie n'ont plus de lien de navigation (desktop et mobile) ; seules les entrées de la liste y mènent — la première correspond déjà à l'écran par défaut de l'outil</td>
         </tr>
       </tbody>
     </table>

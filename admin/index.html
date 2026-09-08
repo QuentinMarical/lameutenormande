@@ -164,8 +164,11 @@
         desc.textContent = PANELS[col].desc;
         subEls.forEach((a, i) => a.classList.toggle('active', i === sub));
       }
+      // Pas de href sur les tuiles de catégorie : comme sur la vraie XMB, une catégorie seule ne
+      // mène nulle part, on ne peut agir que sur une sous-catégorie précise de sa liste (la
+      // première y correspond déjà à l'écran par défaut de l'outil).
       const tiles = PANELS.map((p, i) => {
-        const tile = h('a', { class: 'xmb-tile', href: p.href, tabindex: '0' },
+        const tile = h('a', { class: 'xmb-tile', tabindex: '0' },
           h('div', { class: 'icon-wrap' }, panelIcon(p)),
           h('div', { class: 'label' }, p.label));
         const onEnter = () => { if (col !== i) { col = i; renderSubmenu(); } sub = -1; highlight(); };
@@ -217,13 +220,23 @@
       const rowViewport = h('div', { class: 'xmb2-row-viewport' });
       const catRow = h('div', { class: 'xmb2-row' });
       rowViewport.appendChild(catRow);
+      // La liste est un enfant de .xmb2-row (pas de .xmb2) : comme translateX (voir scrollRow) est
+      // appliqué à .xmb2-row, tout ce qu'il contient — les icônes ET la liste — bouge ensemble
+      // d'un seul bloc pendant la transition, exactement comme sur la vraie XMB où la liste reste
+      // physiquement rattachée à son icône au lieu de « sauter » à sa position une fois la rangée
+      // arrivée. Positionnée en coordonnées locales de la rangée (col*CELL_W + ITEM_W/2 : le
+      // centre de la case active avant transformation), pas en coordonnées de page.
       const viewport = h('div', { class: 'xmb2-list-viewport' });
       const list = h('div', { class: 'xmb2-list' });
       viewport.appendChild(list);
+      catRow.appendChild(viewport);
       let col = DEFAULT_COL, subIdx = 0, zone = 'cat', subEls = [];
 
+      // Pas de href sur les catégories : comme sur la vraie XMB, une catégorie seule ne mène nulle
+      // part, on ne peut agir que sur une sous-catégorie précise de sa liste (la première y
+      // correspond déjà à l'écran par défaut de l'outil).
       const cats = PANELS.map((p, i) => {
-        const cat = h('a', { class: 'xmb2-cat', href: p.href, tabindex: '0' },
+        const cat = h('a', { class: 'xmb2-cat', tabindex: '0' },
           h('div', { class: 'xmb2-cat-icon' }, panelIcon(p)),
           h('div', { class: 'xmb2-cat-label' }, p.label));
         const onEnter = () => setCol(i, false);
@@ -232,17 +245,22 @@
         catRow.appendChild(cat);
         return cat;
       });
-      // Fait défiler toute la rangée horizontalement pour garder la catégorie active centrée dans
-      // sa fenêtre — comme moveMenu()/xmbMain.marginRight du fork, qui recentre l'ensemble de la
-      // rangée à chaque changement de catégorie plutôt que de laisser les icônes fixes.
-      // Recalculé au redimensionnement : sinon une mesure prise pendant que .xmb-desktop-only vaut
-      // encore display:none (chargement en largeur mobile, puis agrandissement sans recharger)
-      // donnerait une largeur de 0 et un centrage resté faux jusqu'à la prochaine navigation.
+      // Fait défiler toute la rangée (icônes + liste, voir plus haut) horizontalement pour garder
+      // la catégorie active centrée dans sa fenêtre — comme moveMenu()/xmbMain.marginRight du
+      // fork, qui recentre l'ensemble de la rangée à chaque changement de catégorie plutôt que de
+      // laisser les icônes fixes. Recalculé au redimensionnement : sinon une mesure prise pendant
+      // que .xmb-desktop-only vaut encore display:none (chargement en largeur mobile, puis
+      // agrandissement sans recharger) donnerait une largeur de 0 et un centrage resté faux
+      // jusqu'à la prochaine navigation.
       function scrollRow() {
         const vw = rowViewport.getBoundingClientRect().width || rowViewport.offsetWidth;
         // Centre du n-ième .xmb2-cat (largeur ITEM_W) : n*CELL_W + ITEM_W/2 (pas CELL_W/2, qui
         // inclut à tort la moitié du gap suivant et décale tout de (GAP_W/2)px vers la gauche).
         catRow.style.transform = 'translateX(' + (vw / 2 - (col * CELL_W + ITEM_W / 2)) + 'px)';
+        // Même centre, mais en coordonnées LOCALES de .xmb2-row (avant sa propre transformation) :
+        // la liste étant un enfant de la rangée, elle héritera automatiquement du translateX
+        // ci-dessus au lieu d'avoir besoin d'être recalculée en coordonnées de page.
+        viewport.style.left = (col * CELL_W + ITEM_W / 2) + 'px';
       }
       window.addEventListener('resize', scrollRow);
 
@@ -291,11 +309,11 @@
         }
       });
 
-      // viewport est positionné en absolu (voir admin.css) : ça l'ancre juste sous la rangée de
-      // catégories (via le gap de .xmb2) sans grandir la page — les entrées déjà parcourues
-      // (translateY négatif) remontent donc au-dessus de l'ancre, jusque par-dessus les icônes si
-      // besoin, plutôt que d'être découpées par une fenêtre, comme sur la vraie XMB.
-      xmb.append(rowViewport, viewport);
+      // viewport (déjà attaché à catRow plus haut) est positionné en absolu (voir admin.css) : ça
+      // l'ancre juste sous la rangée de catégories sans grandir la page — les entrées déjà
+      // parcourues (translateY négatif) remontent donc au-dessus de l'ancre, jusque par-dessus les
+      // icônes si besoin, plutôt que d'être découpées par une fenêtre, comme sur la vraie XMB.
+      xmb.appendChild(rowViewport);
       app.appendChild(xmb);
       renderList(); paint();
       cats[col].focus({ preventScroll: true });
