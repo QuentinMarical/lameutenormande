@@ -183,7 +183,13 @@
             const mo = new MutationObserver(() => {
               if (!document.body.contains(bg)) {
                 mo.disconnect();
-                if (prev && document.body.contains(prev)) prev.focus({ preventScroll: true });
+                if (prev && document.body.contains(prev)) {
+                  // Contrairement à une navigation, on reste sur la grille : la tuile doit
+                  // redevenir visible (retirer le zoom de lancement, resté figé sur son état
+                  // final scale(2.4)/opacity:0 sans ça — sa case restait vide indéfiniment).
+                  prev.classList.remove('launching');
+                  prev.focus({ preventScroll: true });
+                }
               }
             });
             mo.observe(document.body, { childList: true });
