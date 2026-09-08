@@ -230,7 +230,7 @@ document.addEventListener('click', function (e) {
             let evenementModal = null;
 
             /* ------------------------------------------------------------------
-             * Sondages (lameutenormande.fr/votes) : un sondage associé à un
+             * Sondages (lameutenormande.fr/actus/sondages) : un sondage associé à un
              * évènement partage son "slug" avec l'UID de cet évènement dans le
              * calendrier ICS — c'est le staff qui le crée depuis le panel
              * d'admin des sondages (bouton de suggestion basé sur les
@@ -267,10 +267,10 @@ document.addEventListener('click', function (e) {
                 return clientVotesPromise;
             }
 
-            // Identité de réponse : mêmes clés localStorage que lameutenormande.fr/votes (même
-            // origine, stockage partagé) — un pseudo tapé ici est donc retrouvé sur l'autre page,
-            // et réciproquement. Le device_token n'est qu'une clé d'édition, jamais une identité :
-            // voir votes/supabase/schema.sql pour le détail de cette conception.
+            // Identité de réponse : mêmes clés localStorage que lameutenormande.fr/actus/sondages
+            // (même origine, stockage partagé) — un pseudo tapé ici est donc retrouvé sur l'autre
+            // page, et réciproquement. Le device_token n'est qu'une clé d'édition, jamais une
+            // identité : voir votes/supabase/schema.sql pour le détail de cette conception.
             function obtenirDeviceToken() {
                 try {
                     let t = localStorage.getItem('votes.device');
