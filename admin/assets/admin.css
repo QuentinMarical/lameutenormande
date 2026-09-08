@@ -1,190 +1,81 @@
-/* Hub admin — écran d'accueil façon XMB (PS3), sans bandeau ni pied de page (voir Crédit dans
-   la case « La Meute Normande »). Palette, police, ombres et transitions reprises au plus près
-   du fork corrigé github.com/QuentinMarical/xmb-on-web (lui-même dérivé de
-   github.com/menonparik/xmb-on-web) : icônes nues (pas de pastille colorée), gris clair #dadada,
-   Arial, ombre portée noire, glow blanc sur l'entrée active. Seul le fond (photo du site, au lieu
-   de leur vidéo) reste le nôtre. */
+/* Hub admin — écran d'accueil façon menu Wii, sans bandeau ni pied de page (voir Crédit dans la
+   case « La Meute Normande »). Grille de « chaînes » colorées, langage visuel et interactions
+   reproduits en code et assets 100% originaux (voir Crédit) : aucun fichier Nintendo utilisé.
+   Palette reprise des variables du site (elections.css) plutôt qu'un ciel bleu Nintendo. */
 
-body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-#app { flex: 1; width: 100%; display: flex; flex-direction: column; padding: 0; margin: 0; max-width: none; }
-#app.xmb-centered { align-items: center; justify-content: center; padding: 2rem 1rem; }
+body.wii-body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+#app { flex: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem; margin: 0; max-width: none; }
+#app.wii-centered { padding: 2rem 1rem; }
 
-:root { --xmb-fg: #dadada; --xmb-shadow: 2px 2px 5px rgba(0, 0, 0, 0.85); }
+:root { --wii-fg: #dadada; --wii-shadow: 2px 2px 5px rgba(0, 0, 0, 0.85); }
 
-/* Coin horloge (barre de statut), au plus près de .clock/.clock-container du fork : simple
-   cadre clair sans remplissage, texte avec ombre portée. */
-.xmb-clock {
+/* Coin horloge (barre de statut). */
+.wii-clock {
   position: fixed; top: 1.25rem; right: 1.5rem; z-index: 10;
   display: flex; align-items: center; gap: .6rem;
-  padding: .35rem .9rem; border: 1px solid var(--xmb-fg); border-radius: 3px;
-  color: var(--xmb-fg); font-family: Arial, Helvetica, sans-serif; font-size: 18px; letter-spacing: 1px;
-  text-shadow: var(--xmb-shadow);
+  padding: .35rem .9rem; border: 1px solid var(--wii-fg); border-radius: 3px;
+  color: var(--wii-fg); font-family: Arial, Helvetica, sans-serif; font-size: 18px; letter-spacing: 1px;
+  text-shadow: var(--wii-shadow);
 }
-.xmb-signout {
+.wii-signout {
   background: none; border: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer;
   padding: 0; opacity: .8; transition: opacity .2s;
 }
-.xmb-signout:hover, .xmb-signout:focus-visible { opacity: 1; outline: none; }
+.wii-signout:hover, .wii-signout:focus-visible { opacity: 1; outline: none; }
 
-.xmb-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem 4rem; gap: 1.75rem; }
+/* ---------- Grille de chaînes ---------- */
+.wii-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.75rem; width: 100%; }
 
-.xmb-row { display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 6vw, 4.5rem); flex-wrap: wrap; }
-
-/* Icônes nues : ni pastille ni bordure, juste l'image/le pictogramme avec ombre portée — le
-   fork anime seulement scale (0.8 → 1.0) et opacity (0.6 → 0.85), jamais de fond ni de halo. */
-.xmb-tile { display: flex; flex-direction: column; align-items: center; gap: .6rem; text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; padding: 0; font: inherit; outline: none; }
-.xmb-tile:focus-visible { outline: none; }
-
-.xmb-tile .icon-wrap { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.85)); }
-.xmb-tile .icon-wrap .e-icon, .xmb-tile .icon-wrap img {
-  width: 2.6rem; height: 2.6rem; color: var(--xmb-fg); object-fit: contain;
-  scale: 0.8; opacity: 0.6; transition: scale .2s, opacity .2s, filter .2s;
+.wii-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem;
+  width: min(560px, 92vw);
 }
-.xmb-tile .icon-wrap img { filter: grayscale(1) brightness(1.15); }
-
-.xmb-tile.active .icon-wrap .e-icon, .xmb-tile.active .icon-wrap img { scale: 1; opacity: 0.85; }
-.xmb-tile.active .icon-wrap img { filter: none; }
-
-.xmb-tile .label {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: .95rem; letter-spacing: normal;
-  color: var(--xmb-fg); text-shadow: var(--xmb-shadow);
-  visibility: hidden;
+@media (min-width: 641px) {
+  .wii-grid { grid-template-columns: repeat(3, 1fr); gap: 1.4rem; width: min(760px, 90vw); }
 }
-.xmb-tile.active .label { visibility: visible; }
-
-.xmb-desc { min-height: 1.4em; text-align: center; color: var(--xmb-fg); font-family: Arial, Helvetica, sans-serif; font-size: .92rem; text-shadow: var(--xmb-shadow); max-width: 480px; transition: opacity .2s; }
-
-/* ---------- Sous-catégories (façon liste XMB sous la case sélectionnée) ---------- */
-.xmb-submenu { display: none; flex-direction: column; align-items: stretch; gap: .3rem; width: min(280px, 90vw); }
-.xmb-submenu.open { display: flex; animation: xmbSubIn .22s ease-out; }
-
-.xmb-sub-item {
-  display: block; text-align: center; text-decoration: none;
-  padding: .5rem 1rem; border-radius: 3px;
-  background: none; border: 1px solid transparent;
-  color: rgba(218, 218, 218, 0.55); font-family: Arial, Helvetica, sans-serif; font-size: .9rem;
-  outline: none; transition: all .18s ease;
-}
-.xmb-sub-item.active {
-  color: var(--xmb-fg); border-color: var(--xmb-fg);
-  animation: xmbGlow 1.6s ease-in-out infinite alternate;
-}
-
-@keyframes xmbSubIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 640px) {
-  .xmb-tile .icon-wrap .e-icon, .xmb-tile .icon-wrap img { width: 2.2rem; height: 2.2rem; }
-}
-
-/* ---------- Bascule mobile / desktop ---------- */
-.xmb-desktop-only { display: none; }
 @media (min-width: 1024px) {
-  .xmb-mobile-only { display: none; }
-  .xmb-desktop-only { display: flex; }
-
-  /* Pas de scrollbar en desktop : la page tient tout entière dans la fenêtre, comme un écran
-     d'accueil de console — pas de bandeau ni de pied de page (leur contenu utile, les pages
-     légales et le crédit, est repris dans la case « La Meute Normande »). */
-  html, body { height: 100%; overflow: hidden; }
-  #app { align-items: center; justify-content: center; padding: 0 1rem; }
+  .wii-grid { grid-template-columns: repeat(4, 1fr); gap: 1.6rem; width: min(900px, 86vw); }
+  html, body { height: 100%; overflow: hidden; } /* pas de scrollbar en desktop, comme un écran d'accueil de console */
 }
 
-/* =====================================================================
-   Version desktop — écran d'accueil façon XMB (PS3). Rangée de catégories
-   en haut, liste des onglets de la catégorie active en dessous (entrée
-   sélectionnée en grand avec sa description, glow blanc) ; les entrées
-   déjà parcourues remontent au-dessus de la rangée plutôt que disparaître.
-   Voir la case « Crédit » pour la source d'inspiration.
-   ===================================================================== */
-.xmb2 { position: relative; flex-direction: column; align-items: center; gap: 5rem; width: 100%; }
-
-/* Fenêtre à largeur fixe : la rangée de catégories glisse dedans (translateX calculé en JS, voir
-   CELL_W) pour garder la catégorie active toujours centrée, comme moveMenu()/xmbMain.marginRight
-   du fork. Pas d'overflow:hidden ici (CSS ne permet pas overflow-x:hidden avec overflow-y:visible
-   sur les mêmes axes — le visible est silencieusement converti en auto par la spec, ce qui aurait
-   quand même rogné la liste, enfant de .xmb2-row et qui dépasse sous la rangée). En pratique rien
-   ne déborde de cette largeur avec le nombre de catégories actuel, et le bord de l'écran (voir
-   body en overflow:hidden) finit toujours par rogner ce qui glisserait vraiment trop loin. */
-.xmb2-row-viewport { position: relative; z-index: 2; width: min(600px, 90vw); }
-.xmb2-row { position: relative; display: flex; align-items: flex-end; gap: 1.75rem; transition: transform .3s ease; }
-
-/* min-width:0 est indispensable : sans lui, le min-width:auto par defaut d'un item flex se cale
-   sur le contenu (le libelle en nowrap, meme visibility:hidden compte pour la taille intrinseque)
-   et rend chaque case plus large que 64px des que son libelle depasse cette largeur — cassant le
-   pas fixe (CELL_W en JS) dont translateX a besoin pour centrer la bonne case. */
-.xmb2-cat { flex: 0 0 64px; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; text-decoration: none; outline: none; cursor: pointer; }
-.xmb2-cat:focus-visible { outline: none; }
-
-.xmb2-cat-icon { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 0 0.2rem rgba(0, 0, 0, 0.85)); }
-.xmb2-cat-icon .e-icon, .xmb2-cat-icon img {
-  width: 2.2rem; height: 2.2rem; color: var(--xmb-fg); object-fit: contain;
-  scale: 0.8; opacity: 0.6; transition: scale .2s, opacity .2s, filter .2s;
+.wii-tile {
+  aspect-ratio: 4 / 3; border: none; border-radius: 16px; padding: .6rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  cursor: pointer; color: #fff; font: inherit; outline: none;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.xmb2-cat-icon img { filter: grayscale(1) brightness(1.15); }
+.wii-tile:focus-visible { outline: none; }
 
-.xmb2-cat.active .xmb2-cat-icon .e-icon, .xmb2-cat.active .xmb2-cat-icon img { scale: 1; opacity: 0.85; }
-.xmb2-cat.active .xmb2-cat-icon img { filter: none; }
+/* Une couleur par outil, dans la palette du site (elections.css) plutôt qu'un ciel bleu Nintendo. */
+.wii-tile.acc-neutral { background: linear-gradient(155deg, #e5e7eb, #9ca3af); color: #1f2937; }
+.wii-tile.acc-violet { background: linear-gradient(155deg, #c084fc, #6d28d9); }
+.wii-tile.acc-orange { background: linear-gradient(155deg, #ffc266, #c2540a); }
+.wii-tile.acc-teal { background: linear-gradient(155deg, #5eead4, #0f766e); }
+.wii-tile.acc-blue { background: linear-gradient(155deg, #7dd3fc, #0369a1); }
+.wii-tile.acc-back { background: linear-gradient(155deg, #3f3f52, #1f1f2c); }
 
-.xmb2-cat-label {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 18px; color: var(--xmb-fg); text-shadow: var(--xmb-shadow); white-space: nowrap;
-  visibility: hidden;
+.wii-tile-icon { display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55)); }
+.wii-tile-icon .e-icon { width: 2rem; height: 2rem; }
+.wii-tile-icon img { width: 2.6rem; height: 2.6rem; object-fit: contain; }
+.wii-tile.acc-neutral .wii-tile-icon .e-icon { color: #1f2937; }
+
+.wii-tile-label {
+  font-family: Arial, Helvetica, sans-serif; font-size: .85rem; font-weight: 700; text-align: center;
+  line-height: 1.2; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55); padding: 0 .2rem;
 }
-.xmb2-cat.active .xmb2-cat-label { visibility: visible; }
+.wii-tile.acc-neutral .wii-tile-label { text-shadow: none; }
 
-/* La liste est un enfant de .xmb2-row (pas de .xmb2-row-viewport ni .xmb2) : comme translateX est
-   appliqué à .xmb2-row pour faire défiler les icônes, tout ce que la rangée contient — icônes ET
-   liste — glisse ensemble d'un seul bloc pendant la transition, la liste restant physiquement
-   rattachée à son icône au lieu de « sauter » à sa place une fois la rangée arrivée (vérifié
-   image par image sur une vraie vidéo de XMB PS3 : l'ancienne liste glisse hors champ avec son
-   icône pendant que la nouvelle glisse à l'écran avec la sienne). left est donc calculé en JS en
-   coordonnées LOCALES de la rangée, pas de la page (col*CELL_W + ITEM_W/2, le centre de la case
-   active avant transformation — voir scrollRow()), sans transform:translateX(-50%) : c'est le
-   bord gauche de la liste, là où se trouve l'icône du premier item, qu'on veut à ce centre, pas
-   le centre de la liste elle-même.
-   Hauteur nulle plutôt qu'une fenêtre coupée : la liste ne fait jamais grandir la page (hors du
-   flux), mais rien n'est masqué — .xmb2-list glisse (translateY calculé en JS, voir ROW_H) pour
-   amener l'entrée active juste sous la rangée ; les entrées déjà parcourues remontent au-dessus
-   d'elle, en petit, au lieu de disparaître, comme sur la XMB. */
-.xmb2-list-viewport {
-  display: none; position: absolute; z-index: 1; top: 100%; margin-top: 5rem;
-  width: min(640px, 90vw); height: 0; overflow: visible;
+/* Tuile active : léger balancement, comme une chaîne Wii survolée par le pointeur — c'est
+   l'unique indicateur de sélection (pas de rectangle de focus par défaut du navigateur). */
+@keyframes wiiWobble {
+  0%, 100% { transform: rotate(-1.4deg) scale(1.06); }
+  50% { transform: rotate(1.4deg) scale(1.06); }
 }
-.xmb2-list-viewport.open { display: block; }
-.xmb2-list { position: absolute; top: 0; left: 0; right: 0; display: flex; flex-direction: column; gap: 0; transition: transform .25s ease; }
+.wii-tile.active { animation: wiiWobble 1.3s ease-in-out infinite; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.5) inset; }
 
-.xmb2-item {
-  display: flex; align-items: center; text-decoration: none; outline: none;
-  height: 46px; box-sizing: border-box; padding: 0 .6rem;
-  transition: height .22s ease;
-}
-.xmb2-item:focus-visible { outline: none; }
-
-/* Pas d'icône par ligne : contrairement à un navigateur de fichiers XMB (chaque item y est un
-   objet distinct avec sa propre vignette), une liste d'actions comme un écran Réglages n'affiche
-   que du texte — mettre la même icône de catégorie sur les 7 lignes n'y apportait aucune
-   information et cassait la fidélité (voir comparatif). */
-.xmb2-item-text { min-width: 0; }
-.xmb2-item-title {
-  font-family: Arial, Helvetica, sans-serif; font-size: .95rem; color: rgba(218, 218, 218, 0.6);
-  text-shadow: var(--xmb-shadow); transition: all .2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.xmb2-item-desc { display: none; font-family: Arial, Helvetica, sans-serif; font-size: .82rem; letter-spacing: .3px; color: var(--xmb-fg); text-shadow: var(--xmb-shadow); margin-top: .2rem; }
-
-.xmb2-item.active { height: 96px; }
-.xmb2-item.active .xmb2-item-title {
-  font-size: 1.35rem; color: var(--xmb-fg); white-space: normal;
-  animation: xmbGlow 1.6s ease-in-out infinite alternate;
-}
-.xmb2-item.active .xmb2-item-desc { display: block; }
-
-/* Glow blanc pulsé, valeurs reprises du mixin glowKeyframes du fork (couleurs neutres, pas de
-   teinte violette) — appliqué à l'entrée active desktop ET mobile. */
-@keyframes xmbGlow {
-  from { text-shadow: 0 0 1px #d3d3d3, 0 0 2px #acacac, 0 0 2px #b1afaf, 0 0 5px #9b9b9b; }
-  to { text-shadow: 0 0 5px #dfdfdf, 0 0 8px #c9c9c9, 0 0 15px #b6b6b4, 0 0 20px #b9b9b9; }
+/* Barre de statut : nom + description de la tuile sélectionnée, sous la grille. */
+.wii-status {
+  min-height: 1.4em; text-align: center; color: var(--wii-fg); font-family: Arial, Helvetica, sans-serif;
+  font-size: .92rem; text-shadow: var(--wii-shadow); max-width: 560px;
 }

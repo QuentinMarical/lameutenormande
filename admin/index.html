@@ -10,14 +10,14 @@
   <link rel="stylesheet" href="../elections/assets/elections.css">
   <link rel="stylesheet" href="assets/admin.css">
 </head>
-<body class="xmb-body">
+<body class="wii-body">
   <!-- Pas de bandeau ni de pied de page ici : contrairement aux autres outils admin, cette page
-       reproduit un écran d'accueil XMB (voir Crédit, dans la case « La Meute Normande ») — le
-       retour au site et les pages légales vivent dans cette case plutôt que dans un footer, et
-       le compte connecté dans le coin horloge plutôt que dans une barre de navigation. -->
-  <div class="xmb-clock" id="xmbClock"></div>
+       reproduit un écran d'accueil façon chaînes de menu Wii (voir Crédit, dans la case « La
+       Meute Normande ») — le retour au site et les pages légales vivent dans cette case plutôt
+       que dans un footer, et le compte connecté dans le coin horloge plutôt qu'une barre de nav. -->
+  <div class="wii-clock" id="wiiClock"></div>
   <main id="app"><div class="loader">Chargement…</div></main>
-  <audio id="xmbNav" src="assets/nav.mp3" preload="auto"></audio>
+  <audio id="wiiNav" src="assets/nav.mp3" preload="auto"></audio>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
@@ -25,12 +25,12 @@
   <script src="assets/legal.js"></script>
   <script>
   (async () => {
-    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#xmbClock'), navSound = E.qs('#xmbNav');
-    // Bip de navigation (repris du fork, voir Crédit) — .catch() silencieux : les navigateurs
-    // rejettent play() tant qu'aucune interaction n'a eu lieu sur la page (autoplay bloqué).
+    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#wiiClock'), navSound = E.qs('#wiiNav');
+    // Bip de navigation (son original, pas un fichier Nintendo) — .catch() silencieux : les
+    // navigateurs rejettent play() tant qu'aucune interaction n'a eu lieu sur la page.
     function playNav() { navSound.currentTime = 0; navSound.play().catch(() => {}); }
 
-    // ---------- Horloge (coin haut-droit, façon barre de statut XMB) ----------
+    // ---------- Horloge (coin haut-droit) ----------
     const fmtClock = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     function tickClock() { clockEl.textContent = fmtClock.format(new Date()).replace('.', ''); }
     tickClock(); setInterval(tickClock, 1000);
@@ -53,36 +53,37 @@
         if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
         location.reload();
       });
-      app.classList.add('xmb-centered');
+      app.classList.add('wii-centered');
       E.clear(app).appendChild(form);
       return;
     }
     const { data: isAdmin } = await E.sb.rpc('is_admin');
     if (!isAdmin) {
-      app.classList.add('xmb-centered');
+      app.classList.add('wii-centered');
       E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
       return;
     }
     // Statut connecté, dans le coin horloge plutôt que dans une barre de navigation.
-    clockEl.appendChild(h('button', { type: 'button', class: 'xmb-signout', title: 'Se déconnecter (' + (session.user.email || 'admin') + ')', onClick: E.signOut }, '⏻'));
+    clockEl.appendChild(h('button', { type: 'button', class: 'wii-signout', title: 'Se déconnecter (' + (session.user.email || 'admin') + ')', onClick: E.signOut }, '⏻'));
 
     // ---------- Panels disponibles ----------
     // subitems : { title, desc, hash } pour un onglet du panel (href = panel.href + #hash) — ou
     // { title, desc, href } pour un lien direct, ou { title, desc, action } pour une action JS
-    // (ouvrir une modale). Le premier panel (« La Meute Normande ») sert de première case, comme
-    // l'icône de compte tout à gauche d'un menu XMB ; ses entrées remplacent le pied de page
-    // (masqué en desktop) : retour au site, pages légales, crédit.
+    // (ouvrir une modale). Le premier panel (« La Meute Normande ») sert de première chaîne,
+    // comme l'icône de compte tout à gauche d'un menu console ; ses entrées remplacent le pied de
+    // page (masqué en desktop) : retour au site, pages légales, crédit. « accent » choisit la
+    // couleur de fond de la chaîne (voir admin.css, palette reprise du site).
     const LOGO = 'https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png';
     const PANELS = [
-      { key: 'home', label: 'La Meute Normande', desc: 'Retour à l\'accueil du site.', logo: LOGO, href: 'https://lameutenormande.fr/', subitems: [
+      { key: 'home', label: 'La Meute Normande', desc: 'Retour à l\'accueil du site.', logo: LOGO, href: 'https://lameutenormande.fr/', accent: 'neutral', subitems: [
         { title: 'Retour au site', desc: 'lameutenormande.fr', href: 'https://lameutenormande.fr/' },
         { title: 'Mentions légales', desc: 'Éditeur, hébergement, propriété intellectuelle.', action: () => E.openLegal('mentions') },
         { title: 'Politique de confidentialité', desc: 'RGPD : données collectées, droits des visiteurs.', action: () => E.openLegal('confidentialite') },
         { title: 'Politique de cookies', desc: 'Stockage local utilisé par le site.', action: () => E.openLegal('cookies') },
         { title: 'Crédit', desc: 'À propos de l\'écran d\'accueil de cet espace admin.', action: () => openCredit() }
       ] },
-      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', subitems: [
+      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', accent: 'violet', subitems: [
         { hash: 'scrutins', title: 'Scrutins', desc: 'Créer un scrutin, l\'ouvrir ou le clôturer.' },
         { hash: 'codes', title: 'Codes', desc: 'Générer les codes de vote et les distribuer.' },
         { hash: 'candidatures', title: 'Candidatures', desc: 'Voir les candidatures, en retirer si besoin.' },
@@ -91,29 +92,26 @@
         { hash: 'pv', title: 'Procès-verbal', desc: 'Résultats détaillés, à imprimer ou exporter.' },
         { hash: 'reglages', title: 'Réglages', desc: 'Annonces automatiques sur Telegram.' }
       ] },
-      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', subitems: [
+      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', accent: 'orange', subitems: [
         { hash: 'sondages', title: 'Sondages', desc: 'Créer un sondage, l\'ouvrir ou le clôturer.' },
         { hash: 'reponses', title: 'Réponses', desc: 'Voir les réponses reçues à ce sondage.' }
       ] },
-      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', subitems: [
+      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', accent: 'teal', subitems: [
         { title: 'Comptes administrateurs', desc: 'Inviter, réinitialiser ou désactiver un accès.' }
       ] },
-      { key: 'bureau', label: 'Bureau Meute', desc: 'Groupe Telegram du staff.', icon: 'paper-plane', href: 'https://web.telegram.org/k/#-2361870096', subitems: [
+      { key: 'bureau', label: 'Bureau Meute', desc: 'Groupe Telegram du staff.', icon: 'paper-plane', href: 'https://web.telegram.org/k/#-2361870096', accent: 'blue', subitems: [
         { title: 'Ouvrir le groupe', desc: 'web.telegram.org — Bureau de la Meute', href: 'https://web.telegram.org/k/#-2361870096' }
       ] }
     ];
-    const DEFAULT_COL = 1; // Élections plutôt que le logo, au premier chargement
+    const DEFAULT_PANEL = 1; // Élections plutôt que le logo, au premier chargement
 
     function panelIcon(p) {
-      return p.logo ? E.h('img', { src: p.logo, alt: '' }) : E.icon(p.icon);
+      return p.logo ? h('img', { src: p.logo, alt: '' }) : E.icon(p.icon);
     }
     function itemHref(panel, item) {
       if (item.action) return '#';
       if (item.href) return item.href;
       return panel.href + (item.hash ? '#' + item.hash : '');
-    }
-    function wireItem(a, item) {
-      if (item.action) a.addEventListener('click', (e) => { e.preventDefault(); item.action(); });
     }
 
     // ---------- Crédit ----------
@@ -126,11 +124,9 @@
           h('div', { class: 'legal-modal-header' }, h('h3', { class: 'legal-modal-title' }, 'Crédit'),
             h('button', { class: 'legal-modal-close', type: 'button', 'aria-label': 'Fermer', onClick: close }, '×')),
           h('div', { class: 'legal-modal-body' },
-            h('p', null, 'À partir de 1024px de large, l\'écran d\'accueil de cet espace admin reproduit fidèlement le menu XMB de la PlayStation 3, à partir du projet ',
-              h('a', { href: 'https://github.com/menonparik/xmb-on-web', target: '_blank', rel: 'noopener' }, 'xmb-on-web'),
-              ' de Pariksith Menon, dont un fork corrigé (bugs de navigation, écran de démarrage retiré) vit sur ',
-              h('a', { href: 'https://github.com/QuentinMarical/xmb-on-web', target: '_blank', rel: 'noopener' }, 'github.com/QuentinMarical/xmb-on-web'), '.'),
-            h('p', null, 'Repris à l\'identique : la rangée de catégories défile pour garder l\'active centrée (au lieu d\'une rangée fixe), liste d\'onglets avec l\'entrée sélectionnée agrandie et glow, palette grise et police Arial, échelle/opacité des icônes, entrées déjà parcourues qui remontent au-dessus de la rangée plutôt que de disparaître, et le bip sonore de navigation. Volontairement différent : pas d\'écran de démarrage, fond du site à la place de la vidéo, et connexion requise (le code de cette page reste original).'),
+            h('p', null, 'L\'écran d\'accueil de cet espace admin s\'inspire du menu de la Wii : une grille de « chaînes » colorées qu\'on ouvre pour accéder à leurs actions, plutôt qu\'une liste de liens classique.'),
+            h('p', null, 'Repris comme langage visuel, en code et assets 100% originaux : grille de tuiles arrondies, une couleur par outil, tuile active qui se balance légèrement (« wobble »), écran dédié en drill-down par outil avec une tuile « Retour », et un bip de confirmation à chaque déplacement.'),
+            h('p', null, h('strong', null, 'Aucun fichier Nintendo n\'est utilisé.'), ' Contrairement à une précédente version de cette page (voir historique), rien n\'a été extrait ou copié d\'un dump de menu Wii réel (icônes, sons, polices, textures) : ce sont des fichiers propriétaires de Nintendo, pas un projet libre. Seuls la disposition et les interactions sont reproduites, avec nos propres icônes, couleurs et bip sonore.'),
             h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
       document.body.appendChild(bg);
       document.addEventListener('keydown', onKey);
@@ -139,183 +135,86 @@
 
     E.clear(app);
 
-    // ---------- Version mobile/tablette (< 1024px) : grille de tuiles + liste de sous-catégories ----------
-    (function buildMobile() {
-      const wrap = h('div', { class: 'xmb-wrap xmb-mobile-only' });
-      const desc = h('div', { class: 'xmb-desc' });
-      const row = h('div', { class: 'xmb-row' });
-      const submenu = h('div', { class: 'xmb-submenu' });
-      let col = DEFAULT_COL, sub = -1, subEls = [];
-
-      function renderSubmenu() {
-        E.clear(submenu);
-        subEls = PANELS[col].subitems.map((item, i) => {
-          const a = h('a', { class: 'xmb-sub-item', href: itemHref(PANELS[col], item) }, item.title);
-          wireItem(a, item);
-          a.addEventListener('mouseenter', () => { sub = i; highlight(); });
-          a.addEventListener('focus', () => { sub = i; highlight(); });
-          submenu.appendChild(a);
-          return a;
-        });
-        submenu.classList.toggle('open', subEls.length > 0);
-      }
-      function highlight() {
-        tiles.forEach((t, i) => t.classList.toggle('active', i === col));
-        desc.textContent = PANELS[col].desc;
-        subEls.forEach((a, i) => a.classList.toggle('active', i === sub));
-      }
-      // Pas de href sur les tuiles de catégorie : comme sur la vraie XMB, une catégorie seule ne
-      // mène nulle part, on ne peut agir que sur une sous-catégorie précise de sa liste (la
-      // première y correspond déjà à l'écran par défaut de l'outil).
-      const tiles = PANELS.map((p, i) => {
-        const tile = h('a', { class: 'xmb-tile', tabindex: '0' },
-          h('div', { class: 'icon-wrap' }, panelIcon(p)),
-          h('div', { class: 'label' }, p.label));
-        const onEnter = () => { if (col !== i) { col = i; renderSubmenu(); } sub = -1; highlight(); };
-        tile.addEventListener('mouseenter', onEnter);
-        tile.addEventListener('focus', onEnter);
-        row.appendChild(tile);
-        return tile;
-      });
-      function setCol(newCol, moveFocus) {
-        col = (newCol + PANELS.length) % PANELS.length; sub = -1;
-        renderSubmenu(); highlight();
-        if (moveFocus) tiles[col].focus();
-      }
-      wrap.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); playNav(); setCol(col + 1, true); }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); playNav(); setCol(col - 1, true); }
-        else if (e.key === 'ArrowDown') {
-          if (!subEls.length) return;
-          e.preventDefault(); playNav();
-          sub = sub === -1 ? 0 : Math.min(sub + 1, subEls.length - 1);
-          highlight(); subEls[sub].focus();
-        } else if (e.key === 'ArrowUp') {
-          if (sub === -1) return;
-          e.preventDefault(); playNav();
-          sub = sub === 0 ? -1 : sub - 1;
-          highlight();
-          if (sub === -1) tiles[col].focus(); else subEls[sub].focus();
-        }
-      });
-      wrap.append(row, submenu, desc);
+    // ---------- Écran d'accueil façon menu Wii ----------
+    // Deux « vues » : la grille des outils (home), ou l'écran d'un outil ouvert (panel) listant
+    // ses actions en tuiles, avec une tuile « Retour » en première position — comme ouvrir une
+    // chaîne Wii qui contient elle-même plusieurs éléments (ex. la chaîne Photos). Un outil qui
+    // n'a qu'une seule action (Utilisateurs, Bureau Meute) s'ouvre directement, comme une vraie
+    // chaîne qui lance son contenu sans étape intermédiaire.
+    (function build() {
+      const wrap = h('div', { class: 'wii-wrap' });
+      const grid = h('div', { class: 'wii-grid' });
+      const status = h('div', { class: 'wii-status' });
+      wrap.append(grid, status);
       app.appendChild(wrap);
-      renderSubmenu(); highlight();
-      tiles[col].focus({ preventScroll: true });
-    })();
 
-    // ---------- Version desktop (≥ 1024px) : façon écran d'accueil PS3 (voir Crédit) ----------
-    // Rangée de catégories en haut (icône + libellé visible seulement sur la case active) ; en
-    // dessous, la liste des onglets de la catégorie active, positionnée en absolu (voir plus bas)
-    // pour ne jamais faire grandir la page : l'entrée sélectionnée glisse juste sous les icônes et
-    // s'affiche en grand (icône + titre + description qui pulse), les suivantes restent petites en
-    // dessous — et les entrées déjà parcourues remontent au-dessus des icônes plutôt que de
-    // disparaître, comme sur la vraie XMB (seul le bord de l'écran les masque, pas de scrollbar).
-    (function buildDesktop() {
-      const ROW_H = 46; // hauteur d'une ligne repliée (doit rester synchro avec admin.css)
-      const ITEM_W = 64; // largeur d'une case de catégorie (doit rester synchro avec .xmb2-cat en CSS)
-      const GAP_W = 28; // 1.75rem, l'écart entre catégories (doit rester synchro avec .xmb2-row en CSS)
-      const CELL_W = ITEM_W + GAP_W; // pas d'une catégorie à la suivante
-      const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
-      const rowViewport = h('div', { class: 'xmb2-row-viewport' });
-      const catRow = h('div', { class: 'xmb2-row' });
-      rowViewport.appendChild(catRow);
-      // La liste est un enfant de .xmb2-row (pas de .xmb2) : comme translateX (voir scrollRow) est
-      // appliqué à .xmb2-row, tout ce qu'il contient — les icônes ET la liste — bouge ensemble
-      // d'un seul bloc pendant la transition, exactement comme sur la vraie XMB où la liste reste
-      // physiquement rattachée à son icône au lieu de « sauter » à sa position une fois la rangée
-      // arrivée. Positionnée en coordonnées locales de la rangée (col*CELL_W + ITEM_W/2 : le
-      // centre de la case active avant transformation), pas en coordonnées de page.
-      const viewport = h('div', { class: 'xmb2-list-viewport' });
-      const list = h('div', { class: 'xmb2-list' });
-      viewport.appendChild(list);
-      catRow.appendChild(viewport);
-      let col = DEFAULT_COL, subIdx = 0, zone = 'cat', subEls = [];
+      let view = 'panel', panelIdx = DEFAULT_PANEL, focus = 1, tiles = [], entries = [];
 
-      // Pas de href sur les catégories : comme sur la vraie XMB, une catégorie seule ne mène nulle
-      // part, on ne peut agir que sur une sous-catégorie précise de sa liste (la première y
-      // correspond déjà à l'écran par défaut de l'outil).
-      const cats = PANELS.map((p, i) => {
-        const cat = h('a', { class: 'xmb2-cat', tabindex: '0' },
-          h('div', { class: 'xmb2-cat-icon' }, panelIcon(p)),
-          h('div', { class: 'xmb2-cat-label' }, p.label));
-        const onEnter = () => setCol(i, false);
-        cat.addEventListener('mouseenter', onEnter);
-        cat.addEventListener('focus', onEnter);
-        catRow.appendChild(cat);
-        return cat;
-      });
-      // Fait défiler toute la rangée (icônes + liste, voir plus haut) horizontalement pour garder
-      // la catégorie active centrée dans sa fenêtre — comme moveMenu()/xmbMain.marginRight du
-      // fork, qui recentre l'ensemble de la rangée à chaque changement de catégorie plutôt que de
-      // laisser les icônes fixes. Recalculé au redimensionnement : sinon une mesure prise pendant
-      // que .xmb-desktop-only vaut encore display:none (chargement en largeur mobile, puis
-      // agrandissement sans recharger) donnerait une largeur de 0 et un centrage resté faux
-      // jusqu'à la prochaine navigation.
-      function scrollRow() {
-        const vw = rowViewport.getBoundingClientRect().width || rowViewport.offsetWidth;
-        // Centre du n-ième .xmb2-cat (largeur ITEM_W) : n*CELL_W + ITEM_W/2 (pas CELL_W/2, qui
-        // inclut à tort la moitié du gap suivant et décale tout de (GAP_W/2)px vers la gauche).
-        catRow.style.transform = 'translateX(' + (vw / 2 - (col * CELL_W + ITEM_W / 2)) + 'px)';
-        // Même centre, mais en coordonnées LOCALES de .xmb2-row (avant sa propre transformation) :
-        // la liste étant un enfant de la rangée, elle héritera automatiquement du translateX
-        // ci-dessus au lieu d'avoir besoin d'être recalculée en coordonnées de page.
-        viewport.style.left = (col * CELL_W + ITEM_W / 2) + 'px';
+      function currentEntries() {
+        if (view === 'home') {
+          return PANELS.map((p, i) => ({ icon: panelIcon(p), label: p.label, desc: p.desc, accent: p.accent, activate: () => openPanel(i) }));
+        }
+        const p = PANELS[panelIdx];
+        const back = { icon: E.icon('arrow-left'), label: 'Retour', desc: 'Menu principal', accent: 'back', activate: goHome };
+        const subs = p.subitems.map(item => ({
+          icon: panelIcon(p), label: item.title, desc: item.desc || '', accent: p.accent,
+          activate: () => activateItem(p, item)
+        }));
+        return [back].concat(subs);
       }
-      window.addEventListener('resize', scrollRow);
+      function openPanel(i) {
+        const p = PANELS[i];
+        if (p.subitems.length === 1) { activateItem(p, p.subitems[0]); return; }
+        panelIdx = i; view = 'panel'; focus = 1; render();
+      }
+      function goHome() { view = 'home'; focus = panelIdx; render(); }
+      function activateItem(panel, item) {
+        if (item.action) { item.action(); return; }
+        location.href = itemHref(panel, item);
+      }
 
-      function renderList() {
-        E.clear(list);
-        subEls = PANELS[col].subitems.map((item, i) => {
-          const a = h('a', { class: 'xmb2-item', href: itemHref(PANELS[col], item) },
-            h('div', { class: 'xmb2-item-text' }, h('div', { class: 'xmb2-item-title' }, item.title), h('div', { class: 'xmb2-item-desc' }, item.desc || '')));
-          wireItem(a, item);
-          a.addEventListener('mouseenter', () => { subIdx = i; zone = 'list'; paint(); });
-          a.addEventListener('focus', () => { subIdx = i; zone = 'list'; paint(); });
-          list.appendChild(a);
-          return a;
+      function render() {
+        E.clear(grid);
+        entries = currentEntries();
+        tiles = entries.map((e, i) => {
+          const tile = h('button', { type: 'button', class: 'wii-tile acc-' + e.accent },
+            h('div', { class: 'wii-tile-icon' }, e.icon),
+            h('div', { class: 'wii-tile-label' }, e.label));
+          tile.addEventListener('mouseenter', () => { if (focus !== i) { focus = i; paint(); } });
+          tile.addEventListener('focus', () => { if (focus !== i) { focus = i; paint(); } });
+          tile.addEventListener('click', () => { focus = i; paint(); playNav(); e.activate(); });
+          grid.appendChild(tile);
+          return tile;
         });
-        viewport.classList.toggle('open', subEls.length > 0);
+        if (focus >= tiles.length) focus = 0;
+        paint();
+        if (tiles[focus]) tiles[focus].focus({ preventScroll: true });
       }
       function paint() {
-        cats.forEach((c, i) => c.classList.toggle('active', i === col));
-        subEls.forEach((a, i) => a.classList.toggle('active', i === subIdx));
-        // Fait glisser la liste pour amener l'entrée active en haut de la fenêtre visible : tant
-        // que seule une ligne est agrandie à la fois, les lignes qui précèdent mesurent toutes
-        // ROW_H, ce décalage place donc toujours l'entrée active exactement au sommet.
-        list.style.transform = 'translateY(-' + (subIdx * ROW_H) + 'px)';
-        scrollRow();
+        tiles.forEach((t, i) => t.classList.toggle('active', i === focus));
+        const e = entries[focus];
+        status.textContent = e ? (e.label + (e.desc ? ' — ' + e.desc : '')) : '';
       }
-      function setCol(newCol, moveFocus) {
-        col = (newCol + PANELS.length) % PANELS.length; subIdx = 0; zone = 'cat';
-        renderList(); paint();
-        if (moveFocus) cats[col].focus();
+      function cols() {
+        if (window.matchMedia('(min-width: 1024px)').matches) return 4;
+        if (window.matchMedia('(min-width: 641px)').matches) return 3;
+        return 2;
       }
-      xmb.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') { e.preventDefault(); playNav(); setCol(col + 1, true); }
-        else if (e.key === 'ArrowLeft') { e.preventDefault(); playNav(); setCol(col - 1, true); }
-        else if (e.key === 'ArrowDown') {
-          if (!subEls.length) return;
-          e.preventDefault(); playNav();
-          if (zone === 'cat') { zone = 'list'; subIdx = 0; }
-          else subIdx = Math.min(subIdx + 1, subEls.length - 1);
-          paint(); subEls[subIdx].focus();
-        } else if (e.key === 'ArrowUp') {
-          if (zone !== 'list') return;
-          e.preventDefault(); playNav();
-          if (subIdx === 0) { zone = 'cat'; paint(); cats[col].focus(); }
-          else { subIdx -= 1; paint(); subEls[subIdx].focus(); }
-        }
+      wrap.addEventListener('keydown', (e) => {
+        const n = tiles.length; if (!n) return;
+        let next = focus;
+        if (e.key === 'ArrowRight') next = (focus + 1) % n;
+        else if (e.key === 'ArrowLeft') next = (focus - 1 + n) % n;
+        else if (e.key === 'ArrowDown') next = Math.min(focus + cols(), n - 1);
+        else if (e.key === 'ArrowUp') next = Math.max(focus - cols(), 0);
+        else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); playNav(); entries[focus].activate(); return; }
+        else if ((e.key === 'Escape' || e.key === 'Backspace') && view === 'panel') { e.preventDefault(); goHome(); return; }
+        else return;
+        e.preventDefault();
+        if (next !== focus) { focus = next; playNav(); paint(); tiles[focus].focus({ preventScroll: true }); }
       });
 
-      // viewport (déjà attaché à catRow plus haut) est positionné en absolu (voir admin.css) : ça
-      // l'ancre juste sous la rangée de catégories sans grandir la page — les entrées déjà
-      // parcourues (translateY négatif) remontent donc au-dessus de l'ancre, jusque par-dessus les
-      // icônes si besoin, plutôt que d'être découpées par une fenêtre, comme sur la vraie XMB.
-      xmb.appendChild(rowViewport);
-      app.appendChild(xmb);
-      renderList(); paint();
-      cats[col].focus({ preventScroll: true });
+      render();
     })();
   })();
   </script>

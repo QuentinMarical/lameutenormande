@@ -1,6 +1,6 @@
 /* Pages légales (mentions légales, confidentialité, cookies) génériques du site — copie de
    actus/sondages/assets/legal.js sur le namespace E (au lieu de V) : les pages transversales de
-   l'espace admin (hub, Utilisateurs, comparaison XMB) chargent elections/assets/common.js pour
+   l'espace admin (hub, Utilisateurs, comparaison) chargent elections/assets/common.js pour
    leurs autres aides (E.h, E.icon…) et ont donc besoin de la même API sur E, mais avec un contenu
    qui parle du site dans son ensemble plutôt que d'un outil précis (elections/assets/legal.js
    décrit spécifiquement l'outil élections — approprié sur son propre panel, pas ici). */
