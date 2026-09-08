@@ -46,17 +46,20 @@
       const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
       const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
       const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
-      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
-        h('div', { class: 'title' }, 'Connexion administrateur'),
-        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
-        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      const form = h('form', { class: 'login-card' },
+        h('img', { class: 'login-logo', src: 'https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png', alt: '' }),
+        h('div', { class: 'login-title' }, 'Connexion administrateur'),
+        h('div', { class: 'login-sub' }, 'Réservé au staff de La Meute Normande.'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email),
+        h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
+        btn);
       form.addEventListener('submit', async ev => {
         ev.preventDefault(); btn.disabled = true;
         const { error } = await E.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
         if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
         location.reload();
       });
-      E.clear(app).appendChild(form);
+      E.clear(app).appendChild(h('div', { class: 'login-shell' }, form));
       return;
     }
     const { data: isAdmin } = await E.sb.rpc('is_admin');

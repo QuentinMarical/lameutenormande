@@ -41,3 +41,22 @@
 .tool-pill:hover { background: rgba(168, 85, 247, 0.16); border-color: var(--violet-line); color: #fff; }
 
 .tool-open { align-self: flex-start; }
+
+/* ---------- Carte de connexion ----------
+   Surface dédiée plutôt que le composant .card générique (accent latéral fin, plutôt pensé pour
+   du contenu informatif) : identité centrée en tête, respiration généreuse, un seul bouton plein
+   largeur bien visible — langage repris de pages de connexion épurées grand public, adapté à la
+   palette sombre du site plutôt qu'une surface claire. */
+.login-shell { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem 3rem; }
+.login-card {
+  width: 100%; max-width: 420px; padding: 2.75rem 2.25rem; text-align: center;
+  border-radius: 28px; background: linear-gradient(165deg, var(--panel-1), var(--panel-2) 120%);
+  border: 1px solid var(--violet-line);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 90px rgba(168, 85, 247, 0.08);
+}
+.login-logo { width: 60px; height: 60px; border-radius: 50%; display: block; margin: 0 auto 1.35rem; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); }
+.login-title { font-family: 'PR Viking', 'Inter Tight', sans-serif; font-weight: 400; font-size: 1.65rem; color: #fff; }
+.login-sub { margin: .5rem 0 2rem; color: var(--muted); font-size: .9rem; }
+.login-card .field { text-align: left; margin-bottom: 1.15rem; }
+.login-card .btn { width: 100%; margin-top: .4rem; padding: .9rem 1.6rem; }
+@media (max-width: 480px) { .login-card { padding: 2.25rem 1.5rem; } }
