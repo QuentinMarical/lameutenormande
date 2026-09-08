@@ -210,7 +210,9 @@
     // disparaître, comme sur la vraie XMB (seul le bord de l'écran les masque, pas de scrollbar).
     (function buildDesktop() {
       const ROW_H = 46; // hauteur d'une ligne repliée (doit rester synchro avec admin.css)
-      const CELL_W = 92; // largeur d'une case de catégorie + gap (doit rester synchro avec admin.css)
+      const ITEM_W = 64; // largeur d'une case de catégorie (doit rester synchro avec .xmb2-cat en CSS)
+      const GAP_W = 28; // 1.75rem, l'écart entre catégories (doit rester synchro avec .xmb2-row en CSS)
+      const CELL_W = ITEM_W + GAP_W; // pas d'une catégorie à la suivante
       const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
       const rowViewport = h('div', { class: 'xmb2-row-viewport' });
       const catRow = h('div', { class: 'xmb2-row' });
@@ -233,10 +235,16 @@
       // Fait défiler toute la rangée horizontalement pour garder la catégorie active centrée dans
       // sa fenêtre — comme moveMenu()/xmbMain.marginRight du fork, qui recentre l'ensemble de la
       // rangée à chaque changement de catégorie plutôt que de laisser les icônes fixes.
+      // Recalculé au redimensionnement : sinon une mesure prise pendant que .xmb-desktop-only vaut
+      // encore display:none (chargement en largeur mobile, puis agrandissement sans recharger)
+      // donnerait une largeur de 0 et un centrage resté faux jusqu'à la prochaine navigation.
       function scrollRow() {
         const vw = rowViewport.getBoundingClientRect().width || rowViewport.offsetWidth;
-        catRow.style.transform = 'translateX(' + (vw / 2 - (col * CELL_W + CELL_W / 2)) + 'px)';
+        // Centre du n-ième .xmb2-cat (largeur ITEM_W) : n*CELL_W + ITEM_W/2 (pas CELL_W/2, qui
+        // inclut à tort la moitié du gap suivant et décale tout de (GAP_W/2)px vers la gauche).
+        catRow.style.transform = 'translateX(' + (vw / 2 - (col * CELL_W + ITEM_W / 2)) + 'px)';
       }
+      window.addEventListener('resize', scrollRow);
 
       function renderList() {
         E.clear(list);

@@ -162,6 +162,10 @@
           <td>Palette et police incohérentes avec la référence (violet/cyan, PR Viking) malgré l'inspiration XMB affichée</td>
           <td>Repassé en gris clair #dadada / Arial partout sur cet écran, fond du site conservé</td>
         </tr>
+        <tr>
+          <td>Rangée de catégories décalée de 14px par rapport au centre exact (la formule de centrage utilisait la moitié du pas catégorie+écart au lieu de la moitié de la largeur réelle d'une catégorie)</td>
+          <td>Constantes séparées <code>ITEM_W</code>/<code>GAP_W</code> au lieu d'un seul <code>CELL_W</code> ambigu ; centrage recalculé aussi au redimensionnement de la fenêtre (jamais refait sinon après un premier calcul à largeur 0 pendant le chargement mobile)</td>
+        </tr>
       </tbody>
     </table>
 
