@@ -50,7 +50,7 @@
    deux formes en arrière-plan sont dessinées pour cette page, pas une reprise de son illustration. */
 .login-shell {
   position: relative; overflow: hidden; isolation: isolate;
-  flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem 3rem;
+  flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem;
 }
 .login-shell::before, .login-shell::after {
   content: ''; position: absolute; z-index: -1; border-radius: 40px;
@@ -76,9 +76,11 @@
 }
 .login-back:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-.login-logo { width: 56px; height: 56px; border-radius: 50%; display: block; margin: 0 auto 1.1rem; box-shadow: 0 6px 20px rgba(168, 85, 247, 0.35); }
-.login-title { font-family: 'PR Viking', 'Inter Tight', sans-serif; font-weight: 400; font-size: 1.5rem; color: #fff; }
-.login-sub { margin: .5rem 0 1.75rem; color: var(--muted); font-size: .9rem; }
+/* Logo large (celui de la topbar, masquée pendant la connexion — voir body.auth-gate) plutôt que
+   le macaron rond : pas de recadrage en cercle, juste une largeur maximale raisonnable. */
+.login-logo { display: block; width: auto; max-width: 190px; height: auto; max-height: 70px; margin: 0 auto 1.35rem; }
+.login-title { font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 1.4rem; color: #fff; margin: 0 0 1.25rem; }
+.login-sub { margin: 0 0 1.75rem; color: var(--muted); font-size: .9rem; }
 .login-email-pill {
   display: inline-flex; align-items: center; margin: 0 0 1.5rem; padding: .35rem .9rem; border-radius: 999px;
   background: var(--panel-2); border: 1px solid var(--line); font-size: .85rem; color: var(--text);
@@ -86,13 +88,26 @@
 .login-card .field { text-align: left; margin-bottom: 1.15rem; }
 .login-input { border-radius: 6px; }
 .login-card .btn { width: 100%; margin-top: .4rem; padding: .9rem 1.6rem; }
+.login-card .btn.login-secondary { margin-top: .75rem; }
 @media (max-width: 480px) { .login-card { padding: 2.25rem 1.5rem; } }
+
+/* #app en colonne flex qui grandit pour occuper toute la hauteur restante (topbar retirée, page-head
+   masqué pendant la connexion — voir hideChrome() dans index.html) : sans ça, .login-shell n'avait
+   que sa hauteur de contenu et la carte restait collée en haut plutôt que vraiment centrée
+   verticalement, surtout visible sur un écran de mobile haut. Sans effet notable une fois dans
+   l'outil (la grille d'outils n'a pas besoin d'être centrée verticalement). */
+#app { display: flex; flex-direction: column; flex: 1; }
+/* main.wrap (elections.css) a un padding vertical asymétrique (pensé pour une page qui défile,
+   pas pour centrer verticalement) : neutralisé pendant la connexion, .login-shell gère seule sa
+   propre respiration — sinon la carte se retrouvait décalée vers le haut, le padding-bottom hérité
+   comptant en trop dans l'espace « en dessous ». */
+#app.login-mode { padding: 0; }
 
 /* Pied de page minimal pendant la connexion (liens + note, sans le bandeau/crédit du module
    complet) — voir loginFooter()/fullFooter() dans index.html : colle à une barre utilitaire de
    bas d'écran plutôt qu'au pied de page habituel une fois dans l'outil. */
-.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1.5rem; text-align: left; }
-.site-footer.login-footer .legal-links { justify-content: flex-start; margin: 0 0 .4rem; }
+.site-footer.login-footer { background: transparent; border-radius: 0; padding: 1.25rem 1rem; }
+.site-footer.login-footer .legal-links { margin: 0 0 .4rem; }
 .site-footer.login-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
 .site-footer.login-footer .legal-links a:hover { color: #fff; }
 .site-footer.login-footer .legal { font-size: .78rem; }
