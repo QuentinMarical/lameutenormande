@@ -21,7 +21,7 @@
     <h1>Espace administrateur</h1>
     <div class="sub">Connexion unique pour tous les panels du staff</div>
   </section>
-  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
   <footer class="site-footer" id="footer"></footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -66,76 +66,162 @@
     { const slot = E.qs('.topbar .bar'); slot.appendChild(h('div', { class: 'actions' }, h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏻')))); }
 
     // ---------- Panels disponibles ----------
-    // subitems : onglets de chaque panel (id du hash → libellé), pour aller directement dessus
-    // sans repasser par l'écran d'accueil du panel — vide pour un outil sans onglets.
+    // subitems : [id du hash, libellé, description] pour chaque onglet d'un panel, afin d'y aller
+    // directement sans repasser par son écran par défaut. Le premier de la liste (« La Meute
+    // Normande ») ramène au site : pas de sous-catégories, sert juste de première case, comme
+    // l'icône de compte tout à gauche d'un menu XMB.
+    const LOGO = 'https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png';
     const PANELS = [
+      { key: 'home', label: 'La Meute Normande', desc: '', logo: LOGO, href: 'https://lameutenormande.fr/', subitems: [] },
       { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', subitems: [
-        ['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']
+        ['scrutins', 'Scrutins', 'Créer un scrutin, l\'ouvrir ou le clôturer.'],
+        ['codes', 'Codes', 'Générer les codes de vote et les distribuer.'],
+        ['candidatures', 'Candidatures', 'Voir les candidatures, en retirer si besoin.'],
+        ['votants', 'Votants', 'Bulletins soumis ; invalider un bulletin suspect.'],
+        ['audit', 'Audit', 'Journal des actions du staff sur ce scrutin.'],
+        ['pv', 'Procès-verbal', 'Résultats détaillés, à imprimer ou exporter.'],
+        ['reglages', 'Réglages', 'Annonces automatiques sur Telegram.']
       ] },
       { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', subitems: [
-        ['sondages', 'Sondages'], ['reponses', 'Réponses']
+        ['sondages', 'Sondages', 'Créer un sondage, l\'ouvrir ou le clôturer.'],
+        ['reponses', 'Réponses', 'Voir les réponses reçues à ce sondage.']
       ] },
-      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', subitems: [] }
+      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', subitems: [
+        ['', 'Comptes administrateurs', 'Inviter, réinitialiser ou désactiver un accès.']
+      ] }
     ];
+    const DEFAULT_COL = 1; // Élections plutôt que le logo, au premier chargement
+
+    function panelIcon(p) {
+      return p.logo ? E.h('img', { src: p.logo, alt: '' }) : E.icon(p.icon);
+    }
 
     E.clear(app);
-    const desc = h('div', { class: 'xmb-desc' });
-    const row = h('div', { class: 'xmb-row' });
-    const submenu = h('div', { class: 'xmb-submenu' });
-    let col = 0, sub = -1, subEls = []; // sub = -1 : focus sur la tuile ; sinon index dans PANELS[col].subitems
 
-    function renderSubmenu() {
-      E.clear(submenu);
-      subEls = PANELS[col].subitems.map(([id, label], i) => {
-        const a = h('a', { class: 'xmb-sub-item', href: PANELS[col].href + '#' + id }, label);
-        a.addEventListener('mouseenter', () => { sub = i; highlight(); });
-        a.addEventListener('focus', () => { sub = i; highlight(); });
-        submenu.appendChild(a);
-        return a;
-      });
-      submenu.classList.toggle('open', subEls.length > 0);
-    }
-    function highlight() {
-      tiles.forEach((t, i) => t.classList.toggle('active', i === col));
-      desc.textContent = PANELS[col].desc;
-      subEls.forEach((a, i) => a.classList.toggle('active', i === sub));
-    }
+    // ---------- Version mobile/tablette (< 1024px) : grille de tuiles + liste de sous-catégories ----------
+    (function buildMobile() {
+      const wrap = h('div', { class: 'xmb-wrap xmb-mobile-only' });
+      const desc = h('div', { class: 'xmb-desc' });
+      const row = h('div', { class: 'xmb-row' });
+      const submenu = h('div', { class: 'xmb-submenu' });
+      let col = DEFAULT_COL, sub = -1, subEls = [];
 
-    const tiles = PANELS.map((p, i) => {
-      const tile = h('a', { class: 'xmb-tile', href: p.href, tabindex: '0' },
-        h('div', { class: 'icon-wrap' }, E.icon(p.icon)),
-        h('div', { class: 'label' }, p.label));
-      const onEnter = () => { if (col !== i) { col = i; renderSubmenu(); } sub = -1; highlight(); };
-      tile.addEventListener('mouseenter', onEnter);
-      tile.addEventListener('focus', onEnter);
-      row.appendChild(tile);
-      return tile;
-    });
-
-    function setCol(newCol, moveFocus) {
-      col = (newCol + PANELS.length) % PANELS.length; sub = -1;
-      renderSubmenu(); highlight();
-      if (moveFocus) tiles[col].focus();
-    }
-    app.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
-      else if (e.key === 'ArrowDown') {
-        if (!subEls.length) return;
-        e.preventDefault();
-        sub = sub === -1 ? 0 : Math.min(sub + 1, subEls.length - 1);
-        highlight(); subEls[sub].focus();
-      } else if (e.key === 'ArrowUp') {
-        if (sub === -1) return;
-        e.preventDefault();
-        sub = sub === 0 ? -1 : sub - 1;
-        highlight();
-        if (sub === -1) tiles[col].focus(); else subEls[sub].focus();
+      function renderSubmenu() {
+        E.clear(submenu);
+        subEls = PANELS[col].subitems.map(([id, label], i) => {
+          const a = h('a', { class: 'xmb-sub-item', href: PANELS[col].href + (id ? '#' + id : '') }, label);
+          a.addEventListener('mouseenter', () => { sub = i; highlight(); });
+          a.addEventListener('focus', () => { sub = i; highlight(); });
+          submenu.appendChild(a);
+          return a;
+        });
+        submenu.classList.toggle('open', subEls.length > 0);
       }
-    });
+      function highlight() {
+        tiles.forEach((t, i) => t.classList.toggle('active', i === col));
+        desc.textContent = PANELS[col].desc;
+        subEls.forEach((a, i) => a.classList.toggle('active', i === sub));
+      }
+      const tiles = PANELS.map((p, i) => {
+        const tile = h('a', { class: 'xmb-tile', href: p.href, tabindex: '0' },
+          h('div', { class: 'icon-wrap' }, panelIcon(p)),
+          h('div', { class: 'label' }, p.label));
+        const onEnter = () => { if (col !== i) { col = i; renderSubmenu(); } sub = -1; highlight(); };
+        tile.addEventListener('mouseenter', onEnter);
+        tile.addEventListener('focus', onEnter);
+        row.appendChild(tile);
+        return tile;
+      });
+      function setCol(newCol, moveFocus) {
+        col = (newCol + PANELS.length) % PANELS.length; sub = -1;
+        renderSubmenu(); highlight();
+        if (moveFocus) tiles[col].focus();
+      }
+      wrap.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
+        else if (e.key === 'ArrowDown') {
+          if (!subEls.length) return;
+          e.preventDefault();
+          sub = sub === -1 ? 0 : Math.min(sub + 1, subEls.length - 1);
+          highlight(); subEls[sub].focus();
+        } else if (e.key === 'ArrowUp') {
+          if (sub === -1) return;
+          e.preventDefault();
+          sub = sub === 0 ? -1 : sub - 1;
+          highlight();
+          if (sub === -1) tiles[col].focus(); else subEls[sub].focus();
+        }
+      });
+      wrap.append(row, submenu, desc);
+      app.appendChild(wrap);
+      renderSubmenu(); highlight();
+    })();
 
-    app.appendChild(h('div', { class: 'xmb-wrap' }, row, submenu, desc));
-    renderSubmenu(); highlight(); tiles[0].focus();
+    // ---------- Version desktop (≥ 1024px) : façon écran d'accueil PS3 ----------
+    // Rangée de catégories en haut (icône + libellé visible seulement sur la case active, comme
+    // le menu XMB) ; en dessous, la liste des onglets de la catégorie active, avec l'entrée
+    // sélectionnée en grand (icône + titre + description) et les autres en petit.
+    (function buildDesktop() {
+      const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
+      const catRow = h('div', { class: 'xmb2-row' });
+      const list = h('div', { class: 'xmb2-list' });
+      let col = DEFAULT_COL, subIdx = 0, zone = 'cat', subEls = [];
+
+      const cats = PANELS.map((p, i) => {
+        const cat = h('a', { class: 'xmb2-cat', href: p.href, tabindex: '0' },
+          h('div', { class: 'xmb2-cat-icon' }, panelIcon(p)),
+          h('div', { class: 'xmb2-cat-label' }, p.label));
+        const onEnter = () => setCol(i, false);
+        cat.addEventListener('mouseenter', onEnter);
+        cat.addEventListener('focus', onEnter);
+        catRow.appendChild(cat);
+        return cat;
+      });
+
+      function renderList() {
+        E.clear(list);
+        subEls = PANELS[col].subitems.map(([id, title, idesc], i) => {
+          const a = h('a', { class: 'xmb2-item', href: PANELS[col].href + (id ? '#' + id : '') },
+            h('div', { class: 'xmb2-item-icon' }, panelIcon(PANELS[col])),
+            h('div', { class: 'xmb2-item-text' }, h('div', { class: 'xmb2-item-title' }, title), h('div', { class: 'xmb2-item-desc' }, idesc || '')));
+          a.addEventListener('mouseenter', () => { subIdx = i; zone = 'list'; paint(); });
+          a.addEventListener('focus', () => { subIdx = i; zone = 'list'; paint(); });
+          list.appendChild(a);
+          return a;
+        });
+        list.classList.toggle('open', subEls.length > 0);
+      }
+      function paint() {
+        cats.forEach((c, i) => c.classList.toggle('active', i === col));
+        subEls.forEach((a, i) => a.classList.toggle('active', i === subIdx));
+      }
+      function setCol(newCol, moveFocus) {
+        col = (newCol + PANELS.length) % PANELS.length; subIdx = 0; zone = 'cat';
+        renderList(); paint();
+        if (moveFocus) cats[col].focus();
+      }
+      xmb.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
+        else if (e.key === 'ArrowDown') {
+          if (!subEls.length) return;
+          e.preventDefault();
+          if (zone === 'cat') { zone = 'list'; subIdx = 0; }
+          else subIdx = Math.min(subIdx + 1, subEls.length - 1);
+          paint(); subEls[subIdx].focus();
+        } else if (e.key === 'ArrowUp') {
+          if (zone !== 'list') return;
+          e.preventDefault();
+          if (subIdx === 0) { zone = 'cat'; paint(); cats[col].focus(); }
+          else { subIdx -= 1; paint(); subEls[subIdx].focus(); }
+        }
+      });
+
+      xmb.append(catRow, list);
+      app.appendChild(xmb);
+      renderList(); paint();
+    })();
   })();
   </script>
 </body>
