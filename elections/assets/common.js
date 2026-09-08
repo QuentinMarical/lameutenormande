@@ -380,7 +380,7 @@
       }
     }
     const admin = E.ready && await E.adminSession();
-    actions.appendChild(E.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : E.icon('gear')));
+    actions.appendChild(E.h('a', { class: 'tool admin', href: 'https://lameutenormande.fr/admin/elections/', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : E.icon('gear')));
   };
   E.notConfigured = function (container) {
     E.clear(container).appendChild(E.h('div', { class: 'card warn' }, E.h('div', { class: 'icon' }, E.icon('screwdriver-wrench')),

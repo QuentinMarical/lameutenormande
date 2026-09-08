@@ -2,7 +2,7 @@
 
 Ce guide s'adresse à un membre du staff qui doit créer et faire vivre un scrutin (élection ou vote) depuis le panel admin, sans avoir besoin de toucher au code. Pour la mise en place technique du projet (une seule fois), voir [`supabase/README.md`](supabase/README.md).
 
-Panel admin : **lameutenormande.fr/elections/admin.html** (connexion avec ton compte Supabase — demande à Nitra si tu n'en as pas).
+Panel admin : **lameutenormande.fr/admin/elections** (connexion avec ton compte Supabase — demande à Nitra si tu n'en as pas).
 
 ## 1. Créer le scrutin
 

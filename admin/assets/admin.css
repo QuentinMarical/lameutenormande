@@ -1,0 +1,44 @@
+/* Hub admin — grille de raccourcis façon menu XMB (PS3) : une rangée d'icônes,
+   celle survolée/focus grossit et affiche son libellé + sa description. */
+
+.xmb-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem 4rem; gap: 2.5rem; }
+
+.xmb-row { display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 6vw, 4.5rem); flex-wrap: wrap; }
+
+.xmb-tile { display: flex; flex-direction: column; align-items: center; gap: .9rem; text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; padding: 0; font: inherit; outline: none; }
+
+.xmb-tile .icon-wrap {
+  width: 92px; height: 92px; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--panel-1);
+  border: 1px solid var(--line);
+  transition: transform .28s cubic-bezier(.25,.46,.45,.94), background .28s, border-color .28s, box-shadow .28s;
+}
+.xmb-tile .icon-wrap .e-icon { width: 2.4rem; height: 2.4rem; color: rgba(255, 255, 255, 0.55); transition: color .28s; }
+
+.xmb-tile.active .icon-wrap,
+.xmb-tile:hover .icon-wrap,
+.xmb-tile:focus-visible .icon-wrap {
+  transform: scale(1.28) translateY(-6px);
+  background: linear-gradient(155deg, rgba(168, 85, 247, 0.28), rgba(56, 189, 248, 0.14));
+  border-color: rgba(168, 85, 247, 0.55);
+  box-shadow: 0 12px 40px rgba(168, 85, 247, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+.xmb-tile.active .icon-wrap .e-icon,
+.xmb-tile:hover .icon-wrap .e-icon,
+.xmb-tile:focus-visible .icon-wrap .e-icon { color: #fff; }
+
+.xmb-tile .label {
+  font-family: 'PR Viking', 'Inter Tight', sans-serif;
+  font-size: .95rem; letter-spacing: .03em;
+  color: rgba(255, 255, 255, 0.45);
+  transition: color .28s, transform .28s;
+}
+.xmb-tile.active .label, .xmb-tile:hover .label, .xmb-tile:focus-visible .label { color: #fff; transform: translateY(-6px); }
+
+.xmb-desc { min-height: 1.4em; text-align: center; color: var(--muted); font-size: .92rem; max-width: 480px; transition: opacity .2s; }
+
+@media (max-width: 640px) {
+  .xmb-tile .icon-wrap { width: 76px; height: 76px; border-radius: 20px; }
+  .xmb-tile .icon-wrap .e-icon { width: 2rem; height: 2rem; }
+}

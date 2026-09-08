@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Utilisateurs — Espace admin de la Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Admin"><a href="../">Espace admin</a></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Utilisateurs</h1>
+    <div class="sub">Comptes administrateurs — communs à tous les panels du staff</div>
+  </section>
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../../elections/assets/config.js"></script>
+  <script src="../../elections/assets/common.js"></script>
+  <script src="../../elections/assets/legal.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
+      + '<div class="footer-title">Espace admin de la Meute</div>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // ---------- Connexion admin (même compte que les autres panels) ----------
+    const session = await E.adminSession();
+    if (!session) {
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
+      const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Connexion administrateur'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); btn.disabled = true;
+        const { error } = await E.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        location.reload();
+      });
+      E.clear(app).appendChild(form);
+      return;
+    }
+    const { data: flagRows } = await E.sb.rpc('my_admin_flags');
+    const myFlags = flagRows && flagRows[0];
+    if (!myFlags) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    if (myFlags.disabled) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Compte désactivé'),
+        h('div', { class: 'desc' }, 'Un autre administrateur a désactivé ton accès. Contacte le staff si c\'est une erreur.'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    if (myFlags.must_change_password) {
+      const p1 = h('input', { class: 'input', type: 'password', autocomplete: 'new-password', required: true, minlength: 8 });
+      const p2 = h('input', { class: 'input', type: 'password', autocomplete: 'new-password', required: true, minlength: 8 });
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Définir le mot de passe');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Choisis ton mot de passe'),
+        h('div', { class: 'desc' }, 'Ton compte utilise encore un mot de passe temporaire. Définis-en un nouveau pour continuer (8 caractères minimum).'),
+        h('div', { class: 'field' }, h('label', null, 'Nouveau mot de passe'), p1),
+        h('div', { class: 'field' }, h('label', null, 'Confirme le mot de passe'), p2),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault();
+        if (p1.value.length < 8) { E.toast('8 caractères minimum.', 'error'); return; }
+        if (p1.value !== p2.value) { E.toast('Les deux mots de passe ne correspondent pas.', 'error'); return; }
+        btn.disabled = true;
+        const { error } = await E.sb.auth.updateUser({ password: p1.value });
+        if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        await E.sb.rpc('clear_must_change_password');
+        E.toast('Mot de passe défini.', 'success');
+        location.reload();
+      });
+      E.clear(app).appendChild(form);
+      return;
+    }
+    { const chip = h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, E.icon('right-from-bracket')));
+      E.qs('.topbar .bar').appendChild(h('div', { class: 'actions' }, chip)); }
+
+    E.clear(app);
+    const pane = h('div'); app.appendChild(pane);
+
+    // ---------- Utilisateurs (comptes admin, communs à tous les panels) ----------
+    function showTempPassword(email, pwd) {
+      // Affiché une seule fois (jamais reconsultable ensuite) : à transmettre en main propre / canal sûr.
+      pane.prepend(h('div', { class: 'card warn column' }, h('div', { class: 'title' }, 'Mot de passe temporaire pour ' + email),
+        h('div', { class: 'desc' }, 'Transmets-le à la personne par un canal sûr : il ne sera plus jamais affiché. Elle devra le changer à sa première connexion.'),
+        h('div', { class: 'field' }, h('input', { class: 'input', readonly: true, value: pwd, onClick: e => e.target.select() }))));
+    }
+    async function utilisateurs() {
+      E.clear(pane);
+      const { data, error } = await E.sb.rpc('admin_list_admins');
+      if (error) { pane.appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(error)))); return; }
+      const rows = data || [];
+
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'off', required: true, placeholder: 'nouvel-admin@exemple.fr' });
+      const label = h('input', { class: 'input', autocomplete: 'off', placeholder: 'Prénom / pseudo (optionnel)' });
+      const inviteBtn = h('button', { class: 'btn', type: 'submit' }, 'Inviter');
+      const form = h('form', { class: 'card column' }, h('div', { class: 'title' }, 'Inviter un administrateur'),
+        h('div', { class: 'desc' }, 'Un mot de passe temporaire est généré automatiquement ; la personne devra le changer dès sa première connexion. Le compte créé donne accès à tous les panels admin (élections, sondages…).'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Étiquette'), label),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, inviteBtn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); inviteBtn.disabled = true;
+        try {
+          const data = await E.invokeAdminUsers({ action: 'invite', email: email.value.trim(), label: label.value.trim() });
+          E.toast('Administrateur créé.', 'success');
+          email.value = ''; label.value = '';
+          await utilisateurs();
+          showTempPassword(data.email, data.temp_password);
+        } catch (err) { E.toast(E.errMsg(err), 'error'); } finally { inviteBtn.disabled = false; }
+      });
+
+      const list = h('div', { class: 'cands' });
+      rows.forEach(r => {
+        const isSelf = r.user_id === session.user.id;
+        const resetBtn = h('button', { class: 'btn secondary small', type: 'button' }, 'Réinitialiser le mot de passe');
+        resetBtn.addEventListener('click', async () => {
+          if (!confirm('Réinitialiser le mot de passe de ' + (r.label || r.email) + ' ? Un nouveau mot de passe temporaire sera généré.')) return;
+          resetBtn.disabled = true;
+          try {
+            const data = await E.invokeAdminUsers({ action: 'reset_password', user_id: r.user_id });
+            E.toast('Mot de passe réinitialisé.', 'success');
+            await utilisateurs();
+            showTempPassword(r.email, data.temp_password);
+          } catch (err) { E.toast(E.errMsg(err), 'error'); resetBtn.disabled = false; }
+        });
+        const lockedOut = isSelf || r.is_dev;
+        const toggleBtn = h('button', { class: 'btn secondary small', type: 'button', disabled: lockedOut, title: r.is_dev ? 'Ce compte ne peut pas être désactivé' : isSelf ? 'Impossible de désactiver ton propre compte' : '' }, r.disabled ? 'Réactiver' : 'Désactiver');
+        toggleBtn.addEventListener('click', async () => {
+          if (!confirm((r.disabled ? 'Réactiver' : 'Désactiver') + ' le compte de ' + (r.label || r.email) + ' ?')) return;
+          toggleBtn.disabled = true;
+          try {
+            const { error } = await E.sb.rpc('admin_set_disabled', { p_user_id: r.user_id, p_disabled: !r.disabled });
+            if (error) throw error;
+            E.toast('Compte mis à jour.', 'success');
+            utilisateurs();
+          } catch (err) { E.toast(E.errMsg(err), 'error'); toggleBtn.disabled = lockedOut; }
+        });
+        const deleteBtn = h('button', { class: 'btn danger small', type: 'button', disabled: lockedOut, title: r.is_dev ? 'Ce compte ne peut pas être supprimé' : isSelf ? 'Impossible de supprimer ton propre compte' : '' }, 'Supprimer');
+        deleteBtn.addEventListener('click', async () => {
+          if (!confirm('Supprimer définitivement le compte admin de ' + (r.label || r.email) + ' ? Irréversible.')) return;
+          deleteBtn.disabled = true;
+          try {
+            await E.invokeAdminUsers({ action: 'delete', user_id: r.user_id });
+            E.toast('Administrateur supprimé.', 'success');
+            utilisateurs();
+          } catch (err) { E.toast(E.errMsg(err), 'error'); deleteBtn.disabled = lockedOut; }
+        });
+        list.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
+          h('div', { class: 'name' }, r.label || r.email,
+            r.is_dev ? h('span', { class: 'badge ok', title: 'Compte de développement' }, '🛠 Dev') : null,
+            h('span', { class: 'badge ' + (r.disabled ? 'danger' : 'ok') }, r.disabled ? 'Désactivé' : 'Actif'),
+            r.must_change_password ? h('span', { class: 'badge warn' }, 'Mdp temporaire') : null,
+            isSelf ? h('span', { class: 'badge muted' }, 'Toi') : null),
+          h('div', { class: 'handles' }, h('span', null, r.email), h('span', null, 'Depuis le ' + E.fmtDate(r.created_at))),
+          h('div', { class: 'btn-row', style: { marginTop: '.5rem' } }, resetBtn, toggleBtn, deleteBtn))));
+      });
+
+      pane.append(form, h('div', { class: 'section-title' }, 'Comptes existants', h('span', { class: 'count' }, rows.length)),
+        rows.length ? list : h('div', { class: 'empty' }, 'Aucun administrateur.'));
+    }
+
+    utilisateurs();
+  })();
+  </script>
+</body>
+</html>

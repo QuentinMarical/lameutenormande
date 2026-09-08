@@ -156,7 +156,7 @@
     const actions = V.h('div', { class: 'actions' });
     bar.appendChild(actions);
     const admin = V.ready && await V.adminSession();
-    actions.appendChild(V.h('a', { class: 'tool admin', href: 'admin.html', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : '⚙'));
+    actions.appendChild(V.h('a', { class: 'tool admin', href: 'https://lameutenormande.fr/admin/votes/', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : '⚙'));
   };
   V.notConfigured = function (container) {
     V.clear(container).appendChild(V.h('div', { class: 'card warn' }, V.h('div', { class: 'body' },

@@ -24,12 +24,12 @@ Le site reste 100 % statique (GitHub Pages). Tout ce qui est « vivant » (codes
    insert into public.admins (user_id, label)
    select id, 'Nitra' from auth.users where email = 'toi@exemple.fr';
    ```
-3. Ouvre `https://lameutenormande.fr/elections/admin.html`, connecte-toi. Le lien **⚙️ Admin** apparaît alors dans la navigation.
-4. Pour ajouter d'autres administrateurs par la suite : onglet **Utilisateurs** du panel (pas besoin de repasser par Supabase). Ça nécessite la fonction `admin-users` — voir juste après le bot Telegram (section 3-bis).
+3. Ouvre `https://lameutenormande.fr/admin/elections/`, connecte-toi. Le lien **⚙️ Admin** apparaît alors dans la navigation.
+4. Pour ajouter d'autres administrateurs par la suite : outil **Utilisateurs** de l'espace admin (`https://lameutenormande.fr/admin/utilisateurs`, pas besoin de repasser par Supabase). Ça nécessite la fonction `admin-users` — voir juste après le bot Telegram (section 3-bis).
 
 ### 3-bis. Fonction `admin-users` (gestion des comptes admin)
 
-Nécessaire pour inviter/réinitialiser un administrateur depuis l'onglet *Utilisateurs* du panel (activer/désactiver un compte, en revanche, ne dépend d'aucune fonction). Mêmes options de déploiement que `telegram-notify` ci-dessous, mais **sans** `--no-verify-jwt` ni secret à configurer : `supabase functions deploy admin-users` (CLI) ou Dashboard → *Edge Functions* → *Via Editor* → coller [`functions/admin-users/index.ts`](functions/admin-users/index.ts) → *Deploy* (laisser *Verify JWT with legacy secret* tel quel). `SUPABASE_URL`/`SUPABASE_ANON_KEY`/`SUPABASE_SERVICE_ROLE_KEY` sont fournies automatiquement à toute Edge Function du projet, rien à renseigner.
+Nécessaire pour inviter/réinitialiser un administrateur depuis l'outil *Utilisateurs* de l'espace admin (activer/désactiver un compte, en revanche, ne dépend d'aucune fonction). Mêmes options de déploiement que `telegram-notify` ci-dessous, mais **sans** `--no-verify-jwt` ni secret à configurer : `supabase functions deploy admin-users` (CLI) ou Dashboard → *Edge Functions* → *Via Editor* → coller [`functions/admin-users/index.ts`](functions/admin-users/index.ts) → *Deploy* (laisser *Verify JWT with legacy secret* tel quel). `SUPABASE_URL`/`SUPABASE_ANON_KEY`/`SUPABASE_SERVICE_ROLE_KEY` sont fournies automatiquement à toute Edge Function du projet, rien à renseigner.
 
 Dans l'onglet *Scrutins*, édite le brouillon « Élection du staff 2026 » (ou crée-en un), génère les codes dans l'onglet *Codes*, puis utilise les boutons **1️⃣ Ouvrir les candidatures** → **2️⃣ Ouvrir les votes** → **⏹ Clôturer** (ou laisse la date de clôture automatique faire le travail).
 

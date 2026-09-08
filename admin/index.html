@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Espace admin — La Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../elections/assets/elections.css">
+  <link rel="stylesheet" href="assets/admin.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav id="nav" aria-label="Admin"></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Espace administrateur</h1>
+    <div class="sub">Connexion unique pour tous les panels du staff</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../elections/assets/config.js"></script>
+  <script src="../elections/assets/common.js"></script>
+  <script src="../elections/assets/legal.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
+      + '<div class="footer-title">Espace admin de la Meute</div>'
+      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
+      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // ---------- Connexion admin (même compte Supabase Auth que les panels) ----------
+    const session = await E.adminSession();
+    if (!session) {
+      const email = h('input', { class: 'input', type: 'email', autocomplete: 'username', required: true, placeholder: 'admin@exemple.fr' });
+      const pass = h('input', { class: 'input', type: 'password', autocomplete: 'current-password', required: true });
+      const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
+      const form = h('form', { class: 'card info column', style: { maxWidth: '460px', margin: '0 auto' } },
+        h('div', { class: 'title' }, 'Connexion administrateur'),
+        h('div', { class: 'field' }, h('label', null, 'E-mail'), email), h('div', { class: 'field' }, h('label', null, 'Mot de passe'), pass),
+        h('div', { class: 'btn-row', style: { marginTop: 0 } }, btn));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); btn.disabled = true;
+        const { error } = await E.sb.auth.signInWithPassword({ email: email.value.trim(), password: pass.value });
+        if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+        location.reload();
+      });
+      E.clear(app).appendChild(form);
+      return;
+    }
+    const { data: isAdmin } = await E.sb.rpc('is_admin');
+    if (!isAdmin) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    { const slot = E.qs('.topbar .bar'); slot.appendChild(h('div', { class: 'actions' }, h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏻')))); }
+
+    // ---------- Panels disponibles ----------
+    const PANELS = [
+      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/' },
+      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/' },
+      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/' }
+    ];
+
+    E.clear(app);
+    const desc = h('div', { class: 'xmb-desc' });
+    const row = h('div', { class: 'xmb-row' });
+    const tiles = PANELS.map((p, i) => {
+      const tile = h('a', { class: 'xmb-tile', href: p.href, tabindex: '0' },
+        h('div', { class: 'icon-wrap' }, E.icon(p.icon)),
+        h('div', { class: 'label' }, p.label));
+      const setActive = () => { tiles && tiles.forEach(t => t.classList.remove('active')); tile.classList.add('active'); desc.textContent = p.desc; };
+      tile.addEventListener('mouseenter', setActive);
+      tile.addEventListener('focus', setActive);
+      row.appendChild(tile);
+      return tile;
+    });
+    let idx = 0;
+    const activate = (i) => { idx = (i + tiles.length) % tiles.length; tiles[idx].focus(); tiles[idx].dispatchEvent(new Event('focus')); };
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); activate(idx + 1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); activate(idx - 1); }
+    });
+    app.appendChild(h('div', { class: 'xmb-wrap' }, row, desc));
+    activate(0);
+  })();
+  </script>
+</body>
+</html>
