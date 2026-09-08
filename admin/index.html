@@ -10,19 +10,13 @@
   <link rel="stylesheet" href="../elections/assets/elections.css">
   <link rel="stylesheet" href="assets/admin.css">
 </head>
-<body>
-  <header class="topbar">
-    <div class="bar">
-      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
-      <nav id="nav" aria-label="Admin"></nav>
-    </div>
-  </header>
-  <section class="page-head xmb-hide-desktop">
-    <h1>Espace administrateur</h1>
-    <div class="sub">Connexion unique pour tous les panels du staff</div>
-  </section>
-  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
-  <footer class="site-footer xmb-hide-desktop" id="footer"></footer>
+<body class="xmb-body">
+  <!-- Pas de bandeau ni de pied de page ici : contrairement aux autres outils admin, cette page
+       reproduit un écran d'accueil XMB (voir Crédit, dans la case « La Meute Normande ») — le
+       retour au site et les pages légales vivent dans cette case plutôt que dans un footer, et
+       le compte connecté dans le coin horloge plutôt que dans une barre de navigation. -->
+  <div class="xmb-clock" id="xmbClock"></div>
+  <main id="app"><div class="loader">Chargement…</div></main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="../elections/assets/config.js"></script>
@@ -30,12 +24,13 @@
   <script src="../elections/assets/legal.js"></script>
   <script>
   (async () => {
-    const h = E.h, app = E.qs('#app');
-    { const f = E.qs('#footer'); f.innerHTML = '<div class="footer-divider"></div>'
-      + '<div class="footer-title">Espace admin de la Meute</div>'
-      + '<div class="legal-links"><button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="confidentialite">Politique de confidentialité</button><span class="legal-sep">·</span><button type="button" class="legal-btn" data-legal="cookies">Politique de cookies</button></div>'
-      + '<p class="legal">Outil réalisé par <a href="tg://resolve?domain=NitraFox" class="link-nitra">Nitra🦊</a> pour <a href="https://lameutenormande.fr" class="link-violet">La Meute Normande</a>.</p>';
-      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+    const h = E.h, app = E.qs('#app'), clockEl = E.qs('#xmbClock');
+
+    // ---------- Horloge (coin haut-droit, façon barre de statut XMB) ----------
+    const fmtClock = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    function tickClock() { clockEl.textContent = fmtClock.format(new Date()).replace('.', ''); }
+    tickClock(); setInterval(tickClock, 1000);
+
     if (!E.ready) { E.notConfigured(app); return; }
 
     // ---------- Connexion admin (même compte Supabase Auth que les panels) ----------
@@ -54,16 +49,19 @@
         if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
         location.reload();
       });
+      app.classList.add('xmb-centered');
       E.clear(app).appendChild(form);
       return;
     }
     const { data: isAdmin } = await E.sb.rpc('is_admin');
     if (!isAdmin) {
+      app.classList.add('xmb-centered');
       E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
         h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
       return;
     }
-    { const slot = E.qs('.topbar .bar'); slot.appendChild(h('div', { class: 'actions' }, h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏻')))); }
+    // Statut connecté, dans le coin horloge plutôt que dans une barre de navigation.
+    clockEl.appendChild(h('button', { type: 'button', class: 'xmb-signout', title: 'Se déconnecter (' + (session.user.email || 'admin') + ')', onClick: E.signOut }, '⏻'));
 
     // ---------- Panels disponibles ----------
     // subitems : { title, desc, hash } pour un onglet du panel (href = panel.href + #hash) — ou

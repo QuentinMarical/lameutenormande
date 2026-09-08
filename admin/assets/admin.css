@@ -1,5 +1,23 @@
-/* Hub admin — grille de raccourcis façon menu XMB (PS3) : une rangée d'icônes,
-   celle survolée/focus grossit et affiche son libellé + sa description. */
+/* Hub admin — écran d'accueil façon XMB (PS3), sans bandeau ni pied de page (voir Crédit dans
+   la case « La Meute Normande » pour la source d'inspiration). */
+
+body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+#app { flex: 1; width: 100%; display: flex; flex-direction: column; padding: 0; margin: 0; max-width: none; }
+#app.xmb-centered { align-items: center; justify-content: center; padding: 2rem 1rem; }
+
+/* Coin horloge, en remplacement de la barre de navigation du site (façon barre de statut XMB). */
+.xmb-clock {
+  position: fixed; top: 1.25rem; right: 1.5rem; z-index: 10;
+  display: flex; align-items: center; gap: .6rem;
+  padding: .4rem .9rem; border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 4px;
+  color: #fff; font-size: .85rem; letter-spacing: .03em;
+  background: rgba(0, 0, 0, 0.15); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.xmb-signout {
+  background: none; border: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer;
+  padding: 0; opacity: .8; transition: opacity .2s;
+}
+.xmb-signout:hover, .xmb-signout:focus-visible { opacity: 1; outline: none; }
 
 .xmb-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 1rem 4rem; gap: 1.75rem; }
 
@@ -73,14 +91,13 @@
 @media (min-width: 1024px) {
   .xmb-mobile-only { display: none; }
   .xmb-desktop-only { display: flex; }
-  .xmb-hide-desktop { display: none !important; }
 
   /* Pas de scrollbar en desktop : la page tient tout entière dans la fenêtre, comme un écran
-     d'accueil de console — page-head et pied de page masqués (leur contenu utile, les pages
+     d'accueil de console — pas de bandeau ni de pied de page (leur contenu utile, les pages
      légales et le crédit, est repris dans la case « La Meute Normande »), fenêtre de la liste
      à hauteur fixe (voir .xmb2-list-viewport) quel que soit le nombre d'onglets du panel actif. */
   html, body { height: 100%; overflow: hidden; }
-  main.wrap.wide { display: flex; align-items: center; justify-content: center; padding: 0 1rem; }
+  #app { align-items: center; justify-content: center; padding: 0 1rem; }
 }
 
 /* =====================================================================
