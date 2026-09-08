@@ -66,33 +66,76 @@
     { const slot = E.qs('.topbar .bar'); slot.appendChild(h('div', { class: 'actions' }, h('span', { class: 'account' }, h('span', null, session.user.email || 'admin'), h('button', { type: 'button', onClick: E.signOut, title: 'Se déconnecter' }, '⏻')))); }
 
     // ---------- Panels disponibles ----------
+    // subitems : onglets de chaque panel (id du hash → libellé), pour aller directement dessus
+    // sans repasser par l'écran d'accueil du panel — vide pour un outil sans onglets.
     const PANELS = [
-      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/' },
-      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/' },
-      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/' }
+      { key: 'elections', label: 'Élections', desc: 'Scrutins, candidatures, dépouillement et audit.', icon: 'check-to-slot', href: 'elections/', subitems: [
+        ['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']
+      ] },
+      { key: 'votes', label: 'Sondages', desc: 'Sondages ponctuels : présence, covoiturage…', icon: 'chart-simple', href: 'votes/', subitems: [
+        ['sondages', 'Sondages'], ['reponses', 'Réponses']
+      ] },
+      { key: 'utilisateurs', label: 'Utilisateurs', desc: 'Comptes administrateurs, communs à tous les panels.', icon: 'gear', href: 'utilisateurs/', subitems: [] }
     ];
 
     E.clear(app);
     const desc = h('div', { class: 'xmb-desc' });
     const row = h('div', { class: 'xmb-row' });
+    const submenu = h('div', { class: 'xmb-submenu' });
+    let col = 0, sub = -1, subEls = []; // sub = -1 : focus sur la tuile ; sinon index dans PANELS[col].subitems
+
+    function renderSubmenu() {
+      E.clear(submenu);
+      subEls = PANELS[col].subitems.map(([id, label], i) => {
+        const a = h('a', { class: 'xmb-sub-item', href: PANELS[col].href + '#' + id }, label);
+        a.addEventListener('mouseenter', () => { sub = i; highlight(); });
+        a.addEventListener('focus', () => { sub = i; highlight(); });
+        submenu.appendChild(a);
+        return a;
+      });
+      submenu.classList.toggle('open', subEls.length > 0);
+    }
+    function highlight() {
+      tiles.forEach((t, i) => t.classList.toggle('active', i === col));
+      desc.textContent = PANELS[col].desc;
+      subEls.forEach((a, i) => a.classList.toggle('active', i === sub));
+    }
+
     const tiles = PANELS.map((p, i) => {
       const tile = h('a', { class: 'xmb-tile', href: p.href, tabindex: '0' },
         h('div', { class: 'icon-wrap' }, E.icon(p.icon)),
         h('div', { class: 'label' }, p.label));
-      const setActive = () => { tiles && tiles.forEach(t => t.classList.remove('active')); tile.classList.add('active'); desc.textContent = p.desc; };
-      tile.addEventListener('mouseenter', setActive);
-      tile.addEventListener('focus', setActive);
+      const onEnter = () => { if (col !== i) { col = i; renderSubmenu(); } sub = -1; highlight(); };
+      tile.addEventListener('mouseenter', onEnter);
+      tile.addEventListener('focus', onEnter);
       row.appendChild(tile);
       return tile;
     });
-    let idx = 0;
-    const activate = (i) => { idx = (i + tiles.length) % tiles.length; tiles[idx].focus(); tiles[idx].dispatchEvent(new Event('focus')); };
-    row.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); activate(idx + 1); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); activate(idx - 1); }
+
+    function setCol(newCol, moveFocus) {
+      col = (newCol + PANELS.length) % PANELS.length; sub = -1;
+      renderSubmenu(); highlight();
+      if (moveFocus) tiles[col].focus();
+    }
+    app.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); setCol(col + 1, true); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); setCol(col - 1, true); }
+      else if (e.key === 'ArrowDown') {
+        if (!subEls.length) return;
+        e.preventDefault();
+        sub = sub === -1 ? 0 : Math.min(sub + 1, subEls.length - 1);
+        highlight(); subEls[sub].focus();
+      } else if (e.key === 'ArrowUp') {
+        if (sub === -1) return;
+        e.preventDefault();
+        sub = sub === 0 ? -1 : sub - 1;
+        highlight();
+        if (sub === -1) tiles[col].focus(); else subEls[sub].focus();
+      }
     });
-    app.appendChild(h('div', { class: 'xmb-wrap' }, row, desc));
-    activate(0);
+
+    app.appendChild(h('div', { class: 'xmb-wrap' }, row, submenu, desc));
+    renderSubmenu(); highlight(); tiles[0].focus();
   })();
   </script>
 </body>
