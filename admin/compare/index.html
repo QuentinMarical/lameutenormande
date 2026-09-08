@@ -166,6 +166,14 @@
           <td>Rangée de catégories décalée de 14px par rapport au centre exact (la formule de centrage utilisait la moitié du pas catégorie+écart au lieu de la moitié de la largeur réelle d'une catégorie)</td>
           <td>Constantes séparées <code>ITEM_W</code>/<code>GAP_W</code> au lieu d'un seul <code>CELL_W</code> ambigu ; centrage recalculé aussi au redimensionnement de la fenêtre (jamais refait sinon après un premier calcul à largeur 0 pendant le chargement mobile)</td>
         </tr>
+        <tr>
+          <td>Chaque case de catégorie s'élargissait au-delà de 64px selon la longueur de son libellé (le <code>min-width:auto</code> par défaut d'un item flex se cale sur son contenu, même caché en <code>visibility:hidden</code>), cassant le pas fixe utilisé pour le centrage</td>
+          <td><code>min-width: 0</code> sur <code>.xmb2-cat</code> pour forcer le respect strict des 64px quel que soit le libellé</td>
+        </tr>
+        <tr>
+          <td>La liste d'onglets était centrée indépendamment de la rangée (deux blocs centrés séparément, mais le contenu de la liste partait de son propre bord gauche) : son icône ne suivait pas celle de la catégorie active, l'écart entre les deux atteignait plus de 250px selon la catégorie</td>
+          <td>La liste s'ancre désormais en absolu au même point horizontal fixe où la rangée centre toujours son icône active (<code>left: 50%</code> sur son bord gauche, pas son centre) : son icône reste alignée sous celle de la catégorie quelle qu'elle soit</td>
+        </tr>
       </tbody>
     </table>
 
