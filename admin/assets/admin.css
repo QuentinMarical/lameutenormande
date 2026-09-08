@@ -107,7 +107,7 @@ body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: col
    la catégorie active en dessous (entrée sélectionnée en grand avec sa
    description, glissée en haut d'une fenêtre à hauteur fixe).
    ===================================================================== */
-.xmb2 { flex-direction: column; align-items: center; gap: 2.25rem; width: 100%; }
+.xmb2 { position: relative; flex-direction: column; align-items: center; gap: 3.5rem; width: 100%; }
 
 .xmb2-row { display: flex; align-items: flex-end; gap: 1.75rem; }
 
@@ -139,12 +139,14 @@ body.xmb-body { margin: 0; min-height: 100vh; display: flex; flex-direction: col
 }
 .xmb2-cat.active .xmb2-cat-label { opacity: 1; }
 
-/* Fenêtre à hauteur fixe : quel que soit le nombre d'onglets du panel actif, la liste ne fait
-   jamais grandir la page. .xmb2-list glisse verticalement dedans (translateY calculé en JS,
-   voir ROW_H) pour amener l'entrée active en haut, façon liste XMB qui défile. */
-.xmb2-list-viewport { display: none; width: min(640px, 90vw); height: 280px; overflow: hidden; }
+/* Ancre à hauteur nulle plutôt qu'une fenêtre coupée : la liste ne fait jamais grandir la page
+   (elle est positionnée en absolu, hors du flux), mais rien n'est masqué — .xmb2-list glisse
+   (translateY calculé en JS, voir ROW_H) pour amener l'entrée active juste sous la rangée de
+   catégories ; les entrées déjà parcourues remontent au-dessus d'elle, en petit, au lieu de
+   disparaître, comme sur la XMB. */
+.xmb2-list-viewport { display: none; position: relative; width: min(640px, 90vw); height: 0; overflow: visible; }
 .xmb2-list-viewport.open { display: block; }
-.xmb2-list { display: flex; flex-direction: column; gap: 0; transition: transform .28s cubic-bezier(.25,.46,.45,.94); }
+.xmb2-list { position: absolute; top: 0; left: 0; right: 0; display: flex; flex-direction: column; gap: 0; transition: transform .28s cubic-bezier(.25,.46,.45,.94); }
 
 .xmb2-item {
   display: flex; align-items: center; gap: 1.1rem; text-decoration: none; outline: none;

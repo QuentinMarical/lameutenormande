@@ -194,10 +194,11 @@
 
     // ---------- Version desktop (≥ 1024px) : façon écran d'accueil PS3 (voir Crédit) ----------
     // Rangée de catégories en haut (icône + libellé visible seulement sur la case active) ; en
-    // dessous, la liste des onglets de la catégorie active dans une fenêtre à hauteur fixe (donc
-    // jamais de scrollbar, quel que soit le nombre d'onglets) : l'entrée sélectionnée glisse en
-    // haut de cette fenêtre et s'affiche en grand (icône + titre + description qui pulse), les
-    // suivantes restent petites en dessous.
+    // dessous, la liste des onglets de la catégorie active, positionnée en absolu (voir plus bas)
+    // pour ne jamais faire grandir la page : l'entrée sélectionnée glisse juste sous les icônes et
+    // s'affiche en grand (icône + titre + description qui pulse), les suivantes restent petites en
+    // dessous — et les entrées déjà parcourues remontent au-dessus des icônes plutôt que de
+    // disparaître, comme sur la vraie XMB (seul le bord de l'écran les masque, pas de scrollbar).
     (function buildDesktop() {
       const ROW_H = 46; // hauteur d'une ligne repliée (doit rester synchro avec admin.css)
       const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
@@ -262,6 +263,10 @@
         }
       });
 
+      // viewport est positionné en absolu (voir admin.css) : ça l'ancre juste sous la rangée de
+      // catégories (via le gap de .xmb2) sans grandir la page — les entrées déjà parcourues
+      // (translateY négatif) remontent donc au-dessus de l'ancre, jusque par-dessus les icônes si
+      // besoin, plutôt que d'être découpées par une fenêtre, comme sur la vraie XMB.
       xmb.append(catRow, viewport);
       app.appendChild(xmb);
       renderList(); paint();
