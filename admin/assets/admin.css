@@ -6,6 +6,10 @@
 .xmb-row { display: flex; align-items: center; justify-content: center; gap: clamp(1.5rem, 6vw, 4.5rem); flex-wrap: wrap; }
 
 .xmb-tile { display: flex; flex-direction: column; align-items: center; gap: .9rem; text-decoration: none; color: inherit; background: none; border: none; cursor: pointer; padding: 0; font: inherit; outline: none; }
+/* La règle globale a:focus-visible d'elections.css (même spécificité) dessine un rectangle
+   par-dessus les tuiles au clavier : on la neutralise ici, le grossissement + halo du .icon-wrap
+   sert déjà d'indicateur de focus. */
+.xmb-tile:focus-visible { outline: none; }
 
 .xmb-tile .icon-wrap {
   width: 92px; height: 92px; border-radius: 24px;
