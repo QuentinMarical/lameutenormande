@@ -268,7 +268,6 @@
         E.clear(list);
         subEls = PANELS[col].subitems.map((item, i) => {
           const a = h('a', { class: 'xmb2-item', href: itemHref(PANELS[col], item) },
-            h('div', { class: 'xmb2-item-icon' }, panelIcon(PANELS[col])),
             h('div', { class: 'xmb2-item-text' }, h('div', { class: 'xmb2-item-title' }, item.title), h('div', { class: 'xmb2-item-desc' }, item.desc || '')));
           wireItem(a, item);
           a.addEventListener('mouseenter', () => { subIdx = i; zone = 'list'; paint(); });
