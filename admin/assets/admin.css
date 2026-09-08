@@ -76,11 +76,11 @@
 }
 .login-back:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-/* Logo large (celui de la topbar, masquée pendant la connexion — voir body.auth-gate) plutôt que
-   le macaron rond : pas de recadrage en cercle, juste une largeur maximale raisonnable. */
+/* Logo large (celui de la topbar, retirée pendant la connexion — voir hideChrome() dans
+   index.html) plutôt que le macaron rond : pas de recadrage en cercle, juste une largeur maximale
+   raisonnable. */
 .login-logo { display: block; width: auto; max-width: 190px; height: auto; max-height: 70px; margin: 0 auto 1.35rem; }
 .login-title { font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 1.4rem; color: #fff; margin: 0 0 1.25rem; }
-.login-sub { margin: 0 0 1.75rem; color: var(--muted); font-size: .9rem; }
 .login-email-pill {
   display: inline-flex; align-items: center; margin: 0 0 1.5rem; padding: .35rem .9rem; border-radius: 999px;
   background: var(--panel-2); border: 1px solid var(--line); font-size: .85rem; color: var(--text);
