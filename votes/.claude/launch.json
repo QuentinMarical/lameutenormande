@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "xmb-on-web-test",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "serve", "-l", "8935", "C:\\Users\\nitra\\AppData\\Local\\Temp\\claude\\C--Users-nitra-Documents-lameutenormande-votes\\5c15c5c9-285b-43d2-af1f-dc3b8589b5ee\\scratchpad\\xmb-on-web"],
+      "port": 8935
+    }
+  ]
+}
