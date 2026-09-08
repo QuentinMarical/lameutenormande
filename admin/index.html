@@ -130,7 +130,7 @@
               h('a', { href: 'https://github.com/menonparik/xmb-on-web', target: '_blank', rel: 'noopener' }, 'xmb-on-web'),
               ' de Pariksith Menon, dont un fork corrigé (bugs de navigation, écran de démarrage retiré) vit sur ',
               h('a', { href: 'https://github.com/QuentinMarical/xmb-on-web', target: '_blank', rel: 'noopener' }, 'github.com/QuentinMarical/xmb-on-web'), '.'),
-            h('p', null, 'Repris à l\'identique : disposition (rangée de catégories, liste d\'onglets avec l\'entrée sélectionnée agrandie et glow), palette grise et police Arial, échelle/opacité des icônes, entrées déjà parcourues qui remontent au-dessus de la rangée plutôt que de disparaître, et le bip sonore de navigation. Volontairement différent : pas d\'écran de démarrage, fond du site à la place de la vidéo, et connexion requise (le code de cette page reste original).'),
+            h('p', null, 'Repris à l\'identique : la rangée de catégories défile pour garder l\'active centrée (au lieu d\'une rangée fixe), liste d\'onglets avec l\'entrée sélectionnée agrandie et glow, palette grise et police Arial, échelle/opacité des icônes, entrées déjà parcourues qui remontent au-dessus de la rangée plutôt que de disparaître, et le bip sonore de navigation. Volontairement différent : pas d\'écran de démarrage, fond du site à la place de la vidéo, et connexion requise (le code de cette page reste original).'),
             h('p', null, 'Comparaison détaillée : ', h('a', { href: 'compare/' }, 'lameutenormande.fr/admin/compare'), '.'))));
       document.body.appendChild(bg);
       document.addEventListener('keydown', onKey);
@@ -210,8 +210,11 @@
     // disparaître, comme sur la vraie XMB (seul le bord de l'écran les masque, pas de scrollbar).
     (function buildDesktop() {
       const ROW_H = 46; // hauteur d'une ligne repliée (doit rester synchro avec admin.css)
+      const CELL_W = 92; // largeur d'une case de catégorie + gap (doit rester synchro avec admin.css)
       const xmb = h('div', { class: 'xmb2 xmb-desktop-only' });
+      const rowViewport = h('div', { class: 'xmb2-row-viewport' });
       const catRow = h('div', { class: 'xmb2-row' });
+      rowViewport.appendChild(catRow);
       const viewport = h('div', { class: 'xmb2-list-viewport' });
       const list = h('div', { class: 'xmb2-list' });
       viewport.appendChild(list);
@@ -227,6 +230,13 @@
         catRow.appendChild(cat);
         return cat;
       });
+      // Fait défiler toute la rangée horizontalement pour garder la catégorie active centrée dans
+      // sa fenêtre — comme moveMenu()/xmbMain.marginRight du fork, qui recentre l'ensemble de la
+      // rangée à chaque changement de catégorie plutôt que de laisser les icônes fixes.
+      function scrollRow() {
+        const vw = rowViewport.getBoundingClientRect().width || rowViewport.offsetWidth;
+        catRow.style.transform = 'translateX(' + (vw / 2 - (col * CELL_W + CELL_W / 2)) + 'px)';
+      }
 
       function renderList() {
         E.clear(list);
@@ -249,6 +259,7 @@
         // que seule une ligne est agrandie à la fois, les lignes qui précèdent mesurent toutes
         // ROW_H, ce décalage place donc toujours l'entrée active exactement au sommet.
         list.style.transform = 'translateY(-' + (subIdx * ROW_H) + 'px)';
+        scrollRow();
       }
       function setCol(newCol, moveFocus) {
         col = (newCol + PANELS.length) % PANELS.length; subIdx = 0; zone = 'cat';
@@ -276,7 +287,7 @@
       // catégories (via le gap de .xmb2) sans grandir la page — les entrées déjà parcourues
       // (translateY négatif) remontent donc au-dessus de l'ancre, jusque par-dessus les icônes si
       // besoin, plutôt que d'être découpées par une fenêtre, comme sur la vraie XMB.
-      xmb.append(catRow, viewport);
+      xmb.append(rowViewport, viewport);
       app.appendChild(xmb);
       renderList(); paint();
       cats[col].focus({ preventScroll: true });

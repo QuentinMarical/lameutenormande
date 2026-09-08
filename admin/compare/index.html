@@ -66,6 +66,11 @@
       <thead><tr><th>XMB (référence)</th><th>Chez nous</th><th>Statut</th></tr></thead>
       <tbody>
         <tr>
+          <td>La rangée entière défile horizontalement pour garder la catégorie active centrée (<code>moveMenu()</code> / <code>xmbMain.style.marginRight</code>) — les icônes ne sont pas fixes, elles glissent</td>
+          <td>Reproduit via une fenêtre à largeur fixe et <code>translateX</code> calculé (voir <code>CELL_W</code>) : même effet, généralisé à un nombre de catégories variable au lieu de 6 codées en dur avec des décalages en pixels réglés à la main par catégorie</td>
+          <td><span class="status ok">✓ Reproduit et généralisé</span></td>
+        </tr>
+        <tr>
           <td>← → change la catégorie active ; le fork original bloque net en butée (première/dernière catégorie)</td>
           <td>Boucle en continu (dernière → première et inversement), plus proche du vrai comportement console qu'une butée codée en dur</td>
           <td><span class="status partial">— Amélioré (rebouclage)</span></td>
