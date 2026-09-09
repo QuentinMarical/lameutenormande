@@ -220,37 +220,44 @@
     }
 
     // ---------- Réglages ----------
-    // Uniquement les champs non sensibles (identifiants publics/paramètres de routage) : les
-    // vrais secrets (ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, GITHUB_TOKEN) restent des secrets
-    // Supabase de la fonction (Dashboard/CLI), jamais stockés en base ni affichés ici — voir
-    // elections/supabase/README.md, section 5. app_settings est la même table clé/valeur que
-    // « Réglages » côté élections (RLS : accès réservé aux admins).
+    // Uniquement des champs propres à Zoho (pas de notion générique de « fournisseur de
+    // calendrier ») : l'UID du calendrier et le centre de données Zoho où vit le compte — un
+    // menu fermé sur les centres de données réellement documentés par Zoho (pas un champ texte
+    // libre, pour éviter qu'une faute de frappe dans un nom de domaine casse tout). Les vrais
+    // secrets (ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, GITHUB_TOKEN pour la synchro GitHub, hors
+    // périmètre Zoho) restent des secrets Supabase (Dashboard/CLI), jamais stockés en base ni
+    // affichés ici — voir elections/supabase/README.md, section 5. app_settings est la même
+    // table clé/valeur que « Réglages » côté élections (RLS : accès réservé aux admins).
+    const ZOHO_DATACENTERS = [
+      { value: 'eu', label: 'Europe (.eu)', accounts: 'accounts.zoho.eu', api: 'calendar.zoho.eu' },
+      { value: 'com', label: 'États-Unis (.com)', accounts: 'accounts.zoho.com', api: 'calendar.zoho.com' },
+      { value: 'in', label: 'Inde (.in)', accounts: 'accounts.zoho.in', api: 'calendar.zoho.in' },
+      { value: 'com.au', label: 'Australie (.com.au)', accounts: 'accounts.zoho.com.au', api: 'calendar.zoho.com.au' },
+      { value: 'jp', label: 'Japon (.jp)', accounts: 'accounts.zoho.jp', api: 'calendar.zoho.jp' },
+      { value: 'com.cn', label: 'Chine (.com.cn)', accounts: 'accounts.zoho.com.cn', api: 'calendar.zoho.com.cn' },
+    ];
     async function reglages() {
       E.clear(pane);
       const { data } = await E.sb.from('app_settings').select('*');
       const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+      const currentDc = ZOHO_DATACENTERS.find(dc => dc.accounts === map.zoho_accounts_domain) || ZOHO_DATACENTERS[0];
       const calendarUid = h('input', { class: 'input', value: map.zoho_calendar_uid || '', placeholder: 'UID du calendrier (voir README, section 5.3)' });
-      const accountsDomain = h('input', { class: 'input', value: map.zoho_accounts_domain || '', placeholder: 'accounts.zoho.eu' });
-      const apiDomain = h('input', { class: 'input', value: map.zoho_api_domain || '', placeholder: 'calendar.zoho.eu' });
-      const githubRepo = h('input', { class: 'input', value: map.github_repo || '', placeholder: 'QuentinMarical/lameutenormande' });
+      const dcSelect = h('select', { class: 'input' }, ...ZOHO_DATACENTERS.map(dc => h('option', { value: dc.value, selected: dc.value === currentDc.value }, dc.label)));
       const save = h('button', { class: 'btn', type: 'submit' }, 'Enregistrer');
       const form = h('form', { class: 'card column' },
         h('div', { class: 'title' }, 'Paramètres de l\'API Zoho'),
-        h('div', { class: 'desc' }, 'Laisser vide pour utiliser la valeur par défaut configurée sur la fonction zoho-create-event. Le Client ID, le Client Secret, le refresh token et le token GitHub restent des secrets réglés uniquement via le Dashboard Supabase (jamais ici) — voir '
+        h('div', { class: 'desc' }, 'Le Client ID, le Client Secret et le refresh token Zoho (ainsi que le token GitHub pour la synchro immédiate) restent des secrets réglés uniquement via le Dashboard Supabase (jamais ici) — voir '
           + 'elections/supabase/README.md, section 5.'),
         h('div', { class: 'field' }, h('label', null, 'UID du calendrier Zoho'), calendarUid),
-        h('div', { class: 'grid-2' },
-          h('div', { class: 'field' }, h('label', null, 'Domaine des comptes Zoho'), accountsDomain),
-          h('div', { class: 'field' }, h('label', null, 'Domaine de l\'API Calendar'), apiDomain)),
-        h('div', { class: 'field' }, h('label', null, 'Dépôt GitHub (owner/repo, pour la synchro immédiate)'), githubRepo),
+        h('div', { class: 'field' }, h('label', null, 'Centre de données Zoho du compte'), dcSelect),
         h('div', { class: 'btn-row' }, save));
       form.addEventListener('submit', async ev => {
         ev.preventDefault(); save.disabled = true;
+        const dc = ZOHO_DATACENTERS.find(d => d.value === dcSelect.value) || ZOHO_DATACENTERS[0];
         const rows = [
           { key: 'zoho_calendar_uid', value: calendarUid.value.trim() },
-          { key: 'zoho_accounts_domain', value: accountsDomain.value.trim() },
-          { key: 'zoho_api_domain', value: apiDomain.value.trim() },
-          { key: 'github_repo', value: githubRepo.value.trim() },
+          { key: 'zoho_accounts_domain', value: dc.accounts },
+          { key: 'zoho_api_domain', value: dc.api },
         ];
         const { error } = await E.sb.from('app_settings').upsert(rows, { onConflict: 'key' });
         save.disabled = false;

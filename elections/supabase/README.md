@@ -110,7 +110,7 @@ ZOHO_CLIENT_SECRET=...
 ZOHO_REFRESH_TOKEN=...
 ```
 
-L'UID du calendrier (`ZOHO_CALENDAR_UID`, trouvé à l'étape 5.3) se renseigne ensuite au choix : ici en secret, **ou** directement depuis l'onglet **Réglages** du panel (`https://lameutenormande.fr/admin/calendrier/#reglages`) — pratique si tu changes un jour de calendrier sans vouloir redéployer. Même chose pour `ZOHO_ACCOUNTS_DOMAIN`/`ZOHO_API_DOMAIN` (défauts `accounts.zoho.eu`/`calendar.zoho.eu`, à ne toucher que si le compte change de centre de données) et `GITHUB_REPO` (5.5). En cas de valeur dans les deux endroits, l'onglet Réglages est prioritaire.
+L'UID du calendrier (`ZOHO_CALENDAR_UID`, trouvé à l'étape 5.3) se renseigne ensuite au choix : ici en secret, **ou** directement depuis l'onglet **Réglages** du panel (`https://lameutenormande.fr/admin/calendrier/#reglages`) — pratique si tu changes un jour de calendrier sans vouloir redéployer. Le centre de données Zoho du compte (`ZOHO_ACCOUNTS_DOMAIN`/`ZOHO_API_DOMAIN`, défauts `accounts.zoho.eu`/`calendar.zoho.eu`) s'y règle aussi, via un menu fermé sur les centres de données réellement proposés par Zoho plutôt qu'un champ texte libre. En cas de valeur dans les deux endroits, l'onglet Réglages est prioritaire. `GITHUB_REPO` (5.5), qui ne concerne pas Zoho, n'apparaît volontairement pas dans cet onglet : reste un secret uniquement.
 
 ### 5.5 Synchronisation immédiate (optionnel)
 

@@ -13,13 +13,13 @@
 // Secrets requis (Dashboard → Edge Functions → Secrets, ou `supabase secrets set`) — les vrais
 // identifiants d'accès, jamais éditables depuis le panel admin :
 //   ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN
-//   GITHUB_TOKEN (optionnel — déclenchement immédiat du robot GitHub, sans lui la synchronisation
-//     se fait simplement à la prochaine heure pleine)
-// Les paramètres non sensibles ci-dessous ont une valeur par défaut ici, mais peuvent être
+//   GITHUB_TOKEN, GITHUB_REPO (optionnels — déclenchement immédiat du robot GitHub, hors
+//     périmètre Zoho donc pas dans l'onglet Réglages ; sans eux la synchronisation se fait
+//     simplement à la prochaine heure pleine)
+// Les paramètres Zoho non sensibles ci-dessous ont une valeur par défaut ici, mais peuvent être
 // surchargés depuis l'onglet Réglages du panel admin (table public.app_settings, clés
-// zoho_calendar_uid / zoho_accounts_domain / zoho_api_domain / github_repo) sans redéployer :
-//   ZOHO_CALENDAR_UID, ZOHO_ACCOUNTS_DOMAIN (accounts.zoho.eu), ZOHO_API_DOMAIN (calendar.zoho.eu),
-//   GITHUB_REPO (ex. "QuentinMarical/lameutenormande")
+// zoho_calendar_uid / zoho_accounts_domain / zoho_api_domain) sans redéployer :
+//   ZOHO_CALENDAR_UID, ZOHO_ACCOUNTS_DOMAIN (accounts.zoho.eu), ZOHO_API_DOMAIN (calendar.zoho.eu)
 // Voir elections/supabase/README.md, section "Fonction zoho-create-event", pour la marche à
 // suivre complète (création de l'appli Zoho, génération du refresh token, UID du calendrier).
 //
@@ -103,15 +103,17 @@ Deno.serve(async (req) => {
   const { data: isAdmin, error: isAdminErr } = await asCaller.rpc("is_admin");
   if (isAdminErr || !isAdmin) return json({ error: "ADMIN_REQUIRED" }, 403);
 
-  // Surcharges non sensibles réglées depuis l'onglet Réglages du panel admin (table déjà
+  // Surcharges Zoho non sensibles réglées depuis l'onglet Réglages du panel admin (table déjà
   // lisible par cet appelant, puisqu'il vient de passer la vérification is_admin() ci-dessus).
+  // Le dépôt GitHub (synchro immédiate, hors périmètre Zoho) n'est volontairement pas réglable
+  // ici : reste un secret de fonction (GITHUB_REPO), voir README section 5.5.
   const { data: settingsRows } = await asCaller.from("app_settings").select("key,value")
-    .in("key", ["zoho_calendar_uid", "zoho_accounts_domain", "zoho_api_domain", "github_repo"]);
+    .in("key", ["zoho_calendar_uid", "zoho_accounts_domain", "zoho_api_domain"]);
   const settings = Object.fromEntries((settingsRows || []).map((r: { key: string; value: string }) => [r.key, r.value]));
   const calendarUid = settings.zoho_calendar_uid || DEFAULT_ZOHO_CALENDAR_UID;
   const accountsDomain = settings.zoho_accounts_domain || DEFAULT_ZOHO_ACCOUNTS_DOMAIN;
   const apiDomain = settings.zoho_api_domain || DEFAULT_ZOHO_API_DOMAIN;
-  const githubRepo = settings.github_repo || DEFAULT_GITHUB_REPO;
+  const githubRepo = DEFAULT_GITHUB_REPO;
 
   if (!ZOHO_CLIENT_ID || !ZOHO_CLIENT_SECRET || !ZOHO_REFRESH_TOKEN || !calendarUid) {
     return json({ error: "ZOHO_NOT_CONFIGURED" }, 500);
