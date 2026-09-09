@@ -1,0 +1,16 @@
+{
+  "name": "La Meute Normande — Administration",
+  "short_name": "Meute Admin",
+  "description": "Espace d'administration de La Meute Normande : élections, sondages, calendrier, utilisateurs.",
+  "start_url": "/admin/",
+  "scope": "/admin/",
+  "id": "/admin/",
+  "display": "standalone",
+  "background_color": "#0d0a1c",
+  "theme_color": "#1e1430",
+  "lang": "fr",
+  "icons": [
+    { "src": "/assets/images/macaron-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/images/macaron-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

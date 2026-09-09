@@ -138,3 +138,15 @@
 .site-footer .legal-links a { color: rgba(255, 255, 255, 0.55); font-size: .8rem; text-decoration: none; }
 .site-footer .legal-links a:hover { color: #fff; }
 .site-footer .legal { font-size: .78rem; }
+
+/* ---------- Bannière d'installation PWA (voir assets/pwa-install.js) ---------- */
+.pwa-install-banner {
+  position: fixed; left: 1rem; right: 1rem; bottom: 1rem; z-index: 60;
+  max-width: 480px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem; flex-wrap: wrap;
+  padding: .9rem 1.1rem; border-radius: 14px;
+  background: linear-gradient(155deg, var(--panel-1), var(--panel-2) 120%);
+  border: 1px solid var(--violet-line); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+  font-size: .88rem; animation: fadeIn .3s ease;
+}
+.pwa-install-banner .pwa-install-actions { display: flex; gap: .5rem; flex-shrink: 0; }

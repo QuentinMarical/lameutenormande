@@ -7,6 +7,11 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Espace admin — La Meute Normande</title>
   <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <!-- Installabilité en PWA (voir assets/pwa-install.js) : manifeste + icône iOS, propres à
+       l'espace admin (scope /admin/), pas au reste du site public. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="https://lameutenormande.fr/assets/images/macaron-192x192.png">
+  <meta name="theme-color" content="#1e1430">
   <link rel="stylesheet" href="../elections/assets/elections.css">
   <link rel="stylesheet" href="assets/admin.css">
 </head>
@@ -21,6 +26,7 @@
   <script src="../elections/assets/config.js"></script>
   <script src="../elections/assets/common.js"></script>
   <script src="assets/legal.js"></script>
+  <script src="assets/pwa-install.js"></script>
   <script>
   (async () => {
     const h = E.h, app = E.qs('#app');
@@ -162,6 +168,7 @@
         h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, E.icon('right-from-bracket'), 'Se déconnecter')));
 
     E.clear(app).append(dashHeader, h('div', { class: 'tool-grid' }, TOOLS.map(toolCard)));
+    if (window.AdminPWA) window.AdminPWA.maybeShowInstallBanner();
   })();
   </script>
 </body>
