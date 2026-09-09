@@ -352,7 +352,10 @@
     BAD_DATES: 'Dates invalides (la fin doit être après le début).',
     ZOHO_NOT_CONFIGURED: 'Outil pas encore configuré côté serveur (secrets Zoho manquants) : voir elections/supabase/README.md.',
     ZOHO_AUTH_FAILED: 'Connexion à Zoho impossible (jeton expiré ou révoqué ?). Contacte un développeur.',
-    ZOHO_CREATE_FAILED: 'Zoho a refusé la création de l\'évènement. Vérifie les champs et réessaie.'
+    ZOHO_CREATE_FAILED: 'Zoho a refusé la création de l\'évènement. Vérifie les champs et réessaie.',
+    ZOHO_UPDATE_FAILED: 'Zoho a refusé la modification de l\'évènement (jeton sans le scope UPDATE ? voir README section 5). Vérifie les champs et réessaie.',
+    ZOHO_GET_FAILED: 'Impossible de récupérer cet évènement depuis Zoho (jeton sans le scope READ ? voir README section 5).',
+    BAD_UID: 'Identifiant d\'évènement manquant ou invalide.'
   };
   E.errMsg = function (err) {
     const m = (err && (err.message || err.error_description || String(err))) || 'Erreur inconnue';

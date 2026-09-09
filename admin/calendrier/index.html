@@ -105,7 +105,7 @@
         h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, '⏻ ', 'Se déconnecter')));
     E.clear(app).appendChild(dashHeader);
 
-    const tabs = [['ajouter', 'Ajouter'], ['reglages', 'Réglages']];
+    const tabs = [['ajouter', 'Ajouter'], ['modifier', 'Modifier'], ['reglages', 'Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     app.append(tabBar, pane);
@@ -114,109 +114,207 @@
     function show(id) {
       E.qsa('.tabs button', tabBar).forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       E.clear(pane).appendChild(E.loader());
-      ({ ajouter, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+      ({ ajouter, modifier, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
     }
 
-    // ---------- Ajout d'un évènement au calendrier Zoho ----------
-    // Cet onglet n'affiche aucune liste (le calendrier lui-même reste sur Zoho) : il se contente
-    // d'y créer des évènements via la fonction zoho-create-event (voir
+    // ---------- Formulaire d'évènement (partagé Ajouter / Modifier) ----------
+    // Le calendrier lui-même reste sur Zoho, cet outil ne fait qu'y créer/modifier des
+    // évènements via la fonction zoho-create-event (voir
     // elections/supabase/functions/zoho-create-event/). Le site public continue de lire
     // events.ics à la racine, régénéré depuis Zoho par le robot GitHub Actions
     // (.github/workflows/update-calendar.yml, toutes les heures — ou immédiatement si la
     // fonction est configurée pour le déclencher, voir son en-tête).
-    async function ajouter() {
-    E.clear(pane);
-    pane.appendChild(h('div', { class: 'card info column', style: { marginBottom: '18px' } },
-      h('div', { class: 'title', style: { fontSize: '15px' } }, 'Comment ça marche'),
-      h('div', { class: 'desc' }, 'Cet outil ajoute directement l\'évènement au calendrier Zoho. Le calendrier public du site (page Événements) se met à jour automatiquement dans l\'heure qui suit — pas besoin de repasser ailleurs.')));
-
-    const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Evreux 2026', required: true });
-    const furryChk = h('input', { type: 'checkbox' });
-    const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France' });
-    const urlInp = h('input', { class: 'input', type: 'url', placeholder: 'https://…' });
-    const descInp = h('textarea', { class: 'input', rows: '4', placeholder: 'Détails, programme, liens billetterie…' });
-    const allDayChk = h('input', { type: 'checkbox' });
-    const startInp = h('input', { class: 'input', type: 'datetime-local', required: true });
-    const endInp = h('input', { class: 'input', type: 'datetime-local', required: true });
-    const startLabel = h('label', null, 'Début');
-    const endField = h('div', { class: 'field' }, h('label', null, 'Fin'), endInp);
-    const datesRow = h('div', { class: 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
-
-    // Journée entière : un seul champ "Date" (le champ Fin est masqué, sa valeur suit celle du
-    // champ Date au moment de l'envoi — voir le handler submit) plutôt que Début/Fin identiques
-    // à saisir deux fois pour un évènement d'un jour.
-    function syncDateInputsType() {
-      const allDay = allDayChk.checked;
-      const type = allDay ? 'date' : 'datetime-local';
-      [startInp, endInp].forEach(inp => {
-        if (inp.type === type) return;
-        const v = inp.value ? inp.value.slice(0, 10) : '';
-        inp.type = type;
-        inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
-      });
-      startLabel.textContent = allDay ? 'Date' : 'Début';
-      endField.hidden = allDay;
-      endInp.required = !allDay;
-      datesRow.classList.toggle('grid-2', !allDay);
-    }
-    allDayChk.addEventListener('change', syncDateInputsType);
-
-    const submitBtn = h('button', { class: 'btn', type: 'submit' }, '＋ Ajouter au calendrier');
-    const form = h('form', { class: 'card column' },
-      h('div', { class: 'title', style: { fontSize: '16px' } }, 'Nouvel évènement'),
-      h('div', { class: 'field' }, h('label', null, 'Titre'), titleInp),
-      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, furryChk, 'Évènement furry 🦊'),
-      h('div', { class: 'grid-2' },
-        h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
-        h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
-      h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
-      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
-      datesRow,
-      h('div', { class: 'btn-row' }, submitBtn));
-    pane.appendChild(form);
-
-    const recentBox = h('div', { style: { marginTop: '18px' } });
-    pane.appendChild(recentBox);
-    const recentList = [];
-    function paintRecent() {
-      E.clear(recentBox);
-      if (!recentList.length) return;
-      recentBox.appendChild(h('div', { class: 'section-title' }, 'Ajoutés pendant cette session'));
-      recentList.forEach(r => recentBox.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
-        h('div', { class: 'name' }, r.title), h('div', { class: 'handles' }, h('span', null, r.when))))));
+    const GO_ATTENDEE_EMAIL = 'go@events.lameutenormande';
+    // Zoho renvoie ses dates en yyyyMMdd (journée entière) ou yyyyMMdd'T'HHmmss'Z' (UTC) : on
+    // reconvertit vers ce que les <input type="date"/"datetime-local"> attendent, en heure locale.
+    function zohoDateToInputValue(str, allDay) {
+      if (!str) return '';
+      if (allDay) { const m = /^(\d{4})(\d{2})(\d{2})/.exec(str); return m ? `${m[1]}-${m[2]}-${m[3]}` : ''; }
+      const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/.exec(str);
+      if (!m) return '';
+      const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
+      const p = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = titleInp.value.trim();
-      if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
-      const allDay = allDayChk.checked;
-      if (!startInp.value || (!allDay && !endInp.value)) { E.toast(allDay ? 'La date est obligatoire.' : 'Les dates de début et de fin sont obligatoires.', 'error'); return; }
-      // Journée entière : un seul champ saisi (le champ Fin, masqué, n'est pas fiable) — on
-      // envoie la même date telle quelle (YYYY-MM-DD) pour le début et la fin, sans passer par
-      // un objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur
-      // UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
-      const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
-      const end = allDay ? startInp.value : new Date(endInp.value).toISOString();
-      if (!allDay && new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+    // existing (facultatif) : l'évènement Zoho tel que renvoyé par l'action "get", pour préremplir
+    // en mode édition. onSaved(uid) est appelé après un enregistrement réussi.
+    function renderEventForm(existing, onSaved) {
+      const isEdit = !!existing;
+      const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Evreux 2026', required: true, value: existing ? existing.title.replace(/^\u{1F98A}\s*/u, '') : '' });
+      const furryChk = h('input', { type: 'checkbox' }); furryChk.checked = !!(existing && /\u{1F98A}/u.test(existing.title));
+      const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France', value: (existing && existing.location) || '' });
+      const urlInp = h('input', { class: 'input', type: 'url', placeholder: 'https://…', value: (existing && existing.url) || '' });
+      const descInp = h('textarea', { class: 'input', rows: '4', placeholder: 'Détails, programme, liens billetterie…' }, (existing && existing.description) || '');
+      const presenteChk = h('input', { type: 'checkbox' });
+      presenteChk.checked = !!(existing && Array.isArray(existing.attendees) && existing.attendees.some(a => (a.email || '').toLowerCase() === GO_ATTENDEE_EMAIL));
+      const allDayChk = h('input', { type: 'checkbox' }); allDayChk.checked = !!(existing && existing.isallday);
+      const initialType = allDayChk.checked ? 'date' : 'datetime-local';
+      const startInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.start, allDayChk.checked) : '' });
+      const endInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.end, allDayChk.checked) : '' });
+      const startLabel = h('label', null, allDayChk.checked ? 'Date' : 'Début');
+      const endField = h('div', { class: 'field', hidden: allDayChk.checked }, h('label', null, 'Fin'), endInp);
+      endInp.required = !allDayChk.checked;
+      const datesRow = h('div', { class: allDayChk.checked ? '' : 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
 
-      submitBtn.disabled = true; submitBtn.textContent = 'Ajout…';
-      try {
-        await E.invokeFn('zoho-create-event', {
-          title, location: locationInp.value.trim(), url: urlInp.value.trim(),
-          description: descInp.value.trim(), furry: furryChk.checked, allDay, start, end,
+      // Journée entière : un seul champ "Date" (le champ Fin est masqué, sa valeur suit celle du
+      // champ Date au moment de l'envoi — voir le handler submit) plutôt que Début/Fin identiques
+      // à saisir deux fois pour un évènement d'un jour.
+      function syncDateInputsType() {
+        const allDay = allDayChk.checked;
+        const type = allDay ? 'date' : 'datetime-local';
+        [startInp, endInp].forEach(inp => {
+          if (inp.type === type) return;
+          const v = inp.value ? inp.value.slice(0, 10) : '';
+          inp.type = type;
+          inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
         });
-        E.toast('Évènement ajouté au calendrier Zoho.', 'success');
-        recentList.unshift({ title: furryChk.checked ? '🦊 ' + title : title, when: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) });
-        paintRecent();
-        form.reset();
-        allDayChk.checked = false; syncDateInputsType();
-      } catch (err) {
-        E.toast(E.errMsg(err), 'error');
-      } finally {
-        submitBtn.disabled = false; submitBtn.textContent = '＋ Ajouter au calendrier';
+        startLabel.textContent = allDay ? 'Date' : 'Début';
+        endField.hidden = allDay;
+        endInp.required = !allDay;
+        datesRow.classList.toggle('grid-2', !allDay);
       }
-    });
+      allDayChk.addEventListener('change', syncDateInputsType);
+
+      const submitLabel = isEdit ? '💾 Enregistrer les modifications' : '＋ Ajouter au calendrier';
+      const submitBtn = h('button', { class: 'btn', type: 'submit' }, submitLabel);
+      const form = h('form', { class: 'card column' },
+        h('div', { class: 'title', style: { fontSize: '16px' } }, isEdit ? 'Modifier l\'évènement' : 'Nouvel évènement'),
+        h('div', { class: 'field' }, h('label', null, 'Titre'), titleInp),
+        h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, furryChk, 'Évènement furry 🦊'),
+        h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, presenteChk, 'La meute sera présente'),
+        h('div', { class: 'grid-2' },
+          h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
+          h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
+        h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
+        h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
+        datesRow,
+        h('div', { class: 'btn-row' }, submitBtn));
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const title = titleInp.value.trim();
+        if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
+        const allDay = allDayChk.checked;
+        if (!startInp.value || (!allDay && !endInp.value)) { E.toast(allDay ? 'La date est obligatoire.' : 'Les dates de début et de fin sont obligatoires.', 'error'); return; }
+        // Journée entière : un seul champ saisi (le champ Fin, masqué, n'est pas fiable) — on
+        // envoie la même date telle quelle (YYYY-MM-DD) pour le début et la fin, sans passer par
+        // un objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur
+        // UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
+        const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
+        const end = allDay ? startInp.value : new Date(endInp.value).toISOString();
+        if (!allDay && new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+
+        submitBtn.disabled = true; submitBtn.textContent = isEdit ? 'Enregistrement…' : 'Ajout…';
+        try {
+          await E.invokeFn('zoho-create-event', {
+            action: isEdit ? 'update' : 'create', uid: existing && existing.uid, etag: existing && existing.etag,
+            title, location: locationInp.value.trim(), url: urlInp.value.trim(),
+            description: descInp.value.trim(), furry: furryChk.checked, presente: presenteChk.checked, allDay, start, end,
+          });
+          E.toast(isEdit ? 'Évènement modifié.' : 'Évènement ajouté au calendrier Zoho.', 'success');
+          if (onSaved) onSaved(furryChk.checked ? '🦊 ' + title : title);
+          if (!isEdit) {
+            form.reset();
+            allDayChk.checked = false; syncDateInputsType();
+          }
+        } catch (err) {
+          E.toast(E.errMsg(err), 'error');
+        } finally {
+          submitBtn.disabled = false; submitBtn.textContent = submitLabel;
+        }
+      });
+      return form;
+    }
+
+    // ---------- Ajout d'un évènement ----------
+    async function ajouter() {
+      E.clear(pane);
+      pane.appendChild(h('div', { class: 'card info column', style: { marginBottom: '18px' } },
+        h('div', { class: 'title', style: { fontSize: '15px' } }, 'Comment ça marche'),
+        h('div', { class: 'desc' }, 'Cet outil ajoute directement l\'évènement au calendrier Zoho. Le calendrier public du site (page Événements) se met à jour automatiquement dans l\'heure qui suit — pas besoin de repasser ailleurs.')));
+
+      const recentBox = h('div', { style: { marginTop: '18px' } });
+      const recentList = [];
+      function paintRecent() {
+        E.clear(recentBox);
+        if (!recentList.length) return;
+        recentBox.appendChild(h('div', { class: 'section-title' }, 'Ajoutés pendant cette session'));
+        recentList.forEach(r => recentBox.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
+          h('div', { class: 'name' }, r.title), h('div', { class: 'handles' }, h('span', null, r.when))))));
+      }
+      const form = renderEventForm(null, (savedTitle) => {
+        recentList.unshift({ title: savedTitle, when: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) });
+        paintRecent();
+      });
+      pane.append(form, recentBox);
+    }
+
+    // ---------- Modification d'un évènement existant ----------
+    // Liste construite depuis events.ics (déjà régénéré toutes les heures depuis Zoho, même
+    // source que le reste du site) plutôt qu'un appel direct à l'API Zoho de liste : l'API impose
+    // un intervalle de 31 jours maximum par requête, alors qu'events.ics contient tout d'un coup.
+    // Contrepartie : un évènement ajouté il y a moins d'une heure peut ne pas encore apparaître ici.
+    async function modifier() {
+      E.clear(pane);
+      pane.appendChild(h('div', { class: 'loader' }));
+      let evts = [];
+      try {
+        const res = await fetch('https://lameutenormande.fr/events.ics?v=' + Date.now(), { cache: 'no-store' });
+        const texte = res.ok ? await res.text() : '';
+        const lignes = texte.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
+        let cur = null;
+        for (const ligne of lignes) {
+          if (ligne === 'BEGIN:VEVENT') { cur = {}; continue; }
+          if (ligne === 'END:VEVENT') { if (cur) evts.push(cur); cur = null; continue; }
+          if (!cur) continue;
+          const idx = ligne.indexOf(':'); if (idx < 0) continue;
+          const avant = ligne.slice(0, idx), valeur = ligne.slice(idx + 1).trim();
+          const nom = avant.split(';')[0].toUpperCase();
+          if (nom === 'UID') cur.uid = valeur;
+          else if (nom === 'SUMMARY') cur.title = valeur.replace(/\\n/gi, ' ').replace(/\\([,;\\])/g, '$1');
+          else if (nom === 'DTSTART') {
+            const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
+            if (m) cur.debut = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
+          }
+        }
+        evts = evts.filter(e => e.uid && e.title && e.debut).sort((a, b) => a.debut - b.debut);
+      } catch (err) {
+        E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, 'Impossible de charger la liste des évènements (events.ics).')));
+        return;
+      }
+
+      const searchInp = h('input', { class: 'input', placeholder: 'Filtrer par titre…' });
+      const list = h('div', { class: 'cands', style: { marginTop: '12px' } });
+      function paintList() {
+        E.clear(list);
+        const q = searchInp.value.trim().toLowerCase();
+        const filtered = q ? evts.filter(e => e.title.toLowerCase().includes(q)) : evts;
+        if (!filtered.length) { list.appendChild(h('div', { class: 'empty' }, 'Aucun évènement.')); return; }
+        filtered.forEach(e => list.appendChild(h('div', { class: 'cand selectable', onClick: () => ouvrirEdition(e.uid) },
+          h('div', { class: 'body' }, h('div', { class: 'name' }, e.title), h('div', { class: 'handles' }, h('span', null, E.fmtDateTime(e.debut)))))));
+      }
+      searchInp.addEventListener('input', paintList);
+      E.clear(pane).append(
+        h('div', { class: 'field' }, h('label', null, 'Rechercher un évènement'), searchInp),
+        list);
+      paintList();
+
+      async function ouvrirEdition(uid) {
+        E.clear(pane).appendChild(h('div', { class: 'loader' }));
+        try {
+          const data = await E.invokeFn('zoho-create-event', { action: 'get', uid });
+          const raw = data.event;
+          const evt = (raw && raw.events && raw.events[0]) || raw;
+          if (!evt || !evt.uid) throw new Error('ZOHO_GET_FAILED');
+          const backBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: modifier }, '← Retour à la liste');
+          E.clear(pane).append(backBtn, renderEventForm(evt, () => modifier()));
+        } catch (err) {
+          E.clear(pane).append(
+            h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err))),
+            h('button', { class: 'btn secondary small', type: 'button', onClick: modifier }, '← Retour à la liste'));
+        }
+      }
     }
 
     // ---------- Réglages ----------

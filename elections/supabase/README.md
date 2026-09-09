@@ -77,7 +77,7 @@ Permet d'ajouter des évènements au calendrier Zoho depuis `https://lameutenorm
 
 Toujours dans la fiche du Self Client, onglet **Generate Code** :
 
-1. **Scope** : `ZohoCalendar.calendar.READ,ZohoCalendar.event.CREATE`
+1. **Scope** : `ZohoCalendar.calendar.READ,ZohoCalendar.event.CREATE,ZohoCalendar.event.READ,ZohoCalendar.event.UPDATE` (READ/UPDATE nécessaires pour l'onglet **Modifier** du panel — consulter et modifier un évènement déjà créé)
 2. **Time Duration** : 10 minutes (le code généré n'est valable que ce temps, à échanger vite)
 3. **Scope Description** : libre (ex. "Outil admin calendrier")
 4. *Create* → copie le code affiché (`1000.xxxxx...`)

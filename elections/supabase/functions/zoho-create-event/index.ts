@@ -1,9 +1,13 @@
-// Edge Function : crée un évènement dans le calendrier Zoho (outil admin "Calendrier", voir
-// admin/calendrier/) via l'API Zoho Calendar. Le site public ne lit jamais Zoho directement :
-// le flux public reste events.ics à la racine, régénéré depuis le calendrier Zoho par le robot
-// GitHub Actions .github/workflows/update-calendar.yml (toutes les heures). Cette fonction se
-// contente de bien vouloir déclencher ce robot juste après création (best-effort, optionnel)
-// pour ne pas attendre l'heure pleine — voir GITHUB_TOKEN/GITHUB_REPO ci-dessous.
+// Edge Function : crée/modifie/consulte un évènement du calendrier Zoho (outil admin
+// "Calendrier", voir admin/calendrier/) via l'API Zoho Calendar. Le site public ne lit jamais
+// Zoho directement : le flux public reste events.ics à la racine, régénéré depuis le calendrier
+// Zoho par le robot GitHub Actions .github/workflows/update-calendar.yml (toutes les heures).
+// Cette fonction se contente de bien vouloir déclencher ce robot juste après création/màj
+// (best-effort, optionnel) pour ne pas attendre l'heure pleine — voir GITHUB_TOKEN/GITHUB_REPO.
+//
+// Gardé sous le nom historique "zoho-create-event" (pas renommé en "zoho-events") pour ne pas
+// devoir redéployer une nouvelle fonction : `action` dans le corps de la requête distingue
+// désormais "create" (défaut), "update" et "get".
 //
 // Sécurité : le JWT de l'appelant (transmis automatiquement par supabase-js functions.invoke)
 // est vérifié par la gateway Supabase (verify_jwt par défaut), puis on revérifie nous-mêmes
@@ -16,6 +20,9 @@
 //   GITHUB_TOKEN, GITHUB_REPO (optionnels — déclenchement immédiat du robot GitHub, hors
 //     périmètre Zoho donc pas dans l'onglet Réglages ; sans eux la synchronisation se fait
 //     simplement à la prochaine heure pleine)
+// Le refresh token doit couvrir le scope ZohoCalendar.calendar.READ,ZohoCalendar.event.CREATE,
+// ZohoCalendar.event.READ,ZohoCalendar.event.UPDATE (le scope est figé à sa génération : si ton
+// refresh token actuel ne couvrait que CREATE, regénère-le avec ce scope élargi — voir README).
 // Les paramètres Zoho non sensibles ci-dessous ont une valeur par défaut ici, mais peuvent être
 // surchargés depuis l'onglet Réglages du panel admin (table public.app_settings, clés
 // zoho_calendar_uid / zoho_accounts_domain / zoho_api_domain) sans redéployer :
@@ -42,6 +49,13 @@ const DEFAULT_ZOHO_CALENDAR_UID = Deno.env.get("ZOHO_CALENDAR_UID") ?? "";
 const DEFAULT_ZOHO_ACCOUNTS_DOMAIN = Deno.env.get("ZOHO_ACCOUNTS_DOMAIN") || "accounts.zoho.eu";
 const DEFAULT_ZOHO_API_DOMAIN = Deno.env.get("ZOHO_API_DOMAIN") || "calendar.zoho.eu";
 const DEFAULT_GITHUB_REPO = Deno.env.get("GITHUB_REPO") ?? "";
+
+// Marqueur de présence de la Meute (convention déjà utilisée par admin/votes/ et actus.html pour
+// détecter, depuis events.ics, les évènements où le staff a confirmé sa présence) : ajouter cette
+// adresse comme participant "optionnel" (attendance:2 → réponse non obligatoire, c'est une
+// adresse-marqueur, pas une vraie boîte mail) suffit à ce qu'elle apparaisse en ATTENDEE dans
+// l'export ICS du calendrier.
+const GO_ATTENDEE_EMAIL = "go@events.lameutenormande";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -73,8 +87,8 @@ async function getAccessToken(accountsDomain: string): Promise<string> {
   return j.access_token as string;
 }
 
-// Best-effort : un échec ici ne doit pas faire échouer la création de l'évènement (déjà faite
-// côté Zoho à ce stade) — la synchronisation horaire normale du robot prendra le relais.
+// Best-effort : un échec ici ne doit pas faire échouer l'opération (déjà faite côté Zoho à ce
+// stade) — la synchronisation horaire normale du robot prendra le relais.
 async function triggerCalendarSync(githubRepo: string): Promise<void> {
   if (!GITHUB_TOKEN || !githubRepo) return;
   try {
@@ -89,6 +103,56 @@ async function triggerCalendarSync(githubRepo: string): Promise<void> {
       body: JSON.stringify({ ref: "main" }),
     });
   } catch { /* best-effort */ }
+}
+
+type EventPayload = {
+  action?: string; uid?: string; etag?: string;
+  title?: string; location?: string; description?: string; url?: string;
+  start?: string; end?: string; allDay?: boolean; furry?: boolean; presente?: boolean;
+};
+
+// Construit le "eventdata" envoyé à Zoho (POST création comme PUT mise à jour) : l'API remplace
+// l'évènement entier à la mise à jour, donc on renvoie toujours l'ensemble des champs gérés ici
+// (title/dates/description/lieu/participants), jamais un simple diff.
+function buildEventData(p: EventPayload): { eventdata: Record<string, unknown> } | { error: string } {
+  const title = String(p.title || "").trim();
+  if (!title) return { error: "BAD_TITLE" };
+  if (!p.start || !p.end) return { error: "BAD_DATES" };
+
+  const allDay = !!p.allDay;
+  let start: string | null, end: string | null;
+  if (allDay) {
+    start = fmtZohoDate(p.start);
+    end = fmtZohoDate(p.end);
+    if (!start || !end || end < start) return { error: "BAD_DATES" };
+  } else {
+    const startD = new Date(p.start);
+    const endD = new Date(p.end);
+    if (isNaN(startD.getTime()) || isNaN(endD.getTime()) || endD.getTime() < startD.getTime()) return { error: "BAD_DATES" };
+    start = fmtZohoDateTime(startD);
+    end = fmtZohoDateTime(endD);
+  }
+
+  // Normalisation symétrique (pas juste un ajout) : une édition qui décoche "furry" doit aussi
+  // pouvoir retirer l'émoji déjà présent dans le titre, pas seulement en empêcher l'ajout.
+  const strippedTitle = title.replace(/^\u{1F98A}\s*/u, "");
+  const finalTitle = p.furry ? "🦊 " + strippedTitle : strippedTitle;
+
+  const eventdata: Record<string, unknown> = {
+    title: finalTitle,
+    dateandtime: { start, end, timezone: "Europe/Paris" },
+    isallday: allDay,
+    description: String(p.description || "").trim(),
+    location: String(p.location || "").trim(),
+    url: String(p.url || "").trim(),
+    // Toujours explicite (jamais omis) : sur une mise à jour, omettre ce champ pourrait laisser
+    // Zoho conserver d'anciens participants alors que la case "La meute sera présente" vient
+    // d'être décochée.
+    attendees: p.presente ? [{ email: GO_ATTENDEE_EMAIL, attendance: 2 }] : [],
+    notify_attendee: 0,
+  };
+  if (p.etag) eventdata.etag = p.etag;
+  return { eventdata };
 }
 
 Deno.serve(async (req) => {
@@ -119,53 +183,36 @@ Deno.serve(async (req) => {
     return json({ error: "ZOHO_NOT_CONFIGURED" }, 500);
   }
 
-  let p: { title?: string; location?: string; description?: string; url?: string; start?: string; end?: string; allDay?: boolean; furry?: boolean };
+  let p: EventPayload;
   try { p = await req.json(); } catch { return json({ error: "JSON invalide" }, 400); }
-
-  const title = String(p.title || "").trim();
-  if (!title) return json({ error: "BAD_TITLE" }, 400);
-  if (!p.start || !p.end) return json({ error: "BAD_DATES" }, 400);
-
-  const allDay = !!p.allDay;
-  let start: string | null, end: string | null;
-  if (allDay) {
-    start = fmtZohoDate(p.start);
-    end = fmtZohoDate(p.end);
-    if (!start || !end || end < start) return json({ error: "BAD_DATES" }, 400);
-  } else {
-    const startD = new Date(p.start);
-    const endD = new Date(p.end);
-    if (isNaN(startD.getTime()) || isNaN(endD.getTime()) || endD.getTime() < startD.getTime()) return json({ error: "BAD_DATES" }, 400);
-    start = fmtZohoDateTime(startD);
-    end = fmtZohoDateTime(endD);
-  }
-
-  const finalTitle = p.furry && !/\u{1F98A}/u.test(title) ? "🦊 " + title : title;
-  let description = String(p.description || "").trim();
-  const eventUrl = String(p.url || "").trim();
-  if (eventUrl) description = description ? description + "\n\n" + eventUrl : eventUrl;
-
-  const eventdata: Record<string, unknown> = {
-    title: finalTitle,
-    dateandtime: { start, end, timezone: "Europe/Paris" },
-    isallday: allDay,
-  };
-  if (description) eventdata.description = description;
-  const location = String(p.location || "").trim();
-  if (location) eventdata.location = location;
+  const action = p.action || "create";
+  const eventsBase = `https://${apiDomain}/api/v1/calendars/${encodeURIComponent(calendarUid)}/events`;
 
   try {
     const accessToken = await getAccessToken(accountsDomain);
-    const r = await fetch(`https://${apiDomain}/api/v1/calendars/${encodeURIComponent(calendarUid)}/events`, {
-      method: "POST",
-      headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: "eventdata=" + encodeURIComponent(JSON.stringify(eventdata)),
+    const authHeaders = { Authorization: `Zoho-oauthtoken ${accessToken}` };
+
+    if (action === "get") {
+      if (!p.uid) return json({ error: "BAD_UID" }, 400);
+      const r = await fetch(`${eventsBase}/${encodeURIComponent(p.uid)}`, { headers: authHeaders });
+      const zohoResult = await r.json();
+      if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: zohoResult }, 502);
+      return json({ ok: true, event: zohoResult });
+    }
+
+    if (action !== "create" && action !== "update") return json({ error: "BAD_ACTION" }, 400);
+    const built = buildEventData(p);
+    if ("error" in built) return json({ error: built.error }, 400);
+
+    const isUpdate = action === "update";
+    if (isUpdate && !p.uid) return json({ error: "BAD_UID" }, 400);
+    const r = await fetch(isUpdate ? `${eventsBase}/${encodeURIComponent(p.uid!)}` : eventsBase, {
+      method: isUpdate ? "PUT" : "POST",
+      headers: { ...authHeaders, "Content-Type": "application/x-www-form-urlencoded" },
+      body: "eventdata=" + encodeURIComponent(JSON.stringify(built.eventdata)),
     });
     const zohoResult = await r.json();
-    if (!r.ok || zohoResult?.status === "failure") return json({ error: "ZOHO_CREATE_FAILED", detail: zohoResult }, 502);
+    if (!r.ok || zohoResult?.status === "failure") return json({ error: isUpdate ? "ZOHO_UPDATE_FAILED" : "ZOHO_CREATE_FAILED", detail: zohoResult }, 502);
 
     await triggerCalendarSync(githubRepo);
     return json({ ok: true, event: zohoResult });
