@@ -189,6 +189,22 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://www.visiterouen.com/patrimoines/histoire/fetes-jeanne-darc/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Draguignan Gaming Festival
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261031
+DTEND;VALUE=DATE:20261102
+LOCATION:Complexe Saint-Exupery. Place de la Paix\, 83300 Draguignan
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0f89153a98c043598bd8c3839b073d06@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260909T130429Z
+LAST-MODIFIED:20260909T130429Z
+DTSTAMP:20260909T130431Z
+URL:https://draguignan-gaming.gg/billetterie/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Margny-Compiègne Geek Convention
 DESCRIPTION:La Margny-Compiègne Geek Convention\, organisée par l'association Ultimate Sci-Fi\, revient pour sa 8ème édition les 6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.) à Le Tigre\, 2 Rue Jean Mermoz\, Margny-lès-Compiègne (60280).\n\nAu programme : pop culture\, gaming\, cosplay et science-fiction dans un univers entièrement immersif : exposants\, boutiques spécialisées\, espace gaming\, défilé cosplay\, animations en continu et rencontres avec des invités exclusifs issus de l'univers geek. Buvette et restauration sur place tout le week-end.\n\nTarifs 1 jour : gratuit pour les moins de 6 ans\, 8€ pour les 6-14 ans\, PMR\, demandeurs d'emploi et cosplayeurs\, 10€ pour les +14 ans. Pass 2 jours : 12€ et 16€ respectivement. Billetterie ouverte sur compiegne-geek-convention.fr !\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Margny-Compiègne Geek Convention</b>\, organisée par l'association Ultimate Sci-Fi\, revient pour sa<span>&nbsp\;</span><b>8ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.)</b><span>&nbsp\;</span>à<span>&nbsp\;</span><b>Le Tigre</b>\, 2 Rue Jean Mermoz\,<span>&nbsp\;</span><b>Margny-lès-Compiègne</b><span>&nbsp\;</span>(60280).<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : pop culture\, gaming\, cosplay et science-fiction dans un univers entièrement immersif : exposants\, boutiques spécialisées\, espace gaming\, défilé cosplay\, animations en continu et rencontres avec des invités exclusifs issus de l'univers geek. Buvette et restauration sur place tout le week-end.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Tarifs 1 jour :<span>&nbsp\;</span><b>gratuit pour les moins de 6 ans</b>\,<span>&nbsp\;</span><b>8€ pour les 6-14 ans\, PMR\, demandeurs d'emploi et cosplayeurs</b>\,<span>&nbsp\;</span><b>10€ pour les +14 ans</b>. Pass 2 jours :<span>&nbsp\;</span><b>12€ et 16€</b><span>&nbsp\;</span>respectivement. Billetterie ouverte sur compiegne-geek-convention.fr !<br /></p><div><br /></div>
@@ -1074,6 +1090,21 @@ CREATED:20260807T204905Z
 LAST-MODIFIED:20260807T204905Z
 DTSTAMP:20260807T204906Z
 URL:https://www.bocapole.fr/spectacles/79-evenements/576-boc-n-geek-2026
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Paris Manga Sci-Fi Show by TGS
+DESCRIPTION:
+DTSTART;VALUE=DATE:20261003
+DTEND;VALUE=DATE:20261005
+LOCATION:Hall 7. Hall 7\, 93420 Villepinte
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:74c349d34e2941b5ab93e4fe693f3f70@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260909T130728Z
+LAST-MODIFIED:20260909T130728Z
+DTSTAMP:20260909T130729Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Manga Expo
