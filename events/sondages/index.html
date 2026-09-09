@@ -8,57 +8,59 @@
   <title>Sondages — La Meute Normande</title>
   <meta name="description" content="Sondages de La Meute Normande : présence aux évènements, covoiturage et autres questions rapides, ouverts à tous.">
   <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
-  <link rel="stylesheet" href="../../elections/assets/elections.css">
   <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
   <link rel="stylesheet" href="../../assets/font-awesome-brands/css/brands.min.css">
-  <link rel="stylesheet" href="../../assets/socicon/css/styles.css">
   <link rel="stylesheet" href="../../assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/menu.css">
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="../../assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="../../assets/theme/css/style.css">
+  <link rel="stylesheet" href="../../assets/mobirise/css/mbr-additional.css">
+  <!-- Chargées en dernier : reprennent la main sur tout ce qui n'est pas le menu (cartes,
+       boutons, modales…) pour garder le thème sombre de l'outil de sondages. -->
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
   <link rel="stylesheet" href="assets/votes.css">
 </head>
 <body>
-  <section class="menu menu2 cid-veCgXANUp1">
-    <nav class="navbar navbar-dropdown navbar-expand-lg" aria-label="Navigation principale">
-      <div class="container">
-        <div class="navbar-brand">
-          <span class="navbar-logo">
-            <a href="https://lameutenormande.fr/">
-              <img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async" style="height: 3.7rem;">
-            </a>
-          </span>
-        </div>
-        <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Ouvrir le menu">
-          <div class="hamburger"><span></span><span></span><span></span><span></span></div>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav nav-dropdown nav-right">
-            <li class="nav-item dropdown">
-              <a class="nav-link link dropdown-toggle text-danger" href="https://lameutenormande.fr/events" aria-haspopup="true" aria-expanded="false">Événements</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item text-danger" href="https://lameutenormande.fr/events">Calendrier</a>
-                <a class="dropdown-item text-danger active" href="index.html">Sondages</a>
-              </div>
-            </li>
-            <li class="nav-item"><a class="nav-link link text-danger text-primary" href="https://lameutenormande.fr/actus">Actus</a></li>
-            <li class="nav-item"><a class="nav-link link text-danger text-primary" href="https://lameutenormande.fr/contact">Contact</a></li>
-          </ul>
-          <div class="icons-menu">
-            <a class="iconfont-wrapper" href="http://t.me/Annonces_Meute_Normande" aria-label="Telegram" style="color: rgb(0, 110, 255);">
-              <span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(0, 110, 255);"></span>
-            </a>
-            <a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" aria-label="Instagram" style="color: rgb(249, 44, 80);">
-              <span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(249, 44, 80);"></span>
-            </a>
-            <a class="iconfont-wrapper" href="https://discord.gg/Ejm3J2D3Xc" aria-label="Discord" style="color: rgb(121, 15, 160);">
-              <span class="p-2 mbr-iconfont fab fa-discord" style="color: rgb(121, 15, 160);"></span>
-            </a>
-            <a class="iconfont-wrapper" href="https://lameutenormande.fr/admin/votes/" id="navAdminIcon" aria-label="Accès administrateur" title="Accès administrateur">
-              <span class="p-2 mbr-iconfont mobi-mbri-setting mobi-mbri"></span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </nav>
+  <section data-bs-version="5.1" class="menu menu2 cid-veCgXANUp1" once="menu" id="menu02-1i">
+	<nav class="navbar navbar-dropdown navbar-expand-lg" aria-label="Navigation principale">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="../../index.html">
+						<img src="../../assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async" style="height: 3.7rem;">
+					</a>
+				</span>
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item dropdown">
+						<a class="nav-link link dropdown-toggle text-danger show display-4" href="../../events.html" data-toggle="dropdown-submenu" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">Événements</a><div class="dropdown-menu show" data-bs-popper="none"><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events">Calendrier</a><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events/sondages">Sondages</a></div>
+					</li><li class="nav-item"><a class="nav-link link text-danger text-primary display-4" href="https://lameutenormande.fr/actus">Actus</a></li>
+					<li class="nav-item">
+						<a class="nav-link link text-danger text-primary display-4" href="https://lameutenormande.fr/contact">Contact</a>
+					</li></ul>
+				<div class="icons-menu">
+					<a class="iconfont-wrapper" href="http://t.me/Annonces_Meute_Normande" aria-label="Telegram" style="color: rgb(0, 110, 255);">
+						<span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(0, 110, 255); fill: rgb(0, 110, 255);"></span>
+					</a>
+					<a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" aria-label="Instagram" style="color: rgb(249, 44, 80);">
+						<span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(249, 44, 80); fill: rgb(249, 44, 80);"></span>
+					</a>
+					<a class="iconfont-wrapper" href="https://discord.gg/Ejm3J2D3Xc" aria-label="Discord" style="color: rgb(121, 15, 160);">
+						<span class="p-2 mbr-iconfont fab fa-discord" style="color: rgb(121, 15, 160); fill: rgb(121, 15, 160);"></span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
   </section>
   <section class="page-head">
     <h1>Sondages de la Meute</h1>
@@ -67,6 +69,8 @@
   <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
   <footer class="site-footer" id="footer"></footer>
 
+  <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/dropdown/js/navbar-dropdown.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="assets/config.js"></script>
   <script src="assets/common.js"></script>
@@ -75,8 +79,6 @@
   (async () => {
     const h = V.h, app = V.qs('#app');
     V.footer();
-    V.initMenu();
-    V.setupAdmin();
     if (!V.ready) { V.notConfigured(app); return; }
 
     const { data: polls } = await V.vsb.from('polls').select('*').order('created_at', { ascending: false });

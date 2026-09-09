@@ -2,6 +2,17 @@
    options de réponse et barres de résultats façon Telegram (remplissage
    proportionnel, pourcentage, coche sur son propre choix). */
 
+/* Le vrai menu du site (assets/bootstrap + assets/theme, chargés dans <head>) pose un fond
+   blanc par défaut sur les sections qui suivent : on le neutralise ici pour garder le fond
+   sombre de l'outil de sondages sous le menu. */
+.page-head, main.wrap, .site-footer { background: transparent; }
+
+/* Le module de menu flotte en position absolute par-dessus la page (comme sur le reste du
+   site, où il survole une image de fond) : ces pages n'ont pas ce bandeau, donc on pousse le
+   contenu sous la hauteur du menu pour ne pas être recouvert. */
+.page-head { padding-top: 7rem; }
+@media (max-width: 767px) { .page-head { padding-top: 5.5rem; } }
+
 .poll-question { margin-bottom: 22px; }
 .poll-question .q-label { font-weight: 700; margin-bottom: 4px; }
 .poll-question .q-required { color: var(--violet-2, #c471ed); margin-left: 4px; }

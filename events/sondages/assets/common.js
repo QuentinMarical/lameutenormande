@@ -147,48 +147,9 @@
 
   // ---------- Layout commun ----------
   // Le menu est le module Mobirise "menu2" réel du reste du site public, en dur dans le HTML
-  // (voir Modules Mobirise/OK/Module Menu/V6 fonctionnel + assets/menu.css, qui reprend
-  // verbatim le CSS compilé livré par le site pour ce module). On ne câble ici que
-  // l'interactivité (dropdown, hamburger) : le vrai module s'appuie sur Bootstrap
-  // (bootstrap.bundle.min.js), qu'on ne charge pas pour éviter toute collision avec les
-  // .btn/.card/.modal déjà stylés dans l'outil de sondages — donc on reproduit à la main le
-  // strict comportement de assets/dropdown/js/navbar-dropdown.js pour ce module précis.
-  V.initMenu = function () {
-    const section = V.qs('.cid-veCgXANUp1'); if (!section) return;
-    const nav = V.qs('.navbar-dropdown', section);
-    const toggler = V.qs('.navbar-toggler', section);
-    const collapse = V.qs('#navbarSupportedContent', section);
-    if (toggler && collapse) {
-      toggler.addEventListener('click', () => {
-        const shown = collapse.classList.toggle('show');
-        nav.classList.toggle('opened', shown);
-        toggler.setAttribute('aria-expanded', shown ? 'true' : 'false');
-      });
-    }
-    function closeDropdowns() {
-      V.qsa('.nav-item.dropdown.open', section).forEach((li) => {
-        li.classList.remove('open');
-        const toggle = V.qs('.dropdown-toggle', li);
-        if (toggle) toggle.setAttribute('aria-expanded', 'false');
-      });
-    }
-    V.qsa('.nav-item.dropdown > .dropdown-toggle', section).forEach((toggle) => {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        const li = toggle.parentNode;
-        const wasOpen = li.classList.contains('open');
-        closeDropdowns();
-        if (!wasOpen) { li.classList.add('open'); toggle.setAttribute('aria-expanded', 'true'); }
-      });
-    });
-    document.addEventListener('click', (e) => { if (!section.contains(e.target)) closeDropdowns(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDropdowns(); });
-  };
-  V.setupAdmin = async function () {
-    const icon = V.qs('#navAdminIcon'); if (!icon) return;
-    const admin = V.ready && await V.adminSession();
-    if (admin) { const label = 'Panel admin (' + (admin.user.email || '') + ')'; icon.title = label; icon.setAttribute('aria-label', label); }
-  };
+  // (voir Modules Mobirise/OK/Module Menu/V6 fonctionnel), avec les vrais assets du site
+  // (bootstrap.min.css/bundle.js, dropdown/, theme/, mbr-additional.css) : aucun code custom
+  // ici, le dropdown/hamburger sont gérés par ces scripts comme sur le reste du site.
   V.notConfigured = function (container) {
     V.clear(container).appendChild(V.h('div', { class: 'card warn' }, V.h('div', { class: 'body' },
       V.h('div', { class: 'title' }, 'Outil pas encore configuré'),

@@ -268,7 +268,7 @@ document.addEventListener('click', function (e) {
             // Identité de réponse : mêmes clés localStorage que lameutenormande.fr/votes (même
             // origine, stockage partagé) — un pseudo tapé ici est donc retrouvé sur l'autre page,
             // et réciproquement. Le device_token n'est qu'une clé d'édition, jamais une identité :
-            // voir votes/supabase/schema.sql pour le détail de cette conception.
+            // voir events/sondages/supabase/schema.sql pour le détail de cette conception.
             function obtenirDeviceToken() {
                 try {
                     let t = localStorage.getItem('votes.device');
