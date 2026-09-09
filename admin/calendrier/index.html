@@ -152,27 +152,21 @@
       const initialType = allDayChk.checked ? 'date' : 'datetime-local';
       const startInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.start, allDayChk.checked) : '' });
       const endInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.end, allDayChk.checked) : '' });
-      const startLabel = h('label', null, allDayChk.checked ? 'Date' : 'Début');
-      const endField = h('div', { class: 'field', hidden: allDayChk.checked }, h('label', null, 'Fin'), endInp);
-      endInp.required = !allDayChk.checked;
-      const datesRow = h('div', { class: allDayChk.checked ? '' : 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
+      // Début/Fin restent deux champs même en "journée entière" — un évènement all-day peut
+      // durer plusieurs jours (ex. une convention sur 5 jours), pas juste un seul ; "journée
+      // entière" retire seulement l'heure (type="date" au lieu de "datetime-local"), pas le champ Fin.
+      const datesRow = h('div', { class: 'grid-2' },
+        h('div', { class: 'field' }, h('label', null, 'Début'), startInp),
+        h('div', { class: 'field' }, h('label', null, 'Fin'), endInp));
 
-      // Journée entière : un seul champ "Date" (le champ Fin est masqué, sa valeur suit celle du
-      // champ Date au moment de l'envoi — voir le handler submit) plutôt que Début/Fin identiques
-      // à saisir deux fois pour un évènement d'un jour.
       function syncDateInputsType() {
-        const allDay = allDayChk.checked;
-        const type = allDay ? 'date' : 'datetime-local';
+        const type = allDayChk.checked ? 'date' : 'datetime-local';
         [startInp, endInp].forEach(inp => {
           if (inp.type === type) return;
           const v = inp.value ? inp.value.slice(0, 10) : '';
           inp.type = type;
           inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
         });
-        startLabel.textContent = allDay ? 'Date' : 'Début';
-        endField.hidden = allDay;
-        endInp.required = !allDay;
-        datesRow.classList.toggle('grid-2', !allDay);
       }
       allDayChk.addEventListener('change', syncDateInputsType);
 
@@ -196,14 +190,13 @@
         const title = titleInp.value.trim();
         if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
         const allDay = allDayChk.checked;
-        if (!startInp.value || (!allDay && !endInp.value)) { E.toast(allDay ? 'La date est obligatoire.' : 'Les dates de début et de fin sont obligatoires.', 'error'); return; }
-        // Journée entière : un seul champ saisi (le champ Fin, masqué, n'est pas fiable) — on
-        // envoie la même date telle quelle (YYYY-MM-DD) pour le début et la fin, sans passer par
-        // un objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur
-        // UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
+        if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
+        // Journée entière : on envoie les dates telles quelles (YYYY-MM-DD), sans passer par un
+        // objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur UTC
+        // (ex. minuit heure de Paris en été = 22h UTC la veille).
         const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
-        const end = allDay ? startInp.value : new Date(endInp.value).toISOString();
-        if (!allDay && new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+        const end = allDay ? endInp.value : new Date(endInp.value).toISOString();
+        if (allDay ? end < start : new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
 
         submitBtn.disabled = true; submitBtn.textContent = isEdit ? 'Enregistrement…' : 'Ajout…';
         try {
