@@ -79,10 +79,21 @@ function fmtZohoDate(dateStr: string): string | null {
   return m ? `${m[1]}${m[2]}${m[3]}` : null;
 }
 
+// Zoho répond parfois par une page HTML (auth/scope invalide, mauvais domaine…) plutôt qu'un
+// JSON d'erreur propre : r.json() planterait alors avec un message opaque ("Unexpected token
+// '<'..."). On récupère le texte brut à la place dans ce cas, tronqué, pour rester diagnosticable.
+async function safeJson(r: Response): Promise<{ ok: true; data: any } | { ok: false; status: number; bodyText: string }> {
+  const text = await r.text();
+  try { return { ok: true, data: JSON.parse(text) }; }
+  catch { return { ok: false, status: r.status, bodyText: text.slice(0, 500) }; }
+}
+
 async function getAccessToken(accountsDomain: string): Promise<string> {
   const url = `https://${accountsDomain}/oauth/v2/token?refresh_token=${encodeURIComponent(ZOHO_REFRESH_TOKEN)}&client_id=${encodeURIComponent(ZOHO_CLIENT_ID)}&client_secret=${encodeURIComponent(ZOHO_CLIENT_SECRET)}&grant_type=refresh_token`;
   const r = await fetch(url, { method: "POST" });
-  const j = await r.json();
+  const parsed = await safeJson(r);
+  if (!parsed.ok) throw new Error("ZOHO_AUTH_FAILED: non-JSON response, status " + parsed.status + ": " + parsed.bodyText);
+  const j = parsed.data;
   if (!j.access_token) throw new Error("ZOHO_AUTH_FAILED: " + JSON.stringify(j));
   return j.access_token as string;
 }
@@ -195,9 +206,10 @@ Deno.serve(async (req) => {
     if (action === "get") {
       if (!p.uid) return json({ error: "BAD_UID" }, 400);
       const r = await fetch(`${eventsBase}/${encodeURIComponent(p.uid)}`, { headers: authHeaders });
-      const zohoResult = await r.json();
-      if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: zohoResult }, 502);
-      return json({ ok: true, event: zohoResult });
+      const parsed = await safeJson(r);
+      if (!parsed.ok) return json({ error: "ZOHO_GET_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+      if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: parsed.data }, 502);
+      return json({ ok: true, event: parsed.data });
     }
 
     if (action !== "create" && action !== "update") return json({ error: "BAD_ACTION" }, 400);
@@ -211,8 +223,11 @@ Deno.serve(async (req) => {
       headers: { ...authHeaders, "Content-Type": "application/x-www-form-urlencoded" },
       body: "eventdata=" + encodeURIComponent(JSON.stringify(built.eventdata)),
     });
-    const zohoResult = await r.json();
-    if (!r.ok || zohoResult?.status === "failure") return json({ error: isUpdate ? "ZOHO_UPDATE_FAILED" : "ZOHO_CREATE_FAILED", detail: zohoResult }, 502);
+    const failCode = isUpdate ? "ZOHO_UPDATE_FAILED" : "ZOHO_CREATE_FAILED";
+    const parsed = await safeJson(r);
+    if (!parsed.ok) return json({ error: failCode, detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+    const zohoResult = parsed.data;
+    if (!r.ok || zohoResult?.status === "failure") return json({ error: failCode, detail: zohoResult }, 502);
 
     await triggerCalendarSync(githubRepo);
     return json({ ok: true, event: zohoResult });
