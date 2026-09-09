@@ -88,13 +88,23 @@ async function safeJson(r: Response): Promise<{ ok: true; data: any } | { ok: fa
   catch { return { ok: false, status: r.status, bodyText: text.slice(0, 500) }; }
 }
 
+// Zoho limite le nombre de renouvellements de jeton (grant_type=refresh_token) sur une courte
+// période ("You have made too many requests continuously") : un nouveau jeton par requête
+// (create/update/get) l'atteint vite en usage normal. Un jeton reste valable ~1h ; on le garde
+// donc en mémoire tant que l'instance de la fonction reste "chaude" (réutilisée entre appels par
+// le runtime Edge Functions), avec une marge de sécurité de 5 min avant sa vraie expiration.
+let cachedToken: { accessToken: string; expiresAt: number } | null = null;
+
 async function getAccessToken(accountsDomain: string): Promise<string> {
+  if (cachedToken && cachedToken.expiresAt > Date.now()) return cachedToken.accessToken;
   const url = `https://${accountsDomain}/oauth/v2/token?refresh_token=${encodeURIComponent(ZOHO_REFRESH_TOKEN)}&client_id=${encodeURIComponent(ZOHO_CLIENT_ID)}&client_secret=${encodeURIComponent(ZOHO_CLIENT_SECRET)}&grant_type=refresh_token`;
   const r = await fetch(url, { method: "POST" });
   const parsed = await safeJson(r);
   if (!parsed.ok) throw new Error("ZOHO_AUTH_FAILED: non-JSON response, status " + parsed.status + ": " + parsed.bodyText);
   const j = parsed.data;
   if (!j.access_token) throw new Error("ZOHO_AUTH_FAILED: " + JSON.stringify(j));
+  const expiresInMs = (typeof j.expires_in === "number" ? j.expires_in : 3600) * 1000;
+  cachedToken = { accessToken: j.access_token, expiresAt: Date.now() + expiresInMs - 5 * 60 * 1000 };
   return j.access_token as string;
 }
 
