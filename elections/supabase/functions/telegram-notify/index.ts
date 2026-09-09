@@ -22,6 +22,18 @@ const VOTING_NOTE = "\nℹ️ Voter est réservé aux membres de la meute (code 
 const esc = (s: unknown) => String(s ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]!));
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
+// Comparaison à temps constant : évite qu'un attaquant devine le secret octet par octet en
+// mesurant le temps de réponse (une comparaison `!==` classique s'arrête au premier octet différent).
+function timingSafeEqual(a: string, b: string): boolean {
+  const enc = new TextEncoder();
+  const aBytes = enc.encode(a);
+  const bBytes = enc.encode(b);
+  const len = Math.max(aBytes.length, bBytes.length, 1);
+  let diff = aBytes.length ^ bBytes.length;
+  for (let i = 0; i < len; i++) diff |= (aBytes[i] ?? 0) ^ (bBytes[i] ?? 0);
+  return diff === 0;
+}
+
 async function send(text: string) {
   const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
     method: "POST", headers: { "Content-Type": "application/json" },
@@ -33,7 +45,7 @@ async function send(text: string) {
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
-  if (!SECRET || req.headers.get("x-notify-secret") !== SECRET) return json({ error: "Unauthorized" }, 401);
+  if (!SECRET || !timingSafeEqual(req.headers.get("x-notify-secret") ?? "", SECRET)) return json({ error: "Unauthorized" }, 401);
   if (!BOT_TOKEN || !CHAT_ID) return json({ error: "Function non configurée" }, 500);
 
   let p: { type: string; election_id?: string; candidate_id?: string };
