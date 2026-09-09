@@ -468,8 +468,8 @@ STATUS:CONFIRMED
 UID:2f36da730e7e4352aa4edb71837759e6@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260818T083828Z
-LAST-MODIFIED:20260818T083828Z
-DTSTAMP:20260818T083829Z
+LAST-MODIFIED:20260909T153508Z
+DTSTAMP:20260909T153510Z
 URL:https://furdu.com.au/
 END:VEVENT
 BEGIN:VEVENT
@@ -1169,8 +1169,8 @@ STATUS:CONFIRMED
 UID:7affcd8184254463b4235921fe6316e0@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260730T113346Z
-LAST-MODIFIED:20260730T113459Z
-DTSTAMP:20260730T113501Z
+LAST-MODIFIED:20260909T153518Z
+DTSTAMP:20260909T153520Z
 URL:https://furfurieux.com/
 END:VEVENT
 BEGIN:VEVENT
@@ -1919,8 +1919,8 @@ STATUS:CONFIRMED
 UID:bf900d43204a41ec9b9010b127d23d8f@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260614T133607Z
-LAST-MODIFIED:20260614T133841Z
-DTSTAMP:20260614T133843Z
+LAST-MODIFIED:20260909T153530Z
+DTSTAMP:20260909T153531Z
 URL:https://furvaria.de
 END:VEVENT
 BEGIN:VEVENT
@@ -2342,8 +2342,7 @@ URL:https://www.cidreetdragon.eu/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Furry BlackLight 2026
-DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\n\n\nNouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Cette&nbsp\;année\, la FBL vous accueille de nouveau dans le cadre  prestigieux du H4  Hotel Wyndham Paris Pleyel Resort\, un des plus grands  hôtels de Paris.<br /></div><p dir="ltr" class="framer-text framer-styles-preset-1gatu9o">40   étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un   séjour exceptionnel et haut-de-gamme qui vous attend pour cette   prochaine édition. Et le centre de convention sera entièrement privatisé   pour notre évènement !<br /></p><div dir="ltr"><br /></div><div dir="ltr">Nouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la early le mardi 27 octobre 2026.</div>
+DESCRIPTION:Cette année\, la FBL vous accueille de nouveau dans le cadre prestigieux du H4 Hotel Wyndham Paris Pleyel Resort\, un des plus grands hôtels de Paris.\n\n40 étages\, 697 chambres\, un centre de convention de 10 000 m²\, c’est un séjour exceptionnel et haut-de-gamme qui vous attend pour cette prochaine édition. Et le centre de convention sera entièrement privatisé pour notre évènement !\n\nNouveauté cette année\, possibilité d'arriver dès le lundi 26 octobre 2026 en plus de la Early le mardi 27 octobre 2026.
 DTSTART;VALUE=DATE:20261028
 DTEND;VALUE=DATE:20261102
 LOCATION:H4 Wyndham Paris Pleyel\, 149 Boulevard Anatole France\, 93200 Saint-Denis
@@ -2353,8 +2352,8 @@ STATUS:CONFIRMED
 UID:e093e80240264c6093b00376da1fdbb1@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260201T202354Z
-LAST-MODIFIED:20260201T202508Z
-DTSTAMP:20260201T202510Z
+LAST-MODIFIED:20260909T153319Z
+DTSTAMP:20260909T153321Z
 URL:https://fblacklight.org/fr/
 END:VEVENT
 BEGIN:VEVENT
@@ -2555,7 +2554,7 @@ END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Anthropolis 2
 DESCRIPTION:Anthropolis revient pour une 2ème édition.\n\nToujours au village vacances de Bussang\, environ 230 attendees ou plus vous accueillera du 18 au 21 mars 2027.\n\nConcernant les billets\, elles sont les suivantes :\n\n- Standard qui comprend l'accès à la convention pour les 4 jours\, l'hébergement 3 nuits\, le buffet à volonté le matin\, midi et soir\, l'accès à toutes les activités\, l'accès à la piscine et au toboggan\, les goodies et le conbook : 350€ par personne\n- Sponsor qui comprend en plus du standard\, le t-shirt ATP (Anthropolis) 2027\, l'autocollant sponsor et le fast-pass aux évènements qui inclut le Dealer's Den : 390€ par personne\n- Super Sponsor qui comprend en plus du standard et du sponsor\, l'autocollant super sponsor\, Enamel pins\, le fast-pass au restaurant chaque jour et des goodies mystère : 430€ par personne\n\n
-X-ALT-DESC;FMTTYPE=text/html:<div>Anthropolis revient pour une 2ème édition.<br /></div><div>Toujours au village vacances de Bussang\, environ 230 attendees ou plus vous accueillera du 18 au 21 mars 2027.<br /></div><div>Concernant les billets\, elles sont les suivantes :<br /></div><div>- <b>Standard</b> qui comprend l'accès à la convention pour les 4 jours\, l'hébergement 3 nuits\, le buffet à volonté le matin\, midi et soir\, l'accès à toutes les activités\, l'accès à la piscine et au toboggan\, les goodies et le conbook : <u>350€</u> par personne<br />- <b>Sponsor</b> qui comprend en plus du standard\, le t-shirt ATP (Anthropolis) 2027\, l'autocollant sponsor et le fast-pass aux évènements qui inclut le Dealer's Den : <u>390€</u> par personne</div><div>- <b>Super Sponsor</b> qui comprend en plus du standard et du sponsor\, l'autocollant super sponsor\, Enamel pins\, le fast-pass au restaurant chaque jour et des goodies mystère : <u>430€</u> par personne<br /></div>
+X-ALT-DESC;FMTTYPE=text/html:<div>Anthropolis revient pour une 2ème édition.<br/></div><div>Toujours au village vacances de Bussang\, environ 230 attendees ou plus vous accueillera du 18 au 21 mars 2027.<br/></div><div>Concernant les billets\, elles sont les suivantes :<br/></div><div>- <b>Standard</b> qui comprend l'accès à la convention pour les 4 jours\, l'hébergement 3 nuits\, le buffet à volonté le matin\, midi et soir\, l'accès à toutes les activités\, l'accès à la piscine et au toboggan\, les goodies et le conbook : <u>350€</u> par personne<br/>- <b>Sponsor</b> qui comprend en plus du standard\, le t-shirt ATP (Anthropolis) 2027\, l'autocollant sponsor et le fast-pass aux évènements qui inclut le Dealer's Den : <u>390€</u> par personne</div><div>- <b>Super Sponsor</b> qui comprend en plus du standard et du sponsor\, l'autocollant super sponsor\, Enamel pins\, le fast-pass au restaurant chaque jour et des goodies mystère : <u>430€</u> par personne<br/></div>
 DTSTART:20270317T230100Z
 DTEND:20270321T225900Z
 LOCATION:Village vacances Bussang - AZUREVA\, 2 Rue de Larcenaire\, 88540 Bussang
@@ -2565,8 +2564,8 @@ STATUS:CONFIRMED
 UID:f7efe78eb3e64860ab70c8eba0eb29cb@zoho.eu
 TRANSP:TRANSPARENT
 CREATED:20260513T184347Z
-LAST-MODIFIED:20260513T184446Z
-DTSTAMP:20260513T184448Z
+LAST-MODIFIED:20260909T153447Z
+DTSTAMP:20260909T153449Z
 URL:https://furagora.com/anthropolis
 END:VEVENT
 BEGIN:VEVENT
