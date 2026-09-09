@@ -147,9 +147,12 @@
     // compte connecté — regroupés ici en un seul bandeau, avec un bouton de déconnexion explicite
     // (texte + icône) plutôt qu'une icône seule seule perdue dans une pastille.
     const dashHeader = h('div', { class: 'dash-header' },
-      h('a', { class: 'dash-brand', href: 'https://lameutenormande.fr/', title: 'Retour au site' },
-        h('img', { class: 'dash-logo', src: LOGO, alt: '' }),
-        h('div', null, h('h1', { class: 'dash-title' }, 'Espace admin'), h('div', { class: 'dash-sub' }, 'Les outils d\'administration du staff, réunis au même endroit.'))),
+      // Pas de bouton hub ici : on y est déjà (voir admin/elections, admin/votes, admin/utilisateurs
+      // pour le bouton qui y mène depuis les autres panels).
+      h('div', { class: 'dash-identity' },
+        h('a', { class: 'dash-brand', href: 'https://lameutenormande.fr/', title: 'Retour au site' },
+          h('img', { class: 'dash-logo', src: LOGO, alt: '' }),
+          h('h1', { class: 'dash-title' }, 'Espace admin'))),
       h('div', { class: 'dash-account' },
         h('span', { class: 'dash-email' }, session.user.email || 'admin'),
         h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, E.icon('right-from-bracket'), 'Se déconnecter')));

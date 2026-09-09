@@ -11,10 +11,24 @@
   display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;
   margin: 2.5rem 0 2rem;
 }
-.dash-brand { display: flex; align-items: center; gap: 1rem; text-decoration: none; color: inherit; }
-.dash-logo { width: 48px; height: auto; flex-shrink: 0; }
+.dash-identity { display: flex; align-items: center; gap: 1rem; }
+/* Bouton hub : sélecteur d'applications façon « waffle » (voir Crédit informel : capture d'un
+   lanceur d'applications grand public fournie en référence pour la disposition icône + séparateur
+   + logo), dans un dégradé repris des couleurs du logo (jaune → orange → rouge de la flamme)
+   plutôt que le gris neutre habituel d'un tel bouton — mène au hub depuis n'importe quelle page. */
+.hub-btn {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #ffd23f 0%, #ff8c1a 55%, #e8291c 100%);
+  color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 3px 10px rgba(232, 41, 28, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.hub-btn:hover, .hub-btn:focus-visible { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(232, 41, 28, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3); outline: none; }
+.dash-sep { width: 1px; height: 28px; flex-shrink: 0; background: var(--line); }
+.dash-brand { display: flex; align-items: center; gap: .8rem; text-decoration: none; color: inherit; }
+.dash-logo { width: 58px; height: auto; flex-shrink: 0; }
 .dash-title { margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.5rem; color: #fff; }
-.dash-sub { margin-top: .2rem; color: var(--muted); font-size: .9rem; }
 .dash-account { display: flex; align-items: center; gap: .9rem; }
 .dash-email { font-size: .85rem; color: var(--muted); }
 @media (max-width: 640px) {
