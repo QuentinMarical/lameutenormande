@@ -260,8 +260,14 @@
     // ---------- Modification d'un évènement existant ----------
     // Liste construite depuis events.ics (déjà régénéré toutes les heures depuis Zoho, même
     // source que le reste du site) plutôt qu'un appel direct à l'API Zoho de liste : l'API impose
-    // un intervalle de 31 jours maximum par requête, alors qu'events.ics contient tout d'un coup.
-    // Contrepartie : un évènement ajouté il y a moins d'une heure peut ne pas encore apparaître ici.
+    // un intervalle de 31 jours maximum par requête, alors qu'events.ics contient tout d'un coup —
+    // et ça évite un appel Zoho (donc un renouvellement de jeton, limité en fréquence côté Zoho)
+    // juste pour regarder un évènement. La fiche s'affiche d'abord en lecture seule depuis
+    // events.ics ; seul le bouton "Modifier" interroge Zoho (pour l'etag, nécessaire à la mise à
+    // jour, et au cas où events.ics serait légèrement en retard sur Zoho — jusqu'à 1h).
+    function icsUnescape(str) {
+      return str.replace(/\\n/gi, '\n').replace(/\\([,;\\])/g, '$1');
+    }
     async function modifier() {
       E.clear(pane);
       pane.appendChild(h('div', { class: 'loader' }));
@@ -272,7 +278,7 @@
         const lignes = texte.replace(/\r?\n[ \t]/g, '').split(/\r?\n/);
         let cur = null;
         for (const ligne of lignes) {
-          if (ligne === 'BEGIN:VEVENT') { cur = {}; continue; }
+          if (ligne === 'BEGIN:VEVENT') { cur = { description: '', location: '', url: '', isallday: false, attendees: [] }; continue; }
           if (ligne === 'END:VEVENT') { if (cur) evts.push(cur); cur = null; continue; }
           if (!cur) continue;
           const idx = ligne.indexOf(':'); if (idx < 0) continue;
@@ -280,12 +286,24 @@
           const nom = avant.split(';')[0].toUpperCase();
           if (nom === 'UID') cur.uid = valeur;
           else if (nom === 'SUMMARY') cur.title = valeur.replace(/\\n/gi, ' ').replace(/\\([,;\\])/g, '$1');
-          else if (nom === 'DTSTART') {
-            const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
-            if (m) cur.debut = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
+          else if (nom === 'DESCRIPTION') cur.description = icsUnescape(valeur);
+          else if (nom === 'LOCATION') cur.location = icsUnescape(valeur);
+          else if (nom === 'URL') cur.url = valeur;
+          else if (nom === 'ATTENDEE') { if (valeur.toLowerCase().includes(GO_ATTENDEE_EMAIL)) cur.attendees.push({ email: GO_ATTENDEE_EMAIL }); }
+          else if (nom === 'DTSTART' || nom === 'DTEND') {
+            // Même format (yyyyMMdd ou yyyyMMdd'T'HHmmss'Z') que l'API Zoho : on garde la valeur
+            // brute telle quelle, réutilisable directement par zohoDateToInputValue/addDaysToDateStr.
+            if (avant.toUpperCase().includes('VALUE=DATE')) cur.isallday = true;
+            if (nom === 'DTSTART') cur.rawStart = valeur; else cur.rawEnd = valeur;
+            if (nom === 'DTSTART') {
+              const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
+              if (m) cur.debut = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
+            }
           }
         }
-        evts = evts.filter(e => e.uid && e.title && e.debut).sort((a, b) => a.debut - b.debut);
+        evts = evts.filter(e => e.uid && e.title && e.debut && e.rawStart && e.rawEnd)
+          .map(e => ({ ...e, dateandtime: { start: e.rawStart, end: e.rawEnd } }))
+          .sort((a, b) => a.debut - b.debut);
       } catch (err) {
         E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, 'Impossible de charger la liste des évènements (events.ics).')));
         return;
@@ -298,7 +316,7 @@
         const q = searchInp.value.trim().toLowerCase();
         const filtered = q ? evts.filter(e => e.title.toLowerCase().includes(q)) : evts;
         if (!filtered.length) { list.appendChild(h('div', { class: 'empty' }, 'Aucun évènement.')); return; }
-        filtered.forEach(e => list.appendChild(h('div', { class: 'cand selectable', onClick: () => ouvrirEdition(e.uid) },
+        filtered.forEach(e => list.appendChild(h('div', { class: 'cand selectable', onClick: () => afficherLecture(e) },
           h('div', { class: 'body' }, h('div', { class: 'name' }, e.title), h('div', { class: 'handles' }, h('span', null, E.fmtDateTime(e.debut)))))));
       }
       searchInp.addEventListener('input', paintList);
@@ -307,6 +325,28 @@
         list);
       paintList();
 
+      const backBtn = () => h('button', { class: 'btn secondary small', type: 'button', onClick: modifier }, '← Retour à la liste');
+
+      // Fiche en lecture seule (depuis events.ics, aucun appel Zoho) : titre, dates, lieu, lien,
+      // description, badge présence — et un bouton pour passer en édition (lui seul appelle Zoho).
+      function afficherLecture(e) {
+        const isAllDay = e.isallday;
+        const debutTxt = isAllDay ? E.fmtDate(e.debut) : E.fmtDateTime(e.debut);
+        const finRaw = isAllDay ? addDaysToDateStr(zohoDateToInputValue(e.dateandtime.end, true), -1) : e.dateandtime.end;
+        const finTxt = isAllDay ? E.fmtDate(finRaw) : E.fmtDateTime(zohoDateToInputValue(e.dateandtime.end, false));
+        const estPresente = Array.isArray(e.attendees) && e.attendees.some(a => (a.email || '').toLowerCase() === GO_ATTENDEE_EMAIL);
+        const editBtn = h('button', { class: 'btn small', type: 'button', onClick: () => ouvrirEdition(e.uid) }, '✏️ Modifier');
+        E.clear(pane).append(backBtn(), h('div', { class: 'card column', style: { marginTop: '12px' } },
+          h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
+            h('div', { class: 'title', style: { fontSize: '16px', margin: 0 } }, e.title),
+            estPresente ? h('span', { class: 'badge ok' }, 'La meute sera présente') : null),
+          h('div', { class: 'small muted' }, debutTxt === finTxt ? debutTxt : (debutTxt + ' → ' + finTxt)),
+          e.location ? h('div', null, '📍 ' + e.location) : null,
+          e.url ? h('div', null, h('a', { href: e.url, target: '_blank', rel: 'noopener' }, e.url)) : null,
+          e.description ? h('div', { class: 'small', style: { whiteSpace: 'pre-wrap' } }, e.description) : null,
+          h('div', { class: 'btn-row' }, editBtn)));
+      }
+
       async function ouvrirEdition(uid) {
         E.clear(pane).appendChild(h('div', { class: 'loader' }));
         try {
@@ -314,12 +354,11 @@
           const raw = data.event;
           const evt = (raw && raw.events && raw.events[0]) || raw;
           if (!evt || !evt.uid) throw new Error('ZOHO_GET_FAILED');
-          const backBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: modifier }, '← Retour à la liste');
-          E.clear(pane).append(backBtn, renderEventForm(evt, () => modifier()));
+          E.clear(pane).append(backBtn(), renderEventForm(evt, () => modifier()));
         } catch (err) {
           E.clear(pane).append(
             h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err))),
-            h('button', { class: 'btn secondary small', type: 'button', onClick: modifier }, '← Retour à la liste'));
+            backBtn());
         }
       }
     }
