@@ -7556,3 +7556,11 @@ a {
     transform: translateY(100%);
   }
 }
+
+/* Fix : le clic sur un menu deroulant (ex. Evenements > Sondages) ajoute la classe Bootstrap
+   .show, mais les regles .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu generees par
+   Mobirise n'affichent le sous-menu que via une classe .open jamais posee par ce Bootstrap-ci --
+   le sous-menu restait donc invisible malgre sa presence dans le DOM, sur toutes les pages. */
+.dropdown-menu.show {
+  display: flex !important;
+}
