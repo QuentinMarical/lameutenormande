@@ -39,6 +39,22 @@ DTSTAMP:20260424T110613Z
 URL:https://fb.me/e/aRyuh0zDU
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Manga Sci-Fi Days (MSD)
+DESCRIPTION:5ème édition de Manga Sci-Fi Days à Romorantin-Lanthenay dans le 41.\n\n\n\n6€ l'entrée.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>5ème édition de Manga Sci-Fi Days à Romorantin-Lanthenay dans le 41.<br/></div><div><br/></div><div>6€ l'entrée.</div>
+DTSTART:20261003T080000Z
+DTEND:20261004T160000Z
+LOCATION:Centre d'exposition Fabrique Normant. 2 Avenue François Mitterrand\, 41200 Romorantin-Lanthenay
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:02e6b59044b14d118abaa08cfaf972a5@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260909T124809Z
+LAST-MODIFIED:20260909T124809Z
+DTSTAMP:20260909T124812Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Little Island Furcon 2026 (Asie)
 DESCRIPTION:
 DTSTART:20260612T220000Z
@@ -1576,6 +1592,22 @@ DTSTAMP:20260807T205446Z
 URL:https://www.albi-tourisme.fr/agenda/albi-games-festival/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest
+DESCRIPTION:Entrée :\n\n5€ pour les visiteurs\n\n3€ pour les cosplayers\n\nGratuit pour les moins de 10 ans\n\n\n\nHoraires :\n\nSamedi : 9h30 - 18h\n\nDimanche : 10h - 17h\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Entrée :<br/></div><ul><li>5€ pour les visiteurs<br/></li><li>3€ pour les cosplayers<br/></li><li>Gratuit pour les moins de 10 ans<br/></li></ul><div><br/></div><div>Horaires :<br/></div><ul><li>Samedi : 9h30 - 18h<br/></li><li>Dimanche : 10h - 17h<br/></li></ul>
+DTSTART:20260912T073000Z
+DTEND:20260913T150000Z
+LOCATION:Salle Polyvalente. Boulevard Misset\, 58500 Clamecy
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:a464de85c2394f048da9b5279cc88fc1@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260909T125654Z
+LAST-MODIFIED:20260909T125654Z
+DTSTAMP:20260909T125655Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Brest 2025
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div><span style="color:rgb(0\, 0\, 0)\; font-family:Roboto\, Arial\, sans-serif\; font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; background-color:rgb(255\, 255\, 255)\; display:inline !important\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span><br /></div>
@@ -2109,6 +2141,22 @@ TRANSP:TRANSPARENT
 CREATED:20260326T151612Z
 LAST-MODIFIED:20260326T151612Z
 DTSTAMP:20260326T151612Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Fantasikcon
+DESCRIPTION:7ème édition de la Fantastikcon à La Garde dans le 83.\n\n\n\nEntrée gratuite.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>7ème édition de la Fantastikcon à La Garde dans le 83.<br/></div><div><br/></div><div>Entrée gratuite.</div>
+DTSTART:20260926T080000Z
+DTEND:20260927T160000Z
+LOCATION:Auditorium Gérard Philipe. Avenue Charles Sandro\, 83130 La Garde
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d90f12530d884e0285692dc49d749282@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260909T125154Z
+LAST-MODIFIED:20260909T125154Z
+DTSTAMP:20260909T125155Z
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Médiévales de Fontaine‑Guérard
