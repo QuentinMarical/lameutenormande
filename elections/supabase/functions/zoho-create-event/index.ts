@@ -135,11 +135,11 @@ type EventPayload = {
 // Construit le "eventdata" envoyé à Zoho (POST création comme PUT mise à jour) : l'API remplace
 // l'évènement entier à la mise à jour, donc on renvoie toujours l'ensemble des champs gérés ici
 // (title/dates/description/lieu/participants), jamais un simple diff.
-// fallbackAttendeeEmail : e-mail du compte admin du site connecté (via son JWT, jamais fourni par
-// le client) — utilisé comme participant quand "présente" n'est pas coché, pour ne jamais envoyer
-// un tableau "attendees" vide (Zoho l'interdit, voir plus bas) tout en indiquant qui a enregistré
-// l'évènement.
-function buildEventData(p: EventPayload, fallbackAttendeeEmail: string | null): { eventdata: Record<string, unknown> } | { error: string } {
+// callerEmail : e-mail du compte admin du site connecté (via son JWT, jamais fourni par le
+// client) — toujours ajouté comme participant pour garder une trace de qui a créé/modifié
+// l'évènement, et ça évite au passage d'envoyer un tableau "attendees" vide (Zoho l'interdit,
+// voir plus bas) quand "présente" n'est pas coché.
+function buildEventData(p: EventPayload, callerEmail: string | null): { eventdata: Record<string, unknown> } | { error: string } {
   const title = String(p.title || "").trim();
   if (!title) return { error: "BAD_TITLE" };
   if (!p.start || !p.end) return { error: "BAD_DATES" };
@@ -173,10 +173,13 @@ function buildEventData(p: EventPayload, fallbackAttendeeEmail: string | null): 
     notify_attendee: 0,
   };
   // Zoho refuse un tableau "attendees" vide (ARRAY_SIZE_OUT_OF_RANGE, taille attendue [1-50]) :
-  // jamais un tableau vide pour "aucun participant" — soit le marqueur de présence, soit (à
-  // défaut) l'admin qui enregistre.
-  if (p.presente) eventdata.attendees = [{ email: GO_ATTENDEE_EMAIL, attendance: 2 }];
-  else if (fallbackAttendeeEmail) eventdata.attendees = [{ email: fallbackAttendeeEmail, attendance: 2 }];
+  // jamais un tableau vide pour "aucun participant". L'admin qui enregistre (créateur ou
+  // modificateur) y figure toujours, pour garder une trace de qui a touché l'évènement — en plus
+  // du marqueur de présence de la Meute quand la case est cochée, pas à sa place.
+  const attendees: { email: string; attendance: number }[] = [];
+  if (p.presente) attendees.push({ email: GO_ATTENDEE_EMAIL, attendance: 2 });
+  if (callerEmail && callerEmail.toLowerCase() !== GO_ATTENDEE_EMAIL) attendees.push({ email: callerEmail, attendance: 2 });
+  if (attendees.length) eventdata.attendees = attendees;
   if (p.etag) eventdata.etag = p.etag;
   return { eventdata };
 }
