@@ -43,3 +43,4 @@
 .question-editor { border: 1px solid var(--line, rgba(255,255,255,.1)); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
 .question-editor .row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .question-editor .row .input { flex: 1 1 200px; }
+/* Le menu (haut de page) est maintenant le module Mobirise réel du site public, voir assets/menu.css. */
