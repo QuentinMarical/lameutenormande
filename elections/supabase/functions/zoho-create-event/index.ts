@@ -166,12 +166,12 @@ function buildEventData(p: EventPayload): { eventdata: Record<string, unknown> }
     description: String(p.description || "").trim(),
     location: String(p.location || "").trim(),
     url: String(p.url || "").trim(),
-    // Toujours explicite (jamais omis) : sur une mise à jour, omettre ce champ pourrait laisser
-    // Zoho conserver d'anciens participants alors que la case "La meute sera présente" vient
-    // d'être décochée.
-    attendees: p.presente ? [{ email: GO_ATTENDEE_EMAIL, attendance: 2 }] : [],
     notify_attendee: 0,
   };
+  // Zoho refuse un tableau "attendees" vide (ARRAY_SIZE_OUT_OF_RANGE, taille attendue [1-50]) :
+  // le champ n'est envoyé que quand il y a bien un participant à déclarer, jamais un tableau vide
+  // pour "aucun participant".
+  if (p.presente) eventdata.attendees = [{ email: GO_ATTENDEE_EMAIL, attendance: 2 }];
   if (p.etag) eventdata.etag = p.etag;
   return { eventdata };
 }
