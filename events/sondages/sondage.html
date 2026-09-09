@@ -8,15 +8,57 @@
   <title>Sondage — La Meute Normande</title>
   <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
   <link rel="stylesheet" href="../../elections/assets/elections.css">
+  <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
+  <link rel="stylesheet" href="../../assets/font-awesome-brands/css/brands.min.css">
+  <link rel="stylesheet" href="../../assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="../../assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="assets/menu.css">
   <link rel="stylesheet" href="assets/votes.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="bar">
-      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
-      <nav id="nav" aria-label="Sondages"></nav>
-    </div>
-  </header>
+  <section class="menu menu2 cid-veCgXANUp1">
+    <nav class="navbar navbar-dropdown navbar-expand-lg" aria-label="Navigation principale">
+      <div class="container">
+        <div class="navbar-brand">
+          <span class="navbar-logo">
+            <a href="https://lameutenormande.fr/">
+              <img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async" style="height: 3.7rem;">
+            </a>
+          </span>
+        </div>
+        <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Ouvrir le menu">
+          <div class="hamburger"><span></span><span></span><span></span><span></span></div>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav nav-dropdown nav-right">
+            <li class="nav-item dropdown">
+              <a class="nav-link link dropdown-toggle text-danger" href="https://lameutenormande.fr/events" aria-haspopup="true" aria-expanded="false">Événements</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item text-danger" href="https://lameutenormande.fr/events">Calendrier</a>
+                <a class="dropdown-item text-danger active" href="index.html">Sondages</a>
+              </div>
+            </li>
+            <li class="nav-item"><a class="nav-link link text-danger text-primary" href="https://lameutenormande.fr/actus">Actus</a></li>
+            <li class="nav-item"><a class="nav-link link text-danger text-primary" href="https://lameutenormande.fr/contact">Contact</a></li>
+          </ul>
+          <div class="icons-menu">
+            <a class="iconfont-wrapper" href="http://t.me/Annonces_Meute_Normande" aria-label="Telegram" style="color: rgb(0, 110, 255);">
+              <span class="p-2 mbr-iconfont socicon-telegram socicon" style="color: rgb(0, 110, 255);"></span>
+            </a>
+            <a class="iconfont-wrapper" href="https://www.instagram.com/la.meute_normande" aria-label="Instagram" style="color: rgb(249, 44, 80);">
+              <span class="p-2 mbr-iconfont socicon-instagram socicon" style="color: rgb(249, 44, 80);"></span>
+            </a>
+            <a class="iconfont-wrapper" href="https://discord.gg/Ejm3J2D3Xc" aria-label="Discord" style="color: rgb(121, 15, 160);">
+              <span class="p-2 mbr-iconfont fab fa-discord" style="color: rgb(121, 15, 160);"></span>
+            </a>
+            <a class="iconfont-wrapper" href="https://lameutenormande.fr/admin/votes/" id="navAdminIcon" aria-label="Accès administrateur" title="Accès administrateur">
+              <span class="p-2 mbr-iconfont mobi-mbri-setting mobi-mbri"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </section>
   <section class="page-head">
     <h1 id="pageTitle">Sondage</h1>
     <div class="sub" id="subtitle">Réponds en un clic, sans compte</div>
@@ -32,7 +74,8 @@
   (async () => {
     const h = V.h, app = V.qs('#app');
     V.footer();
-    await V.renderNav('index.html');
+    V.initMenu();
+    V.setupAdmin();
     if (!V.ready) { V.notConfigured(app); return; }
 
     const slug = new URLSearchParams(location.search).get('p');
