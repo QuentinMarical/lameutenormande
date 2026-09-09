@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=1Hk2iO"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=1Hk2iO" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=z7efcp"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=z7efcp" type="text/css">
 
   
   <script>
@@ -268,7 +268,7 @@ document.addEventListener('click', function (e) {
             // Identité de réponse : mêmes clés localStorage que lameutenormande.fr/votes (même
             // origine, stockage partagé) — un pseudo tapé ici est donc retrouvé sur l'autre page,
             // et réciproquement. Le device_token n'est qu'une clé d'édition, jamais une identité :
-            // voir events/sondages/supabase/schema.sql pour le détail de cette conception.
+            // voir votes/supabase/schema.sql pour le détail de cette conception.
             function obtenirDeviceToken() {
                 try {
                     let t = localStorage.getItem('votes.device');
