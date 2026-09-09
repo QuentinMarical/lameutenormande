@@ -10,12 +10,16 @@
 // is_admin() via un client scopé à ce JWT avant tout appel à l'API Zoho — même table
 // public.admins que les autres panels (élections/sondages).
 //
-// Secrets requis (Dashboard → Edge Functions → Secrets, ou `supabase secrets set`) :
-//   ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, ZOHO_CALENDAR_UID
-//   ZOHO_ACCOUNTS_DOMAIN (optionnel, défaut accounts.zoho.eu)
-//   ZOHO_API_DOMAIN      (optionnel, défaut calendar.zoho.eu)
-//   GITHUB_TOKEN, GITHUB_REPO (optionnels, ex. "QuentinMarical/lameutenormande" — déclenchement
-//     immédiat du robot ; sans eux la synchronisation se fait simplement à la prochaine heure pleine)
+// Secrets requis (Dashboard → Edge Functions → Secrets, ou `supabase secrets set`) — les vrais
+// identifiants d'accès, jamais éditables depuis le panel admin :
+//   ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN
+//   GITHUB_TOKEN (optionnel — déclenchement immédiat du robot GitHub, sans lui la synchronisation
+//     se fait simplement à la prochaine heure pleine)
+// Les paramètres non sensibles ci-dessous ont une valeur par défaut ici, mais peuvent être
+// surchargés depuis l'onglet Réglages du panel admin (table public.app_settings, clés
+// zoho_calendar_uid / zoho_accounts_domain / zoho_api_domain / github_repo) sans redéployer :
+//   ZOHO_CALENDAR_UID, ZOHO_ACCOUNTS_DOMAIN (accounts.zoho.eu), ZOHO_API_DOMAIN (calendar.zoho.eu),
+//   GITHUB_REPO (ex. "QuentinMarical/lameutenormande")
 // Voir elections/supabase/README.md, section "Fonction zoho-create-event", pour la marche à
 // suivre complète (création de l'appli Zoho, génération du refresh token, UID du calendrier).
 //
@@ -30,12 +34,14 @@ const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const ZOHO_CLIENT_ID = Deno.env.get("ZOHO_CLIENT_ID") ?? "";
 const ZOHO_CLIENT_SECRET = Deno.env.get("ZOHO_CLIENT_SECRET") ?? "";
 const ZOHO_REFRESH_TOKEN = Deno.env.get("ZOHO_REFRESH_TOKEN") ?? "";
-const ZOHO_CALENDAR_UID = Deno.env.get("ZOHO_CALENDAR_UID") ?? "";
-const ZOHO_ACCOUNTS_DOMAIN = Deno.env.get("ZOHO_ACCOUNTS_DOMAIN") || "accounts.zoho.eu";
-const ZOHO_API_DOMAIN = Deno.env.get("ZOHO_API_DOMAIN") || "calendar.zoho.eu";
-
 const GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN") ?? "";
-const GITHUB_REPO = Deno.env.get("GITHUB_REPO") ?? "";
+
+// Valeurs par défaut ; surchargeables sans redéploiement via l'onglet Réglages du panel admin
+// (table public.app_settings, lue plus bas dans Deno.serve()).
+const DEFAULT_ZOHO_CALENDAR_UID = Deno.env.get("ZOHO_CALENDAR_UID") ?? "";
+const DEFAULT_ZOHO_ACCOUNTS_DOMAIN = Deno.env.get("ZOHO_ACCOUNTS_DOMAIN") || "accounts.zoho.eu";
+const DEFAULT_ZOHO_API_DOMAIN = Deno.env.get("ZOHO_API_DOMAIN") || "calendar.zoho.eu";
+const DEFAULT_GITHUB_REPO = Deno.env.get("GITHUB_REPO") ?? "";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -59,8 +65,8 @@ function fmtZohoDate(dateStr: string): string | null {
   return m ? `${m[1]}${m[2]}${m[3]}` : null;
 }
 
-async function getAccessToken(): Promise<string> {
-  const url = `https://${ZOHO_ACCOUNTS_DOMAIN}/oauth/v2/token?refresh_token=${encodeURIComponent(ZOHO_REFRESH_TOKEN)}&client_id=${encodeURIComponent(ZOHO_CLIENT_ID)}&client_secret=${encodeURIComponent(ZOHO_CLIENT_SECRET)}&grant_type=refresh_token`;
+async function getAccessToken(accountsDomain: string): Promise<string> {
+  const url = `https://${accountsDomain}/oauth/v2/token?refresh_token=${encodeURIComponent(ZOHO_REFRESH_TOKEN)}&client_id=${encodeURIComponent(ZOHO_CLIENT_ID)}&client_secret=${encodeURIComponent(ZOHO_CLIENT_SECRET)}&grant_type=refresh_token`;
   const r = await fetch(url, { method: "POST" });
   const j = await r.json();
   if (!j.access_token) throw new Error("ZOHO_AUTH_FAILED: " + JSON.stringify(j));
@@ -69,10 +75,10 @@ async function getAccessToken(): Promise<string> {
 
 // Best-effort : un échec ici ne doit pas faire échouer la création de l'évènement (déjà faite
 // côté Zoho à ce stade) — la synchronisation horaire normale du robot prendra le relais.
-async function triggerCalendarSync(): Promise<void> {
-  if (!GITHUB_TOKEN || !GITHUB_REPO) return;
+async function triggerCalendarSync(githubRepo: string): Promise<void> {
+  if (!GITHUB_TOKEN || !githubRepo) return;
   try {
-    await fetch(`https://api.github.com/repos/${GITHUB_REPO}/actions/workflows/update-calendar.yml/dispatches`, {
+    await fetch(`https://api.github.com/repos/${githubRepo}/actions/workflows/update-calendar.yml/dispatches`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`,
@@ -97,7 +103,17 @@ Deno.serve(async (req) => {
   const { data: isAdmin, error: isAdminErr } = await asCaller.rpc("is_admin");
   if (isAdminErr || !isAdmin) return json({ error: "ADMIN_REQUIRED" }, 403);
 
-  if (!ZOHO_CLIENT_ID || !ZOHO_CLIENT_SECRET || !ZOHO_REFRESH_TOKEN || !ZOHO_CALENDAR_UID) {
+  // Surcharges non sensibles réglées depuis l'onglet Réglages du panel admin (table déjà
+  // lisible par cet appelant, puisqu'il vient de passer la vérification is_admin() ci-dessus).
+  const { data: settingsRows } = await asCaller.from("app_settings").select("key,value")
+    .in("key", ["zoho_calendar_uid", "zoho_accounts_domain", "zoho_api_domain", "github_repo"]);
+  const settings = Object.fromEntries((settingsRows || []).map((r: { key: string; value: string }) => [r.key, r.value]));
+  const calendarUid = settings.zoho_calendar_uid || DEFAULT_ZOHO_CALENDAR_UID;
+  const accountsDomain = settings.zoho_accounts_domain || DEFAULT_ZOHO_ACCOUNTS_DOMAIN;
+  const apiDomain = settings.zoho_api_domain || DEFAULT_ZOHO_API_DOMAIN;
+  const githubRepo = settings.github_repo || DEFAULT_GITHUB_REPO;
+
+  if (!ZOHO_CLIENT_ID || !ZOHO_CLIENT_SECRET || !ZOHO_REFRESH_TOKEN || !calendarUid) {
     return json({ error: "ZOHO_NOT_CONFIGURED" }, 500);
   }
 
@@ -137,8 +153,8 @@ Deno.serve(async (req) => {
   if (location) eventdata.location = location;
 
   try {
-    const accessToken = await getAccessToken();
-    const r = await fetch(`https://${ZOHO_API_DOMAIN}/api/v1/calendars/${encodeURIComponent(ZOHO_CALENDAR_UID)}/events`, {
+    const accessToken = await getAccessToken(accountsDomain);
+    const r = await fetch(`https://${apiDomain}/api/v1/calendars/${encodeURIComponent(calendarUid)}/events`, {
       method: "POST",
       headers: {
         Authorization: `Zoho-oauthtoken ${accessToken}`,
@@ -149,7 +165,7 @@ Deno.serve(async (req) => {
     const zohoResult = await r.json();
     if (!r.ok || zohoResult?.status === "failure") return json({ error: "ZOHO_CREATE_FAILED", detail: zohoResult }, 502);
 
-    await triggerCalendarSync();
+    await triggerCalendarSync(githubRepo);
     return json({ ok: true, event: zohoResult });
   } catch (e) {
     return json({ error: String(e) }, 502);

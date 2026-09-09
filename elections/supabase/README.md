@@ -102,16 +102,15 @@ Repère dans la réponse JSON l'objet dont le nom correspond au calendrier publi
 
 **Dashboard** → *Edge Functions* → *Via Editor* → colle [`functions/zoho-create-event/index.ts`](functions/zoho-create-event/index.ts) → *Deploy* (laisser *Verify JWT with legacy secret* tel quel, comme `admin-users`), ou en CLI : `supabase functions deploy zoho-create-event` (depuis ce dossier `elections/supabase`).
 
-Puis renseigne les secrets (Dashboard → *Edge Functions* → *Secrets*, ou `supabase secrets set`) :
+Puis renseigne au minimum ces secrets (Dashboard → *Edge Functions* → *Secrets*, ou `supabase secrets set`) — les seuls véritables identifiants d'accès, jamais éditables ailleurs :
 
 ```
 ZOHO_CLIENT_ID=...
 ZOHO_CLIENT_SECRET=...
 ZOHO_REFRESH_TOKEN=...
-ZOHO_CALENDAR_UID=...
 ```
 
-`ZOHO_ACCOUNTS_DOMAIN` (défaut `accounts.zoho.eu`) et `ZOHO_API_DOMAIN` (défaut `calendar.zoho.eu`) n'ont besoin d'être renseignés que si le compte Zoho change un jour de centre de données.
+L'UID du calendrier (`ZOHO_CALENDAR_UID`, trouvé à l'étape 5.3) se renseigne ensuite au choix : ici en secret, **ou** directement depuis l'onglet **Réglages** du panel (`https://lameutenormande.fr/admin/calendrier/#reglages`) — pratique si tu changes un jour de calendrier sans vouloir redéployer. Même chose pour `ZOHO_ACCOUNTS_DOMAIN`/`ZOHO_API_DOMAIN` (défauts `accounts.zoho.eu`/`calendar.zoho.eu`, à ne toucher que si le compte change de centre de données) et `GITHUB_REPO` (5.5). En cas de valeur dans les deux endroits, l'onglet Réglages est prioritaire.
 
 ### 5.5 Synchronisation immédiate (optionnel)
 

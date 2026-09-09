@@ -105,14 +105,28 @@
         h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, '⏻ ', 'Se déconnecter')));
     E.clear(app).appendChild(dashHeader);
 
+    const tabs = [['ajouter', 'Ajouter'], ['reglages', 'Réglages']];
+    const tabBar = h('div', { class: 'tabs' });
+    const pane = h('div');
+    app.append(tabBar, pane);
+    let activeTab = location.hash.replace('#', '') || 'ajouter';
+    tabs.forEach(([id, label]) => tabBar.appendChild(h('button', { type: 'button', dataset: { tab: id }, onClick: () => { activeTab = id; location.hash = id; show(id); } }, label)));
+    function show(id) {
+      E.qsa('.tabs button', tabBar).forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+      E.clear(pane).appendChild(E.loader());
+      ({ ajouter, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+    }
+
     // ---------- Ajout d'un évènement au calendrier Zoho ----------
-    // Ce panel n'affiche aucune liste (le calendrier lui-même reste sur Zoho) : il se contente
+    // Cet onglet n'affiche aucune liste (le calendrier lui-même reste sur Zoho) : il se contente
     // d'y créer des évènements via la fonction zoho-create-event (voir
     // elections/supabase/functions/zoho-create-event/). Le site public continue de lire
     // events.ics à la racine, régénéré depuis Zoho par le robot GitHub Actions
     // (.github/workflows/update-calendar.yml, toutes les heures — ou immédiatement si la
     // fonction est configurée pour le déclencher, voir son en-tête).
-    app.appendChild(h('div', { class: 'card info column', style: { marginBottom: '18px' } },
+    async function ajouter() {
+    E.clear(pane);
+    pane.appendChild(h('div', { class: 'card info column', style: { marginBottom: '18px' } },
       h('div', { class: 'title', style: { fontSize: '15px' } }, 'Comment ça marche'),
       h('div', { class: 'desc' }, 'Cet outil ajoute directement l\'évènement au calendrier Zoho. Le calendrier public du site (page Événements) se met à jour automatiquement dans l\'heure qui suit — pas besoin de repasser ailleurs.')));
 
@@ -124,15 +138,26 @@
     const allDayChk = h('input', { type: 'checkbox' });
     const startInp = h('input', { class: 'input', type: 'datetime-local', required: true });
     const endInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const startLabel = h('label', null, 'Début');
+    const endField = h('div', { class: 'field' }, h('label', null, 'Fin'), endInp);
+    const datesRow = h('div', { class: 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
 
+    // Journée entière : un seul champ "Date" (le champ Fin est masqué, sa valeur suit celle du
+    // champ Date au moment de l'envoi — voir le handler submit) plutôt que Début/Fin identiques
+    // à saisir deux fois pour un évènement d'un jour.
     function syncDateInputsType() {
-      const type = allDayChk.checked ? 'date' : 'datetime-local';
+      const allDay = allDayChk.checked;
+      const type = allDay ? 'date' : 'datetime-local';
       [startInp, endInp].forEach(inp => {
         if (inp.type === type) return;
         const v = inp.value ? inp.value.slice(0, 10) : '';
         inp.type = type;
         inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
       });
+      startLabel.textContent = allDay ? 'Date' : 'Début';
+      endField.hidden = allDay;
+      endInp.required = !allDay;
+      datesRow.classList.toggle('grid-2', !allDay);
     }
     allDayChk.addEventListener('change', syncDateInputsType);
 
@@ -145,15 +170,13 @@
         h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
         h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
       h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
-      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée(s) entière(s), sans horaire précis'),
-      h('div', { class: 'grid-2' },
-        h('div', { class: 'field' }, h('label', null, 'Début'), startInp),
-        h('div', { class: 'field' }, h('label', null, 'Fin'), endInp)),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
+      datesRow,
       h('div', { class: 'btn-row' }, submitBtn));
-    app.appendChild(form);
+    pane.appendChild(form);
 
     const recentBox = h('div', { style: { marginTop: '18px' } });
-    app.appendChild(recentBox);
+    pane.appendChild(recentBox);
     const recentList = [];
     function paintRecent() {
       E.clear(recentBox);
@@ -167,14 +190,15 @@
       e.preventDefault();
       const title = titleInp.value.trim();
       if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
-      if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
       const allDay = allDayChk.checked;
-      // Journée entière : on envoie la date telle quelle (YYYY-MM-DD), sans passer par un objet
-      // Date/ISO — un aller-retour par l'UTC ferait glisser le jour d'une unité pour tout fuseau
-      // en avance sur UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
+      if (!startInp.value || (!allDay && !endInp.value)) { E.toast(allDay ? 'La date est obligatoire.' : 'Les dates de début et de fin sont obligatoires.', 'error'); return; }
+      // Journée entière : un seul champ saisi (le champ Fin, masqué, n'est pas fiable) — on
+      // envoie la même date telle quelle (YYYY-MM-DD) pour le début et la fin, sans passer par
+      // un objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur
+      // UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
       const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
-      const end = allDay ? endInp.value : new Date(endInp.value).toISOString();
-      if ((allDay ? end < start : new Date(end) < new Date(start))) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+      const end = allDay ? startInp.value : new Date(endInp.value).toISOString();
+      if (!allDay && new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
 
       submitBtn.disabled = true; submitBtn.textContent = 'Ajout…';
       try {
@@ -193,6 +217,50 @@
         submitBtn.disabled = false; submitBtn.textContent = '＋ Ajouter au calendrier';
       }
     });
+    }
+
+    // ---------- Réglages ----------
+    // Uniquement les champs non sensibles (identifiants publics/paramètres de routage) : les
+    // vrais secrets (ZOHO_CLIENT_SECRET, ZOHO_REFRESH_TOKEN, GITHUB_TOKEN) restent des secrets
+    // Supabase de la fonction (Dashboard/CLI), jamais stockés en base ni affichés ici — voir
+    // elections/supabase/README.md, section 5. app_settings est la même table clé/valeur que
+    // « Réglages » côté élections (RLS : accès réservé aux admins).
+    async function reglages() {
+      E.clear(pane);
+      const { data } = await E.sb.from('app_settings').select('*');
+      const map = Object.fromEntries((data || []).map(r => [r.key, r.value]));
+      const calendarUid = h('input', { class: 'input', value: map.zoho_calendar_uid || '', placeholder: 'UID du calendrier (voir README, section 5.3)' });
+      const accountsDomain = h('input', { class: 'input', value: map.zoho_accounts_domain || '', placeholder: 'accounts.zoho.eu' });
+      const apiDomain = h('input', { class: 'input', value: map.zoho_api_domain || '', placeholder: 'calendar.zoho.eu' });
+      const githubRepo = h('input', { class: 'input', value: map.github_repo || '', placeholder: 'QuentinMarical/lameutenormande' });
+      const save = h('button', { class: 'btn', type: 'submit' }, 'Enregistrer');
+      const form = h('form', { class: 'card column' },
+        h('div', { class: 'title' }, 'Paramètres de l\'API Zoho'),
+        h('div', { class: 'desc' }, 'Laisser vide pour utiliser la valeur par défaut configurée sur la fonction zoho-create-event. Le Client ID, le Client Secret, le refresh token et le token GitHub restent des secrets réglés uniquement via le Dashboard Supabase (jamais ici) — voir '
+          + 'elections/supabase/README.md, section 5.'),
+        h('div', { class: 'field' }, h('label', null, 'UID du calendrier Zoho'), calendarUid),
+        h('div', { class: 'grid-2' },
+          h('div', { class: 'field' }, h('label', null, 'Domaine des comptes Zoho'), accountsDomain),
+          h('div', { class: 'field' }, h('label', null, 'Domaine de l\'API Calendar'), apiDomain)),
+        h('div', { class: 'field' }, h('label', null, 'Dépôt GitHub (owner/repo, pour la synchro immédiate)'), githubRepo),
+        h('div', { class: 'btn-row' }, save));
+      form.addEventListener('submit', async ev => {
+        ev.preventDefault(); save.disabled = true;
+        const rows = [
+          { key: 'zoho_calendar_uid', value: calendarUid.value.trim() },
+          { key: 'zoho_accounts_domain', value: accountsDomain.value.trim() },
+          { key: 'zoho_api_domain', value: apiDomain.value.trim() },
+          { key: 'github_repo', value: githubRepo.value.trim() },
+        ];
+        const { error } = await E.sb.from('app_settings').upsert(rows, { onConflict: 'key' });
+        save.disabled = false;
+        if (error) { E.toast(E.errMsg(error), 'error'); return; }
+        E.toast('Réglages enregistrés.', 'success');
+      });
+      pane.appendChild(form);
+    }
+
+    show(activeTab);
   })();
   </script>
 </body>
