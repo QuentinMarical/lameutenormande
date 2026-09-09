@@ -54,7 +54,7 @@
         if (step !== 'password') {
           const email = h('input', { class: 'input login-input', type: 'email', autocomplete: 'username', required: true, placeholder: 'Email', 'aria-label': 'E-mail', value: emailVal || null });
           const btn = h('button', { class: 'btn', type: 'submit' }, 'Suivant');
-          const backToSite = h('button', { type: 'button', class: 'btn secondary login-secondary', onClick: () => history.back() }, 'Retour au site');
+          const backToSite = h('button', { type: 'button', class: 'btn secondary login-secondary', onClick: () => history.back() }, 'Retour');
           const form = h('form', null,
             h('img', { class: 'login-logo', src: LOGO, alt: '' }),
             h('div', { class: 'login-title' }, 'Se connecter'),
