@@ -203,9 +203,14 @@ Deno.serve(async (req) => {
     const accessToken = await getAccessToken(accountsDomain);
     const authHeaders = { Authorization: `Zoho-oauthtoken ${accessToken}` };
 
+    // L'UID d'évènement Zoho ("<hex>@<domaine>") va tel quel dans l'URL, non encodé : l'exemple
+    // officiel de Zoho l'utilise littéral (avec le "@"), et leur routeur ne décode pas un "%40"
+    // (d'où le 404 générique observé avec encodeURIComponent). On valide son format au passage.
+    const UID_RE = /^[A-Za-z0-9]+@[A-Za-z0-9.-]+$/;
+
     if (action === "get") {
-      if (!p.uid) return json({ error: "BAD_UID" }, 400);
-      const r = await fetch(`${eventsBase}/${encodeURIComponent(p.uid)}`, { headers: authHeaders });
+      if (!p.uid || !UID_RE.test(p.uid)) return json({ error: "BAD_UID" }, 400);
+      const r = await fetch(`${eventsBase}/${p.uid}`, { headers: authHeaders });
       const parsed = await safeJson(r);
       if (!parsed.ok) return json({ error: "ZOHO_GET_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
       if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: parsed.data }, 502);
@@ -217,8 +222,8 @@ Deno.serve(async (req) => {
     if ("error" in built) return json({ error: built.error }, 400);
 
     const isUpdate = action === "update";
-    if (isUpdate && !p.uid) return json({ error: "BAD_UID" }, 400);
-    const r = await fetch(isUpdate ? `${eventsBase}/${encodeURIComponent(p.uid!)}` : eventsBase, {
+    if (isUpdate && (!p.uid || !UID_RE.test(p.uid))) return json({ error: "BAD_UID" }, 400);
+    const r = await fetch(isUpdate ? `${eventsBase}/${p.uid!}` : eventsBase, {
       method: isUpdate ? "PUT" : "POST",
       headers: { ...authHeaders, "Content-Type": "application/x-www-form-urlencoded" },
       body: "eventdata=" + encodeURIComponent(JSON.stringify(built.eventdata)),
