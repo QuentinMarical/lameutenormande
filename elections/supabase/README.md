@@ -63,6 +63,67 @@ Types d'annonces envoyées automatiquement, toutes avec un rappel qu'elles sont 
 
 Dans l'onglet *Scrutins* du panel admin, un scrutin peut recevoir jusqu'à 4 dates/heures optionnelles : ouverture et fermeture des candidatures, ouverture et clôture des votes. Un tâche planifiée (`elections_tick`, toutes les 15 min) applique alors automatiquement les transitions à l'heure dite — y compris publier un scrutin encore en brouillon si sa date d'ouverture de candidature arrive. Laisser ces champs vides revient au fonctionnement 100 % manuel (boutons *Ouvrir les candidatures* / *Ouvrir les votes* / *Clôturer*).
 
+## 5. Fonction `zoho-create-event` (outil Calendrier)
+
+Permet d'ajouter des évènements au calendrier Zoho depuis `https://lameutenormande.fr/admin/calendrier/` (réservé aux administrateurs). Le site public ne lit jamais Zoho directement : il continue de lire `events.ics` à la racine du dépôt, régénéré depuis Zoho toutes les heures par `.github/workflows/update-calendar.yml` (déjà en place, rien à changer là-dessus).
+
+### 5.1 Créer l'appli Zoho API
+
+1. Connecte-toi sur [api-console.zoho.eu](https://api-console.zoho.eu) (`.eu` car le calendrier est sur le centre de données européen — vérifiable dans l'URL `calendar.zoho.eu` du flux ICS existant) avec le compte Zoho propriétaire du calendrier.
+2. **Add Client** → **Self Client** (pas besoin d'URL de redirection : ce type de client est fait pour un script qui accède à son propre compte). Donne-lui un nom, *Create*.
+3. Note le **Client ID** et le **Client Secret** affichés (onglet *Client Secret*).
+
+### 5.2 Générer un refresh token
+
+Toujours dans la fiche du Self Client, onglet **Generate Code** :
+
+1. **Scope** : `ZohoCalendar.calendar.READ,ZohoCalendar.event.CREATE`
+2. **Time Duration** : 10 minutes (le code généré n'est valable que ce temps, à échanger vite)
+3. **Scope Description** : libre (ex. "Outil admin calendrier")
+4. *Create* → copie le code affiché (`1000.xxxxx...`)
+
+Échange-le contre un refresh token **dans la minute** (depuis un terminal, remplace `CODE`/`CLIENT_ID`/`CLIENT_SECRET`) :
+
+```bash
+curl -X POST "https://accounts.zoho.eu/oauth/v2/token?code=CODE&client_id=CLIENT_ID&client_secret=CLIENT_SECRET&grant_type=authorization_code"
+```
+
+La réponse contient `refresh_token` (ne périme jamais tant qu'il n'est pas révoqué) et un `access_token` temporaire (1 h) que tu réutilises tout de suite pour l'étape suivante.
+
+### 5.3 Trouver l'identifiant du calendrier (`ZOHO_CALENDAR_UID`)
+
+```bash
+curl -H "Authorization: Zoho-oauthtoken ACCESS_TOKEN" "https://calendar.zoho.eu/api/v1/calendars"
+```
+
+Repère dans la réponse JSON l'objet dont le nom correspond au calendrier public (celui du flux ICS, `X-WR-CALNAME:Calendrier des évènements`) et note son champ `uid`.
+
+### 5.4 Déployer la fonction et ses secrets
+
+**Dashboard** → *Edge Functions* → *Via Editor* → colle [`functions/zoho-create-event/index.ts`](functions/zoho-create-event/index.ts) → *Deploy* (laisser *Verify JWT with legacy secret* tel quel, comme `admin-users`), ou en CLI : `supabase functions deploy zoho-create-event` (depuis ce dossier `elections/supabase`).
+
+Puis renseigne les secrets (Dashboard → *Edge Functions* → *Secrets*, ou `supabase secrets set`) :
+
+```
+ZOHO_CLIENT_ID=...
+ZOHO_CLIENT_SECRET=...
+ZOHO_REFRESH_TOKEN=...
+ZOHO_CALENDAR_UID=...
+```
+
+`ZOHO_ACCOUNTS_DOMAIN` (défaut `accounts.zoho.eu`) et `ZOHO_API_DOMAIN` (défaut `calendar.zoho.eu`) n'ont besoin d'être renseignés que si le compte Zoho change un jour de centre de données.
+
+### 5.5 Synchronisation immédiate (optionnel)
+
+Par défaut, un évènement ajouté apparaît sur le site à la prochaine exécution horaire du robot. Pour le déclencher tout de suite après chaque ajout, crée un [token GitHub (classic, scope `repo` ou fine-grained avec *Actions: write* sur ce dépôt)](https://github.com/settings/tokens) et ajoute ces deux secrets à la fonction :
+
+```
+GITHUB_TOKEN=...
+GITHUB_REPO=QuentinMarical/lameutenormande
+```
+
+Sans eux, l'outil fonctionne normalement — la mise à jour du site prend simplement jusqu'à une heure.
+
 ## Tester sans Supabase (mode démo)
 
 Ajoute `?mock=1` à l'URL d'une page (ex. `elections/voter.html?mock=1`) : `assets/dev-mock.js` remplace la base par des données factices en mémoire, sans aucun appel réseau. Variantes : `&as=anon` (aucun code mémorisé), `&as=member` (défaut, code `MEUTE-TEST-0001`), `&as=admin` (session admin). Ce mode n'a aucun effet sans le paramètre.
@@ -73,4 +134,4 @@ Ajoute `?mock=1` à l'URL d'une page (ex. `elections/voter.html?mock=1`) : `asse
 - Les codes ont 8 caractères sur un alphabet de 32 (≈ 40 bits) : impossibles à deviner par tâtonnement à l'échelle d'un scrutin. Un code saisi anormalement souvent est signalé dans l'onglet *Votants*.
 - L'étiquette (pseudo) associée à un code est chiffrée en base (`pgp_sym`, clé dans Supabase Vault) : une copie brute de la table `voter_codes` ne révèle aucun nom, seul le panel admin peut la déchiffrer à la volée.
 - Un scrutin ou un code se supprime depuis le panel (cascade complète) ; un code jamais utilisé se supprime directement, un code déjà utilisé doit d'abord être révoqué (avec motif).
-- Ne jamais mettre `SUPABASE_SERVICE_ROLE_KEY`, le token du bot ou `NOTIFY_SECRET` dans le dépôt.
+- Ne jamais mettre `SUPABASE_SERVICE_ROLE_KEY`, le token du bot, `NOTIFY_SECRET`, ni les secrets Zoho/GitHub (`ZOHO_CLIENT_SECRET`, `ZOHO_REFRESH_TOKEN`, `GITHUB_TOKEN`) dans le dépôt.

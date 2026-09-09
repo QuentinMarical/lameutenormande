@@ -57,7 +57,8 @@
     gear: '<circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7.1 3.3l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V2a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.6 1z"/>',
     ban: '<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>',
     'screwdriver-wrench': '<path d="M21 7a4 4 0 0 1-5.4 3.8L7 19.4a2 2 0 1 1-2.8-2.8l8.6-8.6A4 4 0 1 1 21 7z"/>',
-    'circle-info': '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5"/><path d="M10 17h4"/>'
+    'circle-info': '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5"/><path d="M10 17h4"/>',
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
   };
   E.icon = (name, cls) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -243,11 +244,11 @@
     const s = await E.adminSession(); if (!s) return false;
     const { data } = await E.sb.rpc('is_admin'); return !!data;
   };
-  /** Appelle l'Edge Function admin-users et lève une erreur avec le vrai message JSON renvoyé
+  /** Appelle une Edge Function et lève une erreur avec le vrai message JSON renvoyé
    *  ({error: "..."}) : par défaut, functions.invoke() masque ce corps derrière un message
    *  générique ("Edge Function returned a non-2xx status code") dès que le statut n'est pas 2xx. */
-  E.invokeAdminUsers = async function (body) {
-    const { data, error } = await E.sb.functions.invoke('admin-users', { body });
+  E.invokeFn = async function (name, body) {
+    const { data, error } = await E.sb.functions.invoke(name, { body });
     if (error) {
       let msg = error.message;
       try { const b = await error.context.json(); if (b && b.error) msg = b.error; } catch {}
@@ -256,6 +257,7 @@
     if (data && data.error) throw new Error(data.error);
     return data;
   };
+  E.invokeAdminUsers = (body) => E.invokeFn('admin-users', body);
   E.signOut = async function () {
     if (E.sb) {
       // Trace la déconnexion tant que la session est encore valide (impossible une fois signOut()
@@ -345,7 +347,12 @@
     CANNOT_DELETE_DEV: 'Ce compte (développeur de l\'outil) ne peut pas être supprimé.',
     CANNOT_DELETE_LAST_ADMIN: 'Impossible de supprimer le dernier administrateur actif.',
     CANNOT_DISABLE_LAST_ADMIN: 'Impossible de désactiver le dernier administrateur actif.',
-    'Password should be at least': 'Mot de passe trop court (8 caractères minimum).'
+    'Password should be at least': 'Mot de passe trop court (8 caractères minimum).',
+    BAD_TITLE: 'Le titre est obligatoire.',
+    BAD_DATES: 'Dates invalides (la fin doit être après le début).',
+    ZOHO_NOT_CONFIGURED: 'Outil pas encore configuré côté serveur (secrets Zoho manquants) : voir elections/supabase/README.md.',
+    ZOHO_AUTH_FAILED: 'Connexion à Zoho impossible (jeton expiré ou révoqué ?). Contacte un développeur.',
+    ZOHO_CREATE_FAILED: 'Zoho a refusé la création de l\'évènement. Vérifie les champs et réessaie.'
   };
   E.errMsg = function (err) {
     const m = (err && (err.message || err.error_description || String(err))) || 'Erreur inconnue';

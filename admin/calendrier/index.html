@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administration — Calendrier de la Meute Normande</title>
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
+  <link rel="stylesheet" href="../assets/admin.css">
+</head>
+<body>
+  <!-- Pas de topbar/page-head statiques : l'en-tête (identité + statut de connexion) est construit
+       dynamiquement une fois connecté, même module que sur le hub admin (voir admin/index.html). -->
+  <main class="wrap wide" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../../elections/assets/config.js"></script>
+  <script src="../../elections/assets/common.js"></script>
+  <script src="../assets/legal.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    // Même pied de page minimal que sur le hub admin (voir admin/index.html) plutôt que le module
+    // complet de E.footer() (bandeau/titre/crédit, partagé avec les pages publiques) : liens
+    // utilitaires + note en petits caractères.
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="legal-links">'
+      + '<a href="tg://resolve?domain=NitraFox">Aide</a><span class="legal-sep">·</span>'
+      + '<button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span>'
+      + '<button type="button" class="legal-btn" data-legal="confidentialite">Confidentialité et cookies</button></div>'
+      + '<p class="legal">Utilise la navigation privée si ce n\'est pas ton appareil.</p>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // ---------- Connexion admin (même compte que les autres panels) ----------
+    const LOGO = 'https://lameutenormande.fr/assets/images/logo-2000x837.png';
+    const HUB_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">'
+      + '<circle cx="5" cy="5" r="2.1" fill="currentColor"/><circle cx="12" cy="5" r="2.1" fill="currentColor"/><circle cx="19" cy="5" r="2.1" fill="currentColor"/>'
+      + '<circle cx="5" cy="12" r="2.1" fill="currentColor"/><circle cx="12" cy="12" r="2.1" fill="currentColor"/><circle cx="19" cy="12" r="2.1" fill="currentColor"/>'
+      + '<circle cx="5" cy="19" r="2.1" fill="currentColor"/><circle cx="12" cy="19" r="2.1" fill="currentColor"/><circle cx="19" cy="19" r="2.1" fill="currentColor"/></svg>';
+    const session = await E.adminSession();
+    if (!session) {
+      app.classList.add('login-mode');
+      let emailVal = '';
+
+      function renderLogin(step) {
+        const card = h('div', { class: 'login-card' });
+
+        if (step !== 'password') {
+          const email = h('input', { class: 'input login-input', type: 'email', autocomplete: 'username', required: true, placeholder: 'Email', 'aria-label': 'E-mail', value: emailVal || null });
+          const btn = h('button', { class: 'btn', type: 'submit' }, 'Suivant');
+          const backToHub = h('button', { type: 'button', class: 'btn secondary login-secondary', onClick: () => history.back() }, 'Retour');
+          const form = h('form', null,
+            h('img', { class: 'login-logo', src: LOGO, alt: '' }),
+            h('div', { class: 'login-title' }, 'Se connecter'),
+            h('div', { class: 'field' }, email), btn, backToHub);
+          form.addEventListener('submit', ev => {
+            ev.preventDefault();
+            const v = email.value.trim(); if (!v) return;
+            emailVal = v; renderLogin('password');
+          });
+          card.appendChild(form);
+          E.clear(app).appendChild(h('div', { class: 'login-shell' }, card));
+          email.focus();
+          return;
+        }
+
+        const back = h('button', { type: 'button', class: 'login-back', 'aria-label': 'Changer d\'e-mail', onClick: () => renderLogin('email') }, '←');
+        const pass = h('input', { class: 'input login-input', type: 'password', autocomplete: 'current-password', required: true, placeholder: 'Mot de passe', 'aria-label': 'Mot de passe' });
+        const btn = h('button', { class: 'btn', type: 'submit' }, 'Se connecter');
+        const form = h('form', null,
+          h('img', { class: 'login-logo', src: LOGO, alt: '' }),
+          h('div', { class: 'login-email-pill' }, emailVal),
+          h('div', { class: 'login-title' }, 'Entre ton mot de passe'),
+          h('div', { class: 'field' }, pass), btn);
+        form.addEventListener('submit', async ev => {
+          ev.preventDefault(); btn.disabled = true;
+          const { error } = await E.sb.auth.signInWithPassword({ email: emailVal, password: pass.value });
+          if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+          location.reload();
+        });
+        card.append(back, form);
+        E.clear(app).appendChild(h('div', { class: 'login-shell' }, card));
+        pass.focus();
+      }
+      renderLogin('email');
+      return;
+    }
+    if (!(await E.isAdmin())) {
+      E.clear(app).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, h('div', { class: 'title' }, 'Ce compte n\'est pas administrateur'),
+        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, 'Se déconnecter')))));
+      return;
+    }
+    const dashHeader = h('div', { class: 'dash-header' },
+      h('div', { class: 'dash-identity' },
+        h('a', { class: 'hub-btn', href: 'https://lameutenormande.fr/admin/', title: 'Espace admin', 'aria-label': 'Espace admin', html: HUB_ICON }),
+        h('span', { class: 'dash-sep' }),
+        h('a', { class: 'dash-brand', href: 'https://lameutenormande.fr/', title: 'Retour au site' },
+          h('img', { class: 'dash-logo', src: LOGO, alt: '' }),
+          h('h1', { class: 'dash-title' }, 'Administration du calendrier'))),
+      h('div', { class: 'dash-account' },
+        h('span', { class: 'dash-email' }, session.user.email || 'admin'),
+        h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, '⏻ ', 'Se déconnecter')));
+    E.clear(app).appendChild(dashHeader);
+
+    // ---------- Ajout d'un évènement au calendrier Zoho ----------
+    // Ce panel n'affiche aucune liste (le calendrier lui-même reste sur Zoho) : il se contente
+    // d'y créer des évènements via la fonction zoho-create-event (voir
+    // elections/supabase/functions/zoho-create-event/). Le site public continue de lire
+    // events.ics à la racine, régénéré depuis Zoho par le robot GitHub Actions
+    // (.github/workflows/update-calendar.yml, toutes les heures — ou immédiatement si la
+    // fonction est configurée pour le déclencher, voir son en-tête).
+    app.appendChild(h('div', { class: 'card info column', style: { marginBottom: '18px' } },
+      h('div', { class: 'title', style: { fontSize: '15px' } }, 'Comment ça marche'),
+      h('div', { class: 'desc' }, 'Cet outil ajoute directement l\'évènement au calendrier Zoho. Le calendrier public du site (page Événements) se met à jour automatiquement dans l\'heure qui suit — pas besoin de repasser ailleurs.')));
+
+    const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Evreux 2026', required: true });
+    const furryChk = h('input', { type: 'checkbox' });
+    const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France' });
+    const urlInp = h('input', { class: 'input', type: 'url', placeholder: 'https://…' });
+    const descInp = h('textarea', { class: 'input', rows: '4', placeholder: 'Détails, programme, liens billetterie…' });
+    const allDayChk = h('input', { type: 'checkbox' });
+    const startInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const endInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+
+    function syncDateInputsType() {
+      const type = allDayChk.checked ? 'date' : 'datetime-local';
+      [startInp, endInp].forEach(inp => {
+        if (inp.type === type) return;
+        const v = inp.value ? inp.value.slice(0, 10) : '';
+        inp.type = type;
+        inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
+      });
+    }
+    allDayChk.addEventListener('change', syncDateInputsType);
+
+    const submitBtn = h('button', { class: 'btn', type: 'submit' }, '＋ Ajouter au calendrier');
+    const form = h('form', { class: 'card column' },
+      h('div', { class: 'title', style: { fontSize: '16px' } }, 'Nouvel évènement'),
+      h('div', { class: 'field' }, h('label', null, 'Titre'), titleInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, furryChk, 'Évènement furry 🦊'),
+      h('div', { class: 'grid-2' },
+        h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
+        h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
+      h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée(s) entière(s), sans horaire précis'),
+      h('div', { class: 'grid-2' },
+        h('div', { class: 'field' }, h('label', null, 'Début'), startInp),
+        h('div', { class: 'field' }, h('label', null, 'Fin'), endInp)),
+      h('div', { class: 'btn-row' }, submitBtn));
+    app.appendChild(form);
+
+    const recentBox = h('div', { style: { marginTop: '18px' } });
+    app.appendChild(recentBox);
+    const recentList = [];
+    function paintRecent() {
+      E.clear(recentBox);
+      if (!recentList.length) return;
+      recentBox.appendChild(h('div', { class: 'section-title' }, 'Ajoutés pendant cette session'));
+      recentList.forEach(r => recentBox.appendChild(h('div', { class: 'cand' }, h('div', { class: 'body' },
+        h('div', { class: 'name' }, r.title), h('div', { class: 'handles' }, h('span', null, r.when))))));
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = titleInp.value.trim();
+      if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
+      if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
+      const allDay = allDayChk.checked;
+      // Journée entière : on envoie la date telle quelle (YYYY-MM-DD), sans passer par un objet
+      // Date/ISO — un aller-retour par l'UTC ferait glisser le jour d'une unité pour tout fuseau
+      // en avance sur UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
+      const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
+      const end = allDay ? endInp.value : new Date(endInp.value).toISOString();
+      if ((allDay ? end < start : new Date(end) < new Date(start))) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+
+      submitBtn.disabled = true; submitBtn.textContent = 'Ajout…';
+      try {
+        await E.invokeFn('zoho-create-event', {
+          title, location: locationInp.value.trim(), url: urlInp.value.trim(),
+          description: descInp.value.trim(), furry: furryChk.checked, allDay, start, end,
+        });
+        E.toast('Évènement ajouté au calendrier Zoho.', 'success');
+        recentList.unshift({ title: furryChk.checked ? '🦊 ' + title : title, when: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) });
+        paintRecent();
+        form.reset();
+        allDayChk.checked = false; syncDateInputsType();
+      } catch (err) {
+        E.toast(E.errMsg(err), 'error');
+      } finally {
+        submitBtn.disabled = false; submitBtn.textContent = '＋ Ajouter au calendrier';
+      }
+    });
+  })();
+  </script>
+</body>
+</html>
