@@ -1027,6 +1027,17 @@ a {
   transform: translateX(-50%) translateY(8px);
   animation: dropdownFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+@media (min-width: 992px) {
+  .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+  }
+}
 .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu .dropdown-item {
   line-height: 1 !important;
 }
@@ -2315,6 +2326,17 @@ a {
   transform: translateX(-50%) translateY(8px);
   animation: dropdownFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+@media (min-width: 992px) {
+  .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+  }
+}
 .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu .dropdown-item {
   line-height: 1 !important;
 }
@@ -3420,6 +3442,17 @@ a {
   transform: translateX(-50%) translateY(8px);
   animation: dropdownFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+@media (min-width: 992px) {
+  .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+  }
+}
 .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu .dropdown-item {
   line-height: 1 !important;
 }
@@ -4509,6 +4542,17 @@ a {
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   animation: dropdownFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@media (min-width: 992px) {
+  .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+  }
 }
 .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu .dropdown-item {
   line-height: 1 !important;
@@ -6650,6 +6694,17 @@ a {
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   animation: dropdownFadeIn 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@media (min-width: 992px) {
+  .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: transparent;
+  }
 }
 .cid-veCgXANUp1 .navbar .dropdown > .dropdown-menu .dropdown-item {
   line-height: 1 !important;
