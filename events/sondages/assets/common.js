@@ -146,17 +146,48 @@
   };
 
   // ---------- Layout commun ----------
-  V.renderNav = async function (active) {
-    const nav = V.qs('#nav'); if (!nav) return;
-    const links = [['index.html', 'Sondages']];
-    V.clear(nav);
-    links.forEach(([href, label]) => nav.appendChild(V.h('a', { href, class: active === href ? 'active' : '' }, label)));
-    const bar = nav.parentElement;
-    V.qsa('.actions', bar).forEach(n => n.remove());
-    const actions = V.h('div', { class: 'actions' });
-    bar.appendChild(actions);
+  // Le menu est le module Mobirise "menu2" réel du reste du site public, en dur dans le HTML
+  // (voir Modules Mobirise/OK/Module Menu/V6 fonctionnel + assets/menu.css, qui reprend
+  // verbatim le CSS compilé livré par le site pour ce module). On ne câble ici que
+  // l'interactivité (dropdown, hamburger) : le vrai module s'appuie sur Bootstrap
+  // (bootstrap.bundle.min.js), qu'on ne charge pas pour éviter toute collision avec les
+  // .btn/.card/.modal déjà stylés dans l'outil de sondages — donc on reproduit à la main le
+  // strict comportement de assets/dropdown/js/navbar-dropdown.js pour ce module précis.
+  V.initMenu = function () {
+    const section = V.qs('.cid-veCgXANUp1'); if (!section) return;
+    const nav = V.qs('.navbar-dropdown', section);
+    const toggler = V.qs('.navbar-toggler', section);
+    const collapse = V.qs('#navbarSupportedContent', section);
+    if (toggler && collapse) {
+      toggler.addEventListener('click', () => {
+        const shown = collapse.classList.toggle('show');
+        nav.classList.toggle('opened', shown);
+        toggler.setAttribute('aria-expanded', shown ? 'true' : 'false');
+      });
+    }
+    function closeDropdowns() {
+      V.qsa('.nav-item.dropdown.open', section).forEach((li) => {
+        li.classList.remove('open');
+        const toggle = V.qs('.dropdown-toggle', li);
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      });
+    }
+    V.qsa('.nav-item.dropdown > .dropdown-toggle', section).forEach((toggle) => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const li = toggle.parentNode;
+        const wasOpen = li.classList.contains('open');
+        closeDropdowns();
+        if (!wasOpen) { li.classList.add('open'); toggle.setAttribute('aria-expanded', 'true'); }
+      });
+    });
+    document.addEventListener('click', (e) => { if (!section.contains(e.target)) closeDropdowns(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDropdowns(); });
+  };
+  V.setupAdmin = async function () {
+    const icon = V.qs('#navAdminIcon'); if (!icon) return;
     const admin = V.ready && await V.adminSession();
-    actions.appendChild(V.h('a', { class: 'tool admin', href: 'https://lameutenormande.fr/admin/votes/', title: admin ? 'Panel admin (' + (admin.user.email || '') + ')' : 'Accès administrateur' }, admin ? 'Admin' : '⚙'));
+    if (admin) { const label = 'Panel admin (' + (admin.user.email || '') + ')'; icon.title = label; icon.setAttribute('aria-label', label); }
   };
   V.notConfigured = function (container) {
     V.clear(container).appendChild(V.h('div', { class: 'card warn' }, V.h('div', { class: 'body' },
