@@ -51,17 +51,6 @@ Deno.serve(async (req) => {
   let p: { type: string; election_id?: string; candidate_id?: string };
   try { p = await req.json(); } catch { return json({ error: "JSON invalide" }, 400); }
 
-  // Test de bon fonctionnement (déploiement, secret, connexion au bot) : ne touche à aucune
-  // donnée réelle, message explicitement marqué pour ne pas induire les abonnés en erreur.
-  if (p.type === "test") {
-    try {
-      await send("🧪 <b>Message de test</b> — merci d'ignorer.\nVérification technique du système de notifications, aucune action de votre part n'est nécessaire.");
-    } catch (e) {
-      return json({ error: String(e) }, 502);
-    }
-    return json({ ok: true });
-  }
-
   const db = createClient(SUPABASE_URL, SERVICE_KEY, { auth: { persistSession: false } });
   const { data: election } = await db.from("elections").select("*").eq("id", p.election_id).maybeSingle();
   if (!election) return json({ error: "Scrutin introuvable" }, 404);
