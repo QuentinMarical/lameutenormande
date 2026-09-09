@@ -136,6 +136,16 @@
       const p = n => String(n).padStart(2, '0');
       return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
     }
+    // Pour une journée entière, le champ "end" de Zoho est exclusif (le lendemain du dernier jour
+    // réel — un évènement du 29/10 au 2/11 inclus est stocké start=20251029/end=20251103) alors
+    // que le formulaire montre/attend des dates inclusives, comme l'interface Zoho elle-même.
+    function addDaysToDateStr(str, days) {
+      const [y, m, d] = str.split('-').map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      dt.setUTCDate(dt.getUTCDate() + days);
+      const p = n => String(n).padStart(2, '0');
+      return `${dt.getUTCFullYear()}-${p(dt.getUTCMonth() + 1)}-${p(dt.getUTCDate())}`;
+    }
 
     // existing (facultatif) : l'évènement Zoho tel que renvoyé par l'action "get", pour préremplir
     // en mode édition. onSaved(uid) est appelé après un enregistrement réussi.
@@ -151,7 +161,8 @@
       const allDayChk = h('input', { type: 'checkbox' }); allDayChk.checked = !!(existing && existing.isallday);
       const initialType = allDayChk.checked ? 'date' : 'datetime-local';
       const startInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.start, allDayChk.checked) : '' });
-      const endInp = h('input', { class: 'input', type: initialType, required: true, value: existing ? zohoDateToInputValue(existing.dateandtime.end, allDayChk.checked) : '' });
+      const endRaw = existing ? zohoDateToInputValue(existing.dateandtime.end, allDayChk.checked) : '';
+      const endInp = h('input', { class: 'input', type: initialType, required: true, value: (existing && allDayChk.checked && endRaw) ? addDaysToDateStr(endRaw, -1) : endRaw });
       // Début/Fin restent deux champs même en "journée entière" — un évènement all-day peut
       // durer plusieurs jours (ex. une convention sur 5 jours), pas juste un seul ; "journée
       // entière" retire seulement l'heure (type="date" au lieu de "datetime-local"), pas le champ Fin.
@@ -191,12 +202,15 @@
         if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
         const allDay = allDayChk.checked;
         if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
-        // Journée entière : on envoie les dates telles quelles (YYYY-MM-DD), sans passer par un
-        // objet Date/ISO qui ferait glisser le jour d'une unité pour tout fuseau en avance sur UTC
-        // (ex. minuit heure de Paris en été = 22h UTC la veille).
+        // Journée entière : on envoie les dates telles quelles (YYYY-MM-DD, +1 jour sur la fin
+        // pour reconvertir vers la fin exclusive attendue par Zoho — voir addDaysToDateStr plus
+        // haut), sans passer par un objet Date/ISO qui ferait glisser le jour d'une unité pour
+        // tout fuseau en avance sur UTC (ex. minuit heure de Paris en été = 22h UTC la veille).
+        // Validée sur les valeurs inclusives saisies, avant la conversion +1 jour vers la fin
+        // exclusive attendue par Zoho (sinon la comparaison serait toujours vraie après coup).
+        if (allDay ? endInp.value < startInp.value : new Date(endInp.value) < new Date(startInp.value)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
         const start = allDay ? startInp.value : new Date(startInp.value).toISOString();
-        const end = allDay ? endInp.value : new Date(endInp.value).toISOString();
-        if (allDay ? end < start : new Date(end) < new Date(start)) { E.toast('La date de fin doit être après le début.', 'error'); return; }
+        const end = allDay ? addDaysToDateStr(endInp.value, 1) : new Date(endInp.value).toISOString();
 
         submitBtn.disabled = true; submitBtn.textContent = isEdit ? 'Enregistrement…' : 'Ajout…';
         try {
