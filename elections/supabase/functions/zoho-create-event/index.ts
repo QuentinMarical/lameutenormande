@@ -135,7 +135,11 @@ type EventPayload = {
 // Construit le "eventdata" envoyé à Zoho (POST création comme PUT mise à jour) : l'API remplace
 // l'évènement entier à la mise à jour, donc on renvoie toujours l'ensemble des champs gérés ici
 // (title/dates/description/lieu/participants), jamais un simple diff.
-function buildEventData(p: EventPayload): { eventdata: Record<string, unknown> } | { error: string } {
+// fallbackAttendeeEmail : e-mail du compte admin du site connecté (via son JWT, jamais fourni par
+// le client) — utilisé comme participant quand "présente" n'est pas coché, pour ne jamais envoyer
+// un tableau "attendees" vide (Zoho l'interdit, voir plus bas) tout en indiquant qui a enregistré
+// l'évènement.
+function buildEventData(p: EventPayload, fallbackAttendeeEmail: string | null): { eventdata: Record<string, unknown> } | { error: string } {
   const title = String(p.title || "").trim();
   if (!title) return { error: "BAD_TITLE" };
   if (!p.start || !p.end) return { error: "BAD_DATES" };
@@ -169,9 +173,10 @@ function buildEventData(p: EventPayload): { eventdata: Record<string, unknown> }
     notify_attendee: 0,
   };
   // Zoho refuse un tableau "attendees" vide (ARRAY_SIZE_OUT_OF_RANGE, taille attendue [1-50]) :
-  // le champ n'est envoyé que quand il y a bien un participant à déclarer, jamais un tableau vide
-  // pour "aucun participant".
+  // jamais un tableau vide pour "aucun participant" — soit le marqueur de présence, soit (à
+  // défaut) l'admin qui enregistre.
   if (p.presente) eventdata.attendees = [{ email: GO_ATTENDEE_EMAIL, attendance: 2 }];
+  else if (fallbackAttendeeEmail) eventdata.attendees = [{ email: fallbackAttendeeEmail, attendance: 2 }];
   if (p.etag) eventdata.etag = p.etag;
   return { eventdata };
 }
@@ -187,6 +192,8 @@ Deno.serve(async (req) => {
   });
   const { data: isAdmin, error: isAdminErr } = await asCaller.rpc("is_admin");
   if (isAdminErr || !isAdmin) return json({ error: "ADMIN_REQUIRED" }, 403);
+  const { data: { user: caller } } = await asCaller.auth.getUser();
+  const callerEmail = caller?.email ?? null;
 
   // Surcharges Zoho non sensibles réglées depuis l'onglet Réglages du panel admin (table déjà
   // lisible par cet appelant, puisqu'il vient de passer la vérification is_admin() ci-dessus).
@@ -228,7 +235,7 @@ Deno.serve(async (req) => {
     }
 
     if (action !== "create" && action !== "update") return json({ error: "BAD_ACTION" }, 400);
-    const built = buildEventData(p);
+    const built = buildEventData(p, callerEmail);
     if ("error" in built) return json({ error: built.error }, 400);
 
     const isUpdate = action === "update";
