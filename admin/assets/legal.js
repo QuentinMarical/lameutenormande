@@ -1,5 +1,5 @@
 /* Pages légales (mentions légales, confidentialité, cookies) génériques du site — copie de
-   actus/sondages/assets/legal.js sur le namespace E (au lieu de V) : les pages transversales de
+   events/sondages/assets/legal.js sur le namespace E (au lieu de V) : les pages transversales de
    l'espace admin (hub, Utilisateurs) chargent elections/assets/common.js pour
    leurs autres aides (E.h, E.icon…) et ont donc besoin de la même API sur E, mais avec un contenu
    qui parle du site dans son ensemble plutôt que d'un outil précis (elections/assets/legal.js

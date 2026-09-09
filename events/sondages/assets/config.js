@@ -4,5 +4,5 @@
 window.VOTES_CONFIG = {
   SUPABASE_URL: 'https://ywqfkldlganqytohqmpk.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable_bQ7BIs2I88E38a_euD_4aA_LkhWjYz_',
-  SITE_URL: 'https://lameutenormande.fr/actus/sondages/'
+  SITE_URL: 'https://lameutenormande.fr/events/sondages/'
 };
