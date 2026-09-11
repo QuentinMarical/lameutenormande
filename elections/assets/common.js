@@ -259,6 +259,14 @@
     return data;
   };
   E.invokeAdminUsers = (body) => E.invokeFn('admin-users', body);
+  // Trace une connexion admin réussie — à appeler juste après signInWithPassword(), avant le
+  // location.reload() qui suit dans chaque page de connexion (le formulaire de connexion est
+  // dupliqué par panel, pas de single point of entry ici contrairement à E.signOut ci-dessous).
+  // Échec silencieux (ex. compte authentifié mais pas encore reconnu admin) : ne doit jamais
+  // bloquer la connexion elle-même.
+  E.logAdminLogin = async function () {
+    try { await E.sb.rpc('admin_log_event', { p_event: 'login' }); } catch {}
+  };
   E.signOut = async function () {
     if (E.sb) {
       // Trace la déconnexion tant que la session est encore valide (impossible une fois signOut()

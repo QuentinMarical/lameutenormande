@@ -88,8 +88,7 @@
           const { error } = await E.sb.auth.signInWithPassword({ email: emailVal, password: pass.value });
           if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
           // Best-effort : un compte authentifié mais pas admin n'a pas le droit d'écrire dans l'audit
-          // (admin_log_event vérifie is_admin() lui-même), on ne bloque pas la connexion pour ça.
-          try { await E.sb.rpc('admin_log_event', { p_event: 'login' }); } catch {}
+          await E.logAdminLogin();
           location.reload();
         });
         card.append(back, form);

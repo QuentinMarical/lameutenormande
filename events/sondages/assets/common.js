@@ -107,7 +107,14 @@
     const s = await V.adminSession(); if (!s) return false;
     const { data } = await V.sb.rpc('is_admin'); return !!data;
   };
-  V.signOut = async function () { if (V.sb) await V.sb.auth.signOut(); location.reload(); };
+  // Journal partagé avec les élections/le reste de l'admin (même table public.audit_log, même
+  // projet Supabase) : admin_log_event() est une RPC du schéma public, appelable via V.sb comme
+  // via E.sb. Échec silencieux dans les deux cas — ne doit jamais bloquer connexion/déconnexion.
+  V.logAdminLogin = async function () { try { await V.sb.rpc('admin_log_event', { p_event: 'login' }); } catch {} };
+  V.signOut = async function () {
+    if (V.sb) { try { await V.sb.rpc('admin_log_event', { p_event: 'logout' }); } catch {} await V.sb.auth.signOut(); }
+    location.reload();
+  };
 
   // ---------- États d'un sondage ----------
   V.pollState = function (p) {

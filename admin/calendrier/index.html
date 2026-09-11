@@ -82,6 +82,7 @@
           ev.preventDefault(); btn.disabled = true;
           const { error } = await E.sb.auth.signInWithPassword({ email: emailVal, password: pass.value });
           if (error) { E.toast(E.errMsg(error), 'error'); btn.disabled = false; return; }
+          await E.logAdminLogin();
           location.reload();
         });
         card.append(back, form);
