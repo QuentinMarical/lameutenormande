@@ -170,3 +170,32 @@
 .month-group summary::before { content: '▸'; display: inline-block; transition: transform .15s ease; font-size: .8em; color: var(--muted); }
 .month-group[open] summary::before { transform: rotate(90deg); }
 .month-group summary .count { margin-left: auto; color: var(--muted); text-transform: none; letter-spacing: 0; font-weight: 500; }
+
+/* ---------- Filtres avancés (page Logs) ----------
+   Popover flottant plutôt qu'un <select multiple> natif (trop peu lisible pour cocher/décocher
+   plusieurs actions à la fois) : .filter-dropdown (details) positionne .filter-menu en absolu sous
+   summary, pour ne jamais pousser le tableau vers le bas quand la liste est ouverte. */
+.filter-dropdown { position: relative; display: inline-block; }
+.filter-dropdown summary {
+  cursor: pointer; list-style: none; user-select: none;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .55rem 1rem; border-radius: 8px; font-size: .82rem; font-weight: 600;
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--line); color: var(--text);
+}
+.filter-dropdown summary::-webkit-details-marker { display: none; }
+.filter-dropdown summary::after { content: '▾'; color: var(--muted); font-size: .75em; }
+.filter-dropdown[open] summary { border-color: var(--violet-line); }
+.filter-dropdown .count { color: var(--muted); font-weight: 500; }
+.filter-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 20; min-width: 240px; max-width: 320px;
+  max-height: 320px; overflow-y: auto;
+  padding: .6rem; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--violet-line);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+.filter-menu-actions { display: flex; gap: .5rem; margin-bottom: .5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
+.filter-menu-item {
+  display: flex; align-items: center; gap: .55rem; padding: .4rem .3rem; border-radius: 6px;
+  font-size: .85rem; cursor: pointer;
+}
+.filter-menu-item:hover { background: rgba(255, 255, 255, 0.05); }
+.filter-menu-item input { accent-color: var(--violet); width: 15px; height: 15px; flex-shrink: 0; }
