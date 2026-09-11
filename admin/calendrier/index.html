@@ -105,7 +105,8 @@
           h('h1', { class: 'dash-title' }, 'Administration du calendrier'))),
       h('div', { class: 'dash-account' },
         h('span', { class: 'dash-email' }, session.user.email || 'admin'),
-        h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, '⏻ ', 'Se déconnecter')));
+        h('button', { class: 'btn secondary small', type: 'button', title: 'Se déconnecter', onClick: E.signOut },
+          E.icon('right-from-bracket'), h('span', { class: 'btn-label' }, 'Se déconnecter'))));
     E.clear(app).appendChild(dashHeader);
 
     const tabs = [['ajouter', 'Ajouter'], ['modifier', 'Modifier'], ['reglages', 'Réglages']];
@@ -331,16 +332,27 @@
       }
 
       const MOIS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+      // Insensible aux accents/casse (ex. "evreux" retrouve "Évreux") — pratique pour une ville
+      // tapée sans accent, sans dépendre d'un vrai découpage d'adresse (le champ Lieu reste du
+      // texte libre saisi par l'admin, on fait juste une recherche par sous-chaîne dedans).
+      const norm = (s) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
       const searchInp = h('input', { class: 'input', placeholder: 'Filtrer par titre…' });
+      const cityInp = h('input', { class: 'input', placeholder: 'Ex. Rouen…' });
+      const furryChk = h('input', { type: 'checkbox' });
       const list = h('div', { style: { marginTop: '12px' } });
       function paintList() {
         E.clear(list);
-        const q = searchInp.value.trim().toLowerCase();
-        const filtered = q ? evts.filter(e => e.title.toLowerCase().includes(q)) : evts;
+        const q = norm(searchInp.value.trim());
+        const ville = norm(cityInp.value.trim());
+        const filtered = evts.filter(e =>
+          (!q || norm(e.title).includes(q)) &&
+          (!ville || norm(e.location).includes(ville)) &&
+          (!furryChk.checked || /\u{1F98A}/u.test(e.title)));
         if (!filtered.length) { list.appendChild(h('div', { class: 'empty' }, 'Aucun évènement.')); return; }
         // Groupé par mois/année (clé sur l'heure locale, cohérente avec l'affichage E.fmtDateTime),
         // groupes en ordre décroissant (mois le plus tardif en premier) ; à l'intérieur d'un
-        // groupe, ordre chronologique croissant hérité du tri de `evts`.
+        // groupe, ordre chronologique croissant hérité du tri de `evts`. Repliés par défaut (open:
+        // false) — vue d'ensemble compacte, surtout utile une fois les filtres ci-dessus posés.
         const groups = new Map();
         filtered.forEach(e => {
           const key = e.debut.getFullYear() + '-' + String(e.debut.getMonth()).padStart(2, '0');
@@ -348,7 +360,7 @@
           groups.get(key).items.push(e);
         });
         Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0])).forEach(([, group]) => {
-          const details = h('details', { class: 'month-group', open: true });
+          const details = h('details', { class: 'month-group' });
           details.appendChild(h('summary', null,
             h('span', null, group.label),
             h('span', { class: 'count' }, group.items.length + ' évènement' + (group.items.length > 1 ? 's' : ''))));
@@ -359,9 +371,13 @@
           list.appendChild(details);
         });
       }
-      searchInp.addEventListener('input', paintList);
+      [searchInp, cityInp].forEach(inp => inp.addEventListener('input', paintList));
+      furryChk.addEventListener('change', paintList);
       E.clear(pane).append(
-        h('div', { class: 'field' }, h('label', null, 'Rechercher un évènement'), searchInp),
+        h('div', { class: 'grid-2' },
+          h('div', { class: 'field' }, h('label', null, 'Rechercher un évènement'), searchInp),
+          h('div', { class: 'field' }, h('label', null, 'Ville'), cityInp)),
+        h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content', marginTop: '10px' } }, furryChk, 'Furry 🦊 uniquement'),
         list);
       paintList();
 
