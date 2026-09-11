@@ -238,7 +238,7 @@
         h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px', alignItems: 'center' } },
           h('button', { class: 'btn ' + (autoRefresh ? 'secondary' : '') + ' small', type: 'button', title: autoRefresh ? 'Mettre en pause l\'actualisation auto (toutes les 15 s)' : 'Activer l\'actualisation auto (toutes les 15 s)', onClick: () => { autoRefresh = !autoRefresh; logs(); } }, autoRefresh ? '⏸ Actualisation auto' : '▶ Actualisation auto'),
           h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('logs.csv', ['at', 'actor_label', 'action', 'target', 'details', 'user_agent'], filtered.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV'),
-          h('div', { style: { marginLeft: 'auto', display: 'flex', gap: '.6rem' } }, actionsDetails, adminDetails)),
+          h('div', { style: { marginLeft: 'auto', display: 'flex', gap: '.6rem', flexWrap: 'wrap' } }, actionsDetails, adminDetails)),
         h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
     }
     function downloadCsv(name, cols, rows) {
