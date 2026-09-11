@@ -140,7 +140,7 @@
       },
       {
         key: 'mail', label: 'Boîte mail', icon: 'envelope', accent: 'cyan', href: 'https://zimbra1.mail.ovh.net/', external: true,
-        desc: 'Webmail Zimbra OVH — contact@lameutenormande.fr.'
+        desc: 'Webmail Zimbra OVH', email: 'contact@lameutenormande.fr'
       }
     ];
 
@@ -152,9 +152,19 @@
         return h('div', { class: 'tool-card' }, head,
           h('div', { class: 'tool-links' }, t.links.map(l => h('a', { class: 'tool-pill', href: t.href + '#' + l.hash }, l.title))));
       }
+      const openBtn = h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
+        'Ouvrir', E.icon('right-from-bracket'));
+      if (!t.email) return h('div', { class: 'tool-card single' }, head, openBtn);
+      // Copie directe de l'adresse (au clic, pas de mailto: qui ouvrirait un client mail local
+      // souvent pas configuré) : utile pour la coller ailleurs (formulaire, message) sans avoir à
+      // ouvrir le webmail juste pour relire l'adresse.
+      const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
+        try { await navigator.clipboard.writeText(t.email); E.toast('Adresse copiée.', 'success'); }
+        catch { E.toast('Impossible de copier.', 'error'); }
+      } }, 'Copier');
       return h('div', { class: 'tool-card single' }, head,
-        h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
-          'Ouvrir', E.icon('right-from-bracket')));
+        h('div', { class: 'tool-mail-row' }, h('span', { class: 'tool-mail-addr' }, t.email), copyBtn),
+        openBtn);
     }
 
     // ---------- Tableau de bord ----------
