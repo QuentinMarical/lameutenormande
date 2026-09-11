@@ -68,7 +68,7 @@
 .tool-icon.acc-violet { background: rgba(168, 85, 247, 0.16); color: var(--violet-2); }
 .tool-icon.acc-orange { background: rgba(255, 166, 0, 0.16); color: #ffb833; }
 .tool-icon.acc-ok { background: rgba(46, 187, 136, 0.16); color: #79d8b3; }
-.tool-icon.acc-telegram { background: rgba(0, 172, 237, 0.18); color: #7dd3fc; }
+.tool-icon.acc-cyan { background: rgba(0, 172, 237, 0.18); color: #7dd3fc; }
 
 .tool-title { font-size: 1.15rem; font-weight: 700; margin-bottom: .2rem; }
 .tool-desc { font-size: .88rem; color: var(--muted); line-height: 1.5; }

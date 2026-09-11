@@ -137,6 +137,10 @@
       {
         key: 'logs', label: 'Logs', icon: 'list', accent: 'ok', href: 'logs/',
         desc: 'Journal de toutes les actions admin (élections, sondages, calendrier, comptes).'
+      },
+      {
+        key: 'mail', label: 'Boîte mail', icon: 'envelope', accent: 'cyan', href: 'https://zimbra1.mail.ovh.net/', external: true,
+        desc: 'Webmail Zimbra OVH — contact@lameutenormande.fr.'
       }
     ];
 
@@ -150,7 +154,7 @@
       }
       return h('div', { class: 'tool-card single' }, head,
         h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
-          t.external ? 'Ouvrir le groupe' : 'Ouvrir', E.icon('right-from-bracket')));
+          'Ouvrir', E.icon('right-from-bracket')));
     }
 
     // ---------- Tableau de bord ----------
