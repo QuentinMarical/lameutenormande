@@ -170,6 +170,23 @@ DTSTAMP:20260305T205245Z
 URL:https://www.canthrofur.org/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan MangaGalaxy
+DESCRIPTION:1ère édition de Japan MangaGalaxy à Orléans.
+DTSTART;VALUE=DATE:20261107
+DTEND;VALUE=DATE:20261109
+LOCATION:Parc des expositions et des congrès d'Orléans. 1 Rue du Président Robert Schuman\, 45100 Orléans
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:0db339954c6e47469e991f47a136d5ff@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260911T103546Z
+LAST-MODIFIED:20260911T103546Z
+DTSTAMP:20260911T103548Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Les Fêtes Médiévales Jeanne d'Arc
 DESCRIPTION:Les Fêtes Médiévales Jeanne d'Arc\, organisées par la Ville de Rouen en partenariat avec Les Vitrines de Rouen\, se tiendront du 14 au 16 mai 2026 dans les rues du centre-ville de Rouen. L'événement avait rassemblé plus de 220 000 visiteurs en 2025 !\n\nPendant trois jours\, toute la ville se transforme et replonge dans l'atmosphère du Moyen Âge : marchés médiévaux (parvis de la Cathédrale\, esplanade Marcel-Duchamp\, rue Jeanne-d'Arc)\, campements\, démonstrations de métiers d'art (ferronnerie\, taille de pierre\, vitrail\, enluminure…)\, ateliers pour enfants\, concerts de chants médiévaux et animations de réalité virtuelle.\n\nLe point d'orgue du week-end : le grand défilé des troupes médiévales et fantastiques le samedi 16 mai à 17h30\, partant de la Place Saint-Sever jusqu'au Square Verdrel. L'entrée est entièrement gratuite ! 🎉\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Les<span>&nbsp\;</span><b>Fêtes Médiévales Jeanne d'Arc</b>\, organisées par la Ville de Rouen en partenariat avec Les Vitrines de Rouen\, se tiendront du<span>&nbsp\;</span><b>14 au 16 mai 2026</b><span>&nbsp\;</span>dans les rues du centre-ville de<span>&nbsp\;</span><b>Rouen</b>. L'événement avait rassemblé plus de<span>&nbsp\;</span><b>220 000 visiteurs</b><span>&nbsp\;</span>en 2025 !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Pendant trois jours\, toute la ville se transforme et replonge dans l'atmosphère du Moyen Âge :<span>&nbsp\;</span><b>marchés médiévaux</b><span>&nbsp\;</span>(parvis de la Cathédrale\, esplanade Marcel-Duchamp\, rue Jeanne-d'Arc)\,<span>&nbsp\;</span><b>campements</b>\,<span>&nbsp\;</span><b>démonstrations de métiers d'art</b><span>&nbsp\;</span>(ferronnerie\, taille de pierre\, vitrail\, enluminure…)\,<span>&nbsp\;</span><b>ateliers pour enfants</b>\,<span>&nbsp\;</span><b>concerts de chants médiévaux</b><span>&nbsp\;</span>et animations de réalité virtuelle.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le point d'orgue du week-end : le<span>&nbsp\;</span><b>grand défilé des troupes médiévales et fantastiques</b><span>&nbsp\;</span>le samedi 16 mai à 17h30\, partant de la Place Saint-Sever jusqu'au Square Verdrel. L'entrée est<span>&nbsp\;</span><b>entièrement gratuite</b><span>&nbsp\;</span>! 🎉<br /></p><div><br /></div>
