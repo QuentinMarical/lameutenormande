@@ -339,7 +339,23 @@
       const searchInp = h('input', { class: 'input', placeholder: 'Filtrer par titre…' });
       const cityInp = h('input', { class: 'input', placeholder: 'Ex. Rouen…' });
       const furryChk = h('input', { type: 'checkbox' });
+      // Le libellé reflète l'action que le bouton va effectuer, pas l'état courant : "Tout
+      // déplier" tant qu'au moins un groupe est replié, "Tout replier" seulement une fois tous
+      // ouverts — évite d'avoir à cliquer plusieurs fois pour deviner l'effet.
+      const toggleAllBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => {
+        const groupsEls = E.qsa('.month-group', list);
+        const allOpen = groupsEls.length > 0 && groupsEls.every(d => d.open);
+        groupsEls.forEach(d => { d.open = !allOpen; });
+        syncToggleAllLabel();
+      } }, 'Tout déplier');
+      function syncToggleAllLabel() {
+        const groupsEls = E.qsa('.month-group', list);
+        const allOpen = groupsEls.length > 0 && groupsEls.every(d => d.open);
+        toggleAllBtn.textContent = allOpen ? 'Tout replier' : 'Tout déplier';
+        toggleAllBtn.disabled = !groupsEls.length;
+      }
       const list = h('div', { style: { marginTop: '12px' } });
+      list.addEventListener('toggle', syncToggleAllLabel, true);
       function paintList() {
         E.clear(list);
         const q = norm(searchInp.value.trim());
@@ -370,6 +386,7 @@
           details.appendChild(groupList);
           list.appendChild(details);
         });
+        syncToggleAllLabel();
       }
       [searchInp, cityInp].forEach(inp => inp.addEventListener('input', paintList));
       furryChk.addEventListener('change', paintList);
@@ -377,7 +394,9 @@
         h('div', { class: 'grid-2' },
           h('div', { class: 'field' }, h('label', null, 'Rechercher un évènement'), searchInp),
           h('div', { class: 'field' }, h('label', null, 'Ville'), cityInp)),
-        h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content', marginTop: '10px' } }, furryChk, 'Furry 🦊 uniquement'),
+        h('div', { style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginTop: '10px' } },
+          h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content', margin: 0 } }, furryChk, 'Furry 🦊 uniquement'),
+          toggleAllBtn),
         list);
       paintList();
 
