@@ -167,11 +167,11 @@
     let autoRefresh = false; // pause par défaut : à activer explicitement
     let allRows = [];
     // Connexions/déconnexions masquées par défaut (bruit à haute fréquence, peu utile au
-    // quotidien) : juste un raccourci sur les deux mêmes entrées que la liste "Actions" ci-dessous,
-    // les deux états restent synchronisés dans les deux sens.
+    // quotidien) : décochables comme n'importe quelle autre action via le filtre "Actions".
     const hiddenActions = new Set(['admin_login', 'admin_logout']);
     let selectedAdmin = ''; // '' = tous les admins
     let actionsOpen = false; // préservé entre deux paint() (sinon le <details> se referme à chaque coche)
+    let adminOpen = false;
 
     async function logs() {
       const { data, error } = await E.sb.rpc('audit_log_readable');
@@ -183,15 +183,6 @@
     function paint() {
       E.clear(pane);
       const filtered = allRows.filter(r => !hiddenActions.has(r.action) && (!selectedAdmin || r.actor === selectedAdmin));
-
-      // ---- Case "Connexions/déconnexions" ----
-      const connexChk = h('input', { type: 'checkbox' });
-      connexChk.checked = !hiddenActions.has('admin_login') && !hiddenActions.has('admin_logout');
-      connexChk.addEventListener('change', () => {
-        if (connexChk.checked) { hiddenActions.delete('admin_login'); hiddenActions.delete('admin_logout'); }
-        else { hiddenActions.add('admin_login'); hiddenActions.add('admin_logout'); }
-        paint();
-      });
 
       // ---- Filtrage avancé par type d'action ----
       const distinctActions = Array.from(new Set(allRows.map(r => r.action))).sort((a, b) => (LABEL[a] || a).localeCompare(LABEL[b] || b));
@@ -215,10 +206,19 @@
       // les codes de vote individuels des élections, sans rapport avec un compte admin) ----
       const adminActors = Array.from(new Map(allRows.filter(r => (r.actor || '').startsWith('admin:')).map(r => [r.actor, r.actor_label || r.actor])).entries())
         .sort((a, b) => a[1].localeCompare(b[1]));
-      const adminSelect = h('select', { class: 'input', style: { width: 'auto' } },
-        h('option', { value: '', selected: !selectedAdmin }, 'Tous les admins'),
-        ...adminActors.map(([actor, label]) => h('option', { value: actor, selected: actor === selectedAdmin }, label)));
-      adminSelect.addEventListener('change', () => { selectedAdmin = adminSelect.value; paint(); });
+      const selectedAdminLabel = selectedAdmin ? (adminActors.find(([actor]) => actor === selectedAdmin) || [, selectedAdmin])[1] : 'Tous';
+      const adminDetails = h('details', { class: 'filter-dropdown', open: adminOpen });
+      adminDetails.addEventListener('toggle', () => { adminOpen = adminDetails.open; });
+      adminDetails.appendChild(h('summary', null, 'Admin', h('span', { class: 'count' }, selectedAdminLabel)));
+      function adminRadio(value, label) {
+        const radio = h('input', { type: 'radio', name: 'admin-filter' });
+        radio.checked = selectedAdmin === value;
+        radio.addEventListener('change', () => { selectedAdmin = value; paint(); });
+        return h('label', { class: 'filter-menu-item' }, radio, label);
+      }
+      adminDetails.appendChild(h('div', { class: 'filter-menu' },
+        adminRadio('', 'Tous les admins'),
+        ...adminActors.map(([actor, label]) => adminRadio(actor, label))));
 
       const tbody = h('tbody');
       if (!filtered.length) tbody.appendChild(h('tr', null, h('td', { colspan: '5', class: 'empty' }, 'Aucune entrée pour ces filtres.')));
@@ -231,9 +231,8 @@
       pane.append(
         h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px', alignItems: 'center' } },
           h('button', { class: 'btn ' + (autoRefresh ? 'secondary' : '') + ' small', type: 'button', title: autoRefresh ? 'Mettre en pause l\'actualisation auto (toutes les 15 s)' : 'Activer l\'actualisation auto (toutes les 15 s)', onClick: () => { autoRefresh = !autoRefresh; logs(); } }, autoRefresh ? '⏸ Actualisation auto' : '▶ Actualisation auto'),
-          h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('logs.csv', ['at', 'actor_label', 'action', 'target', 'details', 'user_agent'], filtered.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV'),
-          h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content', margin: 0 } }, connexChk, 'Connexions/déconnexions')),
-        h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, actionsDetails, adminSelect),
+          h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('logs.csv', ['at', 'actor_label', 'action', 'target', 'details', 'user_agent'], filtered.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
+        h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } }, actionsDetails, adminDetails),
         h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
     }
     function downloadCsv(name, cols, rows) {
