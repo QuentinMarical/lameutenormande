@@ -141,7 +141,8 @@
           h('h1', { class: 'dash-title' }, 'Utilisateurs'))),
       h('div', { class: 'dash-account' },
         h('span', { class: 'dash-email' }, session.user.email || 'admin'),
-        h('button', { class: 'btn secondary small', type: 'button', onClick: E.signOut }, E.icon('right-from-bracket'), 'Se déconnecter')));
+        h('button', { class: 'btn secondary small', type: 'button', title: 'Se déconnecter', onClick: E.signOut },
+          E.icon('right-from-bracket'), h('span', { class: 'btn-label' }, 'Se déconnecter'))));
 
     E.clear(app).appendChild(dashHeader);
     const pane = h('div'); app.appendChild(pane);
