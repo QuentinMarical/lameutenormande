@@ -138,7 +138,11 @@
         desc: 'Journal de toutes les actions admin (élections, sondages, calendrier, comptes).'
       },
       {
-        key: 'bureau', label: 'Bureau Meute', icon: 'paper-plane', accent: 'telegram', href: 'https://web.telegram.org/k/#-2361870096', external: true,
+        // t.me/c/... (pas web.telegram.org) : lien universel reconnu par l'appli Telegram
+        // (mobile et desktop) qui ouvre directement dans l'appli si elle est installée, sinon
+        // navigateur — web.telegram.org force toujours le navigateur. Ne fonctionne que pour un
+        // compte déjà membre du groupe (le cas ici, staff uniquement).
+        key: 'bureau', label: 'Bureau Meute', icon: 'paper-plane', accent: 'telegram', href: 'https://t.me/c/2361870096', external: true,
         desc: 'Groupe Telegram du staff, pour échanger en dehors des outils.'
       }
     ];
