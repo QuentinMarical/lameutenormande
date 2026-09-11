@@ -22,8 +22,10 @@ jobs:
           set -euo pipefail
           curl --fail --show-error --silent --location \
             --retry 3 --retry-delay 5 \
-            "https://calendar.zoho.eu/ical/zz080112301ab3047e81313179c3ee5fd4b00c2a7157b801985735a7b689432472bf947fc87d113e58fdc5e83eea16ec9dc7bc3e4c" \
+            "$ZOHO_ICAL_URL" \
             --output events.ics
+        env:
+          ZOHO_ICAL_URL: ${{ secrets.ZOHO_ICAL_URL }}
 
       - name: Commit and Push changes
         run: |

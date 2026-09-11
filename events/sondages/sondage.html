@@ -212,19 +212,30 @@
         const block = h('div', { class: 'poll-question' });
         block.appendChild(h('div', { class: 'q-label' }, q.label, q.required ? h('span', { class: 'q-required' }, '*') : null));
         const optsWrap = h('div');
-        function paint() { V.qsa('.poll-option', optsWrap).forEach(el => el.classList.toggle('selected', el.dataset.on === '1')); }
+        function paint() {
+          V.qsa('.poll-option', optsWrap).forEach(el => {
+            const on = el.dataset.on === '1';
+            el.classList.toggle('selected', on);
+            el.setAttribute('aria-checked', on ? 'true' : 'false');
+          });
+        }
         if (q.type === 'yesno' || q.type === 'choice') {
+          optsWrap.setAttribute('role', 'radiogroup');
           const options = q.type === 'yesno' ? [['yes', 'Oui'], ['no', 'Non']] : (q.options || []).map(o => [o, o]);
           options.forEach(([val, label]) => {
-            const opt = h('div', { class: 'poll-option', dataset: { on: answers[q.id] === val ? '1' : '0' } }, h('span', null, label));
-            opt.addEventListener('click', () => { answers[q.id] = val; V.qsa('.poll-option', optsWrap).forEach(el => el.dataset.on = '0'); opt.dataset.on = '1'; paint(); });
+            const opt = h('div', { class: 'poll-option', role: 'radio', tabindex: '0', 'aria-checked': answers[q.id] === val ? 'true' : 'false', dataset: { on: answers[q.id] === val ? '1' : '0' } }, h('span', null, label));
+            const toggle = () => { answers[q.id] = val; V.qsa('.poll-option', optsWrap).forEach(el => el.dataset.on = '0'); opt.dataset.on = '1'; paint(); };
+            opt.addEventListener('click', toggle);
+            opt.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
             optsWrap.appendChild(opt);
           });
         } else if (q.type === 'multi_choice') {
           const set = new Set(Array.isArray(answers[q.id]) ? answers[q.id] : []);
           (q.options || []).forEach(val => {
-            const opt = h('div', { class: 'poll-option', dataset: { on: set.has(val) ? '1' : '0' } }, h('span', null, val));
-            opt.addEventListener('click', () => { if (set.has(val)) set.delete(val); else set.add(val); answers[q.id] = [...set]; opt.dataset.on = set.has(val) ? '1' : '0'; paint(); });
+            const opt = h('div', { class: 'poll-option', role: 'checkbox', tabindex: '0', 'aria-checked': set.has(val) ? 'true' : 'false', dataset: { on: set.has(val) ? '1' : '0' } }, h('span', null, val));
+            const toggle = () => { if (set.has(val)) set.delete(val); else set.add(val); answers[q.id] = [...set]; opt.dataset.on = set.has(val) ? '1' : '0'; paint(); };
+            opt.addEventListener('click', toggle);
+            opt.addEventListener('keydown', e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); } });
             optsWrap.appendChild(opt);
           });
         } else if (q.type === 'number') {
