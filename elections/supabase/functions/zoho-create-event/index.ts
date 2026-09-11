@@ -7,7 +7,7 @@
 //
 // Gardé sous le nom historique "zoho-create-event" (pas renommé en "zoho-events") pour ne pas
 // devoir redéployer une nouvelle fonction : `action` dans le corps de la requête distingue
-// désormais "create" (défaut), "update" et "get".
+// désormais "create" (défaut), "update", "get" et "delete".
 //
 // Sécurité : le JWT de l'appelant (transmis automatiquement par supabase-js functions.invoke)
 // est vérifié par la gateway Supabase (verify_jwt par défaut), puis on revérifie nous-mêmes
@@ -21,8 +21,9 @@
 //     périmètre Zoho donc pas dans l'onglet Réglages ; sans eux la synchronisation se fait
 //     simplement à la prochaine heure pleine)
 // Le refresh token doit couvrir le scope ZohoCalendar.calendar.READ,ZohoCalendar.event.CREATE,
-// ZohoCalendar.event.READ,ZohoCalendar.event.UPDATE (le scope est figé à sa génération : si ton
-// refresh token actuel ne couvrait que CREATE, regénère-le avec ce scope élargi — voir README).
+// ZohoCalendar.event.READ,ZohoCalendar.event.UPDATE,ZohoCalendar.event.DELETE (le scope est figé
+// à sa génération : si ton refresh token actuel ne couvrait pas DELETE, regénère-le avec ce
+// scope élargi — voir README).
 // Les paramètres Zoho non sensibles ci-dessous ont une valeur par défaut ici, mais peuvent être
 // surchargés depuis l'onglet Réglages du panel admin (table public.app_settings, clés
 // zoho_calendar_uid / zoho_accounts_domain / zoho_api_domain) sans redéployer :
@@ -235,6 +236,16 @@ Deno.serve(async (req) => {
       if (!parsed.ok) return json({ error: "ZOHO_GET_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
       if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: parsed.data }, 502);
       return json({ ok: true, event: parsed.data });
+    }
+
+    if (action === "delete") {
+      if (!p.uid || !UID_RE.test(p.uid)) return json({ error: "BAD_UID" }, 400);
+      const r = await fetch(`${eventsBase}/${p.uid}`, { method: "DELETE", headers: authHeaders });
+      const parsed = await safeJson(r);
+      if (!parsed.ok) return json({ error: "ZOHO_DELETE_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+      if (!r.ok || parsed.data?.status === "failure") return json({ error: "ZOHO_DELETE_FAILED", detail: parsed.data }, 502);
+      await triggerCalendarSync(githubRepo);
+      return json({ ok: true });
     }
 
     if (action !== "create" && action !== "update") return json({ error: "BAD_ACTION" }, 400);
