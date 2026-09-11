@@ -167,11 +167,16 @@
       const endRaw = existing ? zohoDateToInputValue(existing.dateandtime.end, allDayChk.checked) : '';
       const endInp = h('input', { class: 'input', type: initialType, required: true, value: (existing && allDayChk.checked && endRaw) ? addDaysToDateStr(endRaw, -1) : endRaw });
       // Début/Fin restent deux champs même en "journée entière" — un évènement all-day peut
-      // durer plusieurs jours (ex. une convention sur 5 jours), pas juste un seul ; "journée
-      // entière" retire seulement l'heure (type="date" au lieu de "datetime-local"), pas le champ Fin.
+      // durer plusieurs jours (ex. une convention sur 5 jours) — sauf si "Un seul jour" est coché,
+      // auquel cas Fin reste synchronisé sur Début et masqué (un seul champ "Date" à l'écran).
+      const startLabel = h('label', null, 'Début');
+      const endField = h('div', { class: 'field' }, h('label', null, 'Fin'), endInp);
       const datesRow = h('div', { class: 'grid-2' },
-        h('div', { class: 'field' }, h('label', null, 'Début'), startInp),
-        h('div', { class: 'field' }, h('label', null, 'Fin'), endInp));
+        h('div', { class: 'field' }, startLabel, startInp),
+        endField);
+      const singleDayChk = h('input', { type: 'checkbox' });
+      singleDayChk.checked = allDayChk.checked && !!startInp.value && startInp.value === endInp.value;
+      const singleDayRow = h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, singleDayChk, 'Un seul jour');
 
       function syncDateInputsType() {
         const type = allDayChk.checked ? 'date' : 'datetime-local';
@@ -182,7 +187,19 @@
           inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
         });
       }
-      allDayChk.addEventListener('change', syncDateInputsType);
+      function syncSingleDay() {
+        singleDayRow.style.display = allDayChk.checked ? '' : 'none';
+        if (!allDayChk.checked) singleDayChk.checked = false;
+        const single = allDayChk.checked && singleDayChk.checked;
+        endField.style.display = single ? 'none' : '';
+        startLabel.textContent = single ? 'Date' : 'Début';
+        endInp.required = !single;
+        if (single) endInp.value = startInp.value;
+      }
+      allDayChk.addEventListener('change', () => { syncDateInputsType(); syncSingleDay(); });
+      singleDayChk.addEventListener('change', syncSingleDay);
+      startInp.addEventListener('input', () => { if (allDayChk.checked && singleDayChk.checked) endInp.value = startInp.value; });
+      syncSingleDay();
 
       const submitLabel = isEdit ? '💾 Enregistrer les modifications' : '＋ Ajouter au calendrier';
       const submitBtn = h('button', { class: 'btn', type: 'submit' }, submitLabel);
@@ -196,6 +213,7 @@
           h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
         h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
         h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
+        singleDayRow,
         datesRow,
         h('div', { class: 'btn-row' }, submitBtn));
 
@@ -226,7 +244,7 @@
           if (onSaved) onSaved(furryChk.checked ? '🦊 ' + title : title);
           if (!isEdit) {
             form.reset();
-            allDayChk.checked = false; syncDateInputsType();
+            allDayChk.checked = false; syncDateInputsType(); syncSingleDay();
           }
         } catch (err) {
           E.toast(E.errMsg(err), 'error');
@@ -312,15 +330,34 @@
         return;
       }
 
+      const MOIS = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
       const searchInp = h('input', { class: 'input', placeholder: 'Filtrer par titre…' });
-      const list = h('div', { class: 'cands', style: { marginTop: '12px' } });
+      const list = h('div', { style: { marginTop: '12px' } });
       function paintList() {
         E.clear(list);
         const q = searchInp.value.trim().toLowerCase();
         const filtered = q ? evts.filter(e => e.title.toLowerCase().includes(q)) : evts;
         if (!filtered.length) { list.appendChild(h('div', { class: 'empty' }, 'Aucun évènement.')); return; }
-        filtered.forEach(e => list.appendChild(h('div', { class: 'cand selectable', onClick: () => afficherLecture(e) },
-          h('div', { class: 'body' }, h('div', { class: 'name' }, e.title), h('div', { class: 'handles' }, h('span', null, E.fmtDateTime(e.debut)))))));
+        // Groupé par mois/année (clé sur l'heure locale, cohérente avec l'affichage E.fmtDateTime),
+        // groupes en ordre décroissant (mois le plus tardif en premier) ; à l'intérieur d'un
+        // groupe, ordre chronologique croissant hérité du tri de `evts`.
+        const groups = new Map();
+        filtered.forEach(e => {
+          const key = e.debut.getFullYear() + '-' + String(e.debut.getMonth()).padStart(2, '0');
+          if (!groups.has(key)) groups.set(key, { label: MOIS[e.debut.getMonth()] + ' ' + e.debut.getFullYear(), items: [] });
+          groups.get(key).items.push(e);
+        });
+        Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0])).forEach(([, group]) => {
+          const details = h('details', { class: 'month-group', open: true });
+          details.appendChild(h('summary', null,
+            h('span', null, group.label),
+            h('span', { class: 'count' }, group.items.length + ' évènement' + (group.items.length > 1 ? 's' : ''))));
+          const groupList = h('div', { class: 'cands' });
+          group.items.forEach(e => groupList.appendChild(h('div', { class: 'cand selectable', onClick: () => afficherLecture(e) },
+            h('div', { class: 'body' }, h('div', { class: 'name' }, e.title), h('div', { class: 'handles' }, h('span', null, E.fmtDateTime(e.debut)))))));
+          details.appendChild(groupList);
+          list.appendChild(details);
+        });
       }
       searchInp.addEventListener('input', paintList);
       E.clear(pane).append(
@@ -339,6 +376,7 @@
         const finTxt = isAllDay ? E.fmtDate(finRaw) : E.fmtDateTime(zohoDateToInputValue(e.dateandtime.end, false));
         const estPresente = Array.isArray(e.attendees) && e.attendees.some(a => (a.email || '').toLowerCase() === GO_ATTENDEE_EMAIL);
         const editBtn = h('button', { class: 'btn small', type: 'button', onClick: () => ouvrirEdition(e.uid) }, '✏️ Modifier');
+        const deleteBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => supprimer(e) }, '🗑️ Supprimer');
         E.clear(pane).append(backBtn(), h('div', { class: 'card column', style: { marginTop: '12px' } },
           h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
             h('div', { class: 'title', style: { fontSize: '16px', margin: 0 } }, e.title),
@@ -347,7 +385,20 @@
           e.location ? h('div', null, '📍 ' + e.location) : null,
           e.url ? h('div', null, h('a', { href: e.url, target: '_blank', rel: 'noopener' }, e.url)) : null,
           e.description ? h('div', { class: 'small', style: { whiteSpace: 'pre-wrap' } }, e.description) : null,
-          h('div', { class: 'btn-row' }, editBtn)));
+          h('div', { class: 'btn-row' }, editBtn, deleteBtn)));
+      }
+
+      // Suppression directe depuis la fiche en lecture (pas besoin de l'etag Zoho, contrairement à
+      // la modification) : une confirmation native suffit ici, l'action reste rare et volontaire.
+      async function supprimer(e) {
+        if (!confirm('Supprimer définitivement « ' + e.title + ' » du calendrier ?')) return;
+        try {
+          await E.invokeFn('zoho-create-event', { action: 'delete', uid: e.uid });
+          E.toast('Évènement supprimé.', 'success');
+          modifier();
+        } catch (err) {
+          E.toast(E.errMsg(err), 'error');
+        }
       }
 
       async function ouvrirEdition(uid) {
