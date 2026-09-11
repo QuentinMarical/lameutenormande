@@ -108,8 +108,9 @@
 
     // ---------- Outils disponibles ----------
     // links : onglets internes de l'outil (hash sur sa propre page) affichés en accès directs ;
-    // omis pour un outil à page unique (Utilisateurs) ou un raccourci externe (Bureau Meute), qui
-    // affichent un simple bouton « Ouvrir » à la place.
+    // omis pour un outil à page unique (Calendrier, Utilisateurs, Logs), qui affiche un simple
+    // bouton « Ouvrir » à la place. Un raccourci externe (ex. `external: true`) reste géré par
+    // toolCard() ci-dessous si besoin un jour — juste aucun dans TOOLS pour l'instant.
     const TOOLS = [
       {
         key: 'elections', label: 'Élections', icon: 'check-to-slot', accent: 'violet', href: 'elections/',
@@ -136,14 +137,6 @@
       {
         key: 'logs', label: 'Logs', icon: 'list', accent: 'ok', href: 'logs/',
         desc: 'Journal de toutes les actions admin (élections, sondages, calendrier, comptes).'
-      },
-      {
-        // t.me/c/... (pas web.telegram.org) : lien universel reconnu par l'appli Telegram
-        // (mobile et desktop) qui ouvre directement dans l'appli si elle est installée, sinon
-        // navigateur — web.telegram.org force toujours le navigateur. Ne fonctionne que pour un
-        // compte déjà membre du groupe (le cas ici, staff uniquement).
-        key: 'bureau', label: 'Bureau Meute', icon: 'paper-plane', accent: 'telegram', href: 'https://t.me/c/2361870096', external: true,
-        desc: 'Groupe Telegram du staff, pour échanger en dehors des outils.'
       }
     ];
 
