@@ -192,6 +192,10 @@
   padding: .6rem; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--violet-line);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
+/* Le dernier filtre d'un groupe poussé à droite (ex. la ligne actualisation/CSV/filtres de la page
+   Logs) ouvre son popover aligné à droite au lieu de left:0 — sinon il déborde hors du viewport
+   côté droit et provoque un défilement horizontal de toute la page. */
+.filter-dropdown:last-child .filter-menu { left: auto; right: 0; }
 .filter-menu-actions { display: flex; gap: .5rem; margin-bottom: .5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line); }
 .filter-menu-item {
   display: flex; align-items: center; gap: .55rem; padding: .4rem .3rem; border-radius: 6px;
