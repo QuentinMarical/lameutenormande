@@ -188,7 +188,10 @@
       const distinctActions = Array.from(new Set(allRows.map(r => r.action))).sort((a, b) => (LABEL[a] || a).localeCompare(LABEL[b] || b));
       const visibleActionsN = distinctActions.filter(a => !hiddenActions.has(a)).length;
       const actionsDetails = h('details', { class: 'filter-dropdown', open: actionsOpen });
-      actionsDetails.addEventListener('toggle', () => { actionsOpen = actionsDetails.open; });
+      actionsDetails.addEventListener('toggle', () => {
+        actionsOpen = actionsDetails.open;
+        if (actionsOpen) { adminDetails.open = false; adminOpen = false; }
+      });
       actionsDetails.appendChild(h('summary', null, 'Actions', h('span', { class: 'count' }, visibleActionsN + '/' + distinctActions.length)));
       const actionsMenu = h('div', { class: 'filter-menu' },
         h('div', { class: 'filter-menu-actions' },
@@ -208,7 +211,10 @@
         .sort((a, b) => a[1].localeCompare(b[1]));
       const selectedAdminLabel = selectedAdmin ? (adminActors.find(([actor]) => actor === selectedAdmin) || [, selectedAdmin])[1] : 'Tous';
       const adminDetails = h('details', { class: 'filter-dropdown', open: adminOpen });
-      adminDetails.addEventListener('toggle', () => { adminOpen = adminDetails.open; });
+      adminDetails.addEventListener('toggle', () => {
+        adminOpen = adminDetails.open;
+        if (adminOpen) { actionsDetails.open = false; actionsOpen = false; }
+      });
       adminDetails.appendChild(h('summary', null, 'Admin', h('span', { class: 'count' }, selectedAdminLabel)));
       function adminRadio(value, label) {
         const radio = h('input', { type: 'radio', name: 'admin-filter' });
