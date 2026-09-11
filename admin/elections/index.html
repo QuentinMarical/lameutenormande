@@ -155,7 +155,6 @@
     // ---------- État ----------
     let elections = [];
     let current = null;
-    let auditAutoRefresh = false; // pause par défaut : l'actualisation auto de l'onglet Audit doit être activée explicitement
     async function loadElections() {
       const { data } = await E.sb.from('elections').select('*').order('created_at', { ascending: false });
       elections = data || [];
@@ -165,7 +164,7 @@
     await loadElections();
 
     // ---------- Tabs ----------
-    const tabs = [['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['audit', 'Audit'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']];
+    const tabs = [['scrutins', 'Scrutins'], ['codes', 'Codes'], ['candidatures', 'Candidatures'], ['votants', 'Votants'], ['pv', 'Procès-verbal'], ['reglages', 'Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     const selector = h('select', { class: 'input', style: { width: 'auto', maxWidth: '100%' } });
@@ -181,7 +180,7 @@
     function show(id) {
       E.qsa('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       E.clear(pane).appendChild(E.loader());
-      ({ scrutins, codes, candidatures, votants, audit, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+      ({ scrutins, codes, candidatures, votants, pv, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
     }
 
     const toLocalInput = iso => { if (!iso) return ''; const d = new Date(iso); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
@@ -412,28 +411,6 @@
       search.addEventListener('input', paint); onlySusp.addEventListener('change', paint); paint();
     }
 
-    // ---------- Audit ----------
-    async function audit() {
-      E.clear(pane);
-      const { data, error } = await E.sb.rpc('audit_log_readable');
-      if (error) throw error;
-      const rows = data || [];
-      // Le contenu d'un bulletin (candidat choisi) n'est JAMAIS journalisé : cast_ballot ne log
-      // que le nombre de choix (voir schema.sql), jamais quel candidat a été sélectionné.
-      const LABEL = { ballot_cast: 'Vote', ballot_replaced: 'Vote remplacé', ballot_invalidated: 'Bulletin invalidé', ballot_restored: 'Bulletin restauré', candidacy_upsert: 'Candidature', candidacy_withdraw: 'Désistement', candidacy_restored: 'Candidature réactivée', election_saved: 'Scrutin modifié', election_deleted: 'Scrutin supprimé', codes_generated: 'Codes générés', code_updated: 'Code modifié', code_deleted: 'Code supprimé', admin_login: 'Connexion admin', admin_logout: 'Déconnexion admin', settings_saved: 'Réglages modifiés', admin_disabled: 'Administrateur désactivé', admin_enabled: 'Administrateur réactivé' };
-      const tbody = h('tbody');
-      rows.forEach(r => tbody.appendChild(h('tr', null,
-        h('td', null, E.fmtDateTime(r.at)),
-        h('td', null, r.actor_label || r.actor || '—'),
-        h('td', null, h('span', { class: 'badge ' + (/invalid|revok|withdraw|admin_disabled/.test(r.action) ? 'danger' : /ballot|candid|login|admin_enabled/.test(r.action) ? 'ok' : 'muted') }, LABEL[r.action] || r.action)),
-        h('td', { class: 'small muted', style: { whiteSpace: 'normal', maxWidth: '320px' } }, (r.target || '') + ' ' + JSON.stringify(r.details)),
-        h('td', { class: 'small muted', title: r.user_agent || '', style: { whiteSpace: 'normal', maxWidth: '220px' } }, E.shortUa(r.user_agent)))));
-      pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '10px' } },
-        h('button', { class: 'btn ' + (auditAutoRefresh ? 'secondary' : '') + ' small', type: 'button', title: auditAutoRefresh ? 'Mettre en pause l\'actualisation auto (toutes les 15 s)' : 'Activer l\'actualisation auto (toutes les 15 s)', onClick: () => { auditAutoRefresh = !auditAutoRefresh; audit(); } }, auditAutoRefresh ? '⏸ Actualisation auto' : '▶ Actualisation auto'),
-        h('button', { class: 'btn secondary small', type: 'button', onClick: () => downloadCsv('audit.csv', ['at', 'actor_label', 'action', 'target', 'details', 'user_agent'], rows.map(r => Object.assign({}, r, { details: JSON.stringify(r.details) }))) }, 'CSV')),
-        h('div', { class: 'table-wrap' }, h('table', null, h('thead', null, h('tr', null, ...['Date', 'Acteur', 'Action', 'Détails', 'Navigateur'].map(t => h('th', null, t)))), tbody)));
-    }
-
     // ---------- Procès-verbal ----------
     async function pv() {
       E.clear(pane);
@@ -502,9 +479,6 @@
 
     show(tabs.some(t => t[0] === activeTab) ? activeTab : 'scrutins');
     E.subscribe(['ballots', 'candidates', 'elections'], E.debounce(async () => { await loadElections(); paintSelector(); if (['votants', 'candidatures'].includes(activeTab)) show(activeTab); }, 1200));
-    // Actualisation périodique de l'onglet Audit (navigateur/acteurs ne passent pas par le broadcast realtime),
-    // en pause par défaut : n'agit que si l'admin a explicitement cliqué sur "Actualisation auto".
-    setInterval(() => { if (activeTab === 'audit' && auditAutoRefresh) audit().catch(() => {}); }, 15000);
   })();
   </script>
 </body>

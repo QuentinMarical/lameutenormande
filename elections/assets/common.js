@@ -58,7 +58,8 @@
     ban: '<circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/>',
     'screwdriver-wrench': '<path d="M21 7a4 4 0 0 1-5.4 3.8L7 19.4a2 2 0 1 1-2.8-2.8l8.6-8.6A4 4 0 1 1 21 7z"/>',
     'circle-info': '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5"/><path d="M10 17h4"/>',
-    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'
+    calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+    list: '<path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/>'
   };
   E.icon = (name, cls) => {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

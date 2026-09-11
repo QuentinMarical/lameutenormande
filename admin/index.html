@@ -112,11 +112,11 @@
     const TOOLS = [
       {
         key: 'elections', label: 'Élections', icon: 'check-to-slot', accent: 'violet', href: 'elections/',
-        desc: 'Scrutins, candidatures, dépouillement, votants et audit.',
+        desc: 'Scrutins, candidatures, dépouillement et votants.',
         links: [
           { title: 'Scrutins', hash: 'scrutins' }, { title: 'Codes', hash: 'codes' },
           { title: 'Candidatures', hash: 'candidatures' }, { title: 'Votants', hash: 'votants' },
-          { title: 'Audit', hash: 'audit' }, { title: 'Procès-verbal', hash: 'pv' }, { title: 'Réglages', hash: 'reglages' }
+          { title: 'Procès-verbal', hash: 'pv' }, { title: 'Réglages', hash: 'reglages' }
         ]
       },
       {
@@ -131,6 +131,10 @@
       {
         key: 'utilisateurs', label: 'Utilisateurs', icon: 'gear', accent: 'ok', href: 'utilisateurs/',
         desc: 'Comptes administrateurs, communs à tous les panels ci-dessus.'
+      },
+      {
+        key: 'logs', label: 'Logs', icon: 'list', accent: 'ok', href: 'logs/',
+        desc: 'Journal de toutes les actions admin (élections, sondages, calendrier, comptes).'
       },
       {
         key: 'bureau', label: 'Bureau Meute', icon: 'paper-plane', accent: 'telegram', href: 'https://web.telegram.org/k/#-2361870096', external: true,

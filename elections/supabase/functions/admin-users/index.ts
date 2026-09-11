@@ -4,6 +4,8 @@
 //   - reset_password : régénère un mot de passe temporaire pour un compte admin existant.
 //   - delete         : supprime le compte Auth (cascade sur public.admins, cf. FK on delete cascade).
 // Activer/désactiver un compte se fait entièrement en SQL (admin_set_disabled), sans passer ici.
+// Les trois actions sont journalisées (best-effort) via la RPC public.log_admin_action(), lue par
+// admin/logs/ — jamais le mot de passe temporaire généré, seulement l'email/label/user_id.
 //
 // Sécurité : le JWT de l'appelant (transmis automatiquement par supabase-js functions.invoke)
 // est vérifié par la gateway Supabase (verify_jwt par défaut, PAS de --no-verify-jwt au déploiement),
@@ -51,6 +53,15 @@ function genTempPassword(len = 14) {
   return chars.join("");
 }
 
+// Best-effort (un échec ici ne doit jamais faire échouer l'opération elle-même, déjà faite côté
+// Auth à ce stade) : public.log_admin_action() revérifie is_admin() et dérive l'acteur de
+// auth.uid() côté serveur, sûr à appeler avec le JWT de l'appelant. Ne JAMAIS faire porter à
+// details le mot de passe temporaire généré (invite/reset_password) — l'audit reste lisible par
+// tout admin, pas un canal pour se repasser un secret.
+async function logAdminAction(sb: ReturnType<typeof createClient>, action: string, target?: string | null, details?: Record<string, unknown>): Promise<void> {
+  try { await sb.rpc("log_admin_action", { p_action: action, p_target: target ?? null, p_details: details ?? {} }); } catch { /* best-effort */ }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
@@ -87,6 +98,7 @@ Deno.serve(async (req) => {
         await admin.auth.admin.deleteUser(created.user.id);
         return json({ error: insErr.message }, 400);
       }
+      await logAdminAction(asCaller, "admin_invited", created.user.id, { email, label: label || null });
       return json({ ok: true, user_id: created.user.id, email, temp_password: tempPassword });
     }
 
@@ -97,6 +109,7 @@ Deno.serve(async (req) => {
       const { error: updErr } = await admin.auth.admin.updateUserById(userId, { password: tempPassword });
       if (updErr) return json({ error: updErr.message }, 400);
       await admin.from("admins").update({ must_change_password: true }).eq("user_id", userId);
+      await logAdminAction(asCaller, "admin_password_reset", userId);
       return json({ ok: true, temp_password: tempPassword });
     }
 
@@ -112,6 +125,7 @@ Deno.serve(async (req) => {
       // La ligne public.admins disparaît automatiquement (FK user_id ... on delete cascade).
       const { error: delErr } = await admin.auth.admin.deleteUser(userId);
       if (delErr) return json({ error: delErr.message }, 400);
+      await logAdminAction(asCaller, "admin_deleted", userId);
       return json({ ok: true });
     }
 

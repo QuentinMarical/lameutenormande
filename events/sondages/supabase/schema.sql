@@ -210,13 +210,17 @@ end $$;
 
 -- ---------------------------------------------------------------------
 -- 7. RPC admin
+-- Chaque mutation journalise dans public.audit_log via public.log_audit() (défini par
+-- elections/supabase/schema.sql, à exécuter avant celui-ci — même projet Supabase, table
+-- partagée entre élections et sondages) : c'est cette table qui alimente admin/logs/.
 -- ---------------------------------------------------------------------
 create or replace function votes.admin_save_poll(p jsonb)
 returns votes.polls language plpgsql security definer set search_path = votes, public as $$
-declare v votes.polls;
+declare v votes.polls; v_created boolean;
 begin
   if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
-  if p->>'id' is null then
+  v_created := p->>'id' is null;
+  if v_created then
     insert into votes.polls (slug, title, description, status, opens_at, closes_at)
     values (p->>'slug', p->>'title', coalesce(p->>'description',''), coalesce(p->>'status','draft'),
             (p->>'opens_at')::timestamptz, (p->>'closes_at')::timestamptz)
@@ -232,6 +236,8 @@ begin
     where id = (p->>'id')::uuid returning * into v;
     if v is null then raise exception 'POLL_NOT_FOUND'; end if;
   end if;
+  perform public.log_audit('admin:' || auth.uid()::text, case when v_created then 'poll_created' else 'poll_updated' end,
+    v.id::text, jsonb_build_object('slug', v.slug, 'title', v.title, 'status', v.status));
   return v;
 end $$;
 
@@ -263,6 +269,7 @@ begin
     v_i := v_i + 1;
   end loop;
   delete from votes.questions where poll_id = p_poll and not (id = any(v_ids));
+  perform public.log_audit('admin:' || auth.uid()::text, 'poll_questions_saved', p_poll::text, jsonb_build_object('n', v_i));
   return query select * from votes.questions where poll_id = p_poll order by sort_order;
 end $$;
 
@@ -274,6 +281,7 @@ begin
   select slug into v_slug from votes.polls where id = p_poll;
   if v_slug is null then raise exception 'POLL_NOT_FOUND'; end if;
   delete from votes.polls where id = p_poll;
+  perform public.log_audit('admin:' || auth.uid()::text, 'poll_deleted', p_poll::text, jsonb_build_object('slug', v_slug));
 end $$;
 
 create or replace function votes.admin_delete_response(p_response uuid)
@@ -284,6 +292,7 @@ begin
   select poll_id into v_poll from votes.responses where id = p_response;
   if v_poll is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
   delete from votes.responses where id = p_response;
+  perform public.log_audit('admin:' || auth.uid()::text, 'poll_response_deleted', p_response::text, jsonb_build_object('poll', v_poll::text));
 end $$;
 
 -- ---------------------------------------------------------------------

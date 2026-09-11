@@ -375,6 +375,21 @@ begin
   );
 end $$;
 
+-- log_audit() n'est volontairement pas exposée en direct (executée en interne, comme postgres,
+-- depuis les RPC ci-dessus) : p_actor est un texte libre fourni par l'appelant, donc l'ouvrir à
+-- "authenticated" permettrait à n'importe quel compte connecté de falsifier des entrées du journal
+-- (usurper "admin:<uuid>" d'un autre admin). Ce wrapper est la seule porte sûre pour un appelant
+-- externe (Edge Function agissant pour le compte de l'admin connecté, ex. zoho-create-event,
+-- admin-users) : il vérifie is_admin() et dérive toujours l'acteur de auth.uid(), jamais d'un
+-- paramètre — impossible à falsifier même en connaissant la signature de la fonction.
+create or replace function public.log_admin_action(p_action text, p_target text default null, p_details jsonb default '{}'::jsonb)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  perform public.log_audit('admin:' || auth.uid()::text, p_action, p_target, p_details);
+end $$;
+grant execute on function public.log_admin_action(text, text, jsonb) to authenticated;
+
 -- ---------------------------------------------------------------------
 -- 8. Politiques RLS
 --   Les votants n'ont pas de session : ils passent uniquement par les RPC.
@@ -1077,7 +1092,8 @@ grant execute on function
   public.admin_invalidate_ballot(uuid, text), public.admin_restore_ballot(uuid),
   public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.admin_delete_election(uuid), public.audit_log_readable(),
   public.admin_log_event(text), public.admin_save_settings(text, text),
-  public.admin_list_admins(), public.admin_set_disabled(uuid, boolean), public.clear_must_change_password()
+  public.admin_list_admins(), public.admin_set_disabled(uuid, boolean), public.clear_must_change_password(),
+  public.log_admin_action(text, text, jsonb)
   to authenticated;
 -- my_admin_flags : accordé aussi à anon/authenticated non-admin (utile juste après une connexion,
 -- avant même de savoir si le compte est admin ; ne renvoie de toute façon jamais rien pour un

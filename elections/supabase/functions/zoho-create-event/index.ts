@@ -4,6 +4,8 @@
 // Zoho par le robot GitHub Actions .github/workflows/update-calendar.yml (toutes les heures).
 // Cette fonction se contente de bien vouloir déclencher ce robot juste après création/màj
 // (best-effort, optionnel) pour ne pas attendre l'heure pleine — voir GITHUB_TOKEN/GITHUB_REPO.
+// Chaque création/modification/suppression réussie est aussi journalisée (best-effort) via la RPC
+// public.log_admin_action(), lue par admin/logs/.
 //
 // Gardé sous le nom historique "zoho-create-event" (pas renommé en "zoho-events") pour ne pas
 // devoir redéployer une nouvelle fonction : `action` dans le corps de la requête distingue
@@ -127,6 +129,13 @@ async function triggerCalendarSync(githubRepo: string): Promise<void> {
   } catch { /* best-effort */ }
 }
 
+// Best-effort comme triggerCalendarSync ci-dessus : un échec de journalisation ne doit jamais faire
+// échouer l'opération elle-même (déjà faite côté Zoho). public.log_admin_action() revérifie
+// is_admin() et dérive l'acteur de auth.uid() côté serveur — sûr à appeler avec le JWT de l'appelant.
+async function logAdminAction(sb: ReturnType<typeof createClient>, action: string, target?: string | null, details?: Record<string, unknown>): Promise<void> {
+  try { await sb.rpc("log_admin_action", { p_action: action, p_target: target ?? null, p_details: details ?? {} }); } catch { /* best-effort */ }
+}
+
 type EventPayload = {
   action?: string; uid?: string; etag?: string;
   title?: string; location?: string; description?: string; url?: string;
@@ -245,6 +254,7 @@ Deno.serve(async (req) => {
       if (!parsed.ok) return json({ error: "ZOHO_DELETE_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
       if (!r.ok || parsed.data?.status === "failure") return json({ error: "ZOHO_DELETE_FAILED", detail: parsed.data }, 502);
       await triggerCalendarSync(githubRepo);
+      await logAdminAction(asCaller, "calendar_event_deleted", p.uid);
       return json({ ok: true });
     }
 
@@ -266,6 +276,8 @@ Deno.serve(async (req) => {
     if (!r.ok || zohoResult?.status === "failure") return json({ error: failCode, detail: zohoResult }, 502);
 
     await triggerCalendarSync(githubRepo);
+    const savedUid = isUpdate ? p.uid : zohoResult?.events?.[0]?.uid;
+    await logAdminAction(asCaller, isUpdate ? "calendar_event_updated" : "calendar_event_created", savedUid, { title: built.eventdata.title });
     return json({ ok: true, event: zohoResult });
   } catch (e) {
     return json({ error: String(e) }, 502);
