@@ -155,19 +155,15 @@
       const openBtn = h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
         'Ouvrir', E.icon('right-from-bracket'));
       if (!t.email) return h('div', { class: 'tool-card single' }, head, openBtn);
-      // Copie directe de l'adresse (au clic, pas de mailto: qui ouvrirait un client mail local
-      // souvent pas configuré) : utile pour la coller ailleurs (formulaire, message) sans avoir à
-      // ouvrir le webmail juste pour relire l'adresse. Adresse + boutons sur une seule ligne (pas
-      // une ligne dédiée en plus du bouton Ouvrir) pour garder cette carte à la même hauteur que
-      // les autres cartes à page unique (Calendrier, Utilisateurs, Logs).
-      const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
+      // L'adresse elle-même est cliquable (copie dans le presse-papiers, pas de mailto: qui
+      // ouvrirait un client mail local souvent pas configuré) plutôt qu'un bouton "Copier" séparé —
+      // juste une infobulle "Copier" au survol (title natif, même pattern que le reste du site).
+      const addrBtn = h('button', { class: 'tool-mail-addr', type: 'button', title: 'Copier', onClick: async () => {
         try { await navigator.clipboard.writeText(t.email); E.toast('Adresse copiée.', 'success'); }
         catch { E.toast('Impossible de copier.', 'error'); }
-      } }, 'Copier');
+      } }, t.email);
       return h('div', { class: 'tool-card single' }, head,
-        h('div', { class: 'tool-mail-row' },
-          h('span', { class: 'tool-mail-addr', title: t.email }, t.email),
-          h('div', { class: 'tool-mail-actions' }, copyBtn, openBtn)));
+        h('div', { class: 'tool-mail-row' }, addrBtn, openBtn));
     }
 
     // ---------- Tableau de bord ----------

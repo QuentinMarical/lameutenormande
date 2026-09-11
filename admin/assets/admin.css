@@ -84,8 +84,12 @@
 .tool-open { align-self: flex-start; }
 
 .tool-mail-row { display: flex; align-items: center; justify-content: space-between; gap: .6rem; }
-.tool-mail-addr { flex: 1; min-width: 0; font-size: .85rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tool-mail-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+.tool-mail-addr {
+  flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left;
+  background: none; border: none; padding: 0; margin: 0; font: inherit; font-size: .85rem; color: var(--cyan-2);
+  cursor: pointer; text-decoration: none; transition: color .2s;
+}
+.tool-mail-addr:hover, .tool-mail-addr:focus-visible { color: #fff; }
 
 /* ---------- Connexion, façon assistant en deux étapes ----------
    Surface dédiée plutôt que le composant .card générique : identité centrée en tête, une seule
