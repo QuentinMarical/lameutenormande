@@ -760,6 +760,22 @@ DTSTAMP:20260502T165220Z
 URL:https://t.me/furbarderouen
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 TEST
+DESCRIPTION:TEST SYNCHRO
+DTSTART;VALUE=DATE:20260911
+DTEND;VALUE=DATE:20260912
+LOCATION:TEST
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:48d476878f5c488ca95395db7394c990@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260911T093931Z
+LAST-MODIFIED:20260911T093931Z
+DTSTAMP:20260911T093932Z
+URL:https://google.fr
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Chibi Kamo
 DESCRIPTION:Le Chibi Kamo\, salon dédié à la culture asiatique et geek organisé par Kamo Event\, revient pour une nouvelle édition les 6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.) au Parc des Expositions L'Eduen\, 1 Avenue André Frenaud\, Autun (71400)\, sur 3 000 m².\n\nAu programme : stands d'artistes\, créateurs et boutiques spécialisées manga\, anime\, BD\, comics\, jeux vidéo et jeux de rôle. Sur la scène principale se succèdent défilés\, concerts\, concours de danse et de cosplay\, foires aux questions et animations pour toute la famille.\n\nEntrée à 8€ pour les adultes\, 4€ pour les enfants (9-18 ans)\, et gratuit pour les moins de 9 ans et les accompagnateurs de personnes en situation de handicap.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Le<span>&nbsp\;</span><b>Chibi Kamo</b>\, salon dédié à la culture asiatique et geek organisé par<span>&nbsp\;</span><b>Kamo Event</b>\, revient pour une nouvelle édition les<span>&nbsp\;</span><b>6 et 7 juin 2026 de 10h à 19h (sam.) et 10h à 18h (dim.)</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc des Expositions L'Eduen</b>\, 1 Avenue André Frenaud\,<span>&nbsp\;</span><b>Autun</b><span>&nbsp\;</span>(71400)\, sur<span>&nbsp\;</span><b>3 000 m²</b>.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Au programme : stands d'artistes\, créateurs et boutiques spécialisées manga\, anime\, BD\, comics\, jeux vidéo et jeux de rôle. Sur la scène principale se succèdent défilés\, concerts\, concours de danse et de cosplay\, foires aux questions et animations pour toute la famille.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2 animate-in fade-in-25 duration-700">Entrée à<span>&nbsp\;</span><b>8€ pour les adultes</b>\,<span>&nbsp\;</span><b>4€ pour les enfants (9-18 ans)</b>\, et<span>&nbsp\;</span><b>gratuit pour les moins de 9 ans</b><span>&nbsp\;</span>et les accompagnateurs de personnes en situation de handicap.<br /></p><div><br /></div>
