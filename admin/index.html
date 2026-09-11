@@ -157,14 +157,17 @@
       if (!t.email) return h('div', { class: 'tool-card single' }, head, openBtn);
       // Copie directe de l'adresse (au clic, pas de mailto: qui ouvrirait un client mail local
       // souvent pas configuré) : utile pour la coller ailleurs (formulaire, message) sans avoir à
-      // ouvrir le webmail juste pour relire l'adresse.
+      // ouvrir le webmail juste pour relire l'adresse. Adresse + boutons sur une seule ligne (pas
+      // une ligne dédiée en plus du bouton Ouvrir) pour garder cette carte à la même hauteur que
+      // les autres cartes à page unique (Calendrier, Utilisateurs, Logs).
       const copyBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
         try { await navigator.clipboard.writeText(t.email); E.toast('Adresse copiée.', 'success'); }
         catch { E.toast('Impossible de copier.', 'error'); }
       } }, 'Copier');
       return h('div', { class: 'tool-card single' }, head,
-        h('div', { class: 'tool-mail-row' }, h('span', { class: 'tool-mail-addr' }, t.email), copyBtn),
-        openBtn);
+        h('div', { class: 'tool-mail-row' },
+          h('span', { class: 'tool-mail-addr', title: t.email }, t.email),
+          h('div', { class: 'tool-mail-actions' }, copyBtn, openBtn)));
     }
 
     // ---------- Tableau de bord ----------
