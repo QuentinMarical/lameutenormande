@@ -1,6 +1,6 @@
 {
-  "name": "La Meute Normande — Administration",
-  "short_name": "Meute Admin",
+  "name": "Espace Admin",
+  "short_name": "Espace Admin",
   "description": "Espace d'administration de La Meute Normande : élections, sondages, calendrier, utilisateurs.",
   "start_url": "/admin/",
   "scope": "/admin/",
