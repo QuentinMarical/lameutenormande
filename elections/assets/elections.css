@@ -344,6 +344,10 @@ tr.invalid td.actions { text-decoration: none; }
 a:focus-visible, button:focus-visible, .check:focus-within, .cand:focus-within { outline: 3px solid rgba(168, 85, 247, 0.45); outline-offset: 2px; }
 
 @media (max-width: 680px) {
+  /* En dessous de 16px, iOS/Android Safari & Chrome zooment automatiquement la page au focus
+     d'un champ (et le zoom reste appliqué après un rechargement) — on force donc 16px ici sans
+     toucher à la taille affichée sur desktop, gérée par le .95rem/.88rem de base. */
+  .input, textarea.input, select.input { font-size: 16px; }
   .topbar { padding: .5rem .5rem 0; }
   .topbar .bar { justify-content: center; }
   .topbar .brand img { height: 2.6rem; }
