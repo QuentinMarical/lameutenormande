@@ -373,6 +373,24 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://www.billetweb.fr/evreux-japan-otaku-festival?fbclid=IwdGRjcASQyShleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAo2NjI4NTY4Mzc5AAEeH9ghU5azopHNwHoGqNZgmVcDtmuNak-4674lO9yfzags_uYTVbYWACZdOsg_aem_MEownf-P1Jh7X6Fuzjs_Ow
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Mangalaxy Festival
+DESCRIPTION:Tarifs :\n     • + de 13 ans : 15 € le samedi ou le dimanche\n     • De 8 à 12 ans : 12€ le samedi ou le dimanche\n     • - de 7 ans : Gratuit\n     • PMR : 10€ sur présentation de la carte officielle\n     • Pass 2 jours : 25€\n     • Pass famille : 45€ le samedi ou le dimanche (2 personnes de + de 13 ans et 2 enfants de 8 à 12 ans)\n     • Pass découverte après 16h : 10€\n\n\nHoraires :\n\nSamedi :\n     • 9h : Préventes (tickets achetés sur internet)\n     • 10h : Achats de tickets sur place\n     • 19h : Fermeture\n\nDimanche :\n     • 9h : Préventes (tickets achetés sur internet ou en boutique)\n     • 10h : Achats de tickets sur place\n     • 18h : Fermeture
+DTSTART:20260912T070000Z
+DTEND:20260913T160000Z
+LOCATION:Palais des congrès et des expositions - Valence Romans. 16 Avenue Georges Clemenceau\, 26000 Valence
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:1ff1402f0b6c40129196e9d2a5bcd88b@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260911T105657Z
+LAST-MODIFIED:20260911T105657Z
+DTSTAMP:20260911T105657Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://festivalmangalaxy.fr/shop?e=b
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival La Roche-sur-Yon
 DESCRIPTION:
 DTSTART:20260328T090000Z
