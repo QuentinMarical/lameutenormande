@@ -367,8 +367,10 @@
         if (!filtered.length) { list.appendChild(h('div', { class: 'empty' }, 'Aucun évènement.')); return; }
         // Groupé par mois/année (clé sur l'heure locale, cohérente avec l'affichage E.fmtDateTime),
         // groupes en ordre décroissant (mois le plus tardif en premier) ; à l'intérieur d'un
-        // groupe, ordre chronologique croissant hérité du tri de `evts`. Repliés par défaut (open:
-        // false) — vue d'ensemble compacte, surtout utile une fois les filtres ci-dessus posés.
+        // groupe, ordre chronologique croissant hérité du tri de `evts`. Repliés par défaut, sauf
+        // dès qu'un filtre réduit la liste (titre/ville/furry) : les résultats filtrés sont alors
+        // rares et pertinents, autant les montrer tout de suite plutôt que forcer un déplier manuel.
+        const hasFilter = !!(q || ville || furryChk.checked);
         const groups = new Map();
         filtered.forEach(e => {
           const key = e.debut.getFullYear() + '-' + String(e.debut.getMonth()).padStart(2, '0');
@@ -376,7 +378,7 @@
           groups.get(key).items.push(e);
         });
         Array.from(groups.entries()).sort((a, b) => b[0].localeCompare(a[0])).forEach(([, group]) => {
-          const details = h('details', { class: 'month-group' });
+          const details = h('details', { class: 'month-group', open: hasFilter });
           details.appendChild(h('summary', null,
             h('span', null, group.label),
             h('span', { class: 'count' }, group.items.length + ' évènement' + (group.items.length > 1 ? 's' : ''))));
