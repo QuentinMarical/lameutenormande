@@ -26,14 +26,22 @@
 }
 .hub-btn:hover, .hub-btn:focus-visible { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(232, 41, 28, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3); outline: none; }
 .dash-sep { width: 1px; height: 28px; flex-shrink: 0; background: var(--line); }
-.dash-brand { display: flex; align-items: center; gap: .8rem; text-decoration: none; color: inherit; }
+.dash-brand { display: flex; align-items: center; gap: .8rem; text-decoration: none; color: inherit; min-width: 0; }
 .dash-logo { width: 58px; height: auto; flex-shrink: 0; }
 .dash-title { margin: 0; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 1.5rem; color: #fff; }
-.dash-account { display: flex; align-items: center; gap: .9rem; }
-.dash-email { font-size: .85rem; color: var(--muted); }
+.dash-account { display: flex; align-items: center; gap: .9rem; flex-shrink: 0; }
+.dash-email { font-size: .85rem; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 640px) {
-  .dash-header { flex-direction: column; align-items: flex-start; margin: 1.5rem 0; }
-  .dash-account { width: 100%; justify-content: space-between; }
+  /* Une seule ligne même sur mobile (icône + nom d'un côté, email + déconnexion de l'autre) :
+     l'e-mail se tronque plutôt que de passer le bouton en dessous, et le bouton de déconnexion
+     perd son texte pour ne garder que l'icône. */
+  .dash-header { flex-wrap: nowrap; gap: .6rem; margin: 1.5rem 0; }
+  .dash-logo { width: 40px; }
+  .dash-title { font-size: 1.05rem; }
+  .dash-account { gap: .5rem; }
+  .dash-email { max-width: 32vw; }
+  .dash-account .btn-label { display: none; }
+  .dash-account .btn.small { padding: .6rem; }
 }
 
 .tool-grid { display: grid; grid-template-columns: 1fr; gap: 1.1rem; }
