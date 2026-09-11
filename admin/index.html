@@ -146,24 +146,25 @@
 
     function toolCard(t) {
       const icon = h('div', { class: 'tool-icon acc-' + t.accent }, E.icon(t.icon));
+      // L'adresse mail (le cas échéant) rejoint la description, cliquable (copie dans le
+      // presse-papiers, pas de mailto: qui ouvrirait un client mail local souvent pas configuré ;
+      // infobulle "Copier" native au survol) — plutôt qu'une ligne à part, pour garder cette carte
+      // à la même structure/hauteur que les autres cartes à page unique (juste tête + bouton Ouvrir).
+      const descChildren = t.email
+        ? [t.desc, h('br'), h('button', { class: 'tool-mail-addr', type: 'button', title: 'Copier', onClick: async () => {
+            try { await navigator.clipboard.writeText(t.email); E.toast('Adresse copiée.', 'success'); }
+            catch { E.toast('Impossible de copier.', 'error'); }
+          } }, t.email)]
+        : [t.desc];
       const head = h('div', { class: 'tool-head' }, icon,
-        h('div', null, h('div', { class: 'tool-title' }, t.label), h('div', { class: 'tool-desc' }, t.desc)));
+        h('div', null, h('div', { class: 'tool-title' }, t.label), h('div', { class: 'tool-desc' }, ...descChildren)));
       if (t.links) {
         return h('div', { class: 'tool-card' }, head,
           h('div', { class: 'tool-links' }, t.links.map(l => h('a', { class: 'tool-pill', href: t.href + '#' + l.hash }, l.title))));
       }
       const openBtn = h('a', { class: 'btn secondary tool-open', href: t.href, target: t.external ? '_blank' : null, rel: t.external ? 'noopener' : null },
         'Ouvrir', E.icon('right-from-bracket'));
-      if (!t.email) return h('div', { class: 'tool-card single' }, head, openBtn);
-      // L'adresse elle-même est cliquable (copie dans le presse-papiers, pas de mailto: qui
-      // ouvrirait un client mail local souvent pas configuré) plutôt qu'un bouton "Copier" séparé —
-      // juste une infobulle "Copier" au survol (title natif, même pattern que le reste du site).
-      const addrBtn = h('button', { class: 'tool-mail-addr', type: 'button', title: 'Copier', onClick: async () => {
-        try { await navigator.clipboard.writeText(t.email); E.toast('Adresse copiée.', 'success'); }
-        catch { E.toast('Impossible de copier.', 'error'); }
-      } }, t.email);
-      return h('div', { class: 'tool-card single' }, head,
-        h('div', { class: 'tool-mail-row' }, addrBtn, openBtn));
+      return h('div', { class: 'tool-card single' }, head, openBtn);
     }
 
     // ---------- Tableau de bord ----------
