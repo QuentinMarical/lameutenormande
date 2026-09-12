@@ -176,6 +176,9 @@
             else if (nom === 'DTSTART') {
               const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
               if (m) cur.debut = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
+            } else if (nom === 'DTEND') {
+              const m = valeur.match(/^(\d{4})(\d{2})(\d{2})(?:T(\d{2})(\d{2})(\d{2})?Z?)?$/);
+              if (m) cur.fin = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0), +(m[6] || 0)));
             } else if (nom === 'ATTENDEE') {
               if (ligne.toLowerCase().includes('go@events.lameutenormande')) cur.estGo = true;
             }
@@ -191,7 +194,12 @@
     }
 
     async function creerSondageDepuisEvenement(e) {
-      const { data: poll, error } = await V.vsb.rpc('admin_save_poll', { p: { slug: e.uid, title: e.title, status: 'draft' } });
+      // Clôture automatique le lendemain de la fin de l'évènement (pas de champ manuel à
+      // renseigner : l'évènement terminé, plus personne n'a besoin de dire s'il vient). Se base
+      // sur DTEND (repli sur DTSTART si l'évènement n'a pas de fin explicite dans le calendrier).
+      const finEvenement = e.fin || e.debut;
+      const closesAt = new Date(finEvenement.getTime() + 86400000).toISOString();
+      const { data: poll, error } = await V.vsb.rpc('admin_save_poll', { p: { slug: e.uid, title: e.title, status: 'draft', closes_at: closesAt } });
       if (error) { V.toast(V.errMsg(error), 'error'); return; }
       await V.vsb.rpc('admin_save_questions', { p_poll: poll.id, p_questions: [
         { label: 'Viens-tu ?', type: 'yesno', required: true },
@@ -220,7 +228,8 @@
       }
       const list = h('div', { class: 'cands' });
       polls.forEach(p => list.appendChild(h('div', { class: 'cand selectable' + (current && p.id === current.id ? ' selected' : ''), onClick: () => { current = p; paintSelector(); sondages(); } },
-        h('div', { class: 'body' }, h('div', { class: 'name' }, p.title, V.phaseBadge(p), h('span', { class: 'badge muted' }, p.slug))))));
+        h('div', { class: 'body' }, h('div', { class: 'name' }, p.title, V.phaseBadge(p), h('span', { class: 'badge muted' }, p.slug)),
+          p.closes_at ? h('div', { class: 'handles' }, h('span', null, 'Se termine automatiquement le ' + V.fmtDateTime(p.closes_at))) : null))));
       pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '12px' } }, h('button', { class: 'btn small', type: 'button', onClick: () => editForm(null) }, '＋ Nouveau sondage')), list);
       if (current) { await editForm(current); await questionsEditor(current); }
 

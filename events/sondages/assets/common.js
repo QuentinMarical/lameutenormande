@@ -99,13 +99,15 @@
   };
 
   // ---------- États d'un sondage ----------
-  // Uniquement le statut choisi par l'admin (pas de date de clôture automatique) : pour un
-  // sondage de présence à un évènement, il n'y a pas de moment naturel où arrêter d'accepter des
-  // réponses (les gens confirment ou changent d'avis jusqu'au dernier moment) — l'admin clôture
-  // à la main quand il le juge utile.
+  // closes_at n'est plus un champ que l'admin remplit à la main (ça ne servait à rien pour un
+  // sondage de présence : les gens répondent jusqu'au dernier moment) — il est calculé tout seul
+  // à la création d'un sondage lié à un évènement (le lendemain de sa fin, voir
+  // admin/votes/index.html:creerSondageDepuisEvenement), pour clôturer automatiquement une fois
+  // l'évènement passé plutôt que de laisser le sondage ouvert indéfiniment.
   V.pollState = function (p) {
     if (!p) return { phase: 'none', label: 'Aucun sondage', cls: 'muted' };
-    if (p.status === 'closed') return { phase: 'closed', label: 'Terminé', cls: 'muted' };
+    const closesPassed = p.closes_at && Date.now() >= new Date(p.closes_at).getTime();
+    if (p.status === 'closed' || (p.status === 'open' && closesPassed)) return { phase: 'closed', label: 'Terminé', cls: 'muted' };
     if (p.status === 'draft') return { phase: 'draft', label: 'Brouillon', cls: 'warn' };
     return { phase: 'open', label: 'En cours', cls: 'ok live' };
   };
@@ -131,7 +133,8 @@
 
     V.clear(root);
     const banner = h('div', { class: 'card column ' + (st.phase === 'open' ? 'ok' : 'info') },
-      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, V.phaseBadge(poll)));
+      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, V.phaseBadge(poll),
+        poll.closes_at && st.phase === 'open' ? h('span', { class: 'small muted' }, 'Se termine le ' + V.fmtDateTime(poll.closes_at)) : null));
     root.appendChild(banner);
 
     const zone = h('div'); root.appendChild(zone);
