@@ -151,19 +151,6 @@
       }
     }
 
-    function showVotersModal(label, matching) {
-      const list = h('div', { class: 'recap' });
-      matching.forEach(r => list.appendChild(h('div', null,
-        h('span', null, r.pseudo + (r.contact ? ' — ' + r.contact : '')),
-        h('span', { class: 'small muted' }, V.fmtDateTime(r.submitted_at)))));
-      const bg = h('div', { class: 'modal-bg' });
-      const modal = h('div', { class: 'modal' }, h('h3', null, label), list,
-        h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary', type: 'button', onClick: () => bg.remove() }, 'Fermer')));
-      bg.appendChild(modal);
-      bg.addEventListener('click', e => { if (e.target === bg) bg.remove(); });
-      document.body.appendChild(bg);
-    }
-
     function renderResults(highlightMine) {
       V.clear(zone);
       zone.appendChild(h('h2', { class: 'section-title' }, 'Résultats'));
@@ -186,12 +173,13 @@
               const count = matching.length;
               const pct = total ? Math.round((count / total) * 100) : 0;
               const mine = highlightMine && myResp && myResp.answers && (Array.isArray(myResp.answers[q.id]) ? myResp.answers[q.id].includes(val) : myResp.answers[q.id] === val);
-              // Qui a répondu ça (les réponses sont déjà publiques, pas une fuite) : un bouton plutôt
-              // qu'un simple survol, pour que ça marche aussi au toucher sur mobile.
-              const voirBtn = count ? h('button', { class: 'poll-voters-btn', type: 'button', title: 'Voir qui a répondu', 'aria-label': 'Voir qui a répondu', onClick: (e) => { e.stopPropagation(); showVotersModal(label, matching); } }, '❯') : null;
               const row = h('div', { class: 'poll-result' + (mine ? ' mine' : '') },
                 h('div', { class: 'bar-fill', style: { width: pct + '%' } }),
-                h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', { class: 'right' }, h('span', { class: 'pct' }, count + (count > 1 ? ' réponses' : ' réponse')), voirBtn)));
+                h('div', { class: 'row' }, h('div', { class: 'label' }, mine ? '✓ ' : '', label), h('div', { class: 'right' }, h('span', { class: 'pct' }, count + (count > 1 ? ' réponses' : ' réponse')))),
+                // Qui a répondu ça, directement visible (les réponses sont déjà publiques, pas une
+                // fuite) : plus besoin de cliquer sur quoi que ce soit pour le voir, y compris avant
+                // d'avoir soi-même répondu.
+                count ? h('div', { class: 'poll-voters-list' }, matching.map(r => r.pseudo + (r.contact ? ' (' + r.contact + ')' : '')).join(', ')) : null);
               block.appendChild(row);
             });
           } else {
@@ -215,7 +203,7 @@
       if (error) { V.toast(V.errMsg(error), 'error'); return; }
       myResp = null;
       V.toast('Réponse supprimée.', 'success');
-      renderForm();
+      renderResults(true);
     }
 
     function renderForm() {
@@ -296,9 +284,8 @@
       });
 
       const submitBtn = h('button', { class: 'btn', type: 'button' }, myResp ? 'Enregistrer mes réponses' : 'Envoyer mes réponses');
-      const foot = h('div', { class: 'btn-row' }, submitBtn, myResp ? h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Annuler') : null);
+      const foot = h('div', { class: 'btn-row' }, submitBtn, h('button', { class: 'btn secondary', type: 'button', onClick: () => renderResults(true) }, 'Annuler'));
       zone.appendChild(foot);
-      if (!myResp) zone.appendChild(h('div', { class: 'btn-row' }, h('button', { class: 'btn secondary wide', type: 'button', onClick: () => renderResults(false) }, 'Afficher les résultats')));
 
       form.addEventListener('submit', async (e) => { e.preventDefault(); await submit(); });
       submitBtn.addEventListener('click', async (e) => { e.preventDefault(); await submit(); });
@@ -323,7 +310,11 @@
       }
     }
 
-    if (st.phase === 'draft' || (st.phase === 'open' && !myResp)) renderForm();
+    // Résultats visibles par défaut, y compris avant d'avoir soi-même répondu — voir qui a déjà
+    // répondu à quoi ne doit pas demander une manipulation en plus. Seul un sondage en brouillon
+    // (jamais publié) affiche directement le formulaire, qui court-circuite en fait juste vers un
+    // message "pas encore publié" (voir le tout début de renderForm()).
+    if (st.phase === 'draft') renderForm();
     else renderResults(true);
   };
 
