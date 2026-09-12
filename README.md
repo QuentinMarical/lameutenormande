@@ -24,9 +24,9 @@ Le site propose les sections suivantes :
 
 - **[Accueil](https://lameutenormande.fr/)** - Présentation du groupe
 - **[Événements](https://lameutenormande.fr/events.html)** - Calendrier des événements à venir
+- **[Sondages](https://lameutenormande.fr/events/sondages)** - Présence aux évènements, covoiturage, et autres questions rapides
 - **[Actus](https://lameutenormande.fr/actus.html)** - Actualités du groupe
 - **[Contact](https://lameutenormande.fr/contact.html)** - Formulaire de contact
-- **[Élections](https://lameutenormande.fr/elections/)** - Candidatures, vote et résultats en direct pour le staff (réservé aux membres)
 
 ## 🔧 Technologie
 
@@ -53,6 +53,14 @@ Le dossier [`elections/`](elections/) contient un outil de vote complet : un cod
 - Données : projet Supabase (schéma dans `elections/supabase/schema.sql`, Edge Functions dans `elections/supabase/functions/`)
 
 👉 Guide d'installation pas à pas : [`elections/supabase/README.md`](elections/supabase/README.md)
+
+## 📊 Sondages
+
+Le dossier [`events/sondages/`](events/sondages/) contient un outil de sondage léger accessible publiquement (présence aux évènements, covoiturage, questions rapides) : pas de code individuel, réponse par pseudo librement choisi, réponses nominatives et publiques. C'est un outil de coordination, pas un scrutin à enjeu (à la différence des élections).
+
+- Front : pages statiques dans `events/sondages/` (aucun build)
+- Données : même projet Supabase que les élections, mais schéma dédié (`votes`, dans `events/sondages/supabase/schema.sql`), séparé du schéma `public` des élections
+- Administration : panel dans [`admin/votes/`](admin/votes/)
 
 ## 📄 Licence
 
