@@ -42,7 +42,7 @@
 .poll-option input { accent-color: var(--violet, #a855f7); width: 16px; height: 16px; flex: 0 0 auto; }
 
 .poll-result {
-  position: relative; padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; overflow: hidden;
+  position: relative; padding: 7px 12px; border-radius: 10px; margin-bottom: 6px; overflow: hidden;
   border: 1px solid var(--line, rgba(255,255,255,.1)); background: rgba(255,255,255,.02);
 }
 .poll-result.mine { border-color: var(--violet, #a855f7); }
@@ -50,13 +50,25 @@
   position: absolute; inset: 0; width: 0%; background: linear-gradient(90deg, rgba(168,85,247,.28), rgba(196,113,237,.16));
   transition: width .5s ease;
 }
-.poll-result .row { position: relative; display: flex; justify-content: space-between; gap: 10px; align-items: center; }
-.poll-result .label { display: flex; align-items: center; gap: 6px; font-weight: 600; }
-.poll-result .right { display: flex; align-items: center; gap: 4px; }
-.poll-result .pct { font-weight: 700; white-space: nowrap; }
-.poll-result .count { font-size: .8rem; color: var(--muted, #9ca3af); }
-/* Qui a répondu ça, sous la barre, directement visible (plus de bouton ni de modale à ouvrir). */
-.poll-result .poll-voters-list { position: relative; margin-top: 4px; font-size: .8rem; color: var(--muted, #9ca3af); }
+/* margin:0 + flex-wrap:nowrap en dur : bootstrap.min.css (chargé sur ces pages pour le vrai menu
+   du site) définit sa propre classe .row (grille) avec des marges négatives et flex-wrap:wrap —
+   sans ces deux propriétés fixées ici, notre .row héritait des siennes, ce qui élargissait la
+   ligne au-delà de .poll-result (overflow:hidden) et poussait le compteur hors champ, invisible.
+   Le libellé (parfois long, ex. "Oui, j'ai besoin qu'on me prenne") peut quand même passer à la
+   ligne sur lui-même : c'est .label qui porte flex-shrink, pas .row. */
+.poll-result .row { position: relative; display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: flex-start; gap: 8px; margin: 0; }
+/* width/max-width/padding en dur : la même feuille Bootstrap force aussi `.row > * {width:100%;
+   max-width:100%; flex-shrink:0; padding-left/right:.75rem}` (règle de grille, colonnes empilées
+   par défaut avant un .col-*) — sans ce reset, .label ET .right héritaient chacun d'une largeur à
+   100% de la ligne, s'empilaient l'un sous l'autre au lieu de se partager l'espace, et le second
+   (.right, poussé après le premier qui occupait déjà toute la largeur) débordait hors de
+   .poll-result (overflow:hidden), invisible. */
+.poll-result .label { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: .95rem; min-width: 0; width: auto; max-width: none; padding: 0; flex-shrink: 1; }
+.poll-result .right { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; width: auto; max-width: none; padding: 0; }
+.poll-result .pct { font-weight: 700; font-size: .8rem; color: var(--muted, #9ca3af); white-space: nowrap; }
+/* Qui a répondu ça, sous le libellé, directement visible (plus de bouton ni de modale à ouvrir) :
+   une seule ligne compacte plutôt qu'une ligne à part entière pour le compteur. */
+.poll-result .poll-voters-list { position: relative; margin-top: 2px; font-size: .76rem; color: var(--muted, #9ca3af); }
 .btn.wide { display: flex; width: 100%; }
 
 .poll-free-answer { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line, rgba(255,255,255,.08)); }
