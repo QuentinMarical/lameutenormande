@@ -1323,6 +1323,24 @@ DTSTAMP:20260830T110046Z
 URL:https://samhain.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:🦊 Eurofurence 31 (Allemagne)
+DESCRIPTION:L'Eurofurence revient pour sa 31ème édition toujours au CCH d'Hamburg en Allemagne.
+DTSTART:20270817T220000Z
+DTEND:20270822T215900Z
+LOCATION:CCH - Congress Center Hamburg. Congressplatz 1\, 20355 Hamburg\, Allemagne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:8808211797434c55831f0a91d363d217@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260912T105636Z
+LAST-MODIFIED:20260912T105636Z
+DTSTAMP:20260912T105638Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.eurofurence.org/EF31/home
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Geek Days Lille Winter 2025
 DESCRIPTION:Le samedi de 10h à 19h\, le dimanche de 10h à 18h\n\nhttps://www.geek-days.com/lille-winter/billetterie/\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none">Le samedi de 10h à 19h\, le dimanche de 10h à 18h</span></span></span></span><br /></div><div><span class="highlight" style="background-color:rgb(255\, 255\, 255)"><span class="colour" style="color:rgb(0\, 0\, 0)"><span class="font" style="font-family:Roboto\, Arial\, sans-serif"><span class="size" style="font-size:13px\; font-style:normal\; font-weight:300\; letter-spacing:normal\; orphans:2\; text-align:left\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; float:none"><b><a href="https://www.geek-days.com/lille-winter/billetterie/" target="_blank">https://www.geek-days.com/lille-winter/billetterie/</a></b></span></span></span></span><br /></div>
