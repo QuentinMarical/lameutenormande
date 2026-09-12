@@ -220,8 +220,7 @@
       }
       const list = h('div', { class: 'cands' });
       polls.forEach(p => list.appendChild(h('div', { class: 'cand selectable' + (current && p.id === current.id ? ' selected' : ''), onClick: () => { current = p; paintSelector(); sondages(); } },
-        h('div', { class: 'body' }, h('div', { class: 'name' }, p.title, V.phaseBadge(p), h('span', { class: 'badge muted' }, p.slug)),
-          h('div', { class: 'handles' }, h('span', null, p.closes_at ? 'Clôture ' + V.fmtDateTime(p.closes_at) : 'Pas de date de clôture'))))));
+        h('div', { class: 'body' }, h('div', { class: 'name' }, p.title, V.phaseBadge(p), h('span', { class: 'badge muted' }, p.slug))))));
       pane.append(h('div', { class: 'btn-row', style: { marginTop: 0, marginBottom: '12px' } }, h('button', { class: 'btn small', type: 'button', onClick: () => editForm(null) }, '＋ Nouveau sondage')), list);
       if (current) { await editForm(current); await questionsEditor(current); }
 
@@ -232,7 +231,6 @@
         const desc = h('textarea', { class: 'input', rows: '2' }, p ? p.description : '');
         const status = h('select', { class: 'input' }, ...['draft', 'open', 'closed'].map(s => h('option', { value: s, selected: p && p.status === s }, { draft: 'Brouillon', open: 'Ouvert', closed: 'Clôturé' }[s])));
         const opensAt = h('input', { class: 'input', type: 'datetime-local', value: p ? toLocalInput(p.opens_at) : '' });
-        const closesAt = h('input', { class: 'input', type: 'datetime-local', value: p ? toLocalInput(p.closes_at) : '' });
         const saveBtn = h('button', { class: 'btn', type: 'submit' }, p ? 'Enregistrer' : 'Créer');
         const form = h('form', { id: 'edit-form', class: 'card column', style: { marginTop: '12px' } },
           h('div', { class: 'title', style: { fontSize: '15px' } }, p ? 'Modifier le sondage' : 'Nouveau sondage'),
@@ -241,9 +239,7 @@
             h('div', { class: 'field' }, h('label', null, 'Identifiant (URL)'), slug)),
           h('div', { class: 'field' }, h('label', null, 'Description'), desc),
           h('div', { class: 'field' }, h('label', null, 'Statut'), status),
-          h('div', { class: 'grid-2' },
-            h('div', { class: 'field' }, h('label', null, 'Ouverture (optionnel)'), opensAt),
-            h('div', { class: 'field' }, h('label', null, 'Clôture (optionnel)'), closesAt)),
+          h('div', { class: 'field' }, h('label', null, 'Ouverture (optionnel)'), opensAt),
           h('div', { class: 'btn-row' }, saveBtn, p ? h('button', { class: 'btn danger small', type: 'button', onClick: async () => {
             if (!confirm('Supprimer définitivement ce sondage et toutes ses réponses ?')) return;
             const { error } = await V.vsb.rpc('admin_delete_poll', { p_poll: p.id });
@@ -253,7 +249,7 @@
         form.addEventListener('submit', async e => {
           e.preventDefault(); saveBtn.disabled = true;
           const payload = { title: title.value.trim(), slug: slug.value.trim(), description: desc.value, status: status.value,
-            opens_at: fromLocalInput(opensAt.value), closes_at: fromLocalInput(closesAt.value) };
+            opens_at: fromLocalInput(opensAt.value) };
           if (p) payload.id = p.id;
           const { data, error } = await V.vsb.rpc('admin_save_poll', { p: payload });
           if (error) { V.toast(V.errMsg(error), 'error'); saveBtn.disabled = false; return; }

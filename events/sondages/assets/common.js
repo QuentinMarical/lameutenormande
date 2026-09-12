@@ -57,24 +57,6 @@
   const df = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' });
   V.fmtDateTime = (d) => d ? dtf.format(new Date(d)) : '—';
   V.fmtDate = (d) => d ? df.format(new Date(d)) : '—';
-  V.countdown = function (el, date, onEnd) {
-    const target = new Date(date).getTime();
-    const parts = ['j', 'h', 'min', 's'].map(u => ({ b: V.h('b', { text: '0' }), s: V.h('span', { text: u }) }));
-    V.clear(el); el.classList.add('countdown');
-    parts.forEach(p => el.appendChild(V.h('div', null, p.b, p.s)));
-    let ended = false;
-    function tick() {
-      let diff = Math.max(0, target - Date.now());
-      const d = Math.floor(diff / 864e5); diff -= d * 864e5;
-      const h = Math.floor(diff / 36e5); diff -= h * 36e5;
-      const m = Math.floor(diff / 6e4); diff -= m * 6e4;
-      const s = Math.floor(diff / 1e3);
-      [d, h, m, s].forEach((v, i) => parts[i].b.textContent = String(v).padStart(i ? 2 : 1, '0'));
-      if (target - Date.now() <= 0 && !ended) { ended = true; clearInterval(iv); onEnd && onEnd(); }
-    }
-    tick(); const iv = setInterval(tick, 1000);
-    return () => clearInterval(iv);
-  };
 
   // ---------- Avatars (mêmes initiales colorées que l'outil d'élections) ----------
   function hashString(s) { let h = 2166136261 >>> 0; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
@@ -117,10 +99,13 @@
   };
 
   // ---------- États d'un sondage ----------
+  // Uniquement le statut choisi par l'admin (pas de date de clôture automatique) : pour un
+  // sondage de présence à un évènement, il n'y a pas de moment naturel où arrêter d'accepter des
+  // réponses (les gens confirment ou changent d'avis jusqu'au dernier moment) — l'admin clôture
+  // à la main quand il le juge utile.
   V.pollState = function (p) {
     if (!p) return { phase: 'none', label: 'Aucun sondage', cls: 'muted' };
-    const closesPassed = p.closes_at && Date.now() >= new Date(p.closes_at).getTime();
-    if (p.status === 'closed' || (p.status === 'open' && closesPassed)) return { phase: 'closed', label: 'Terminé', cls: 'muted' };
+    if (p.status === 'closed') return { phase: 'closed', label: 'Terminé', cls: 'muted' };
     if (p.status === 'draft') return { phase: 'draft', label: 'Brouillon', cls: 'warn' };
     return { phase: 'open', label: 'En cours', cls: 'ok live' };
   };
@@ -146,15 +131,7 @@
 
     V.clear(root);
     const banner = h('div', { class: 'card column ' + (st.phase === 'open' ? 'ok' : 'info') },
-      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, V.phaseBadge(poll),
-        poll.closes_at && st.phase === 'open' ? h('span', { class: 'small muted' }, 'Clôture le ' + V.fmtDateTime(poll.closes_at)) : null));
-    if (poll.closes_at && st.phase === 'open') {
-      const cd = h('div'); banner.appendChild(cd);
-      // Rafraîchit juste ce sondage à l'échéance (pas toute la page, contrairement à l'ancien
-      // rechargement complet) : utile surtout sur index.html où d'autres sondages sont ouverts
-      // à côté dans leurs propres accordéons.
-      V.countdown(cd, poll.closes_at, () => V.mountPoll(root, poll));
-    }
+      h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } }, V.phaseBadge(poll)));
     root.appendChild(banner);
 
     const zone = h('div'); root.appendChild(zone);

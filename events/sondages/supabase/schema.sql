@@ -151,7 +151,6 @@ declare
 begin
   select * into v_poll from votes.polls where id = p_poll;
   if v_poll.id is null or v_poll.status <> 'open' then raise exception 'POLL_NOT_OPEN'; end if;
-  if v_poll.closes_at is not null and now() >= v_poll.closes_at then raise exception 'POLL_CLOSED'; end if;
   if coalesce(p_device_token, '') = '' then raise exception 'BAD_DEVICE'; end if;
   v_pseudo := nullif(trim(p_pseudo), '');
   if v_pseudo is null or char_length(v_pseudo) > 60 then raise exception 'BAD_PSEUDO'; end if;
@@ -216,7 +215,6 @@ declare v_poll votes.polls; v_id uuid;
 begin
   select * into v_poll from votes.polls where id = p_poll;
   if v_poll.id is null or v_poll.status <> 'open' then raise exception 'POLL_NOT_OPEN'; end if;
-  if v_poll.closes_at is not null and now() >= v_poll.closes_at then raise exception 'POLL_CLOSED'; end if;
   select id into v_id from votes.responses where poll_id = p_poll and lower(pseudo) = lower(coalesce(p_pseudo, ''));
   if v_id is null then raise exception 'RESPONSE_NOT_FOUND'; end if;
   delete from votes.responses where id = v_id;
