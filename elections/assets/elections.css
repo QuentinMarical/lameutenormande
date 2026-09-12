@@ -314,7 +314,11 @@ tr.invalid td.actions { text-decoration: none; }
 .toast.error { border-left-color: var(--danger); }
 .modal-bg { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(5, 3, 14, 0.75); }
 .modal {
-  width: min(96vw, 520px); max-height: 90vh; overflow: auto; padding: 1.5rem; border-radius: var(--radius);
+  /* display en dur : les pages sondages chargent aussi bootstrap.min.css pour le vrai menu du
+     site, et son .modal à lui (composant JS Bootstrap, sans rapport) impose display:none par
+     défaut — sans ce display ici, notre propre .modal héritait de cette règle et restait
+     invisible (largeur/hauteur à 0) malgré le fond .modal-bg bien affiché. */
+  display: block; width: min(96vw, 520px); max-height: 90vh; overflow: auto; padding: 1.5rem; border-radius: var(--radius);
   background: linear-gradient(155deg, var(--bg-1), var(--bg-2) 60%, var(--bg-3)); border: 1px solid var(--violet-line);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 80px rgba(168, 85, 247, 0.08);
 }
