@@ -45,21 +45,12 @@ Le site se met à jour automatiquement :
 3. Le site est automatiquement redéployé avec les nouvelles données
 4. Les modifications sont disponibles sur le site en quelques minutes
 
-## 🗳️ Élections du staff
-
-Le dossier [`elections/`](elections/) contient un outil de vote complet : un code individuel remis à chaque membre par le staff (aucun compte à créer), candidatures libres, un bulletin par code (modifiable), résultats et participation en direct, panel admin (phases, invalidation des bulletins suspects, journal d'audit, procès-verbal) et annonces automatiques sur Telegram.
-
-- Front : pages statiques dans `elections/` (aucun build) ; admins connectés par e-mail + mot de passe (Supabase Auth)
-- Données : projet Supabase (schéma dans `elections/supabase/schema.sql`, Edge Functions dans `elections/supabase/functions/`)
-
-👉 Guide d'installation pas à pas : [`elections/supabase/README.md`](elections/supabase/README.md)
-
 ## 📊 Sondages
 
-Le dossier [`events/sondages/`](events/sondages/) contient un outil de sondage léger accessible publiquement (présence aux évènements, covoiturage, questions rapides) : pas de code individuel, réponse par pseudo librement choisi, réponses nominatives et publiques. C'est un outil de coordination, pas un scrutin à enjeu (à la différence des élections).
+Le dossier [`events/sondages/`](events/sondages/) contient un outil de sondage léger accessible publiquement (présence aux évènements, covoiturage, questions rapides) : pas de code individuel, réponse par pseudo librement choisi, réponses nominatives et publiques.
 
 - Front : pages statiques dans `events/sondages/` (aucun build)
-- Données : même projet Supabase que les élections, mais schéma dédié (`votes`, dans `events/sondages/supabase/schema.sql`), séparé du schéma `public` des élections
+- Données : projet Supabase dédié (schéma `votes` dans `events/sondages/supabase/schema.sql`)
 - Administration : panel dans [`admin/votes/`](admin/votes/)
 
 ## 📄 Licence
