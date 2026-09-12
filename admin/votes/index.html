@@ -318,6 +318,7 @@
           const disp = q.type === 'yesno' ? (v === 'yes' ? 'Oui' : 'Non') : Array.isArray(v) ? v.join(', ') : String(v);
           return q.label + ' : ' + disp;
         }).filter(Boolean);
+        if (r.contact) details.push('Contact : ' + r.contact);
         list.appendChild(h('div', { class: 'cand' }, V.avatarEl(r.pseudo),
           h('div', { class: 'body' }, h('div', { class: 'name' }, r.pseudo, h('span', { class: 'badge muted' }, V.fmtDateTime(r.submitted_at))),
             h('div', { class: 'handles' }, details.map(d => h('span', null, d)))),

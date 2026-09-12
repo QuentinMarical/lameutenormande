@@ -90,14 +90,27 @@
     const open = list.filter(p => V.pollState(p).phase === 'open');
     const others = list.filter(p => V.pollState(p).phase !== 'open');
 
+    // Chaque sondage est un accordéon (comme les groupes mensuels du calendrier admin) : replié
+    // par défaut, il se déplie sur place pour afficher questions/résultats/formulaire — plus
+    // besoin de changer de page comme avant (sondage.html reste utilisable pour un lien direct,
+    // ex. partagé sur Telegram, mais n'est plus l'unique façon de répondre). Le contenu du
+    // sondage n'est chargé (V.mountPoll) qu'à la première ouverture, pas pour tous d'un coup.
     function card(p) {
       const st = V.pollState(p);
-      const c = h('a', { class: 'card column selectable', href: 'sondage.html?p=' + encodeURIComponent(p.slug), style: { textDecoration: 'none', color: 'inherit' } });
-      c.appendChild(h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
-        h('div', { class: 'title', style: { fontSize: '17px', margin: 0 } }, p.title), V.phaseBadge(p)));
-      if (p.description) c.appendChild(h('div', { class: 'desc' }, p.description));
-      if (p.closes_at && st.phase === 'open') c.appendChild(h('div', { class: 'small muted' }, 'Clôture le ' + V.fmtDateTime(p.closes_at)));
-      return c;
+      const details = h('details', { class: 'poll-card' });
+      const summary = h('summary', null,
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' } },
+          h('span', { class: 'poll-card-caret' }, '▸'),
+          h('span', { class: 'title', style: { fontSize: '17px', margin: 0 } }, p.title), V.phaseBadge(p)));
+      if (p.description) summary.appendChild(h('div', { class: 'desc' }, p.description));
+      if (p.closes_at && st.phase === 'open') summary.appendChild(h('div', { class: 'small muted' }, 'Clôture le ' + V.fmtDateTime(p.closes_at)));
+      const body = h('div', { class: 'poll-card-body' });
+      let loaded = false;
+      details.addEventListener('toggle', () => {
+        if (details.open && !loaded) { loaded = true; V.mountPoll(body, p); }
+      });
+      details.append(summary, body);
+      return details;
     }
 
     if (!open.length && !others.length) {

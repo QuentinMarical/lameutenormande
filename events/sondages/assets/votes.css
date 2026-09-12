@@ -13,6 +13,21 @@
 .page-head { padding-top: 7rem; }
 @media (max-width: 767px) { .page-head { padding-top: 5.5rem; } }
 
+/* ---------- Accordéon des sondages (page liste) ---------- */
+.poll-card {
+  border: 1px solid var(--line, rgba(255,255,255,.1)); border-radius: 14px; margin-bottom: 12px;
+  padding: 14px 16px; background: rgba(255,255,255,.02);
+}
+.poll-card summary { cursor: pointer; list-style: none; user-select: none; display: flex; flex-direction: column; gap: 4px; }
+.poll-card summary::-webkit-details-marker { display: none; }
+.poll-card-caret {
+  display: inline-block; margin-right: 8px; font-size: .8em; color: var(--muted, #9ca3af);
+  transition: transform .15s ease;
+}
+.poll-card[open] .poll-card-caret { transform: rotate(90deg); }
+.poll-card-body { margin-top: 14px; }
+.poll-card-body .card:first-child { margin-top: 0; }
+
 .poll-question { margin-bottom: 22px; }
 .poll-question .q-label { font-weight: 700; margin-bottom: 4px; }
 .poll-question .q-required { color: var(--violet-2, #c471ed); margin-left: 4px; }

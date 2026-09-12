@@ -59,10 +59,19 @@ create table if not exists votes.responses (
   pseudo         text not null check (char_length(trim(pseudo)) between 1 and 60),
   device_token   text not null,
   answers        jsonb not null default '{}'::jsonb,
+  -- Lien libre (réseau social, pseudo Telegram/Discord…) laissé par la personne pour être
+  -- recontactée au sujet du covoiturage — jamais vérifié, jamais obligatoire. Public comme le
+  -- pseudo et les réponses : tout l'intérêt est que d'autres personnes du sondage puissent la
+  -- contacter directement. Voir le texte affiché à côté du champ dans le formulaire (aucune
+  -- responsabilité de la Meute dans les mises en contact qui en résultent).
+  contact        text,
   submitted_at   timestamptz not null default now(),
   updated_at     timestamptz not null default now()
 );
 alter table votes.responses enable row level security;
+alter table votes.responses add column if not exists contact text;
+alter table votes.responses drop constraint if exists responses_contact_length;
+alter table votes.responses add constraint responses_contact_length check (contact is null or char_length(contact) <= 200);
 create index if not exists responses_poll_idx on votes.responses (poll_id);
 
 -- Identité d'une réponse = pseudo (insensible à la casse), pas l'appareil qui l'a soumise : voir
@@ -106,15 +115,16 @@ create policy responses_admin on votes.responses for all using (public.is_admin(
 --    base (même partiellement) au lieu de tout faire transiter par ici.
 -- ---------------------------------------------------------------------
 drop view if exists votes.poll_results;
+drop function if exists votes.poll_results(uuid);
 create or replace function votes.poll_results(p_poll uuid)
-returns table (id uuid, pseudo text, answers jsonb, submitted_at timestamptz, updated_at timestamptz)
+returns table (id uuid, pseudo text, contact text, answers jsonb, submitted_at timestamptz, updated_at timestamptz)
 language plpgsql security definer set search_path = votes, public as $$
 declare v_status text;
 begin
   select pl.status into v_status from votes.polls pl where pl.id = p_poll;
   if v_status is null then raise exception 'POLL_NOT_FOUND'; end if;
   if v_status = 'draft' and not public.is_admin() then raise exception 'POLL_NOT_OPEN'; end if;
-  return query select r.id, r.pseudo, r.answers, r.submitted_at, r.updated_at
+  return query select r.id, r.pseudo, r.contact, r.answers, r.submitted_at, r.updated_at
     from votes.responses r where r.poll_id = p_poll order by r.submitted_at;
 end $$;
 
@@ -127,11 +137,13 @@ end $$;
 -- modifie la même réponse (une réponse reste modifiable jusqu'à la clôture, d'où qu'on se
 -- connecte, sans compte ni code). Compromis assumé : deux personnes qui choisiraient le même
 -- pseudo sur un même sondage peuvent modifier la réponse l'une de l'autre.
-create or replace function votes.respond(p_poll uuid, p_device_token text, p_pseudo text, p_answers jsonb)
+drop function if exists votes.respond(uuid, text, text, jsonb);
+create or replace function votes.respond(p_poll uuid, p_device_token text, p_pseudo text, p_answers jsonb, p_contact text default null)
 returns jsonb language plpgsql security definer set search_path = votes, public as $$
 declare
   v_poll     votes.polls;
   v_pseudo   text;
+  v_contact  text;
   v_q        record;
   v_val      jsonb;
   v_existing votes.responses;
@@ -143,6 +155,8 @@ begin
   if coalesce(p_device_token, '') = '' then raise exception 'BAD_DEVICE'; end if;
   v_pseudo := nullif(trim(p_pseudo), '');
   if v_pseudo is null or char_length(v_pseudo) > 60 then raise exception 'BAD_PSEUDO'; end if;
+  v_contact := nullif(trim(p_contact), '');
+  if v_contact is not null and char_length(v_contact) > 200 then raise exception 'BAD_CONTACT'; end if;
   if jsonb_typeof(p_answers) <> 'object' then raise exception 'BAD_ANSWERS'; end if;
 
   for v_q in select * from votes.questions where poll_id = p_poll loop
@@ -173,10 +187,10 @@ begin
   select * into v_existing from votes.responses where poll_id = p_poll and lower(pseudo) = lower(v_pseudo);
   if v_existing.id is not null then
     v_replaced := true;
-    update votes.responses set device_token = p_device_token, answers = p_answers, updated_at = now() where id = v_existing.id
+    update votes.responses set device_token = p_device_token, answers = p_answers, contact = v_contact, updated_at = now() where id = v_existing.id
     returning * into v_existing;
   else
-    insert into votes.responses (poll_id, device_token, pseudo, answers) values (p_poll, p_device_token, v_pseudo, p_answers)
+    insert into votes.responses (poll_id, device_token, pseudo, answers, contact) values (p_poll, p_device_token, v_pseudo, p_answers, v_contact)
     returning * into v_existing;
   end if;
   return jsonb_build_object('ok', true, 'replaced', v_replaced, 'response_id', v_existing.id);
@@ -188,7 +202,7 @@ create or replace function votes.my_response(p_poll uuid, p_pseudo text)
 returns jsonb language plpgsql security definer set search_path = votes as $$
 declare v jsonb;
 begin
-  select jsonb_build_object('pseudo', pseudo, 'answers', answers, 'submitted_at', submitted_at)
+  select jsonb_build_object('pseudo', pseudo, 'contact', contact, 'answers', answers, 'submitted_at', submitted_at)
   into v from votes.responses where poll_id = p_poll and lower(pseudo) = lower(coalesce(p_pseudo, ''));
   return coalesce(v, 'null'::jsonb);
 end $$;
@@ -308,7 +322,7 @@ begin
     execute format('revoke execute on function %s from public, anon, authenticated', r.sig);
   end loop;
 end $$;
-grant execute on function votes.respond(uuid, text, text, jsonb), votes.my_response(uuid, text), votes.poll_results(uuid), votes.delete_response(uuid, text) to anon, authenticated;
+grant execute on function votes.respond(uuid, text, text, jsonb, text), votes.my_response(uuid, text), votes.poll_results(uuid), votes.delete_response(uuid, text) to anon, authenticated;
 grant execute on function votes.admin_save_poll(jsonb), votes.admin_save_questions(uuid, jsonb), votes.admin_delete_poll(uuid), votes.admin_delete_response(uuid) to authenticated;
 
 -- Tables : select direct nécessaire pour .from('polls')/.from('questions') côté client (RLS filtre
