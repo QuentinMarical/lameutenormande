@@ -15,7 +15,11 @@
     .status.partial { color: var(--orange); }
     .status.na { color: var(--muted); }
     table.compare { width: 100%; border-collapse: collapse; margin-top: .5rem; }
-    table.compare th, table.compare td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; font-size: .92rem; }
+    /* white-space: normal en dur : elections.css force white-space:nowrap sur tous les th/td
+       (pensé pour les tableaux de données .table-wrap, à défilement horizontal) — ce tableau-ci
+       affiche des phrases longues sans .table-wrap, donc sans ce reset le texte ne s'enroule pas
+       et fait déborder toute la page horizontalement sur mobile. */
+    table.compare th, table.compare td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; font-size: .92rem; white-space: normal; }
     table.compare th { color: var(--violet-2); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; }
     table.compare tr:last-child td { border-bottom: none; }
     .frame-col iframe { width: 100%; height: 480px; border: 1px solid var(--line); border-radius: 12px; background: #000; }
