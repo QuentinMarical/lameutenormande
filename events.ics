@@ -540,6 +540,23 @@ LAST-MODIFIED:20251204T123800Z
 DTSTAMP:20260920T020554Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Art to Play
+DESCRIPTION:Billet 1 jour : 19€ – toute sortie est définitive\n\nBillet 2 jours : 27€\n\n\n\nBillet 1 jour CE : 17€ – toute sortie est définitive\n\nEntrée gratuite pour les enfants de – 6 ans et pour les personnes en situation de handicap sur présentation de la carte mobilité inclusion (et accompagnant si mention sur la carte d’invalidité).\n\n\n\nCet évènement est accessible :\n– aux personnes majeures (+ de 18 ans)\,\n– aux mineurs de 16 ans et plus\,\n– aux mineurs de moins de 16 ans accompagnés par un adulte.\nL’organisateur se réserve le droit de demander une pièce d’identité aux points de vente et aux points d’accès de l'évènement afin de vérifier l’âge du porteur.\nIl est rappelé aux parents d’enfants mineurs de plus de 16 ans non accompagnés que seule leur responsabilité est susceptible d’être engagée du fait d’éventuels préjudices résultant des agissements commis par leurs enfants dans l’enceinte de l'évènement. La responsabilité de l’organisateur ne saurait en aucun cas être recherchée à ce titre.\n\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<p class="wp-block-paragraph">Billet 1 jour : 19€ – toute sortie est définitive<br/></p><div>Billet 2 jours : 27€<br/></div><p><br/></p><p class="wp-block-paragraph">Billet 1 jour CE : 17€ – toute sortie est définitive<br/></p><p class="wp-block-paragraph">Entrée gratuite pour les enfants de – 6 ans et pour les personnes en situation de handicap sur présentation de la carte mobilité inclusion (et accompagnant si mention sur la carte d’invalidité).<br/></p><div><br/></div><p class="has-white-color has-vivid-red-background-color has-text-color has-background has-link-color wp-elements-1 wp-block-paragraph"><i>Cet évènement est accessible :<br/>– aux personnes majeures (+ de 18 ans)\,<br/>– aux mineurs de 16 ans et plus\,<br/>– aux mineurs de moins de 16 ans accompagnés par un adulte.<br/>L’organisateur se réserve le droit de demander une pièce d’identité aux points de vente et aux points d’accès de l'évènement afin de vérifier l’âge du porteur.</i></p><p class="has-white-color has-vivid-red-background-color has-text-color has-background has-link-color wp-elements-2 wp-block-paragraph"><i>Il est rappelé aux parents d’enfants mineurs de plus de 16 ans non accompagnés que seule leur responsabilité est susceptible d’être engagée du fait d’éventuels préjudices résultant des agissements commis par leurs enfants dans l’enceinte de l'évènement. La responsabilité de l’organisateur ne saurait en aucun cas être recherchée à ce titre.</i><br/></p><div><br/></div>
+DTSTART;VALUE=DATE:20261114
+DTEND;VALUE=DATE:20261116
+LOCATION:Parc des Expositions de Nantes. Route de Saint-Joseph de Porterie\, 44300 Nantes
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:32e39671034c4342863f1231085a3711@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260921T095240Z
+LAST-MODIFIED:20260921T095324Z
+DTSTAMP:20260921T095326Z
+URL:https://art-to-play.fr/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Robertot – Fête Médiévale Fantastique
 DESCRIPTION:Entrée : 2 € (gratuit pour enfants)\n\n\n\nProgramme :\n\nBatailles grandeur nature et initiations au combat \n\nCampements et ateliers (taille de pierre\, teintures\, cuir\, jeux anciens)\n\nSpectacle équestre\, marché artisanal médiéval\n\nMusiciens déambulatoires et restauration sur place \n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Entrée&nbsp\;: 2 € (gratuit pour enfants)<br/></div><div><br/></div><div>Programme&nbsp\;:<br/></div><div>Batailles grandeur nature et initiations au combat&nbsp\;<br/></div><div>Campements et ateliers (taille de pierre\, teintures\, cuir\, jeux anciens)<br/></div><div>Spectacle équestre\, marché artisanal médiéval<br/></div><div>Musiciens déambulatoires et restauration sur place&nbsp\;<br/></div><div><br/></div>
@@ -1679,6 +1696,23 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://www.facebook.com/p/Gravenchon-GeekFest-2025-61574984526520/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Médiévale de Brie-Comte-Robert
+DESCRIPTION:L'évènement se déroule dans le centre ville de Brie-Comte-Robert.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>L'évènement se déroule dans le centre ville de Brie-Comte-Robert.</div>
+DTSTART;VALUE=DATE:20261003
+DTEND;VALUE=DATE:20261005
+LOCATION:77170 Brie-Comte-Robert
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:9fa53c389b3043cb86aff276f814a93a@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260921T094341Z
+LAST-MODIFIED:20260921T094341Z
+DTSTAMP:20260921T094342Z
+URL:https://www.facebook.com/lamedievaledebriecomterobert
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Le Havre Japan NorthCon'
 DESCRIPTION:
 DTSTART;VALUE=DATE:20270313
@@ -2708,6 +2742,23 @@ DTSTAMP:20260920T020554Z
 ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
 ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://boulognegeekfestival.fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Sedan Expo : Manga & Pop culture
+DESCRIPTION:Entrée : 5€.\n
+X-ALT-DESC;FMTTYPE=text/html:<div>Entrée : 5€.</div>
+DTSTART:20261017T080000Z
+DTEND:20261018T160000Z
+LOCATION:Salle Marcillet. Place Crussy\, 08200 Sedan
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:ff5d4fa0485c4780ad4ca3186d9cb487@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20260921T093750Z
+LAST-MODIFIED:20260921T093750Z
+DTSTAMP:20260921T093752Z
+URL:https://www.facebook.com/people/Sedan-Expo/61566716991271/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Hashtag Festival
