@@ -102,8 +102,14 @@ drop policy if exists questions_read on votes.questions;
 create policy questions_read on votes.questions for select using (
   exists (select 1 from votes.polls p where p.id = poll_id and (p.status <> 'draft' or public.is_admin()))
 );
+-- Pas de policy « for all » : elle doublerait questions_read sur select (multiple_permissive_policies).
 drop policy if exists questions_admin on votes.questions;
-create policy questions_admin on votes.questions for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists questions_admin_insert on votes.questions;
+drop policy if exists questions_admin_update on votes.questions;
+drop policy if exists questions_admin_delete on votes.questions;
+create policy questions_admin_insert on votes.questions for insert with check (public.is_admin());
+create policy questions_admin_update on votes.questions for update using (public.is_admin()) with check (public.is_admin());
+create policy questions_admin_delete on votes.questions for delete using (public.is_admin());
 
 drop policy if exists responses_admin on votes.responses;
 create policy responses_admin on votes.responses for all using (public.is_admin()) with check (public.is_admin());
