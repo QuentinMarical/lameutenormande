@@ -1104,6 +1104,10 @@ begin
     url := 'https://usebasin.com/f/56e1aab16816',
     headers := jsonb_build_object('Content-Type', 'application/json'),
     body := jsonb_build_object(
+      -- Champ "email" fixe (pas saisi par le proposeur, jamais exposé sur le formulaire public) :
+      -- sans lui, Basin classe souvent ces envois en spam faute d'expéditeur identifiable, comme
+      -- pour toute soumission sans champ "email"/"_replyto" reconnu.
+      'email', 'contact@lameutenormande.fr',
       'sujet', '🗓️ Nouvelle proposition d''évènement — ' || new.title,
       'titre', new.title,
       'debut', to_char(new.start_at at time zone 'Europe/Paris', 'DD/MM/YYYY HH24:MI'),
