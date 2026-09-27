@@ -1092,6 +1092,7 @@ alter table public.event_proposals enable row level security;
 -- Pas de policy insert pour anon : la seule porte d'entrée publique est la RPC propose_event
 -- ci-dessous (security definer), qui valide et applique l'anti-spam avant d'insérer. Lecture et
 -- écriture (relecture/décision) réservées aux admins.
+drop policy if exists event_proposals_admin on public.event_proposals;
 create policy event_proposals_admin on public.event_proposals for all using (public.is_admin()) with check (public.is_admin());
 
 -- Notifie contact@lameutenormande.fr via le formulaire Basin déjà utilisé par contact.html (même
