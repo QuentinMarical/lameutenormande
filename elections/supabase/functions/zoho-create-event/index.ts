@@ -66,6 +66,11 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", ...CORS_HEADERS } });
+// Comme json() mais journalise le détail (console.error, visible dans Dashboard → Edge Functions
+// → zoho-create-event → Logs) avant de répondre : le body brut renvoyé au client (via error.context
+// côté supabase-js) n'apparaît sinon nulle part dans les Logs, seuls le boot/shutdown de l'instance
+// y figurent, ce qui rend un échec Zoho difficile à diagnostiquer sans rouvrir l'onglet Network.
+const jsonFail = (body: Record<string, unknown>, status: number) => { console.error(JSON.stringify(body)); return json(body, status); };
 
 // Format attendu par l'API Zoho Calendar pour dateandtime.start/end : yyyyMMdd'T'HHmmss'Z' en
 // UTC pour un évènement horodaté, yyyyMMdd (sans heure) pour une journée entière — le champ
@@ -137,7 +142,7 @@ async function logAdminAction(sb: ReturnType<typeof createClient>, action: strin
 }
 
 type EventPayload = {
-  action?: string; uid?: string; etag?: string;
+  action?: string; uid?: string; etag?: string; // etag : requis pour "update" (dans eventdata) et "delete" (en query param)
   title?: string; location?: string; description?: string; url?: string;
   start?: string; end?: string; allDay?: boolean; furry?: boolean; presente?: boolean;
 };
@@ -242,17 +247,21 @@ Deno.serve(async (req) => {
       if (!p.uid || !UID_RE.test(p.uid)) return json({ error: "BAD_UID" }, 400);
       const r = await fetch(`${eventsBase}/${p.uid}`, { headers: authHeaders });
       const parsed = await safeJson(r);
-      if (!parsed.ok) return json({ error: "ZOHO_GET_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
-      if (!r.ok) return json({ error: "ZOHO_GET_FAILED", detail: parsed.data }, 502);
+      if (!parsed.ok) return jsonFail({ error: "ZOHO_GET_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+      if (!r.ok) return jsonFail({ error: "ZOHO_GET_FAILED", detail: parsed.data }, 502);
       return json({ ok: true, event: parsed.data });
     }
 
     if (action === "delete") {
       if (!p.uid || !UID_RE.test(p.uid)) return json({ error: "BAD_UID" }, 400);
-      const r = await fetch(`${eventsBase}/${p.uid}`, { method: "DELETE", headers: authHeaders });
+      // Comme pour "update" (eventdata.etag), Zoho refuse un DELETE sans l'etag courant de
+      // l'évènement (ETAG_MISSING) — passé ici en paramètre de requête, seul endroit possible
+      // vu qu'un DELETE n'a pas de corps.
+      if (!p.etag) return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: { error: [{ error_code: "ETAG_MISSING", message: "ETag manquant (evènement non rechargé avant suppression ?)" }] } }, 400);
+      const r = await fetch(`${eventsBase}/${p.uid}?etag=${encodeURIComponent(p.etag)}`, { method: "DELETE", headers: authHeaders });
       const parsed = await safeJson(r);
-      if (!parsed.ok) return json({ error: "ZOHO_DELETE_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
-      if (!r.ok || parsed.data?.status === "failure") return json({ error: "ZOHO_DELETE_FAILED", detail: parsed.data }, 502);
+      if (!parsed.ok) return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+      if (!r.ok || parsed.data?.status === "failure") return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: parsed.data }, 502);
       await triggerCalendarSync(githubRepo);
       await logAdminAction(asCaller, "calendar_event_deleted", p.uid);
       return json({ ok: true });
@@ -271,15 +280,16 @@ Deno.serve(async (req) => {
     });
     const failCode = isUpdate ? "ZOHO_UPDATE_FAILED" : "ZOHO_CREATE_FAILED";
     const parsed = await safeJson(r);
-    if (!parsed.ok) return json({ error: failCode, detail: { status: parsed.status, body: parsed.bodyText } }, 502);
+    if (!parsed.ok) return jsonFail({ error: failCode, detail: { status: parsed.status, body: parsed.bodyText } }, 502);
     const zohoResult = parsed.data;
-    if (!r.ok || zohoResult?.status === "failure") return json({ error: failCode, detail: zohoResult }, 502);
+    if (!r.ok || zohoResult?.status === "failure") return jsonFail({ error: failCode, detail: zohoResult }, 502);
 
     await triggerCalendarSync(githubRepo);
     const savedUid = isUpdate ? p.uid : zohoResult?.events?.[0]?.uid;
     await logAdminAction(asCaller, isUpdate ? "calendar_event_updated" : "calendar_event_created", savedUid, { title: built.eventdata.title });
     return json({ ok: true, event: zohoResult });
   } catch (e) {
+    console.error("zoho-create-event uncaught:", e);
     return json({ error: String(e) }, 502);
   }
 });
