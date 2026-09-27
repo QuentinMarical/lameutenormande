@@ -21,6 +21,17 @@
        en dernier : reprend la main sur tout ce qui n'est pas le menu/pied de page (cartes,
        boutons, formulaire…) pour garder le thème sombre de cet outil, comme events/sondages/. -->
   <link rel="stylesheet" href="../../elections/assets/elections.css">
+  <!-- Même correctif que events/sondages/assets/votes.css (déjà en place là-bas pour ce même
+       menu Mobirise) : assets/theme/css/style.css pose un fond blanc générique sur tout <section>
+       qui écrase .page-head (elections.css ne lui donne lui-même aucun fond, il compte
+       normalement sur le fond sombre du <body>, jamais recouvert sur les pages qui ne chargent
+       pas ce bundle Mobirise complet, comme admin/ ou elections/). Le menu flotte aussi en
+       position absolute par-dessus la page (prévu pour survoler une image de fond, absente ici) :
+       sans ce padding-top, son bandeau recouvre le haut de .page-head. -->
+  <style>
+    .page-head { background: transparent; padding-top: 7rem; }
+    @media (max-width: 767px) { .page-head { padding-top: 5.5rem; } }
+  </style>
 </head>
 <body>
   <section data-bs-version="5.1" class="menu menu2 cid-veCgXANUp1" once="menu" id="menu02-1i">
