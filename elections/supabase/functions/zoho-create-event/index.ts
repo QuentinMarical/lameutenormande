@@ -255,10 +255,12 @@ Deno.serve(async (req) => {
     if (action === "delete") {
       if (!p.uid || !UID_RE.test(p.uid)) return json({ error: "BAD_UID" }, 400);
       // Comme pour "update" (eventdata.etag), Zoho refuse un DELETE sans l'etag courant de
-      // l'évènement (ETAG_MISSING) — passé ici en paramètre de requête, seul endroit possible
-      // vu qu'un DELETE n'a pas de corps.
+      // l'évènement (ETAG_MISSING). Contrairement à update (où l'etag va dans le corps JSON
+      // eventdata), Zoho rejette ce même etag en paramètre de requête sur DELETE
+      // ("EXTRA_PARAM_FOUND: etag" — constaté en prod) : il doit passer en en-tête HTTP standard
+      // (If-Match, RFC 7232), jamais dans l'URL ni le corps (DELETE n'en a pas).
       if (!p.etag) return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: { error: [{ error_code: "ETAG_MISSING", message: "ETag manquant (evènement non rechargé avant suppression ?)" }] } }, 400);
-      const r = await fetch(`${eventsBase}/${p.uid}?etag=${encodeURIComponent(p.etag)}`, { method: "DELETE", headers: authHeaders });
+      const r = await fetch(`${eventsBase}/${p.uid}`, { method: "DELETE", headers: { ...authHeaders, "If-Match": p.etag } });
       const parsed = await safeJson(r);
       if (!parsed.ok) return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: { status: parsed.status, body: parsed.bodyText } }, 502);
       if (!r.ok || parsed.data?.status === "failure") return jsonFail({ error: "ZOHO_DELETE_FAILED", detail: parsed.data }, 502);
