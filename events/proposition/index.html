@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Proposer un évènement — La Meute Normande</title>
+  <meta name="description" content="Propose un évènement à ajouter au calendrier de La Meute Normande : un admin relit et valide chaque proposition avant publication.">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="bar">
+      <a class="brand" href="https://lameutenormande.fr/" title="Retour au site"><img src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async"></a>
+      <nav aria-label="Navigation"><a href="https://lameutenormande.fr/events.html">← Calendrier</a></nav>
+    </div>
+  </header>
+  <section class="page-head">
+    <h1>Proposer un évènement</h1>
+    <div class="sub">Un admin relit chaque proposition avant de l'ajouter au calendrier — rien n'est publié directement.</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
+  <footer class="site-footer" id="footer"></footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../../elections/assets/config.js"></script>
+  <script src="../../elections/assets/common.js"></script>
+  <script src="../../elections/assets/legal.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    // Pas E.footer() : son texte fixe ("Élections de la Meute") ne convient pas ici, cette page
+    // n'a rien à voir avec les élections malgré le projet Supabase partagé. Pied de page minimal,
+    // même schéma que admin/calendrier/ (liens utiles + mentions, sans bandeau de titre).
+    { const f = E.qs('#footer'); f.innerHTML = '<div class="legal-links">'
+      + '<button type="button" class="legal-btn" data-legal="mentions">Mentions légales</button><span class="legal-sep">·</span>'
+      + '<button type="button" class="legal-btn" data-legal="confidentialite">Confidentialité et cookies</button></div>';
+      f.addEventListener('click', (e) => { const b = e.target.closest('.legal-btn'); if (b && E.openLegal) E.openLegal(b.dataset.legal); }); }
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // Journée entière : deux champs date/heure (Début/Fin), qui basculent en <input type="date">
+    // + case "Un seul jour" quand la case "Journée entière" est cochée — même logique que
+    // renderEventForm() dans admin/calendrier/ (dupliquée ici en plus simple : pas de mode édition,
+    // pas de préremplissage depuis Zoho, ce formulaire ne crée qu'une proposition en attente).
+    const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Évreux 2026', required: true, maxlength: '200' });
+    const furryChk = h('input', { type: 'checkbox' });
+    const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France', maxlength: '200' });
+    const urlInp = h('input', { class: 'input', type: 'url', placeholder: 'https://…', maxlength: '500' });
+    const descInp = h('textarea', { class: 'input', rows: '4', placeholder: 'Détails, programme, liens billetterie…', maxlength: '4000' });
+    const commentInp = h('textarea', { class: 'input', rows: '3', placeholder: 'Une précision pour l\'admin qui valide (facultatif, pas affiché publiquement)…', maxlength: '2000' });
+    const allDayChk = h('input', { type: 'checkbox' });
+    const startInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const endInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const startLabel = h('label', null, 'Début');
+    const endField = h('div', { class: 'field' }, h('label', null, 'Fin'), endInp);
+    const datesRow = h('div', { class: 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
+    const singleDayChk = h('input', { type: 'checkbox' });
+    const singleDayRow = h('label', { class: 'check', style: { display: 'none', width: 'fit-content' } }, singleDayChk, 'Un seul jour');
+
+    function syncDateInputsType() {
+      const type = allDayChk.checked ? 'date' : 'datetime-local';
+      [startInp, endInp].forEach(inp => {
+        if (inp.type === type) return;
+        const v = inp.value ? inp.value.slice(0, 10) : '';
+        inp.type = type;
+        inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
+      });
+    }
+    function syncSingleDay() {
+      singleDayRow.style.display = allDayChk.checked ? 'inline-flex' : 'none';
+      if (!allDayChk.checked) singleDayChk.checked = false;
+      const single = allDayChk.checked && singleDayChk.checked;
+      endField.style.display = single ? 'none' : '';
+      startLabel.textContent = single ? 'Date' : 'Début';
+      endInp.required = !single;
+      if (single) endInp.value = startInp.value;
+    }
+    allDayChk.addEventListener('change', () => { syncDateInputsType(); syncSingleDay(); });
+    singleDayChk.addEventListener('change', syncSingleDay);
+    startInp.addEventListener('input', () => { if (allDayChk.checked && singleDayChk.checked) endInp.value = startInp.value; });
+
+    // Honeypot anti-bot : jamais visible ni atteignable au clavier pour un humain (positionné hors
+    // écran, pas simplement display:none — certains robots ignorent les champs display:none mais
+    // remplissent quand même les champs positionnés hors-écran s'ils ne vérifient que la visibilité
+    // CSS basique). Nom volontairement banal (jamais "honeypot"/"piege"), un humain ne le voit
+    // jamais donc ne le remplit jamais ; propose_event() ignore silencieusement tout envoi où il
+    // n'est pas vide.
+    const hp = h('input', { class: 'input', type: 'text', name: 'site_web', tabindex: '-1', autocomplete: 'off',
+      'aria-hidden': 'true', style: { position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', opacity: '0' } });
+
+    const submitBtn = h('button', { class: 'btn', type: 'submit' }, 'Envoyer la proposition');
+    const form = h('form', { class: 'card column' },
+      h('div', { class: 'field' }, h('label', null, 'Titre'), titleInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, furryChk, 'Évènement furry 🦊'),
+      h('div', { class: 'grid-2' },
+        h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
+        h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
+      h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
+      singleDayRow,
+      datesRow,
+      h('div', { class: 'field' }, h('label', null, 'Message pour l\'admin (facultatif)'), commentInp),
+      hp,
+      h('div', { class: 'btn-row' }, submitBtn));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = titleInp.value.trim();
+      if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
+      const allDay = allDayChk.checked;
+      if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
+      if (allDay ? endInp.value < startInp.value : new Date(endInp.value) < new Date(startInp.value)) {
+        E.toast('La date de fin doit être après le début.', 'error'); return;
+      }
+      // Journée entière : la colonne est un timestamptz, mais on n'a qu'une date calendaire
+      // (YYYY-MM-DD), pas un instant réel. On l'encode en minuit UTC (suffixe Z) plutôt que minuit
+      // local : un aller-retour par le fuseau local (ex. new Date(v).toISOString()) ferait glisser
+      // le jour d'une unité pour tout fuseau en avance sur UTC — même piège que documenté dans
+      // zoho-create-event/index.ts (fmtZohoDate). L'onglet Propositions doit lire cette date en UTC
+      // pour la réafficher/préremplir sans décalage, jamais en heure locale.
+      const start = allDay ? new Date(startInp.value + 'T00:00:00Z').toISOString() : new Date(startInp.value).toISOString();
+      const end = allDay ? new Date(endInp.value + 'T00:00:00Z').toISOString() : new Date(endInp.value).toISOString();
+
+      submitBtn.disabled = true; submitBtn.textContent = 'Envoi…';
+      try {
+        const { error } = await E.sb.rpc('propose_event', {
+          p_title: title, p_start: start, p_end: end,
+          p_description: descInp.value.trim(), p_location: locationInp.value.trim(), p_url: urlInp.value.trim(),
+          p_all_day: allDay, p_furry: furryChk.checked, p_comment: commentInp.value.trim(), p_hp: hp.value,
+        });
+        if (error) throw error;
+        E.clear(app).appendChild(h('div', { class: 'card ok' }, h('div', { class: 'body' },
+          h('div', { class: 'title' }, 'Merci !'),
+          h('div', { class: 'desc' }, 'Ta proposition a été transmise pour validation. Un admin la relira avant qu\'elle apparaisse au calendrier.'))));
+      } catch (err) {
+        E.toast(E.errMsg(err), 'error');
+        submitBtn.disabled = false; submitBtn.textContent = 'Envoyer la proposition';
+      }
+    });
+
+    E.clear(app).appendChild(form);
+  })();
+  </script>
+</body>
+</html>

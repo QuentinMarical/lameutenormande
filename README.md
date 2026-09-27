@@ -24,6 +24,7 @@ Le site propose les sections suivantes :
 
 - **[Accueil](https://lameutenormande.fr/)** - Présentation du groupe
 - **[Événements](https://lameutenormande.fr/events.html)** - Calendrier des événements à venir
+- **[Proposer un évènement](https://lameutenormande.fr/events/proposition)** - N'importe qui peut proposer un évènement à ajouter au calendrier ; un admin relit et valide avant publication
 - **[Sondages](https://lameutenormande.fr/events/sondages)** - Présence aux évènements, covoiturage, et autres questions rapides
 - **[Actus](https://lameutenormande.fr/actus.html)** - Actualités du groupe
 - **[Contact](https://lameutenormande.fr/contact.html)** - Formulaire de contact
