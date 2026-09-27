@@ -426,12 +426,16 @@
           h('div', { class: 'btn-row' }, editBtn, deleteBtn)));
       }
 
-      // Suppression directe depuis la fiche en lecture (pas besoin de l'etag Zoho, contrairement à
-      // la modification) : une confirmation native suffit ici, l'action reste rare et volontaire.
+      // Suppression depuis la fiche en lecture : Zoho exige l'etag courant de l'évènement même
+      // pour un DELETE (ETAG_MISSING sinon), qu'`e` n'a pas — il vient du parsing d'events.ics, pas
+      // de Zoho — donc on le récupère d'abord via action "get" (même étape que "Modifier").
       async function supprimer(e) {
         if (!confirm('Supprimer définitivement « ' + e.title + ' » du calendrier ?')) return;
         try {
-          await E.invokeFn('zoho-create-event', { action: 'delete', uid: e.uid });
+          const data = await E.invokeFn('zoho-create-event', { action: 'get', uid: e.uid });
+          const raw = data.event;
+          const evt = (raw && raw.events && raw.events[0]) || raw;
+          await E.invokeFn('zoho-create-event', { action: 'delete', uid: e.uid, etag: evt && evt.etag });
           E.toast('Évènement supprimé.', 'success');
           modifier();
         } catch (err) {
