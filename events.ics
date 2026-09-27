@@ -459,6 +459,24 @@ DTSTAMP:20260920T020554Z
 URL:https://echodesnagas.fr/festival/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Cidre et Dragons
+DESCRIPTION:21e édition
+DTSTART;VALUE=DATE:20270918
+DTEND;VALUE=DATE:20270920
+LOCATION:Avenue de Caen\, 14810 Merville Franceville-Plage
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2a00858d820f495291703ac9b98346ad@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260927T160905Z
+LAST-MODIFIED:20260927T160905Z
+DTSTAMP:20260927T160907Z
+ATTENDEE;CN="go@events.lameutenormande";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameutenormande
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.cidreetdragon.eu/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Migennes Collection
 DESCRIPTION:Tarif:\n\n1 jour : 4€\n\n2 jours : 7€\n\nGratuit pour les -12 ans accompagné d'un adulte\n\nHoraires:\n14 février de 10h à 19h\n15 février de 10h à 18h\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Tarif:<br /></div><div>1 jour : 4€<br /></div><div>2 jours : 7€<br /></div><div>Gratuit pour les -12 ans accompagné d'un adulte<br /><br />Horaires:<br />14 février de 10h à 19h</div><div>15 février de 10h à 18h</div>
