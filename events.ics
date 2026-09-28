@@ -946,22 +946,6 @@ DTSTAMP:20260920T020554Z
 URL:https://japan-day.com/accueil-luxembourg/
 END:VEVENT
 BEGIN:VEVENT
-SUMMARY:🦊 TEST
-DESCRIPTION:
-DTSTART;VALUE=DATE:20260926
-DTEND;VALUE=DATE:20260927
-LOCATION:Washington D.C.
-CLASS:PUBLIC
-IMPORTANT:0
-STATUS:CONFIRMED
-UID:542ea08792a84a9e8b05b1418e6dcd63@zoho.eu
-TRANSP:OPAQUE
-CREATED:20260927T200958Z
-LAST-MODIFIED:20260927T200958Z
-DTSTAMP:20260927T201000Z
-URL:https://google.fr
-END:VEVENT
-BEGIN:VEVENT
 SUMMARY:Bordeaux Geekfest
 DESCRIPTION:Le Bordeaux Geekfest\, plus grand festival pop culture du Sud-Ouest\, fête sa 12ème édition les 23 et 24 mai 2026 au Parc des Expositions de Bordeaux (Cours Jules Ladoumègue\, 33300 Bordeaux)\, avec une thématique dédiée aux Mondes de la Fantasy !\n\nSur 15 000 m² répartis en 14 espaces thématiques\, tout l'univers geek est représenté : jeux vidéo (espace 2000 m² avec tournois\, free play\, rétro gaming et VR)\, manga\, comics\, cosplay\, Kpop\, high-tech\, sciences et cinéma. Plus de 120h de programmation incluent conférences\, concerts\, show cosplay\, expositions thématiques et rencontres avec des invités exclusifs — le tout autour de plus de 200 exposants et 300 artistes.\n\nBilletterie ouverte sur bordeauxgeekfest.com avec des tarifs réduits en prévente. L'événement attend plus de 30 000 festivaliers pour ce week-end 100% pop culture incontournable !\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le<span>&nbsp\;</span><b>Bordeaux Geekfest</b>\, plus grand festival pop culture du Sud-Ouest\, fête sa<span>&nbsp\;</span><b>12ème édition</b><span>&nbsp\;</span>les<span>&nbsp\;</span><b>23 et 24 mai 2026</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc des Expositions de Bordeaux</b><span>&nbsp\;</span>(Cours Jules Ladoumègue\, 33300 Bordeaux)\, avec une thématique dédiée aux<span>&nbsp\;</span><b>Mondes de la Fantasy</b><span>&nbsp\;</span>!<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Sur<span>&nbsp\;</span><b>15 000 m²</b><span>&nbsp\;</span>répartis en<span>&nbsp\;</span><b>14 espaces thématiques</b>\, tout l'univers geek est représenté : jeux vidéo (espace 2000 m² avec tournois\, free play\, rétro gaming et VR)\, manga\, comics\, cosplay\, Kpop\, high-tech\, sciences et cinéma. Plus de<span>&nbsp\;</span><b>120h de programmation</b><span>&nbsp\;</span>incluent conférences\, concerts\, show cosplay\, expositions thématiques et rencontres avec des invités exclusifs — le tout autour de plus de<span>&nbsp\;</span><b>200 exposants et 300 artistes</b>.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Billetterie ouverte sur bordeauxgeekfest.com avec des<span>&nbsp\;</span><b>tarifs réduits en prévente</b>. L'événement attend plus de<span>&nbsp\;</span><b>30 000 festivaliers</b><span>&nbsp\;</span>pour ce week-end 100% pop culture incontournable !<br /></p><div><br /></div>
