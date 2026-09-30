@@ -26,15 +26,15 @@ SUMMARY:🦊 FCD 8 (Fur Calva Dance 8)
 DESCRIPTION:La Normandi'Furs organise la 8ème édition de la FCD au Village Vacances de Blainville-sur-Mer.\nThème : Gaulois.
 DTSTART:20270618T120000Z
 DTEND:20270622T080000Z
-LOCATION:Village de vacances VTF Le Sénéquet Rue de la Vieille Digue. 50560 Blainville-sur-Mer\, France
+LOCATION:Village de vacances VTF Le Sénéquet. Rue de la Vieille Digue\, 50560 Blainville-sur-Mer\, France
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:01ee730b3cf546478c1a349f6c9d976c@zoho.eu
 TRANSP:OPAQUE
 CREATED:20260930T124650Z
-LAST-MODIFIED:20260930T124650Z
-DTSTAMP:20260930T124651Z
+LAST-MODIFIED:20260930T125001Z
+DTSTAMP:20260930T125002Z
 ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
 ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://fcd.normandifurs.fr
