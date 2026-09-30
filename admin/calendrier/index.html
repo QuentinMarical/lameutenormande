@@ -134,10 +134,16 @@
     // reconvertit vers ce que les <input type="date"/"datetime-local"> attendent, en heure locale.
     function zohoDateToInputValue(str, allDay) {
       if (!str) return '';
-      if (allDay) { const m = /^(\d{4})(\d{2})(\d{2})/.exec(str); return m ? `${m[1]}-${m[2]}-${m[3]}` : ''; }
-      const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})Z?$/.exec(str);
+      if (allDay) { const m = /^(\d{4})-?(\d{2})-?(\d{2})/.exec(str); return m ? `${m[1]}-${m[2]}-${m[3]}` : ''; }
+      // Zoho renvoie parfois un décalage (ex. 20251029T100000+0200) au lieu de "Z" : on le prend en compte.
+      const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(Z|[+-]\d{2}:?\d{2})?$/.exec(String(str).trim());
       if (!m) return '';
-      const d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
+      let ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] || 0));
+      if (m[7] && m[7] !== 'Z') {
+        const o = /^([+-])(\d{2}):?(\d{2})$/.exec(m[7]);
+        ms -= (o[1] === '-' ? -1 : 1) * (+o[2] * 60 + +o[3]) * 60000;
+      }
+      const d = new Date(ms);
       const p = n => String(n).padStart(2, '0');
       return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
     }
@@ -417,7 +423,7 @@
         const finRaw = isAllDay ? addDaysToDateStr(zohoDateToInputValue(e.dateandtime.end, true), -1) : e.dateandtime.end;
         const finTxt = isAllDay ? E.fmtDate(finRaw) : E.fmtDateTime(zohoDateToInputValue(e.dateandtime.end, false));
         const estPresente = Array.isArray(e.attendees) && e.attendees.some(a => (a.email || '').toLowerCase() === GO_ATTENDEE_EMAIL);
-        const editBtn = h('button', { class: 'btn small', type: 'button', onClick: () => ouvrirEdition(e.uid) }, '✏️ Modifier');
+        const editBtn = h('button', { class: 'btn small', type: 'button', onClick: () => ouvrirEdition(e.uid, e) }, '✏️ Modifier');
         const deleteBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: () => supprimer(e) }, '🗑️ Supprimer');
         E.clear(pane).append(backBtn(), h('div', { class: 'card column', style: { marginTop: '12px' } },
           h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
@@ -447,14 +453,34 @@
         }
       }
 
-      async function ouvrirEdition(uid) {
+      async function ouvrirEdition(uid, ics) {
         E.clear(pane).appendChild(h('div', { class: 'loader' }));
         try {
           const data = await E.invokeFn('zoho-create-event', { action: 'get', uid });
           const raw = data.event;
           const evt = (raw && raw.events && raw.events[0]) || raw;
           if (!evt || !evt.uid) throw new Error('ZOHO_GET_FAILED');
-          E.clear(pane).append(backBtn(), renderEventForm(evt, () => modifier()));
+          // Ce que Zoho ne renvoie pas (ou renvoie vide/mal formaté) est complété par la fiche
+          // issue d'events.ics, pour que le formulaire soit toujours prérempli.
+          const dt = evt.dateandtime || {};
+          const fusion = {
+            ...evt,
+            title: evt.title || (ics && ics.title) || '',
+            location: evt.location || (ics && ics.location) || '',
+            url: evt.url || (ics && ics.url) || '',
+            description: evt.description || (ics && ics.description) || '',
+            isallday: typeof evt.isallday === 'boolean' ? evt.isallday : !!(ics && ics.isallday),
+            attendees: Array.isArray(evt.attendees) && evt.attendees.length ? evt.attendees : ((ics && ics.attendees) || []),
+            dateandtime: {
+              ...dt,
+              start: dt.start || (ics && ics.dateandtime.start) || '',
+              end: dt.end || (ics && ics.dateandtime.end) || '',
+            },
+          };
+          const allDayF = !!fusion.isallday;
+          if (!zohoDateToInputValue(fusion.dateandtime.start, allDayF) && ics) fusion.dateandtime.start = ics.dateandtime.start;
+          if (!zohoDateToInputValue(fusion.dateandtime.end, allDayF) && ics) fusion.dateandtime.end = ics.dateandtime.end;
+          E.clear(pane).append(backBtn(), renderEventForm(fusion, () => modifier()));
         } catch (err) {
           E.clear(pane).append(
             h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err))),
