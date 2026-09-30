@@ -2397,6 +2397,24 @@ DTSTAMP:20260920T020554Z
 URL:https://www.kamopolis.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Japan Breizh Con'
+DESCRIPTION:Samedi : 10h à 19h\nDimanche : 10h à 18h
+DTSTART:20270703T080000Z
+DTEND:20270704T160000Z
+LOCATION:Le Quai St-Malo Parc Expo. 1B Quai Duguay-Trouin\, 35400 Saint-Malo
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:dd5f638497814d71b4ad57d9c72596eb@zoho.eu
+TRANSP:OPAQUE
+CREATED:20260930T123943Z
+LAST-MODIFIED:20260930T123943Z
+DTSTAMP:20260930T123944Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://breizhcon.bzh/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Blagnac Culture Geek
 DESCRIPTION:Venez participer à la 6ème édition du Blagnac Culture Geek\, avec plus de 80 exposants dans une ambiance familiale avec des invités et décors de la pop culture.\nAvec une vingtaines d'animations sur scène (Kpop\, Just dance\, rencontre acteurs\, démonstration sabre laser etc....) mais aussi sur stand (manga\, jeux vidéo\, cosplay\, et bien sur des boutiques spécialisées geek et pop culture).\nUn jeu de piste géant sur le thème Kaamelott vous y attend\, avec Qrcode\, cadenas et bien d'autres énigmes pour trouver le Trésor des chevaliers !!!\n\n\nEntrée gratuite.\n\n\nEn invité : Thomas COUSSEAU.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-family:puvi_regular\; font-size:12pt\; line-height:1.3"><p>Venez participer à la 6ème édition du Blagnac Culture Geek\, avec plus de 80 exposants dans une ambiance familiale avec des invités et décors de la pop culture.</p><p>Avec une vingtaines d'animations sur scène (Kpop\, Just dance\, rencontre acteurs\, démonstration sabre laser etc....) mais aussi sur stand (manga\, jeux vidéo\, cosplay\, et bien sur des boutiques spécialisées geek et pop culture).</p><p>Un jeu de piste géant sur le thème Kaamelott vous y attend\, avec Qrcode\, cadenas et bien d'autres énigmes pour trouver le Trésor des chevaliers !!!</p><p><br class="rte-ignore-br"/></p><p>Entrée gratuite.</p><p><br/></p><p>En invité : Thomas COUSSEAU.</p></div>
