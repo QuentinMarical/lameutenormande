@@ -110,7 +110,7 @@
           E.icon('right-from-bracket'), h('span', { class: 'btn-label' }, 'Se déconnecter'))));
     E.clear(app).appendChild(dashHeader);
 
-    const tabs = [['ajouter', 'Ajouter'], ['modifier', 'Modifier'], ['reglages', 'Réglages']];
+    const tabs = [['ajouter', 'Ajouter'], ['modifier', 'Modifier'], ['propositions', 'Propositions'], ['reglages', 'Réglages']];
     const tabBar = h('div', { class: 'tabs' });
     const pane = h('div');
     app.append(tabBar, pane);
@@ -119,7 +119,7 @@
     function show(id) {
       E.qsa('.tabs button', tabBar).forEach(b => b.classList.toggle('active', b.dataset.tab === id));
       E.clear(pane).appendChild(E.loader());
-      ({ ajouter, modifier, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
+      ({ ajouter, modifier, propositions, reglages })[id]().catch(err => { E.clear(pane).appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err)))); });
     }
 
     // ---------- Formulaire d'évènement (partagé Ajouter / Modifier) ----------
@@ -155,7 +155,11 @@
     // existing (facultatif) : l'évènement Zoho tel que renvoyé par l'action "get", pour préremplir
     // en mode édition. onSaved(uid) est appelé après un enregistrement réussi.
     function renderEventForm(existing, onSaved) {
-      const isEdit = !!existing;
+      // isEdit se base sur existing.uid (pas juste "existing" tronqué) : l'onglet Propositions
+      // préremplit ce formulaire depuis une proposition qui n'existe pas encore dans Zoho (pas
+      // d'uid), pour laquelle il faut bien envoyer action:"create" — seule action "Modifier"
+      // (ouvrirEdition, existing toujours chargé depuis Zoho via "get") a un vrai uid.
+      const isEdit = !!(existing && existing.uid);
       const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Evreux 2026', required: true, value: existing ? existing.title.replace(/^\u{1F98A}\s*/u, '') : '' });
       const furryChk = h('input', { type: 'checkbox' }); furryChk.checked = !!(existing && /\u{1F98A}/u.test(existing.title));
       const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France', value: (existing && existing.location) || '' });
@@ -426,12 +430,16 @@
           h('div', { class: 'btn-row' }, editBtn, deleteBtn)));
       }
 
-      // Suppression directe depuis la fiche en lecture (pas besoin de l'etag Zoho, contrairement à
-      // la modification) : une confirmation native suffit ici, l'action reste rare et volontaire.
+      // Suppression depuis la fiche en lecture : Zoho exige l'etag courant de l'évènement même
+      // pour un DELETE (ETAG_MISSING sinon), qu'`e` n'a pas — il vient du parsing d'events.ics, pas
+      // de Zoho — donc on le récupère d'abord via action "get" (même étape que "Modifier").
       async function supprimer(e) {
         if (!confirm('Supprimer définitivement « ' + e.title + ' » du calendrier ?')) return;
         try {
-          await E.invokeFn('zoho-create-event', { action: 'delete', uid: e.uid });
+          const data = await E.invokeFn('zoho-create-event', { action: 'get', uid: e.uid });
+          const raw = data.event;
+          const evt = (raw && raw.events && raw.events[0]) || raw;
+          await E.invokeFn('zoho-create-event', { action: 'delete', uid: e.uid, etag: evt && evt.etag });
           E.toast('Évènement supprimé.', 'success');
           modifier();
         } catch (err) {
@@ -452,6 +460,92 @@
             h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(err))),
             backBtn());
         }
+      }
+    }
+
+    // ---------- Propositions d'évènements (formulaire public events/proposition/) ----------
+    // "Publier" réutilise renderEventForm() (voir la remarque sur isEdit plus haut) : la
+    // proposition n'a pas d'uid Zoho, donc le formulaire s'ouvre en mode "Nouvel évènement",
+    // préreempli. Après un enregistrement réussi, admin_review_proposal marque la proposition
+    // "approved" — un échec de ce dernier appel n'annule pas la création Zoho, déjà faite à ce
+    // stade : seul un avertissement s'affiche, la proposition resterait alors visible comme
+    // "en attente" bien que déjà publiée, à traiter manuellement si ça arrive (rare, réseau).
+    function isoToZohoDate(iso, allDay) {
+      const d = new Date(iso), p = n => String(n).padStart(2, '0');
+      return allDay
+        ? `${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}`
+        : `${d.getUTCFullYear()}${p(d.getUTCMonth() + 1)}${p(d.getUTCDate())}T${p(d.getUTCHours())}${p(d.getUTCMinutes())}${p(d.getUTCSeconds())}Z`;
+    }
+    async function propositions() {
+      E.clear(pane);
+      const { data, error } = await E.sb.from('event_proposals').select('*').order('submitted_at', { ascending: false });
+      if (error) { pane.appendChild(h('div', { class: 'card danger' }, h('div', { class: 'body' }, E.errMsg(error)))); return; }
+      const rows = data || [];
+      const pending = rows.filter(r => r.status === 'pending');
+      const done = rows.filter(r => r.status !== 'pending').slice(0, 20);
+
+      function card(r) {
+        const debutTxt = r.all_day ? E.fmtDate(r.start_at) : E.fmtDateTime(r.start_at);
+        const finTxt = r.all_day ? E.fmtDate(r.end_at) : E.fmtDateTime(r.end_at);
+        const box = h('div', { class: 'card column', style: { marginBottom: '14px' } },
+          h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' } },
+            h('div', { class: 'title', style: { fontSize: '15px', margin: 0 } }, (r.furry ? '🦊 ' : '') + r.title),
+            r.status !== 'pending' ? h('span', { class: 'badge ' + (r.status === 'approved' ? 'ok' : 'danger') }, r.status === 'approved' ? 'Publiée' : 'Refusée') : null),
+          h('div', { class: 'small muted' }, debutTxt === finTxt ? debutTxt : (debutTxt + ' → ' + finTxt)),
+          r.location ? h('div', null, '📍 ' + r.location) : null,
+          r.url ? h('div', null, h('a', { href: r.url, target: '_blank', rel: 'noopener' }, r.url)) : null,
+          r.description ? h('div', { class: 'small', style: { whiteSpace: 'pre-wrap' } }, r.description) : null,
+          r.comment ? h('div', { class: 'small', style: { whiteSpace: 'pre-wrap' } }, h('b', null, 'Message du proposeur : '), r.comment) : null,
+          h('div', { class: 'small muted' }, 'Envoyée le ' + E.fmtDateTime(r.submitted_at)),
+          r.admin_note ? h('div', { class: 'small muted' }, 'Motif : ' + r.admin_note) : null);
+        if (r.status === 'pending') {
+          const publierBtn = h('button', { class: 'btn small', type: 'button', onClick: () => ouvrirPublication(r) }, '✅ Publier au calendrier');
+          const refuserBtn = h('button', { class: 'btn secondary small', type: 'button', onClick: async () => {
+            const note = prompt('Refuser cette proposition ? Motif (usage interne, jamais envoyé au proposeur) :', '');
+            if (note === null) return;
+            const { error } = await E.sb.rpc('admin_review_proposal', { p_id: r.id, p_status: 'rejected', p_note: note || '' });
+            if (error) { E.toast(E.errMsg(error), 'error'); return; }
+            E.toast('Proposition refusée.', 'success'); propositions();
+          } }, '❌ Refuser');
+          box.appendChild(h('div', { class: 'btn-row' }, publierBtn, refuserBtn));
+        }
+        return box;
+      }
+
+      function ouvrirPublication(r) {
+        // renderEventForm() attend un existing.dateandtime.end façon Zoho, c'est-à-dire *exclusif*
+        // (le lendemain du dernier jour réel pour une journée entière — voir son propre commentaire
+        // plus haut, "Fin restent exclusive côté Zoho") : elle retranche elle-même un jour pour
+        // l'affichage (addDaysToDateStr(endRaw, -1)). r.end_at ici est la date de fin *inclusive*
+        // telle que saisie sur le formulaire public (comme le champ "Fin" du formulaire admin) : il
+        // faut donc lui ajouter un jour avant conversion, sous peine d'afficher une fin décalée
+        // d'un jour trop tôt une fois republiée dans ce formulaire.
+        const endForZoho = r.all_day ? new Date(new Date(r.end_at).getTime() + 86400000).toISOString() : r.end_at;
+        const existing = {
+          title: (r.furry ? '🦊 ' : '') + r.title, location: r.location, url: r.url, description: r.description,
+          isallday: r.all_day, attendees: [],
+          dateandtime: { start: isoToZohoDate(r.start_at, r.all_day), end: isoToZohoDate(endForZoho, r.all_day) },
+        };
+        E.clear(pane).append(
+          h('button', { class: 'btn secondary small', type: 'button', onClick: propositions }, '← Retour aux propositions'),
+          renderEventForm(existing, async () => {
+            const { error } = await E.sb.rpc('admin_review_proposal', { p_id: r.id, p_status: 'approved', p_note: '' });
+            if (error) E.toast('Évènement publié, mais la proposition n\'a pas pu être marquée traitée : ' + E.errMsg(error), 'error');
+            else E.toast('Évènement publié et proposition marquée traitée.', 'success');
+            propositions();
+          }));
+      }
+
+      pane.appendChild(h('div', { class: 'section-title' }, 'En attente' + (pending.length ? ' (' + pending.length + ')' : '')));
+      if (!pending.length) pane.appendChild(h('div', { class: 'empty' }, 'Aucune proposition en attente.'));
+      pending.forEach(r => pane.appendChild(card(r)));
+      if (done.length) {
+        const details = h('details', { class: 'month-group' });
+        details.appendChild(h('summary', null, 'Traitées récemment (' + done.length + ')'));
+        const box = h('div');
+        done.forEach(r => box.appendChild(card(r)));
+        details.appendChild(box);
+        pane.appendChild(details);
       }
     }
 

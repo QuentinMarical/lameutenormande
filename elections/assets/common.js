@@ -365,8 +365,10 @@
     ZOHO_CREATE_FAILED: 'Zoho a refusé la création de l\'évènement. Vérifie les champs et réessaie.',
     ZOHO_UPDATE_FAILED: 'Zoho a refusé la modification de l\'évènement (jeton sans le scope UPDATE ? voir README section 5). Vérifie les champs et réessaie.',
     ZOHO_GET_FAILED: 'Impossible de récupérer cet évènement depuis Zoho (jeton sans le scope READ ? voir README section 5).',
-    ZOHO_DELETE_FAILED: 'Zoho a refusé la suppression de l\'évènement (jeton sans le scope DELETE ? voir README section 5).',
-    BAD_UID: 'Identifiant d\'évènement manquant ou invalide.'
+    ZOHO_DELETE_FAILED: 'Zoho a refusé la suppression de l\'évènement (etag manquant/périmé, ou jeton sans le scope DELETE — voir README section 5). Réessaie : la fiche recharge l\'évènement avant de supprimer.',
+    BAD_UID: 'Identifiant d\'évènement manquant ou invalide.',
+    BAD_INPUT: 'Un des champs dépasse la longueur autorisée.',
+    PROPOSAL_NOT_FOUND: 'Cette proposition n\'existe plus (déjà traitée ailleurs ?).',
   };
   E.errMsg = function (err) {
     const m = (err && (err.message || err.error_description || String(err))) || 'Erreur inconnue';

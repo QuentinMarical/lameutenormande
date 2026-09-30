@@ -1,65 +1,48 @@
-<!DOCTYPE html>
-<html  lang="fr">
+<!doctype html>
+<html lang="fr">
 <head>
-  
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  
-  <meta name="twitter:card" content="summary_large_image"/>
-  <meta name="twitter:image:src" content="assets/images/index-meta.png">
-  <meta property="og:image" content="assets/images/index-meta.png">
-  <meta name="twitter:title" content="Accueil - La Meute Normande">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/macaron-128x128-128x128.png" type="image/x-icon">
-  <meta name="description" content="Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, nous nous retrouvons pour participer à des événements ensemble assez régulièrement.">
-  
-  
-  <title>Accueil - La Meute Normande</title>
-  <link rel="stylesheet" href="assets/font-awesome-brands/../css/fontawesome.min.css">
-  <link rel="stylesheet" href="assets/font-awesome-brands/css/brands.min.css">
-  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="assets/parallax/jarallax.css">
-  <link rel="stylesheet" href="assets/dropdown/css/style.css">
-  <link rel="stylesheet" href="assets/socicon/css/styles.css">
-  <link rel="stylesheet" href="assets/theme/css/style.css">
-  <link href="assets/fonts/style.css" rel="stylesheet">
-  <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=MvHv0G"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=MvHv0G" type="text/css">
-
-  
-  <script>
-document.addEventListener('click', function (e) {
-  var lien = e.target.closest("a[href='privacy.html'], a[href$='/privacy.html']");
-  if (!lien) return;
-  var bouton = document.querySelector(".footer-legal-btn[data-legal='cookies']");
-  if (bouton) { e.preventDefault(); bouton.click(); }
-});
-document.addEventListener('click', function (e) {
-  var btn = e.target.closest('#impliedsubmit, #explicitsubmit');
-  if (!btn) return;
-  var d = new Date();
-  d.setTime(d.getTime() + 365 * 86400000);
-  document.cookie = 'cookiesDirective=1; expires=' + d.toUTCString() + '; path=/';
-});
-</script>
-  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Proposer un évènement — La Meute Normande</title>
+  <meta name="description" content="Propose un évènement à ajouter au calendrier de La Meute Normande : un admin relit et valide chaque proposition avant publication.">
+  <link rel="shortcut icon" href="https://lameutenormande.fr/assets/images/macaron-128x128-128x128.png" type="image/x-icon">
+  <link rel="stylesheet" href="../../assets/css/fontawesome.min.css">
+  <link rel="stylesheet" href="../../assets/font-awesome-brands/css/brands.min.css">
+  <link rel="stylesheet" href="../../assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../assets/dropdown/css/style.css">
+  <link rel="stylesheet" href="../../assets/socicon/css/styles.css">
+  <link rel="stylesheet" href="../../assets/theme/css/style.css">
+  <link rel="stylesheet" href="../../assets/mobirise/css/mbr-additional.css">
+  <!-- Menu et pied de page : mêmes composants Mobirise que le reste du site (Module Menu v6,
+       Module footer v2 RGPD), reprises telles quelles pour rester identiques partout. Chargées
+       en dernier : reprend la main sur tout ce qui n'est pas le menu/pied de page (cartes,
+       boutons, formulaire…) pour garder le thème sombre de cet outil, comme events/sondages/. -->
+  <link rel="stylesheet" href="../../elections/assets/elections.css">
+  <!-- Même correctif que events/sondages/assets/votes.css (déjà en place là-bas pour ce même
+       menu Mobirise) : assets/theme/css/style.css pose un fond blanc générique sur tout <section>
+       qui écrase .page-head (elections.css ne lui donne lui-même aucun fond, il compte
+       normalement sur le fond sombre du <body>, jamais recouvert sur les pages qui ne chargent
+       pas ce bundle Mobirise complet, comme admin/ ou elections/). Le menu flotte aussi en
+       position absolute par-dessus la page (prévu pour survoler une image de fond, absente ici) :
+       sans ce padding-top, son bandeau recouvre le haut de .page-head. -->
+  <style>
+    .page-head { background: transparent; padding-top: 7rem; }
+    @media (max-width: 767px) { .page-head { padding-top: 5.5rem; } }
+  </style>
 </head>
 <body>
-  
   <section data-bs-version="5.1" class="menu menu2 cid-veCgXANUp1" once="menu" id="menu02-1i">
-	
-
 	<nav class="navbar navbar-dropdown navbar-expand-lg" aria-label="Navigation principale">
 		<div class="container">
 			<div class="navbar-brand">
 				<span class="navbar-logo">
-					<a href="index.html">
-						<img src="assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async" style="height: 3.7rem;">
+					<a href="../../index.html">
+						<img src="../../assets/images/logo-2000x837.png" alt="La Meute Normande" decoding="async" style="height: 3.7rem;">
 					</a>
 				</span>
-				
 			</div>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<div class="hamburger">
@@ -71,7 +54,7 @@ document.addEventListener('click', function (e) {
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item dropdown">
-						<a class="nav-link link dropdown-toggle text-danger display-4" href="events.html" data-toggle="dropdown-submenu" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Événements</a><div class="dropdown-menu" aria-labelledby="dropdown-973"><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events">Calendrier</a><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events/sondages">Sondages</a></div>
+						<a class="nav-link link dropdown-toggle text-danger display-4" href="../../events.html" data-toggle="dropdown-submenu" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">Événements</a><div class="dropdown-menu" aria-labelledby="dropdown-973"><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events">Calendrier</a><a class="dropdown-item text-danger display-4" href="https://lameutenormande.fr/events/sondages">Sondages</a></div>
 					</li><li class="nav-item"><a class="nav-link link text-danger text-primary display-4" href="https://lameutenormande.fr/actus">Actus</a></li>
 					<li class="nav-item">
 						<a class="nav-link link text-danger text-primary display-4" href="https://lameutenormande.fr/contact">Contact</a>
@@ -86,108 +69,47 @@ document.addEventListener('click', function (e) {
 					<a class="iconfont-wrapper" href="https://discord.gg/Ejm3J2D3Xc" aria-label="Discord" style="color: rgb(121, 15, 160);">
 						<span class="p-2 mbr-iconfont fab fa-discord" style="color: rgb(121, 15, 160); fill: rgb(121, 15, 160);"></span>
 					</a>
-					
 				</div>
-				
 			</div>
 		</div>
 	</nav>
-</section>
+  </section>
+  <section class="page-head">
+    <h1>Proposer un évènement</h1>
+    <div class="sub">Un admin relit chaque proposition avant de l'ajouter au calendrier — rien n'est publié directement.</div>
+  </section>
+  <main class="wrap" id="app"><div class="loader">Chargement…</div></main>
 
-<section data-bs-version="5.1" class="header09 startm5 cid-v2D5vo6bV7 mbr-fullscreen mbr-parallax-background" id="header09-1">	
-    
-	<div class="mbr-overlay" style="opacity: 0.2; background-color: rgb(0, 0, 0);"></div>
-	
-	<div class="container-fluid">
-		<div class="row">
-			<div class="content-wrap col-12 col-md-9">
-				<div class="title-panel title-panel-main">
-					<h1 class="mbr-section-title mbr-fonts-style mbr-white mb-0 display-1"><strong>La Meute Normande</strong>
-					</h1>
-				</div>
-				<div class="title-panel title-panel-sub">
-					<h2 class="mbr-section-title mbr-fonts-style mbr-white mb-0 display-5"><strong>Pour faire court, un groupe de furry en Haute-Normandie!&nbsp;</strong></h2>
-				</div>
-				
-				
-			</div>
-		</div>
-	</div>
-	<a class="scroll-down-btn" href="#" onclick="this.closest('section').nextElementSibling.scrollIntoView({behavior:'smooth'}); return false;" aria-label="Défiler vers le bas">
-		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
-			<circle cx="20" cy="20" r="18" fill="rgba(0,0,0,0.28)" stroke="rgba(255,255,255,0.45)" stroke-width="1.5"></circle>
-			<polyline points="13,17 20,25 27,17" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
-		</svg>
-	</a>
-</section>
-
-<section data-bs-version="5.1" class="header13 cid-vjIECNypTg mbr-fullscreen mbr-parallax-background" id="header13-1v">
-  
-
-  
-  <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(0, 0, 0);"></div>
-
-  <div class="align-center container-fluid">
-    <div class="row justify-content-center">
-      <div class="col-md-12 mb-5 content-head">
-        <h1 class="mbr-section-title mbr-fonts-style display-1"><strong>Bienvenue dans la meute !</strong></h1>
-        <p class="mbr-text mbr-fonts-style mt-4 display-7">Nous sommes un groupe de passionnés de la culture furry, basé en Haute-Normandie, nous nous retrouvons pour participer à des événements ensemble assez régulièrement.
-<br>
-<br>Des conventions animées aux rassemblements locaux, nous sommes toujours prêts pour l'aventure.
-<br>
-<br>Notre groupe, c'est une famille où chacun trouve sa place et exprime sa créativité.</p>
-        <div class="mbr-section-btn mt-4"><a class="btn btn-info display-7" href="contact.html">Nous rejoindre</a></div>
+  <!-- Pied de page : Module footer v2 (RGPD), identique à celui de formulaire.html/contact.html/
+       events.html — contenu légal, modale et script inclus tels quels (autonome, indépendant de
+       elections/assets/legal.js utilisé ailleurs dans cet outil). -->
+  <section data-bs-version="5.1" class="footer-modern cid-v4N9BybemT" once="footers" id="footer04-1j">
+    <div class="container">
+      <div class="footer-divider"></div>
+      <div class="footer-credits">
+        <p class="mbr-text mbr-fonts-style display-7">
+          Site réalisé par <a href="tg://resolve?domain=NitraFox" class="footer-link footer-link-nitra">Nitra🦊</a>
+          &amp; calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="footer-link footer-link-spyro">Spyro the bat🦇</a>
+        </p>
+      </div>
+      <div class="footer-legal-links">
+        <button class="footer-legal-btn" data-legal="mentions">Mentions légales</button>
+        <span class="footer-legal-sep" aria-hidden="true">•</span>
+        <button class="footer-legal-btn" data-legal="confidentialite">Politique de confidentialité</button>
+        <span class="footer-legal-sep" aria-hidden="true">•</span>
+        <button class="footer-legal-btn" data-legal="cookies">Politique de cookies</button>
       </div>
     </div>
-
-    <div class="row justify-content-center">
-      
-    </div>
-  </div>
-</section>
-
-<section data-bs-version="5.1" class="footer-modern cid-v4N9BybemT" once="footers" id="footer04-1j">
-
-    
-
-    
-
-    <div class="container">
-
-        <!-- Séparateur -->
-        <div class="footer-divider"></div>
-
-        <!-- Crédits -->
-        <div class="footer-credits">
-            <p class="mbr-text mbr-fonts-style display-7">
-                Site réalisé par <a href="tg://resolve?domain=NitraFox" class="footer-link footer-link-nitra">Nitra🦊</a>
-                &amp; calendrier alimenté par <a href="tg://resolve?domain=Spyro_The_Bat" class="footer-link footer-link-spyro">Spyro the bat🦇</a>
-            </p>
-        </div>
-
-        <!-- Liens légaux -->
-        <div class="footer-legal-links">
-            <button class="footer-legal-btn" data-legal="mentions">Mentions légales</button>
-            <span class="footer-legal-sep" aria-hidden="true">•</span>
-            <button class="footer-legal-btn" data-legal="confidentialite">Politique de confidentialité</button>
-            <span class="footer-legal-sep" aria-hidden="true">•</span>
-            <button class="footer-legal-btn" data-legal="cookies">Politique de cookies</button>
-        </div>
-
-    </div>
-
-    <!-- Modale légale -->
     <div class="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legal-modal-title" aria-hidden="true">
-        <div class="legal-modal-overlay"></div>
-        <div class="legal-modal-content" tabindex="-1">
-            <div class="legal-modal-header">
-                <h3 class="legal-modal-title"></h3>
-                <button class="legal-modal-close" aria-label="Fermer">×</button>
-            </div>
-            <div class="legal-modal-body"></div>
+      <div class="legal-modal-overlay"></div>
+      <div class="legal-modal-content" tabindex="-1">
+        <div class="legal-modal-header">
+          <h3 class="legal-modal-title"></h3>
+          <button class="legal-modal-close" aria-label="Fermer">×</button>
         </div>
+        <div class="legal-modal-body"></div>
+      </div>
     </div>
-
     <script>
     (function() {
         'use strict';
@@ -454,8 +376,121 @@ document.addEventListener('click', function (e) {
         }
     })();
     </script>
-</section><section><a href="https://mobiri.se"></a><a href="https://mobiri.se"></a></section><script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>  <script src="assets/parallax/jarallax.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/index.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/theme/js/script.js"></script>  
-  
-  
+  </section>
+
+  <script src="../../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../assets/dropdown/js/navbar-dropdown.js"></script>
+  <script src="../../assets/theme/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../../elections/assets/config.js"></script>
+  <script src="../../elections/assets/common.js"></script>
+  <script>
+  (async () => {
+    const h = E.h, app = E.qs('#app');
+    if (!E.ready) { E.notConfigured(app); return; }
+
+    // Journée entière : deux champs date/heure (Début/Fin), qui basculent en <input type="date">
+    // + case "Un seul jour" quand la case "Journée entière" est cochée — même logique que
+    // renderEventForm() dans admin/calendrier/ (dupliquée ici en plus simple : pas de mode édition,
+    // pas de préremplissage depuis Zoho, ce formulaire ne crée qu'une proposition en attente).
+    const titleInp = h('input', { class: 'input', placeholder: 'Ex. Japan Otaku Festival Évreux 2026', required: true, maxlength: '200' });
+    const furryChk = h('input', { type: 'checkbox' });
+    const locationInp = h('input', { class: 'input', placeholder: 'Ex. Parc des expositions, Évreux, France', maxlength: '200' });
+    const urlInp = h('input', { class: 'input', type: 'url', placeholder: 'https://…', maxlength: '500' });
+    const descInp = h('textarea', { class: 'input', rows: '4', placeholder: 'Détails, programme, liens billetterie…', maxlength: '4000' });
+    const commentInp = h('textarea', { class: 'input', rows: '3', placeholder: 'Une précision pour l\'admin qui valide (facultatif, pas affiché publiquement)…', maxlength: '2000' });
+    const allDayChk = h('input', { type: 'checkbox' });
+    const startInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const endInp = h('input', { class: 'input', type: 'datetime-local', required: true });
+    const startLabel = h('label', null, 'Début');
+    const endField = h('div', { class: 'field' }, h('label', null, 'Fin'), endInp);
+    const datesRow = h('div', { class: 'grid-2' }, h('div', { class: 'field' }, startLabel, startInp), endField);
+    const singleDayChk = h('input', { type: 'checkbox' });
+    const singleDayRow = h('label', { class: 'check', style: { display: 'none', width: 'fit-content' } }, singleDayChk, 'Un seul jour');
+
+    function syncDateInputsType() {
+      const type = allDayChk.checked ? 'date' : 'datetime-local';
+      [startInp, endInp].forEach(inp => {
+        if (inp.type === type) return;
+        const v = inp.value ? inp.value.slice(0, 10) : '';
+        inp.type = type;
+        inp.value = type === 'date' ? v : (v ? v + 'T00:00' : '');
+      });
+    }
+    function syncSingleDay() {
+      singleDayRow.style.display = allDayChk.checked ? 'inline-flex' : 'none';
+      if (!allDayChk.checked) singleDayChk.checked = false;
+      const single = allDayChk.checked && singleDayChk.checked;
+      endField.style.display = single ? 'none' : '';
+      startLabel.textContent = single ? 'Date' : 'Début';
+      endInp.required = !single;
+      if (single) endInp.value = startInp.value;
+    }
+    allDayChk.addEventListener('change', () => { syncDateInputsType(); syncSingleDay(); });
+    singleDayChk.addEventListener('change', syncSingleDay);
+    startInp.addEventListener('input', () => { if (allDayChk.checked && singleDayChk.checked) endInp.value = startInp.value; });
+
+    // Honeypot anti-bot : jamais visible ni atteignable au clavier pour un humain (positionné hors
+    // écran, pas simplement display:none — certains robots ignorent les champs display:none mais
+    // remplissent quand même les champs positionnés hors-écran s'ils ne vérifient que la visibilité
+    // CSS basique). Nom volontairement banal (jamais "honeypot"/"piege"), un humain ne le voit
+    // jamais donc ne le remplit jamais ; propose_event() ignore silencieusement tout envoi où il
+    // n'est pas vide.
+    const hp = h('input', { class: 'input', type: 'text', name: 'site_web', tabindex: '-1', autocomplete: 'off',
+      'aria-hidden': 'true', style: { position: 'absolute', left: '-9999px', top: '-9999px', width: '1px', height: '1px', opacity: '0' } });
+
+    const submitBtn = h('button', { class: 'btn', type: 'submit' }, 'Envoyer la proposition');
+    const form = h('form', { class: 'card column' },
+      h('div', { class: 'field' }, h('label', null, 'Titre'), titleInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, furryChk, 'Évènement furry 🦊'),
+      h('div', { class: 'grid-2' },
+        h('div', { class: 'field' }, h('label', null, 'Lieu'), locationInp),
+        h('div', { class: 'field' }, h('label', null, 'Lien (billetterie, page de l\'évènement…)'), urlInp)),
+      h('div', { class: 'field' }, h('label', null, 'Description'), descInp),
+      h('label', { class: 'check', style: { display: 'inline-flex', width: 'fit-content' } }, allDayChk, 'Journée entière'),
+      singleDayRow,
+      datesRow,
+      h('div', { class: 'field' }, h('label', null, 'Message pour l\'admin (facultatif)'), commentInp),
+      hp,
+      h('div', { class: 'btn-row' }, submitBtn));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = titleInp.value.trim();
+      if (!title) { E.toast('Le titre est obligatoire.', 'error'); return; }
+      const allDay = allDayChk.checked;
+      if (!startInp.value || !endInp.value) { E.toast('Les dates de début et de fin sont obligatoires.', 'error'); return; }
+      if (allDay ? endInp.value < startInp.value : new Date(endInp.value) < new Date(startInp.value)) {
+        E.toast('La date de fin doit être après le début.', 'error'); return;
+      }
+      // Journée entière : la colonne est un timestamptz, mais on n'a qu'une date calendaire
+      // (YYYY-MM-DD), pas un instant réel. On l'encode en minuit UTC (suffixe Z) plutôt que minuit
+      // local : un aller-retour par le fuseau local (ex. new Date(v).toISOString()) ferait glisser
+      // le jour d'une unité pour tout fuseau en avance sur UTC — même piège que documenté dans
+      // zoho-create-event/index.ts (fmtZohoDate). L'onglet Propositions doit lire cette date en UTC
+      // pour la réafficher/préremplir sans décalage, jamais en heure locale.
+      const start = allDay ? new Date(startInp.value + 'T00:00:00Z').toISOString() : new Date(startInp.value).toISOString();
+      const end = allDay ? new Date(endInp.value + 'T00:00:00Z').toISOString() : new Date(endInp.value).toISOString();
+
+      submitBtn.disabled = true; submitBtn.textContent = 'Envoi…';
+      try {
+        const { error } = await E.sb.rpc('propose_event', {
+          p_title: title, p_start: start, p_end: end,
+          p_description: descInp.value.trim(), p_location: locationInp.value.trim(), p_url: urlInp.value.trim(),
+          p_all_day: allDay, p_furry: furryChk.checked, p_comment: commentInp.value.trim(), p_hp: hp.value,
+        });
+        if (error) throw error;
+        E.clear(app).appendChild(h('div', { class: 'card ok' }, h('div', { class: 'body' },
+          h('div', { class: 'title' }, 'Merci !'),
+          h('div', { class: 'desc' }, 'Ta proposition a été transmise pour validation. Un admin la relira avant qu\'elle apparaisse au calendrier.'))));
+      } catch (err) {
+        E.toast(E.errMsg(err), 'error');
+        submitBtn.disabled = false; submitBtn.textContent = 'Envoyer la proposition';
+      }
+    });
+
+    E.clear(app).appendChild(form);
+  })();
+  </script>
 </body>
 </html>

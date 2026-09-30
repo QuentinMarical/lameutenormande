@@ -123,6 +123,14 @@ GITHUB_REPO=QuentinMarical/lameutenormande
 
 Sans eux, l'outil fonctionne normalement — la mise à jour du site prend simplement jusqu'à une heure.
 
+## 6. Propositions d'évènements (`events/proposition/`)
+
+Formulaire public (aucun compte requis) où n'importe qui peut proposer un évènement à ajouter au calendrier. Rien n'est publié directement : chaque proposition passe par l'onglet **Propositions** du panel `admin/calendrier/`, qui la préremplit dans le même formulaire que **Ajouter** (donc le même appel à `zoho-create-event`) — un admin peut donc corriger les champs avant de publier, ou refuser avec un motif interne.
+
+Rien à configurer : table + RPC (`propose_event`, `admin_review_proposal`) déjà dans `schema.sql`, aucun nouveau secret. La notification d'une nouvelle proposition (vers `contact@lameutenormande.fr`) réutilise directement le formulaire Basin déjà branché sur `contact.html` (`https://usebasin.com/f/56e1aab16816`, appelé côté serveur via `pg_net` depuis un trigger sur `event_proposals`) plutôt qu'un nouveau service — best-effort, une proposition reste visible dans l'onglet **Propositions** même si cette notification échoue.
+
+Anti-spam : un champ honeypot caché (`propose_event(..., p_hp)`) — un bot générique le remplit, un humain ne le voit jamais ; rempli, la RPC fait comme si tout s'était bien passé sans rien insérer.
+
 ## Tester sans Supabase (mode démo)
 
 Ajoute `?mock=1` à l'URL d'une page (ex. `elections/voter.html?mock=1`) : `assets/dev-mock.js` remplace la base par des données factices en mémoire, sans aucun appel réseau. Variantes : `&as=anon` (aucun code mémorisé), `&as=member` (défaut, code `MEUTE-TEST-0001`), `&as=admin` (session admin). Ce mode n'a aucun effet sans le paramètre.

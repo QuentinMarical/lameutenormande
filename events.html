@@ -26,7 +26,7 @@
   <link href="assets/fonts/style.css" rel="stylesheet">
   <link rel="preload" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter+Tight:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
-  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=zzcI5W"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=zzcI5W" type="text/css">
+  <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css?v=k8P7n2"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css?v=k8P7n2" type="text/css">
 
   
   <script>
@@ -112,7 +112,7 @@ document.addEventListener('click', function (e) {
                 <button type="button" class="mcal-arrow mcal-prev" aria-label="Mois précédent">‹</button>
                 <div class="mcal-nav-center">
                     <button type="button" class="mcal-btn mcal-today">Aujourd'hui</button>
-                    <button type="button" class="mcal-btn mcal-btn-toggle">Vue Liste</button>
+                    <button type="button" class="mcal-btn mcal-btn-toggle" aria-label="Vue Liste" title="Vue Liste"></button>
                     <span class="mcal-month-label" title="Double-cliquez pour changer de vue">&nbsp;</span>
                 </div>
                 <button type="button" class="mcal-arrow mcal-next" aria-label="Mois suivant">›</button>
@@ -150,6 +150,7 @@ document.addEventListener('click', function (e) {
                         <div class="mcal-suggest" role="listbox" hidden=""></div>
                     </div>
                 </div>
+                <a href="https://lameutenormande.fr/events/proposition" target="_blank" rel="noopener" class="mcal-propose">+ Proposer un événement</a>
             </div>
         </header>
 
@@ -164,7 +165,6 @@ document.addEventListener('click', function (e) {
         <header class="mcal-dialog-head">
             <h3 class="mcal-dialog-title"></h3>
             <div class="mcal-dialog-actions">
-                <button type="button" class="mcal-dl" data-action="download-ics">Télécharger pour mon calendrier (.ics)</button>
                 <button type="button" class="mcal-x" data-action="close-dialog" aria-label="Fermer">×</button>
             </div>
         </header>
@@ -321,6 +321,38 @@ document.addEventListener('click', function (e) {
         }
 
         .mcal-btn:hover { transform: translateY(-1px); border-color: rgba(255, 255, 255, 0.28); }
+
+        .mcal-btn-toggle {
+            width: 1.8rem;
+            height: 1.8rem;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mcal-btn-toggle svg { display: block; }
+
+        .mcal-propose {
+            border: none;
+            border-radius: 999px;
+            padding: 0.33rem 0.65rem;
+            font-size: 0.69rem;
+            font-weight: 700;
+            font-family: var(--mc-font-alt);
+            letter-spacing: 0.2px;
+            color: #072537;
+            background: linear-gradient(140deg, #ffc368, #ff9f47);
+            text-decoration: none;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .mcal-propose:hover { transform: translateY(-1px); color: #072537; }
+        .mcal-propose:focus-visible { outline: 2px solid var(--mc-accent-2); outline-offset: 2px; }
 
         .mcal-month-label {
             color: var(--mc-ink);
@@ -891,22 +923,6 @@ document.addEventListener('click', function (e) {
 
         .mcal-dialog-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0.45rem; }
 
-        .mcal-dl {
-            border: 1px solid rgba(255, 195, 104, 0.75);
-            border-radius: 999px;
-            padding: 0.45rem 0.72rem;
-            font-size: 0.74rem;
-            line-height: 1;
-            font-weight: 700;
-            color: #072537;
-            background: linear-gradient(140deg, #ffc368, #ff9f47);
-            cursor: pointer;
-            white-space: nowrap;
-            transition: transform 0.2s ease;
-        }
-
-        .mcal-dl:hover { transform: translateY(-1px); }
-
         .mcal-x {
             border: 1px solid rgba(255, 255, 255, 0.26);
             color: #f1f8fd;
@@ -1062,7 +1078,7 @@ document.addEventListener('click', function (e) {
             .mcal-daynum { font-size: 0.72rem; }
             .mcal-dow { font-size: 0.7rem; padding: 0.38rem 0.24rem; }
             .mcal-month-label { font-size: 0.9rem; }
-            .mcal-btn { font-size: 0.72rem; padding: 0.38rem 0.65rem; }
+            .mcal-btn:not(.mcal-btn-toggle) { font-size: 0.72rem; padding: 0.38rem 0.65rem; }
         }
 
         @media (min-width: 900px) {
@@ -1746,13 +1762,22 @@ document.addEventListener('click', function (e) {
             /* ============================================================
                10. Rendu des vues
                ============================================================ */
+            const ICON_LIST = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="4" cy="6" r="1.15" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.15" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.15" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="21" y2="6"/><line x1="9" y1="12" x2="21" y2="12"/><line x1="9" y1="18" x2="21" y2="18"/></svg>';
+            const ICON_CALENDAR = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="7.5" y1="3" x2="7.5" y2="7"/><line x1="16.5" y1="3" x2="16.5" y2="7"/></svg>';
+
             function render() {
                 q('.mcal-month-label').textContent = cap(FMT.monthYear.format(state.cursor));
                 q('.mcal-view-month').hidden = state.view !== 'month';
                 q('.mcal-view-list').hidden = state.view !== 'list';
                 q('.mcal-view-cards').hidden = state.view !== 'cards';
                 const tbtn = q('.mcal-btn-toggle');
-                if (tbtn) tbtn.textContent = state.view === 'month' ? 'Vue Liste' : 'Vue Calendrier';
+                if (tbtn) {
+                    const toList = state.view === 'month';
+                    tbtn.innerHTML = toList ? ICON_LIST : ICON_CALENDAR;
+                    const label = toList ? 'Vue Liste' : 'Vue Calendrier';
+                    tbtn.setAttribute('aria-label', label);
+                    tbtn.title = label;
+                }
                 if (state.view === 'month') renderMonth();
                 else if (state.view === 'list') renderList();
                 else renderCards();
@@ -1968,45 +1993,6 @@ document.addEventListener('click', function (e) {
             }
 
             /* ============================================================
-               12. Export .ics d'un événement (RFC 5545)
-               ============================================================ */
-            function icsForEvent(ev) {
-                const pad2 = (n) => String(n).padStart(2, '0');
-                const dateLocal = (d) => '' + d.getFullYear() + pad2(d.getMonth() + 1) + pad2(d.getDate());
-                const dateUtc = (d) => d.getUTCFullYear() + pad2(d.getUTCMonth() + 1) + pad2(d.getUTCDate()) + 'T' + pad2(d.getUTCHours()) + pad2(d.getUTCMinutes()) + pad2(d.getUTCSeconds()) + 'Z';
-                const escT = (v) => String(v || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r\n|\r|\n/g, '\\n');
-                const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Mobirise Calendar v2//FR', 'BEGIN:VEVENT',
-                    'UID:' + (ev.uid || ev.id),
-                    'DTSTAMP:' + dateUtc(new Date()),
-                    'SUMMARY:' + escT(ev.title)];
-                if (ev.allDay) {
-                    lines.push('DTSTART;VALUE=DATE:' + dateLocal(ev.start));
-                    lines.push('DTEND;VALUE=DATE:' + dateLocal(ev.end));
-                } else {
-                    lines.push('DTSTART:' + dateUtc(ev.start));
-                    lines.push('DTEND:' + dateUtc(ev.end));
-                }
-                if (ev.description) lines.push('DESCRIPTION:' + escT(ev.description));
-                if (ev.location) lines.push('LOCATION:' + escT(String(ev.location).replace(/\r\n|\r|\n/g, ' ')));
-                const u = safeUrl(ev.url);
-                if (u) lines.push('URL:' + u);
-                lines.push('END:VEVENT', 'END:VCALENDAR');
-                return lines.join('\r\n');
-            }
-
-            function downloadIcs(ev) {
-                const slug = normText(ev.title).replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') || 'evenement';
-                const blob = new Blob([icsForEvent(ev)], { type: 'text/calendar' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = slug + '.ics';
-                document.body.appendChild(a);
-                a.click();
-                setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-            }
-
-            /* ============================================================
                13. Interface : câblage des contrôles (délégation)
                ============================================================ */
             function syncSearchClear() {
@@ -2116,9 +2102,6 @@ document.addEventListener('click', function (e) {
                 // Modale
                 if (DIALOG) {
                     DIALOG.querySelector('[data-action="close-dialog"]').addEventListener('click', () => DIALOG.close());
-                    DIALOG.querySelector('[data-action="download-ics"]').addEventListener('click', () => {
-                        if (state.modalEvent) downloadIcs(state.modalEvent);
-                    });
                     // Clic sur le backdrop = fermer
                     DIALOG.addEventListener('click', (e) => { if (e.target === DIALOG) DIALOG.close(); });
                 }

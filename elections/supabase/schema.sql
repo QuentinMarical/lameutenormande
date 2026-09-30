@@ -1065,6 +1065,107 @@ begin
 end $$;
 
 -- ---------------------------------------------------------------------
+-- 13-bis. Propositions d'évènements (formulaire public events/proposition/), validées ou refusées
+--   depuis l'onglet « Propositions » du panel admin/calendrier/ avant publication au calendrier
+--   Zoho (la validation ne fait que préremplir le formulaire existant, voir admin/calendrier/).
+--   Pas de compte, pas de champ de contact : juste un commentaire libre facultatif, qui atterrit
+--   à la fois ici et dans la notification e-mail ci-dessous.
+-- ---------------------------------------------------------------------
+create table if not exists public.event_proposals (
+  id uuid primary key default gen_random_uuid(),
+  submitted_at timestamptz not null default now(),
+  title text not null,
+  description text not null default '',
+  location text not null default '',
+  url text not null default '',
+  start_at timestamptz not null,
+  end_at timestamptz not null,
+  all_day boolean not null default false,
+  furry boolean not null default false,
+  comment text not null default '',
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  admin_note text not null default '',
+  reviewed_by uuid references auth.users(id),
+  reviewed_at timestamptz
+);
+alter table public.event_proposals enable row level security;
+-- Pas de policy insert pour anon : la seule porte d'entrée publique est la RPC propose_event
+-- ci-dessous (security definer), qui valide et applique l'anti-spam avant d'insérer. Lecture et
+-- écriture (relecture/décision) réservées aux admins.
+drop policy if exists event_proposals_admin on public.event_proposals;
+create policy event_proposals_admin on public.event_proposals for all using (public.is_admin()) with check (public.is_admin());
+
+-- Notifie contact@lameutenormande.fr via le formulaire Basin déjà utilisé par contact.html (même
+-- destinataire, pas de nouveau service ni secret à gérer). Best-effort comme notify_telegram :
+-- un échec ici ne doit jamais faire perdre la proposition, déjà en base à ce stade.
+create or replace function public.on_event_proposal_insert()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  perform net.http_post(
+    url := 'https://usebasin.com/f/56e1aab16816',
+    headers := jsonb_build_object('Content-Type', 'application/json'),
+    body := jsonb_build_object(
+      -- Champ "email" fixe (pas saisi par le proposeur, jamais exposé sur le formulaire public) :
+      -- sans lui, Basin classe souvent ces envois en spam faute d'expéditeur identifiable, comme
+      -- pour toute soumission sans champ "email"/"_replyto" reconnu.
+      'email', 'contact@lameutenormande.fr',
+      'sujet', '🗓️ Nouvelle proposition d''évènement — ' || new.title,
+      'titre', new.title,
+      'debut', to_char(new.start_at at time zone 'Europe/Paris', 'DD/MM/YYYY HH24:MI'),
+      'fin', to_char(new.end_at at time zone 'Europe/Paris', 'DD/MM/YYYY HH24:MI'),
+      'journee_entiere', case when new.all_day then 'oui' else 'non' end,
+      'lieu', nullif(new.location, ''),
+      'lien', nullif(new.url, ''),
+      'description', nullif(new.description, ''),
+      'commentaire', nullif(new.comment, ''),
+      'a_valider_ici', 'https://lameutenormande.fr/admin/calendrier/#propositions'
+    )
+  );
+  return new;
+exception when others then return new; -- best-effort : ne bloque jamais l'insertion
+end $$;
+drop trigger if exists event_proposals_notify on public.event_proposals;
+create trigger event_proposals_notify after insert on public.event_proposals for each row execute function public.on_event_proposal_insert();
+
+-- RPC publique. p_hp (honeypot) : champ caché côté formulaire (jamais nommé « honeypot » dans le
+-- HTML, pour ne pas se dénoncer) — un humain ne le voit ni ne le remplit jamais, un bot générique
+-- si. Rempli => on fait comme si tout s'était bien passé, sans rien insérer ni lever d'erreur : un
+-- bot qui reçoit une erreur peut s'adapter, un bot qui reçoit un succès silencieux n'apprend rien.
+create or replace function public.propose_event(
+  p_title text, p_start timestamptz, p_end timestamptz,
+  p_description text default '', p_location text default '', p_url text default '',
+  p_all_day boolean default false, p_furry boolean default false, p_comment text default '', p_hp text default ''
+)
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if coalesce(p_hp, '') <> '' then return; end if;
+  if length(trim(coalesce(p_title, ''))) = 0 or length(p_title) > 200 then raise exception 'BAD_TITLE'; end if;
+  if p_start is null or p_end is null or p_end < p_start then raise exception 'BAD_DATES'; end if;
+  if length(coalesce(p_description, '')) > 4000 or length(coalesce(p_comment, '')) > 2000
+     or length(coalesce(p_location, '')) > 200 or length(coalesce(p_url, '')) > 500 then
+    raise exception 'BAD_INPUT';
+  end if;
+  insert into public.event_proposals (title, description, location, url, start_at, end_at, all_day, furry, comment)
+  values (trim(p_title), trim(coalesce(p_description, '')), trim(coalesce(p_location, '')), trim(coalesce(p_url, '')),
+          p_start, p_end, coalesce(p_all_day, false), coalesce(p_furry, false), trim(coalesce(p_comment, '')));
+end $$;
+
+-- RPC admin : décision (approve/reject) + motif facultatif, journalisée dans l'audit comme les
+-- autres actions admin_*. « approved » n'appelle pas Zoho elle-même : le panel appelle
+-- admin_review_proposal juste après avoir publié l'évènement via zoho-create-event (ou juste avant
+-- un refus), cette RPC ne fait que refléter la décision prise côté client.
+create or replace function public.admin_review_proposal(p_id uuid, p_status text, p_note text default '')
+returns void language plpgsql security definer set search_path = public as $$
+begin
+  if not public.is_admin() then raise exception 'ADMIN_REQUIRED'; end if;
+  if p_status not in ('approved', 'rejected') then raise exception 'BAD_STATUS'; end if;
+  update public.event_proposals set status = p_status, admin_note = coalesce(p_note, ''), reviewed_by = auth.uid(), reviewed_at = now()
+  where id = p_id;
+  if not found then raise exception 'PROPOSAL_NOT_FOUND'; end if;
+  perform public.log_audit('admin:' || auth.uid()::text, 'event_proposal_' || p_status, p_id::text, jsonb_build_object('note', p_note));
+end $$;
+
+-- ---------------------------------------------------------------------
 -- 14. Privilèges d'exécution : tout est révoqué, puis accordé explicitement.
 --     Votants / public : anon + authenticated. Admin : authenticated seulement
 --     (les fonctions vérifient en plus is_admin()). Helpers internes : postgres.
@@ -1085,7 +1186,8 @@ grant execute on function
   public.check_code(text, uuid, boolean), public.code_lookup(text, boolean), public.my_ballot(text, uuid), public.my_candidacies(text, uuid),
   public.cast_ballot(text, uuid, jsonb), public.upsert_candidacy(text, uuid, text, text, text),
   public.withdraw_candidacy(text, uuid, uuid), public.active_election(), public.is_admin(),
-  public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid)
+  public.public_candidates(uuid), public.results(uuid), public.participation(uuid), public.participation_timeline(uuid),
+  public.propose_event(text, timestamptz, timestamptz, text, text, text, boolean, boolean, text, text)
   to anon, authenticated;
 grant execute on function
   public.admin_generate_codes(uuid, int, text, text[]), public.admin_update_code(uuid, text, boolean, boolean, text), public.admin_delete_code(uuid),
@@ -1093,7 +1195,7 @@ grant execute on function
   public.admin_withdraw_candidacy(uuid, boolean), public.admin_save_election(jsonb), public.admin_delete_election(uuid), public.audit_log_readable(),
   public.admin_log_event(text), public.admin_save_settings(text, text),
   public.admin_list_admins(), public.admin_set_disabled(uuid, boolean), public.clear_must_change_password(),
-  public.log_admin_action(text, text, jsonb)
+  public.log_admin_action(text, text, jsonb), public.admin_review_proposal(uuid, text, text)
   to authenticated;
 -- my_admin_flags : accordé aussi à anon/authenticated non-admin (utile juste après une connexion,
 -- avant même de savoir si le compte est admin ; ne renvoie de toute façon jamais rien pour un
