@@ -2115,6 +2115,24 @@ DTSTAMP:20260920T020554Z
 URL:https://japanmangawave.com/amiens/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Broc' Land Geek
+DESCRIPTION:Le Broc' Land Geek est une foire itinérante dédiée à la pop culture\, au rétrogaming et aux objets de collection (jouets vintage\, LEGO\, mangas\, cartes Pokémon et TCG) organisée principalement par Tandem Events France.\n\nTarifs sur place :\nEntrée : 3 €\nGRATUIT pour les -10 ans et PMR
+DTSTART:20261025T080000Z
+DTEND:20261025T160000Z
+LOCATION:4\, Rue de Locmaria. 56400 Sainte-Anne-d'Auray
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c51b5e5fde6240d69b45443eb87205c0@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261009T103358Z
+LAST-MODIFIED:20261009T103358Z
+DTSTAMP:20261009T103359Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.tandemevents.fr/blog-v2-ste-anne-d-auray-2026-2887.html
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Fête Médiévale de Saint-Wandrille-Rançon
 DESCRIPTION:La Fête Médiévale de Saint-Wandrille-Rançon\, organisée par le Comité des Fêtes\, se tiendra les 2 et 3 mai 2026 de 10h à 19h\, Rue Saint-Jacques à Rives-en-Seine (Seine-Maritime). C'est la 14ème édition\, placée cette année sous le thème des Seigneurs — et l'entrée est gratuite pour tous !\n\nAu programme : spectacles équestres\, fauconnerie\, combats de chevaliers\, tir à l'arc\, marché médiéval\, visites de campements et animations en continu pour toute la famille. Le samedi soir\, place au bal médiéval\, un défilé aux flambeaux\, un spectacle de feu et un feu d'artifice offert par la municipalité.\n\nLe dimanche se conclut en apothéose avec une grande bataille à 17h. Restauration médiévale sur place tout le week-end\, et un banquet animé le samedi soir sur réservation.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">La<span>&nbsp\;</span><b>Fête Médiévale de Saint-Wandrille-Rançon</b>\, organisée par le Comité des Fêtes\, se tiendra les<span>&nbsp\;</span><b>2 et 3 mai 2026 de 10h à 19h</b>\, Rue Saint-Jacques à<span>&nbsp\;</span><b>Rives-en-Seine</b><span>&nbsp\;</span>(Seine-Maritime). C'est la<span>&nbsp\;</span><b>14ème édition</b>\, placée cette année sous le thème des<span>&nbsp\;</span><b>Seigneurs</b><span>&nbsp\;</span>— et l'entrée est<span>&nbsp\;</span><b>gratuite</b><span>&nbsp\;</span>pour tous !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Au programme : spectacles équestres\, fauconnerie\, combats de chevaliers\, tir à l'arc\, marché médiéval\, visites de campements et animations en continu pour toute la famille. Le samedi soir\, place au bal médiéval\, un défilé aux flambeaux\, un spectacle de feu et un<span>&nbsp\;</span><b>feu d'artifice offert par la municipalité</b>.<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Le dimanche se conclut en apothéose avec une<span>&nbsp\;</span><b>grande bataille</b><span>&nbsp\;</span>à 17h. Restauration médiévale sur place tout le week-end\, et un banquet animé le samedi soir sur réservation.<br /></p><div><br /></div>
