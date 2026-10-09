@@ -73,6 +73,24 @@ DTSTAMP:20260927T202516Z
 URL:https://festival-msd-romo.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Heroes World featuring Made in Asia (Belgique)
+DESCRIPTION:Heroes World est un grand festival de la culture pop qui se tiendra les 17 et 18 octobre 2026 à Brussels Expo.\nCet événement résulte de la fusion de trois grands rendez-vous : Made in Asia\, Heroes Comic Con et GameForce.\n\nHoraires de cet événement :\nSamedi de 10h à 19h\nDimanche de 10h à 17h\n\nOuverture à 9h pour les détenteurs de Fast Pass & VIP.
+DTSTART:20261017T080000Z
+DTEND:20261018T150000Z
+LOCATION:Brussels Expo. Place de Belgique 1\, 1020 Bruxelles\, Belgique
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:030f9445832849108dcb55c5670257e6@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261009T104204Z
+LAST-MODIFIED:20261009T104204Z
+DTSTAMP:20261009T104206Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.heroes-world.be/fr/tickets/
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Little Island Furcon 2026 (Asie)
 DESCRIPTION:
 DTSTART:20260612T220000Z
