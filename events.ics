@@ -2186,6 +2186,22 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://www.facebook.com/FeteMedievaleSaintWandrilleRancon/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Festival Manga Dieppe
+DESCRIPTION:Cette année\, vous pourrait découvrir quatre expositions:  les deux premières proposées par “Le Dok” porteront sur One Piece\, et Demon Slayer.  Les deux autres expositions seront des hommage de Gwendal Lemercier à  Hayao Miyazaki et aux Super-héros.\n\nLes visiteurs pourront également rencontrer des auteurs/Mangakas Français (dédicaces) et également participer à des ateliers origami ou apprendre quelques mots de japonais. \n\n\nPour les plus intrépides\, ils pourront s'essayer à l’aïkido (association Aïkido Dieppe).  Le public pourra aussi tester ses connaissances avec des quiz et des blind test.\n\nDes stands de vente - en lien avec le Japon et les mangas - seront présents. \n\nIl y aura une petite surprise pour les personnes qui viendront en cosplay.
+DTSTART:20261031T090000Z
+DTEND:20261101T180000Z
+LOCATION:Salle des Congrès\, Boulevard de Verdun\, 76200 Dieppe
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:c5eaf02067a247d7a454167221e57552@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261030T185526Z
+LAST-MODIFIED:20261030T185526Z
+DTSTAMP:20261030T185526Z
+URL:https://www.dieppe.fr/notre-agenda-1/detail/festival-manga
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:🦊 Furvaria 2 : Level Up Your Summer (Allemagne)
 DESCRIPTION:
 DTSTART:20260610T220000Z
