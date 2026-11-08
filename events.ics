@@ -140,6 +140,22 @@ DTSTAMP:20260920T020554Z
 URL:https://www.helloasso.com/associations/perigordgeek/evenements/perigeekasia-2026/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Sakura Pop Luçon
+DESCRIPTION:
+DTSTART:20270430T220000Z
+DTEND:20270502T215900Z
+LOCATION:Salle Plaisance. Plaine du Sourdy. 85400 Luçon
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:05c98f61dc3a4b92be5f32dc6596fde3@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T133924Z
+LAST-MODIFIED:20261108T133924Z
+DTSTAMP:20261108T133926Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=SAKURA+POP+-+LUCON+-+1+%26+2+MAI+2027+%2885%29
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Otaku Festival Chambéry
 DESCRIPTION:
 DTSTART:20260228T090000Z
@@ -516,6 +532,22 @@ ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RS
 URL:https://www.cidreetdragon.eu/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:TGS Occitanie Game Show Toulouse
+DESCRIPTION:
+DTSTART:20261127T230000Z
+DTEND:20261129T225900Z
+LOCATION:MEETT - Toulouse Exhibition and Convention Centre. Avenue Concorde. 31840 Aussonne
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:2bb6f4b8871349db8fe310af6e0b2ba6@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T113814Z
+LAST-MODIFIED:20261108T113814Z
+DTSTAMP:20261108T113815Z
+URL:https://www.tgs-toulouse.fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Touch Lyon
 DESCRIPTION:
 DTSTART:20261127T230000Z
@@ -579,6 +611,22 @@ CREATED:20260818T083828Z
 LAST-MODIFIED:20260909T153508Z
 DTSTAMP:20260920T020554Z
 URL:https://furdu.com.au/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Sakura Pop Déols
+DESCRIPTION:
+DTSTART:20261121T083000Z
+DTEND:20261122T160000Z
+LOCATION:DEOLS - Centre Socio Culturel. Avenue Paul Langevin. 36130 Déols
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:3161527812044cf2915929bdeddf5198@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261108T114735Z
+LAST-MODIFIED:20261108T121836Z
+DTSTAMP:20261108T121837Z
+URL:https://www.yamatomangafest.fr/billetterie/
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊La meet du dragon d'eau 🐉
@@ -778,6 +826,22 @@ ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAI
 URL:https://japanmangawave.com/rennes/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Anim'Est
+DESCRIPTION:
+DTSTART:20261113T230000Z
+DTEND:20261115T225900Z
+LOCATION:Centre Prouvé - DESTINATION NANCY. 1\, Place de la République. 54000 Nancy
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:3d35c3ee65d04b599f27d55aed34d4be@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261108T112720Z
+LAST-MODIFIED:20261108T113354Z
+DTSTAMP:20261108T113355Z
+URL:https://animest.net/billetterie
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Japan Touch Haru & Geek Touch
 DESCRIPTION:Japan Touch Haru & Geek Touch à Lyon.\n\n
 X-ALT-DESC;FMTTYPE=text/html:<div>Japan Touch Haru &amp\; Geek Touch à Lyon.<br /></div>
@@ -808,6 +872,22 @@ TRANSP:TRANSPARENT
 CREATED:20261107T154629Z
 LAST-MODIFIED:20261107T154629Z
 DTSTAMP:20261107T154630Z
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest Lure
+DESCRIPTION:
+DTSTART:20270226T230000Z
+DTEND:20270228T225900Z
+LOCATION:Salle des Fêtes municipale Espace du Sapeur. Rue du Dr Deubel. 70200 Lure
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:41aadb239cc04299ba7af1ca0a305970@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T133312Z
+LAST-MODIFIED:20261108T133312Z
+DTSTAMP:20261108T133313Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=YAMATO+MANGA+FEST+%E2%80%93+27+%26+28+FEVRIER+2027+%E2%80%93+Lure+%2870%29
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Moulins Geek Convention
@@ -994,6 +1074,22 @@ DTSTAMP:20260920T020554Z
 ATTENDEE;CN="go@events.lameute";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:go@events.lameute
 ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
 URL:https://lesjuliobonales.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Sakura Pop Contrexéville
+DESCRIPTION:
+DTSTART:20270305T230000Z
+DTEND:20270307T225900Z
+LOCATION:Espace Andrée Chedid. 123\, Rue Jean Moulin. 88140 Contrexéville
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:4e8ddc04d45844af82b7bfff76ab0592@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T133715Z
+LAST-MODIFIED:20261108T133715Z
+DTSTAMP:20261108T133716Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=SAKURA+POP+-+CONTEXEVILLE+-+DATE+A+VENIR+%2888%29
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Ze Next Convention 7
@@ -1307,6 +1403,22 @@ LAST-MODIFIED:20260909T130728Z
 DTSTAMP:20260920T020554Z
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest Paray-le-Monial
+DESCRIPTION:
+DTSTART:20270521T220000Z
+DTEND:20270523T215900Z
+LOCATION:Centre Associatif Parodien. 9\, Rue Pierre Lathuilière. 71600 Paray-le-Monial
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:76f93c41a7f24c0a984663676cfd3a38@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T134337Z
+LAST-MODIFIED:20261108T134337Z
+DTSTAMP:20261108T134338Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=YAMATO+MANGA+FEST+%E2%80%93+22+%26+23+Mai+2027+%E2%80%93+Paray+le+Monial+%2871%29
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Manga Expo
 DESCRIPTION:L’équipe de Manga Expo est extrêmement fière et honorée de vous annoncer la présence exclusive de Maxence Cazorla lors de notre prochaine édition !\n\nVéritable artiste interprète aux multiples talents\, Maxence est la voix française magistrale derrière plusieurs personnages clés du jeu vidéo Clair Obscur : Expedition 33.\n\nVenez rencontrer l'homme qui a donné une âme au robuste Gustav \, au mystérieux Verso \, et bien sûr\, au légendaire et unique Esquie .\n\nUne conférence exclusive : Pour plonger dans les coulisses du doublage\, de la performance capture et de la création de l'univers de Clair Obscur\n\nUne séance dédicace : Pour repartir avec votre autographe personnalisé et un souvenir inoubliable.\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">L’équipe de<span>&nbsp\;</span><b>Manga Expo</b><span>&nbsp\;</span>est extrêmement fière et honorée de vous annoncer la présence exclusive de Maxence Cazorla lors de notre prochaine édition !<br /></p><p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">Véritable artiste interprète aux multiples talents\, Maxence est la voix française magistrale derrière plusieurs personnages clés du jeu vidéo<span>&nbsp\;</span><b>Clair Obscur : Expedition 33</b>.<br /></p><p style="box-sizing:border-box\; margin:0px 0px 1em\; line-height:1.7em\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)">Venez rencontrer l'homme qui a donné une âme au robuste<span>&nbsp\;</span><b>Gustav</b><span>&nbsp\;</span>\, au mystérieux<span>&nbsp\;</span><b>Verso</b><span>&nbsp\;</span>\, et bien sûr\, au légendaire et unique<span>&nbsp\;</span><b>Esquie</b><span>&nbsp\;</span>.<br /></p><ul style="box-sizing:border-box\; margin:0px\; padding-left:0px\; list-style-type:none\; padding-top:15px\; font-family:&quot\;Open Sans&quot\;\, sans-serif\; font-size:15px\; font-style:normal\; font-weight:400\; letter-spacing:normal\; orphans:2\; text-indent:0px\; text-transform:none\; widows:2\; word-spacing:0px\; white-space:normal\; color:rgb(104\, 113\, 135)\; background-color:rgb(255\, 255\, 255)"><li style="box-sizing:border-box\; padding-left:30px"><b>Une conférence exclusive :</b><span>&nbsp\;</span>Pour plonger dans les coulisses du doublage\, de la performance capture et de la création de l'univers de Clair Obscur<br /></li><li style="box-sizing:border-box\; padding-left:30px\; margin-top:10px"><b>Une séance dédicace :</b><span>&nbsp\;</span>Pour repartir avec votre autographe personnalisé et un souvenir inoubliable.<br /></li></ul><div><br /></div>
@@ -1555,6 +1667,21 @@ DTSTAMP:20260920T020554Z
 URL:https://japanfamilylarochelle.fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Yumé Festival 1ère édition
+DESCRIPTION:
+DTSTART:20261120T230000Z
+DTEND:20261122T225900Z
+LOCATION:Salle Multisports Luc Schréder. Rue Albert Camus. 21400 Châtillon-sur-Seine
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:8ceeebde468c49458132a440da5050b0@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T113334Z
+LAST-MODIFIED:20261108T113334Z
+DTSTAMP:20261108T113335Z
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Médiévales de Falaise
 DESCRIPTION:
 DTSTART;VALUE=DATE:20260808
@@ -1724,6 +1851,22 @@ DTSTAMP:20260920T020554Z
 URL:https://paris.japan-expo.com/fr
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest Argenton-sur-Creuse
+DESCRIPTION:
+DTSTART:20270618T220000Z
+DTEND:20270620T215900Z
+LOCATION:Espace Juliette Gréco. Rue de la Grenouille. 36200 Argenton-sur-Creuse
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:972ecc2fc5074305872937cabfccfb3f@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261108T121714Z
+LAST-MODIFIED:20261108T122342Z
+DTSTAMP:20261108T122343Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=YAMATO+MANGA+FEST+%E2%80%93+ARGENTON+SUR+CREUSE+-+19+%26+20+JUIN+2027
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Mang'Azur
 DESCRIPTION:
 DTSTART:20260417T220000Z
@@ -1738,6 +1881,22 @@ CREATED:20260424T112050Z
 LAST-MODIFIED:20260424T112050Z
 DTSTAMP:20260920T020554Z
 URL:https://www.mangazur.fr/
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest Périgueux
+DESCRIPTION:
+DTSTART:20270219T230000Z
+DTEND:20270221T225900Z
+LOCATION:La Filature de l’Isle. 15\, Chemin des Feutres du Toulon. 24000 Périgueux
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:98722ff7c0674163a8bfa6aa7830c2bd@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T133020Z
+LAST-MODIFIED:20261108T133020Z
+DTSTAMP:20261108T133020Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=YAMATO+MANGA+FEST+%E2%80%93+20+%26+21+F%C3%A9vrier+2027+%E2%80%93+P%C3%A9rigueux+%2824%29
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:🦊 Furbar de Rouen
@@ -2972,6 +3131,22 @@ CREATED:20261011T093550Z
 LAST-MODIFIED:20261011T093550Z
 DTSTAMP:20261011T093552Z
 URL:https://retrogamefestival.beauvais.fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
+SUMMARY:Yamato Manga Fest Carmaux
+DESCRIPTION:
+DTSTART:20270129T230000Z
+DTEND:20270131T225900Z
+LOCATION:Salle François Mitterrand. 75\, Avenue Jean Jaurès\, 81400 Carmaux
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:fd520a145df24c5ab8e6189eab618ee4@zoho.eu
+TRANSP:TRANSPARENT
+CREATED:20261108T122323Z
+LAST-MODIFIED:20261108T122323Z
+DTSTAMP:20261108T122325Z
+URL:https://www.yamatomangafest.fr/billetterie/?ym_ev=YAMATO+MANGA+FEST+%E2%80%93+CARMAUX+-+30+%26+31+JANVIER+2027
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Sedan Expo : Manga & Pop culture
