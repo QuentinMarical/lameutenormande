@@ -1632,6 +1632,24 @@ DTSTAMP:20260920T020554Z
 URL:https://www.geek-days.com/lille-winter/billetterie/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Game'In Reims
+DESCRIPTION:Le salon du jeu & du manga revient pour une 9ᵉ édition\, les 21 & 22 novembre prochain !\nRetrouvez cette année encore\, vos univers favoris : jeux vidéo\, manga\, cosplay\, science-fiction\, fantasy\, e-sport\, retrogaming\, jeux de plateau\, BD\, comics ... .\n\nEntrée possible dès 9h pour les Fast Pass.
+DTSTART:20261121T090000Z
+DTEND:20261122T180000Z
+LOCATION:Parc des Expositions de Reims. Site Henri-Farman. Allée Thierry Sabine. 51100 Reims
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:88d7830615124a41a004c0e439c2c903@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261111T125123Z
+LAST-MODIFIED:20261111T125123Z
+DTSTAMP:20261111T125123Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://www.gameinreims.fr/fr/billetterie
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Comic Con Holland (Pays-Bas)
 DESCRIPTION:Comic Con Holland se déroulera les 10 et 11 octobre 2026 aux Pays-Bas.
 DTSTART:20261010T080000Z
