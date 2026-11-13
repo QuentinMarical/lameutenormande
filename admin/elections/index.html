@@ -441,7 +441,7 @@
         const block = h('div', { class: 'chart-wrap' }, h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)), h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste(s)'))));
         if (!rs.length) block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat.'));
         const list = h('div', { class: 'bar-list' });
-        rs.forEach(r => list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') }, h('div', { class: 'who', title: r.heldElsewhere ? 'élu·e à un poste plus prioritaire' : '' }, r.elected ? E.icon('trophy') : r.heldElsewhere ? E.icon('trophy', 'muted') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
+        rs.forEach(r => list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') + (r.heldElsewhere ? ' held-elsewhere' : '') }, h('div', { class: 'who', title: r.heldElsewhere ? 'Élu·e d\'office pour ' + r.heldElsewhereRole.label : '' }, r.elected ? E.icon('trophy') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
         block.appendChild(list); doc.appendChild(block);
       });
       const invalid = (voters || []).filter(v => v.invalidated);

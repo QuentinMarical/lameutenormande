@@ -139,10 +139,10 @@
         if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat pour ce poste.')); rolesWrap.appendChild(block); return; }
         const list = h('div', { class: 'bar-list' });
         rows.forEach(r => {
-          list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') },
+          list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') + (r.heldElsewhere ? ' held-elsewhere' : '') },
             E.avatarEl({ displayName: r.display_name }),
-            h('div', { class: 'who', title: r.display_name + (r.heldElsewhere ? ' — élu·e à un poste plus prioritaire' : '') },
-              r.elected ? E.icon('trophy') : r.exaequo ? E.icon('scale-balanced') : r.heldElsewhere ? E.icon('trophy', 'muted') : null, ' ' + r.display_name),
+            h('div', { class: 'who', title: r.heldElsewhere ? 'Élu·e d\'office pour ' + r.heldElsewhereRole.label : r.display_name },
+              r.elected ? E.icon('trophy') : r.exaequo ? E.icon('scale-balanced') : null, ' ' + r.display_name),
             h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
             h('div', { class: 'n' }, r.votes + ' voix')));
         });

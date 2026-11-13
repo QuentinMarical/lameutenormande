@@ -280,6 +280,10 @@ textarea.input { min-height: 110px; resize: vertical; line-height: 1.5; }
 .bar-row .bar > i { display: block; height: 100%; border-radius: 7px; background: var(--violet); transition: width .6s ease; }
 .bar-row.elected .bar > i { background: var(--orange); }
 .bar-row .n { width: 64px; text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+/* Poste perdu au profit d'un poste plus prioritaire déjà remporté (voir E.computeSeatWinners) :
+   même traitement visuel que les bulletins invalidés (admin/elections), pour rester cohérent. */
+.bar-row.held-elsewhere { opacity: .5; }
+.bar-row.held-elsewhere .who { text-decoration: line-through; }
 .countdown { display: flex; gap: .5rem; justify-content: center; margin: .5rem 0; }
 .countdown div { min-width: 60px; padding: .5rem .6rem; text-align: center; border-radius: 8px; background: var(--panel-1); border: 1px solid var(--line); }
 .countdown b { display: block; font-family: 'PR Viking', 'Inter Tight', sans-serif; font-size: 1.5rem; font-weight: 400; color: #fff; font-variant-numeric: tabular-nums; }

@@ -150,10 +150,10 @@
   // poste. Traite les postes du plus important au moins important pour que le premier poste gagné
   // par une personne soit toujours le plus prioritaire.
   // rows attendues : [{ role, candidate_id, code_id, display_name, votes }]. Retourne une Map
-  // role.id -> { rows: [...row, elected, exaequo, heldElsewhere], tied }.
+  // role.id -> { rows: [...row, elected, exaequo, heldElsewhere, heldElsewhereRole], tied }.
   E.computeSeatWinners = function (roles, rows) {
     const order = [...roles].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-    const claimed = new Set(); // code_id déjà élu à un poste plus important
+    const claimed = new Map(); // code_id déjà élu -> le poste (plus important) qui le lui vaut
     const result = new Map();
     order.forEach(role => {
       const all = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
@@ -164,7 +164,7 @@
       const tied = !!(pool[seats] && pool[seats].votes === cutoff && cutoff > 0);
       const winners = new Set();
       pool.forEach((r, i) => {
-        if (r.votes > 0 && i < seats && !(tied && r.votes === cutoff)) { winners.add(r.candidate_id); claimed.add(r.code_id); }
+        if (r.votes > 0 && i < seats && !(tied && r.votes === cutoff)) { winners.add(r.candidate_id); claimed.set(r.code_id, role); }
       });
       result.set(role.id, {
         tied,
@@ -172,7 +172,8 @@
           ...r,
           elected: winners.has(r.candidate_id),
           exaequo: poolIds.has(r.candidate_id) && tied && r.votes === cutoff && r.votes > 0,
-          heldElsewhere: !poolIds.has(r.candidate_id) && r.votes > 0
+          heldElsewhere: !poolIds.has(r.candidate_id) && r.votes > 0,
+          heldElsewhereRole: !poolIds.has(r.candidate_id) && r.votes > 0 ? claimed.get(r.code_id) : null
         }))
       });
     });
