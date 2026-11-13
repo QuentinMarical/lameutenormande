@@ -419,9 +419,9 @@
         E.sb.rpc('participation', { p_election: current.id }),
         E.sb.from('admin_voters').select('*').eq('election_id', current.id),
         E.sb.from('ballot_choices').select('candidate_id, role, ballots!inner(invalidated, election_id)').eq('ballots.election_id', current.id).eq('ballots.invalidated', false),
-        E.sb.from('candidates').select('id, role, display_name, withdrawn').eq('election_id', current.id).eq('withdrawn', false)]);
+        E.sb.from('candidates').select('id, code_id, role, display_name, withdrawn').eq('election_id', current.id).eq('withdrawn', false)]);
       const part = partRows && partRows[0] || null;
-      const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, display_name: c.display_name, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
+      const rows = (cands || []).map(c => ({ role: c.role, candidate_id: c.id, code_id: c.code_id, display_name: c.display_name, votes: (choices || []).filter(x => x.candidate_id === c.id).length }));
       const roles = E.rolesOf(current);
       const voters_n = (part && part.voters) || 0, codes_n = (part && part.codes_issued) || 0;
       const doc = h('div', { class: 'card column', id: 'pv-doc' });
@@ -432,13 +432,16 @@
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Bulletins invalidés'), h('div', { class: 'value' }, String((part && part.invalidated) || 0))),
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Codes émis'), h('div', { class: 'value' }, String(codes_n))),
           h('div', { class: 'kpi' }, h('div', { class: 'label' }, 'Participation'), h('div', { class: 'value' }, codes_n ? Math.round(voters_n / codes_n * 1000) / 10 + ' %' : '—'), h('div', { class: 'sub' }, 'des codes émis'))));
+      // Une même personne élue sur plusieurs postes ne garde que le plus important, voir
+      // E.computeSeatWinners (assets/common.js) — même règle que la page résultats publique.
+      const seatWinners = E.computeSeatWinners(roles, rows);
       roles.forEach(role => {
-        const rs = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes);
+        const { rows: rs } = seatWinners.get(role.id) || { rows: [] };
         const max = Math.max(1, ...rs.map(r => r.votes));
         const block = h('div', { class: 'chart-wrap' }, h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)), h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste(s)'))));
         if (!rs.length) block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat.'));
         const list = h('div', { class: 'bar-list' });
-        rs.forEach((r, i) => list.appendChild(h('div', { class: 'bar-row' + (i < role.seats && r.votes > 0 ? ' elected' : '') }, h('div', { class: 'who' }, i < role.seats && r.votes > 0 ? E.icon('trophy') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
+        rs.forEach(r => list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') }, h('div', { class: 'who', title: r.heldElsewhere ? 'élu·e à un poste plus prioritaire' : '' }, r.elected ? E.icon('trophy') : r.heldElsewhere ? E.icon('trophy', 'muted') : null, ' ' + r.display_name), h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })), h('div', { class: 'n' }, r.votes + ' voix'))));
         block.appendChild(list); doc.appendChild(block);
       });
       const invalid = (voters || []).filter(v => v.invalidated);

@@ -125,26 +125,24 @@
           options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { ticks: { maxTicksLimit: 6 } } }, animation: { duration: 300 } } });
       } else timelineWrap.appendChild(h('div', { class: 'empty' }, 'Pas encore de vote.'));
 
-      // Scores par poste
+      // Scores par poste — une même personne élue sur plusieurs postes ne garde que le plus
+      // important (voir E.computeSeatWinners), les sièges libérés ailleurs vont au suivant.
       E.clear(rolesWrap);
+      const seatWinners = E.computeSeatWinners(roles, results || []);
       roles.forEach(role => {
-        const rows = (results || []).filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
+        const { rows, tied } = seatWinners.get(role.id) || { rows: [], tied: false };
         const max = Math.max(1, ...rows.map(r => r.votes));
         const block = h('div', { class: 'chart-wrap' });
         block.appendChild(h('div', { class: 'role-head' }, h('div', { class: 'icon-circle' }, E.icon(role.icon)),
           h('div', null, h('div', { class: 'name' }, role.label), h('div', { class: 'desc' }, role.seats + ' poste' + (role.seats > 1 ? 's' : '') + ' · ' + rows.reduce((a, r) => a + r.votes, 0) + ' voix')),
           rows.length ? h('span', { class: 'badge muted rule' }, rows.length + ' candidat' + (rows.length > 1 ? 's' : '')) : null));
         if (!rows.length) { block.appendChild(h('div', { class: 'empty' }, 'Aucun candidat pour ce poste.')); rolesWrap.appendChild(block); return; }
-        // Sièges : les N premiers, ex æquo signalés si la frontière est partagée
-        const cutoff = rows[role.seats - 1] ? rows[role.seats - 1].votes : -1;
-        const tied = rows.filter(r => r.votes === cutoff).length > 1 && rows[role.seats] && rows[role.seats].votes === cutoff;
         const list = h('div', { class: 'bar-list' });
-        rows.forEach((r, i) => {
-          const elected = r.votes > 0 && (i < role.seats) && !(tied && r.votes === cutoff);
-          const exaequo = tied && r.votes === cutoff && r.votes > 0;
-          list.appendChild(h('div', { class: 'bar-row' + (elected ? ' elected' : '') },
+        rows.forEach(r => {
+          list.appendChild(h('div', { class: 'bar-row' + (r.elected ? ' elected' : '') },
             E.avatarEl({ displayName: r.display_name }),
-            h('div', { class: 'who', title: r.display_name }, elected ? E.icon('trophy') : exaequo ? E.icon('scale-balanced') : null, ' ' + r.display_name),
+            h('div', { class: 'who', title: r.display_name + (r.heldElsewhere ? ' — élu·e à un poste plus prioritaire' : '') },
+              r.elected ? E.icon('trophy') : r.exaequo ? E.icon('scale-balanced') : r.heldElsewhere ? E.icon('trophy', 'muted') : null, ' ' + r.display_name),
             h('div', { class: 'bar' }, h('i', { style: { width: (r.votes / max * 100) + '%' } })),
             h('div', { class: 'n' }, r.votes + ' voix')));
         });

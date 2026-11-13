@@ -486,9 +486,12 @@ language sql stable security definer set search_path = public as $$
 $$;
 
 create or replace function public.results(p_election uuid)
-returns table (election_id uuid, role text, candidate_id uuid, display_name text, votes int)
+returns table (election_id uuid, role text, candidate_id uuid, code_id uuid, display_name text, votes int)
 language sql stable security definer set search_path = public as $$
-  select c.election_id, c.role, c.id as candidate_id, c.display_name,
+  -- code_id identifie la personne (un code = un membre) pour que le front puisse détecter
+  -- qu'une même personne l'emporte sur plusieurs postes et n'en retenir qu'un (voir
+  -- E.computeSeatWinners dans assets/common.js) ; ce n'est pas le code lui-même, juste son id.
+  select c.election_id, c.role, c.id as candidate_id, c.code_id, c.display_name,
          count(bc.ballot_id) filter (where b.invalidated = false)::int as votes
   from public.candidates c
   join public.elections e on e.id = c.election_id
@@ -496,7 +499,7 @@ language sql stable security definer set search_path = public as $$
   left join public.ballots b on b.id = bc.ballot_id
   where c.election_id = p_election and c.withdrawn = false and e.status <> 'draft'
     and (e.results_public or e.status in ('closed','archived'))
-  group by c.election_id, c.role, c.id, c.display_name;
+  group by c.election_id, c.role, c.id, c.code_id, c.display_name;
 $$;
 
 create or replace function public.participation(p_election uuid)

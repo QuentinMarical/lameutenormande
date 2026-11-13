@@ -56,7 +56,7 @@
     audit_log_readable: () => audit.map(a => Object.assign({ actor_label: a.actor.startsWith('admin:') ? 'Nitra' : a.actor.startsWith('code:') ? a.actor.slice(5) : a.actor }, a)),
     app_settings: () => settings,
     public_candidates: () => candidates.filter(c => !c.withdrawn),
-    results: () => candidates.filter(c => !c.withdrawn).map(c => ({ election_id: c.election_id, role: c.role, candidate_id: c.id, display_name: c.display_name,
+    results: () => candidates.filter(c => !c.withdrawn).map(c => ({ election_id: c.election_id, role: c.role, candidate_id: c.id, code_id: c.code_id, display_name: c.display_name,
       votes: choices.filter(x => x.candidate_id === c.id && !ballots.find(b => b.id === x.ballot_id).invalidated).length })),
     participation: () => elections.map(e => ({ election_id: e.id, voters: ballots.filter(b => b.election_id === e.id && !b.invalidated).length, invalidated: ballots.filter(b => b.election_id === e.id && b.invalidated).length, codes_issued: codes.filter(c => c.election_id === e.id && !c.revoked).length, last_vote_at: ballots.filter(b => b.election_id === e.id).map(b => b.submitted_at).sort().pop() || null })),
     participation_timeline: () => { const out = []; elections.forEach(e => { const bs = ballots.filter(b => b.election_id === e.id && !b.invalidated).map(b => new Date(b.first_submitted_at).setMinutes(0, 0, 0)).sort(); let cum = 0; [...new Set(bs)].forEach(hr => { cum += bs.filter(x => x === hr).length; out.push({ election_id: e.id, hour: iso(hr), cumulative: cum }); }); }); return out; },
@@ -97,6 +97,7 @@
   }
   const rpcs = {
     is_admin: () => as === 'admin',
+    my_admin_flags: () => as === 'admin' ? [{ disabled: false, must_change_password: false }] : [],
     public_candidates: ({ p_election }) => views.public_candidates().filter(c => c.election_id === p_election),
     results: ({ p_election }) => views.results().filter(r => r.election_id === p_election),
     participation: ({ p_election }) => views.participation().filter(r => r.election_id === p_election),
