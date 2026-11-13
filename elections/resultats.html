@@ -98,7 +98,7 @@
         const cv = document.createElement('canvas'); wrap.appendChild(cv);
         const legend = h('div', { class: 'small muted' });
         if (base) {
-          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + ' codes n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
+          legend.append(h('div', null, h('b', { style: { color: C.text } }, voters + ' votants')), h('div', null, Math.max(0, base - voters) + ' personnes n\'ont pas (encore) voté'), h('div', { class: 'mt-8' }, 'Taux : ', h('b', { style: { color: C.text } }, shownRate + ' %')));
         } else legend.textContent = 'Le taux sera calculé dès que des codes auront été distribués.';
         wrap.appendChild(legend); partWrap.appendChild(wrap);
         if (donut) donut.destroy();
