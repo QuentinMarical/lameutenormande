@@ -84,11 +84,16 @@
       // KPI
       E.clear(kpis);
       const kpi = (label, value, sub) => h('div', { class: 'kpi' }, h('div', { class: 'label' }, label), h('div', { class: 'value' }, value), sub ? h('div', { class: 'sub' }, sub) : null);
+      // Candidats = personnes distinctes (code_id) ; candidatures = une par poste brigué, une même
+      // personne pouvant candidater à plusieurs postes compte donc pour plusieurs candidatures.
+      const nbCandidats = new Set((results || []).map(r => r.code_id)).size;
+      const nbCandidatures = new Set((results || []).map(r => r.candidate_id)).size;
       kpis.append(
         kpi('Votants', String(voters), part && part.invalidated ? part.invalidated + ' bulletin(s) invalidé(s)' : 'bulletins valides'),
         kpi('Codes distribués', codesIssued ? String(codesIssued) : '—', 'un code par membre'),
         kpi('Participation', shownRate != null ? shownRate + ' %' : '—', rate != null ? 'des codes distribués' : 'aucun code émis'),
-        kpi('Candidats', String(new Set((results || []).map(r => r.candidate_id)).size), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
+        kpi('Candidats', String(nbCandidats), nbCandidats > 1 ? 'personnes candidates' : 'personne candidate'),
+        kpi('Candidatures', String(nbCandidatures), 'sur ' + roles.length + ' poste' + (roles.length > 1 ? 's' : '')));
 
       // Donut participation
       E.clear(partWrap);
