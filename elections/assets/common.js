@@ -153,18 +153,24 @@
   // role.id -> { rows: [...row, elected, exaequo, heldElsewhere, heldElsewhereRole], tied }.
   E.computeSeatWinners = function (roles, rows) {
     const order = [...roles].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
-    const claimed = new Map(); // code_id déjà élu -> le poste (plus important) qui le lui vaut
+    // Si la fonction SQL results() n'a pas encore été remise à jour côté Supabase, code_id est
+    // absent de toutes les lignes : sans ce repli, chaque personne undefined === undefined serait
+    // confondue avec la première rencontrée, faisant perdre tous les autres postes par erreur.
+    // candidate_id est lui toujours unique, donc le repli désactive juste l'arbitrage (comportement
+    // identique à avant ce garde-fou) plutôt que de corrompre les résultats.
+    const personKey = (r) => r.code_id != null ? r.code_id : r.candidate_id;
+    const claimed = new Map(); // personKey déjà élu -> le poste (plus important) qui le lui vaut
     const result = new Map();
     order.forEach(role => {
       const all = rows.filter(r => r.role === role.id).sort((a, b) => b.votes - a.votes || a.display_name.localeCompare(b.display_name));
-      const pool = all.filter(r => !claimed.has(r.code_id));
+      const pool = all.filter(r => !claimed.has(personKey(r)));
       const poolIds = new Set(pool.map(r => r.candidate_id));
       const seats = role.seats || 1;
       const cutoff = pool[seats - 1] ? pool[seats - 1].votes : -1;
       const tied = !!(pool[seats] && pool[seats].votes === cutoff && cutoff > 0);
       const winners = new Set();
       pool.forEach((r, i) => {
-        if (r.votes > 0 && i < seats && !(tied && r.votes === cutoff)) { winners.add(r.candidate_id); claimed.set(r.code_id, role); }
+        if (r.votes > 0 && i < seats && !(tied && r.votes === cutoff)) { winners.add(r.candidate_id); claimed.set(personKey(r), role); }
       });
       result.set(role.id, {
         tied,
@@ -173,7 +179,7 @@
           elected: winners.has(r.candidate_id),
           exaequo: poolIds.has(r.candidate_id) && tied && r.votes === cutoff && r.votes > 0,
           heldElsewhere: !poolIds.has(r.candidate_id) && r.votes > 0,
-          heldElsewhereRole: !poolIds.has(r.candidate_id) && r.votes > 0 ? claimed.get(r.code_id) : null
+          heldElsewhereRole: !poolIds.has(r.candidate_id) && r.votes > 0 ? claimed.get(personKey(r)) : null
         }))
       });
     });
