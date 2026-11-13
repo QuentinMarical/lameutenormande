@@ -168,9 +168,13 @@
       const seats = role.seats || 1;
       const cutoff = pool[seats - 1] ? pool[seats - 1].votes : -1;
       const tied = !!(pool[seats] && pool[seats].votes === cutoff && cutoff > 0);
+      // Sans opposition (plus de candidats restants que de sièges, souvent parce que l'adversaire
+      // a été élu d'office ailleurs) : élu·e même à 0 voix, comme un siège non contesté. Les voix
+      // restent affichées à titre indicatif (elles ne décident juste plus du siège).
+      const uncontested = pool.length <= seats;
       const winners = new Set();
       pool.forEach((r, i) => {
-        if (r.votes > 0 && i < seats && !(tied && r.votes === cutoff)) { winners.add(r.candidate_id); claimed.set(personKey(r), role); }
+        if (i < seats && !(tied && r.votes === cutoff) && (uncontested || r.votes > 0)) { winners.add(r.candidate_id); claimed.set(personKey(r), role); }
       });
       result.set(role.id, {
         tied,
