@@ -2089,18 +2089,20 @@ URL:https://www.facebook.com/lamedievaledebriecomterobert
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Le Havre Japan NorthCon'
-DESCRIPTION:
-DTSTART;VALUE=DATE:20270313
-DTEND;VALUE=DATE:20270315
+DESCRIPTION:La Japan North'Con du Havre revient pour sa 4ème édition les 13 et 14 mars 2027.\n\n\nAu programme :\nDes animations et activités tout au long du week-end\n\nDes espaces dédiés aux mangas\, jeux vidéo et jeux de société\n\nDu cosplay\, des concerts et des spectacles\n\nDes conférences\, expositions et ateliers\n\nDe nombreuses surprises et de belles rencontres !\n\n\n
+X-ALT-DESC;FMTTYPE=text/html:<div class="ui-rte-editor-div ui-rte-editor" style="font-size:12pt\; line-height:1.3"><p>La Japan North'Con du Havre revient pour sa 4ème édition les 13 et 14 mars 2027.</p><p><br class="rte-ignore-br"/></p><p>Au programme :</p><ul style="list-style-image:none"><li><p>Des animations et activités tout au long du week-end</p></li><li><p>Des espaces dédiés aux mangas\, jeux vidéo et jeux de société</p></li><li><p>Du cosplay\, des concerts et des spectacles</p></li><li><p>Des conférences\, expositions et ateliers</p></li><li><p>De nombreuses surprises et de belles rencontres !</p></li></ul></div>
+DTSTART:20270313T090000Z
+DTEND:20270314T170000Z
 LOCATION:64 Quai de la Réunion\, 76600 Le Havre
 CLASS:PUBLIC
 IMPORTANT:0
 STATUS:CONFIRMED
 UID:a246b942fc3e498a95cbe40a43e0097a@zoho.eu
-TRANSP:TRANSPARENT
+TRANSP:OPAQUE
 CREATED:20260319T105025Z
-LAST-MODIFIED:20260730T140319Z
-DTSTAMP:20260920T020554Z
+LAST-MODIFIED:20261114T200206Z
+DTSTAMP:20261114T200206Z
+URL:https://www.billetweb.fr/4e-le-havre-japan-north-con
 END:VEVENT
 BEGIN:VEVENT
 SUMMARY:Albi Games Festival 5ème édition
