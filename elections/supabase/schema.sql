@@ -159,8 +159,8 @@ alter table public.role_catalog enable row level security;
 
 insert into public.role_catalog (id,label,description,seats,max_choices,sort_order) values
   ('tete',          'Tête de meute',                    'Responsable du groupe : coordination générale, représentation de la meute.', 1, 1, 10),
-  ('patte_gauche',  'Patte gauche',                     'Responsable adjoint : seconde la Tête de meute.',                          1, 1, 20),
-  ('patte_droite',  'Patte droite',                     'Responsable adjoint : seconde la Tête de meute.',                          1, 1, 30),
+  ('patte_gauche',  'Patte gauche',                     'Responsable adjoint : seconde la Tête de meute.',                          1, 1, 30),
+  ('patte_droite',  'Patte droite',                     'Responsable adjoint : seconde la Tête de meute.',                          1, 1, 20),
   ('communication', 'Responsable de la communication',  'Réseaux sociaux, annonces, site et visibilité de la meute.',                1, 1, 40),
   ('modo_telegram', 'Modérateur Telegram',              'Modération des groupes Telegram (2 postes).',                              2, 2, 50),
   ('modo_discord',  'Modérateur Discord',               'Modération du serveur Discord (2 postes).',                                2, 2, 60)
