@@ -2644,6 +2644,24 @@ DTSTAMP:20260920T020554Z
 URL:https://www.japan-expo-paris.com/fr/
 END:VEVENT
 BEGIN:VEVENT
+SUMMARY:Color'A'Geek
+DESCRIPTION:Plus qu’une convention\, la Color'A'Geek\, c’est un moment convivial et chaleureux autour de la pop culture et du manga. Ici\, on vient avant tout pour se faire plaisir et partager sa passion\, qu’on soit fan depuis toujours\, simple curieux ou en pleine découverte.\n\nVisiteurs comme exposants\, tout le monde a sa place : on échange\, on rit\, on joue ensemble et on repart avec des étoiles plein les yeux !\n\nAu programme : des artistes et créateurs passionnés\, des tournois et des concours\, des jeux à découvrir et plein de surprises pour petits et grands geeks.\n\nPrix entrée : 5€.
+DTSTART:20270227T090000Z
+DTEND:20270228T170000Z
+LOCATION:Salle Omnisports. Allée du Sableau. 85190 Venansault
+CLASS:PUBLIC
+IMPORTANT:0
+STATUS:CONFIRMED
+UID:d30ad0bcda024dad886dec44330abfc3@zoho.eu
+TRANSP:OPAQUE
+CREATED:20261115T182554Z
+LAST-MODIFIED:20261115T182554Z
+DTSTAMP:20261115T182555Z
+ATTENDEE;CN="spyro@lameutenormande.fr";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:MAILTO:spyro@lameutenormande.fr
+ATTENDEE;CN="Nitra";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED:MAILTO:nitrafoxmail@gmail.com
+URL:https://paa.ge/colorageek/fr
+END:VEVENT
+BEGIN:VEVENT
 SUMMARY:Metz'Torii
 DESCRIPTION:Metz'Torii\, plus grande convention pop culture du Grand Est\, revient pour une nouvelle édition les 30 et 31 mai 2026 de 9h30 à 19h au Parc des Expositions de Metz (Rue de la Grange aux Bois\, 57070 Metz). L'événement avait rassemblé plus de 25 000 visiteurs en 2025 !\n\nSur plus de 10 000 m²\, plongez dans la culture japonaise\, le manga\, le cosplay\, les jeux vidéo et le cinéma geek : boutiques spécialisées\, exposants artisans\, dédicaces et photoshoots avec des invités de renom comme Richard Dean Anderson (MacGyver & Stargate)\, les acteurs Harry Potter Jamie Waylett et Josh Herdman\, ainsi que les voix françaises Anais Delva\, Emmanuel Curtil et Jean-Pierre Michael. Toutes les conférences sur scène sont gratuitement accessibles à tous les visiteurs !\n\nLes billets sont disponibles sur billetterie.metztorii.fr : plus vous réservez tôt\, plus les tarifs sont avantageux !\n\n\n\n
 X-ALT-DESC;FMTTYPE=text/html:<p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2"><b>Metz'Torii</b>\, plus grande convention pop culture du Grand Est\, revient pour une nouvelle édition les<span>&nbsp\;</span><b>30 et 31 mai 2026 de 9h30 à 19h</b><span>&nbsp\;</span>au<span>&nbsp\;</span><b>Parc des Expositions de Metz</b><span>&nbsp\;</span>(Rue de la Grange aux Bois\, 57070 Metz). L'événement avait rassemblé plus de<span>&nbsp\;</span><b>25 000 visiteurs</b><span>&nbsp\;</span>en 2025 !<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Sur plus de<span>&nbsp\;</span><b>10 000 m²</b>\, plongez dans la culture japonaise\, le manga\, le cosplay\, les jeux vidéo et le cinéma geek : boutiques spécialisées\, exposants artisans\, dédicaces et photoshoots avec des invités de renom comme<span>&nbsp\;</span><b>Richard Dean Anderson</b><span>&nbsp\;</span>(MacGyver &amp\; Stargate)\, les acteurs Harry Potter<span>&nbsp\;</span><b>Jamie Waylett</b><span>&nbsp\;</span>et<span>&nbsp\;</span><b>Josh Herdman</b>\, ainsi que les voix françaises<span>&nbsp\;</span><b>Anais Delva</b>\,<span>&nbsp\;</span><b>Emmanuel Curtil</b><span>&nbsp\;</span>et<span>&nbsp\;</span><b>Jean-Pierre Michael</b>. Toutes les conférences sur scène sont<span>&nbsp\;</span><b>gratuitement accessibles à tous les visiteurs</b><span>&nbsp\;</span>!<br /></p><p style="box-sizing:border-box\; border-style:solid\; border-width:0px" class="my-2 [&amp\;+p]:mt-4 [&amp\;_strong:has(+br)]:inline-block [&amp\;_strong:has(+br)]:pb-2">Les billets sont disponibles sur billetterie.metztorii.fr :<span>&nbsp\;</span><b>plus vous réservez tôt\, plus les tarifs sont avantageux</b><span>&nbsp\;</span>!<br /></p><div><br /></div>
