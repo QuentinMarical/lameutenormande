@@ -238,12 +238,13 @@
           <div class="item-body"><div class="title">Kitjune</div></div>
         </a>
 
-        <!-- HalleyAway n'a pas de @ Telegram : seul un lien direct vers la conversation (Telegram
-             Web/k) est disponible, donc pas de data-username ici pour laisser l'avatar sur les
-             initiales plutôt que de tenter un lookup unavatar.io voué à échouer. -->
+        <!-- HalleyAway n'a pas de @ Telegram (le lien pointe vers la conversation Telegram Web/k
+             par id) et unavatar.io/instagram exige désormais un plan payant : sa photo (fournie
+             par l'intéressée) est hébergée en local plutôt que de dépendre d'un service tiers.
+             Pas de data-username : on laisse le script générateur d'avatars ignorer cet item. -->
         <a class="link-item" href="https://web.telegram.org/k/#5458277466" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="HalleyAway" src="" loading="eager" width="42" height="42" />
+            <img class="avatar loaded" alt="HalleyAway" src="avatars/halleyaway.png" loading="eager" width="42" height="42" />
             <span class="initials">H</span>
           </div>
           <div class="item-body"><div class="title">HalleyAway</div></div>
