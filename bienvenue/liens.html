@@ -73,11 +73,11 @@
 
     /* Sous-titres de groupe (postes) : .section-title (violet vif + trait) marque le niveau
        "section" ; ce sous-niveau reste en retrait, sans trait ni couleur d'accent, pour qu'on lise
-       tout de suite "L'équipe" comme le parent et "Responsables du groupe" comme son enfant. */
+       tout de suite "L'équipe" comme le parent et "Responsables du groupe" comme son enfant.
+       Aligné à gauche comme .section-title (pas d'indentation sur le texte des cartes : ça créait
+       un sous-titre flottant, sans repère visuel avec le titre de section juste au-dessus). */
     .group-title {
-      /* Aligné sur le texte des cartes (padding gauche 1rem + icône 42px + gap .9rem), pas une
-         valeur arbitraire : la colonne de lecture "titre" reste verticale sur toute la section. */
-      margin: 1.3rem 0 .5rem calc(1rem + 42px + .9rem); font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+      margin: 1.3rem 0 .5rem; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
       text-transform: uppercase; color: var(--muted);
     }
     .group-title:first-child { margin-top: 0; }
