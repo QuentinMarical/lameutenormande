@@ -50,6 +50,9 @@
     .icon-circle img.avatar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; opacity: 0; transition: opacity .25s ease; }
     .icon-circle img.avatar.loaded { opacity: 1; }
     .icon-circle .initials { position: relative; z-index: 1; }
+    /* Même traitement trait fin que .chev pour les icônes de canaux (cohérence avec le reste de
+       la page) plutôt que des emojis dont le rendu varie selon l'OS/navigateur. */
+    .icon-circle svg { width: 20px; height: 20px; display: block; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
     /* Variantes de teinte par section, en repartant des couleurs déjà établies (violet/cyan/orange) */
     .link-list.networks .icon-circle { background: rgba(56, 189, 248, 0.16); color: var(--cyan-2); }
@@ -72,7 +75,9 @@
        "section" ; ce sous-niveau reste en retrait, sans trait ni couleur d'accent, pour qu'on lise
        tout de suite "L'équipe" comme le parent et "Responsables du groupe" comme son enfant. */
     .group-title {
-      margin: 1.3rem 0 .5rem 1.4rem; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+      /* Aligné sur le texte des cartes (padding gauche 1rem + icône 42px + gap .9rem), pas une
+         valeur arbitraire : la colonne de lecture "titre" reste verticale sur toute la section. */
+      margin: 1.3rem 0 .5rem calc(1rem + 42px + .9rem); font-size: .72rem; font-weight: 700; letter-spacing: .06em;
       text-transform: uppercase; color: var(--muted);
     }
     .group-title:first-child { margin-top: 0; }
@@ -98,7 +103,7 @@
   <main class="wrap welcome" role="main" aria-labelledby="mainTitle">
 
     <div class="welcome-header">
-      <img class="welcome-logo" src="https://lameutenormande.fr/assets/images/logo-2000x837.png" alt="La Meute Normande" width="150" height="63" loading="eager">
+      <img class="welcome-logo" src="../assets/images/logo-2000x837.png" alt="La Meute Normande" width="150" height="63" loading="eager">
       <h1 id="mainTitle">Bienvenue dans la Meute !</h1>
     </div>
 
@@ -114,9 +119,9 @@
     </div>
 
     <h2 class="section-title">Espaces membres</h2>
-    <div class="link-list members" role="list">
-      <a class="link-item" href="https://t.me/+NCghT6VbJw5jYTFk" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">✈</div>
+    <div class="link-list members">
+      <a class="link-item" href="https://t.me/+NCghT6VbJw5jYTFk" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></div>
         <div class="item-body">
           <div class="title">Canal Événements</div>
           <div class="desc">Un canal permettant de suivre les rassemblements et annonces</div>
@@ -126,8 +131,8 @@
         </div>
       </a>
 
-      <a class="link-item" href="https://t.me/+XIknrLZ3ZdgzMmVk" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">🛒</div>
+      <a class="link-item" href="https://t.me/+XIknrLZ3ZdgzMmVk" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
         <div class="item-body">
           <div class="title">Dealers Den</div>
           <div class="desc">Un groupe Telegram sur lequel les membres partagent leurs créations</div>
@@ -137,8 +142,8 @@
         </div>
       </a>
 
-      <a class="link-item" href="https://t.me/+xACKjtu-gEY1ZDU0" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">📷</div>
+      <a class="link-item" href="https://t.me/+xACKjtu-gEY1ZDU0" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg></div>
         <div class="item-body">
           <div class="title">Groupe Photos</div>
           <div class="desc">Les archives photo et vidéos de la meute, tout simplement!</div>
@@ -148,8 +153,8 @@
         </div>
       </a>
 
-      <a class="link-item" href="https://discord.gg/syzEwVy8ub" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">🎧</div>
+      <a class="link-item" href="https://discord.gg/syzEwVy8ub" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1v-6a9 9 0 0 1 18 0v6a1 1 0 0 1-1 1h-2a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></svg></div>
         <div class="item-body">
           <div class="title">Discord</div>
           <div class="desc">Un serveur accessible pour les membres et non-membres</div>
@@ -163,8 +168,8 @@
     <h2 class="section-title">À partager</h2>
     <a class="card info link-card" href="https://t.me/Annonces_Meute_Normande" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-          <path d="M22 3L2 12l6 2 2 6 12-17z" fill="currentColor" />
+        <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>
         </svg>
       </div>
       <div class="body">
@@ -175,9 +180,9 @@
     </a>
 
     <h2 class="section-title">Site &amp; réseaux</h2>
-    <div class="link-list networks" role="list">
-      <a class="link-item" href="https://lameutenormande.fr/events" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">📅</div>
+    <div class="link-list networks">
+      <a class="link-item" href="https://lameutenormande.fr/events" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
         <div class="item-body">
           <div class="title">Calendrier</div>
           <div class="desc">Tous les événements passé et à venir, d'un peu partout en France et à l'étranger</div>
@@ -186,8 +191,8 @@
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
         </div>
       </a>
-      <a class="link-item" href="https://lameutenormande.fr/actus" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">🎉</div>
+      <a class="link-item" href="https://lameutenormande.fr/actus" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1Z"/><path d="M4 22v-7"/></svg></div>
         <div class="item-body">
           <div class="title">Les actus</div>
           <div class="desc">Les prochains événements auxquels la meute sera présente</div>
@@ -196,8 +201,8 @@
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
         </div>
       </a>
-      <a class="link-item" href="https://lameutenormande.fr/events/sondages/" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">📊</div>
+      <a class="link-item" href="https://lameutenormande.fr/events/sondages/" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
         <div class="item-body">
           <div class="title">Sondages</div>
           <div class="desc">Réponds aux sondages en cours (présence, covoiturage…) pour un événement</div>
@@ -206,8 +211,8 @@
           <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
         </div>
       </a>
-      <a class="link-item" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer" role="listitem">
-        <div class="icon-circle" aria-hidden="true">📸</div>
+      <a class="link-item" href="https://www.instagram.com/la.meute_normande" target="_blank" rel="noopener noreferrer">
+        <div class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37Z"/><line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/></svg></div>
         <div class="item-body">
           <div class="title">Instagram</div>
           <div class="desc">@la.meute_normande</div>
@@ -220,10 +225,10 @@
 
     <h2 class="section-title" id="staffTitle">L'équipe</h2>
     <div class="link-list staff" aria-labelledby="staffTitle">
-      <div class="group-title" id="respTitle">Responsables du groupe</div>
+      <h3 class="group-title" id="respTitle">Responsables du groupe</h3>
 
-      <div class="responsables-grid" role="list" aria-labelledby="respTitle">
-        <a class="link-item" data-username="nitrafox" data-avatar-provider="twitter" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer" role="listitem">
+      <div class="responsables-grid" aria-labelledby="respTitle">
+        <a class="link-item" data-username="nitrafox" data-avatar-provider="twitter" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Nitra" loading="eager" width="42" height="42" />
             <span class="initials">N</span>
@@ -232,7 +237,7 @@
           <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
 
-        <a class="link-item" data-username="Kinvald" href="https://t.me/Kinvald" target="_blank" rel="noopener noreferrer" role="listitem">
+        <a class="link-item" data-username="Kinvald" href="https://t.me/Kinvald" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Kinvald" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
@@ -242,9 +247,9 @@
         </a>
       </div>
 
-      <div class="group-title" id="commTitle">Responsable communication</div>
-      <div role="list" aria-labelledby="commTitle">
-        <a class="link-item" data-username="spyro_the_bat" href="https://t.me/spyro_the_bat" target="_blank" rel="noopener noreferrer" role="listitem">
+      <h3 class="group-title" id="commTitle">Responsable communication</h3>
+      <div aria-labelledby="commTitle">
+        <a class="link-item" data-username="spyro_the_bat" href="https://t.me/spyro_the_bat" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Spyro" loading="eager" width="42" height="42" />
             <span class="initials">S</span>
@@ -254,9 +259,9 @@
         </a>
       </div>
 
-      <div class="group-title" id="modsTitle">Modérateurs</div>
-      <div class="mods-grid" role="list" aria-labelledby="modsTitle">
-        <a class="link-item" data-username="KITJUNE" href="https://t.me/KITJUNE" target="_blank" rel="noopener noreferrer" role="listitem">
+      <h3 class="group-title" id="modsTitle">Modérateurs</h3>
+      <div class="mods-grid" aria-labelledby="modsTitle">
+        <a class="link-item" data-username="KITJUNE" href="https://t.me/KITJUNE" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Kitjune" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
@@ -269,7 +274,7 @@
              par id) et unavatar.io/instagram exige désormais un plan payant : sa photo (fournie
              par l'intéressée) est hébergée en local plutôt que de dépendre d'un service tiers.
              Pas de data-username : on laisse le script générateur d'avatars ignorer cet item. -->
-        <a class="link-item" href="https://web.telegram.org/k/#5458277466" target="_blank" rel="noopener noreferrer" role="listitem">
+        <a class="link-item" href="https://web.telegram.org/k/#5458277466" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar loaded" alt="HalleyAway" src="avatars/halleyaway.png" loading="eager" width="42" height="42" />
             <span class="initials">H</span>
@@ -280,7 +285,7 @@
 
         <!-- Dernier élément impair du groupe : étalé sur toute la largeur plutôt que de laisser
              une case vide à côté (voir règle .mods-grid .link-item:last-child:nth-child(odd)). -->
-        <a class="link-item" data-username="TheFoxFurieFR" data-avatar-provider="twitter" data-avatar-handle="froxy7793" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
+        <a class="link-item" data-username="TheFoxFurieFR" data-avatar-provider="twitter" data-avatar-handle="froxy7793" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Froxy" loading="eager" width="42" height="42" />
             <span class="initials">F</span>
