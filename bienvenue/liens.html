@@ -31,6 +31,9 @@
       transition: border-color .18s, transform .18s, box-shadow .18s;
     }
     .link-item:hover { border-color: var(--violet-line); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    /* :hover ne se déclenche jamais au tactile (usage quasi exclusif de cette page) : :active
+       donne un retour immédiat au doigt plutôt que de laisser le tap sans aucune réaction visuelle. */
+    .link-item:active { transform: translateY(0) scale(.98); box-shadow: var(--shadow-sm); }
     .icon-circle {
       width: 42px; height: 42px; flex: 0 0 42px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
@@ -44,17 +47,13 @@
     .link-item:hover .chev { opacity: 1; transform: translateX(2px); color: var(--violet-2); }
     .chev svg { width: 14px; height: 14px; display: block; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-    .icon-circle img.avatar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: none; }
-    .icon-circle img.avatar.loaded { display: block; }
+    .icon-circle img.avatar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; opacity: 0; transition: opacity .25s ease; }
+    .icon-circle img.avatar.loaded { opacity: 1; }
     .icon-circle .initials { position: relative; z-index: 1; }
 
     /* Variantes de teinte par section, en repartant des couleurs déjà établies (violet/cyan/orange) */
     .link-list.networks .icon-circle { background: rgba(56, 189, 248, 0.16); color: var(--cyan-2); }
     .link-list.staff .icon-circle { background: rgba(255, 166, 0, 0.16); color: #ffb833; }
-
-    .link-list.staff .two-cols { display: flex; gap: .6rem; }
-    .link-list.staff .two-cols .link-item { flex: 1 1 0; }
-    @media (max-width: 520px) { .link-list.staff .two-cols { flex-direction: column; } }
 
     .link-item.centered { flex-direction: column; text-align: center; gap: .5rem; }
     .link-item.centered .item-body { text-align: center; }
@@ -65,11 +64,29 @@
 
     .mods-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
     @media (max-width: 520px) { .mods-grid { grid-template-columns: 1fr; } }
+    /* Dernier élément d'un nombre impair : occupe toute la largeur plutôt que de laisser une
+       case vide à côté de lui (ex. Froxy, seul 3e nom du groupe Modérateurs). */
+    .mods-grid .link-item:last-child:nth-child(odd) { grid-column: 1 / -1; }
 
-    .group-title { margin: 1.1rem 0 .5rem; font-size: .85rem; font-weight: 700; color: var(--text); }
+    /* Sous-titres de groupe (postes) : .section-title (violet vif + trait) marque le niveau
+       "section" ; ce sous-niveau reste en retrait, sans trait ni couleur d'accent, pour qu'on lise
+       tout de suite "L'équipe" comme le parent et "Responsables du groupe" comme son enfant. */
+    .group-title {
+      margin: 1.3rem 0 .5rem 1.4rem; font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--muted);
+    }
     .group-title:first-child { margin-top: 0; }
 
-    .card .btn { margin-top: .9rem; }
+    .card .btn { margin-top: 1rem; }
+
+    /* ---------- Carte-lien pleine largeur (ex. "Canal Événements public") ----------
+       .card aligne ses enfants en haut (plusieurs lignes de texte possibles) ; ce lien-ci tient sur
+       une ligne comme un .link-item, donc on centre verticalement et on lui donne le même retour
+       visuel (survol/tap/chevron) pour qu'il se signale comme cliquable au même titre qu'eux. */
+    .card.link-card { align-items: center; text-decoration: none; transition: border-color .18s, transform .18s, box-shadow .18s; }
+    .card.link-card:hover { border-color: var(--violet-line); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .card.link-card:active { transform: translateY(0) scale(.98); box-shadow: var(--shadow-sm); }
+    .card.link-card:hover .chev { opacity: 1; transform: translateX(2px); color: var(--violet-2); }
   </style>
 </head>
 <body>
@@ -139,7 +156,7 @@
     </div>
 
     <h2 class="section-title">À partager</h2>
-    <a class="card info" href="https://t.me/Annonces_Meute_Normande" target="_blank" rel="noopener noreferrer">
+    <a class="card info link-card" href="https://t.me/Annonces_Meute_Normande" target="_blank" rel="noopener noreferrer">
       <div class="icon" aria-hidden="true">
         <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
           <path d="M22 3L2 12l6 2 2 6 12-17z" fill="currentColor" />
@@ -149,6 +166,7 @@
         <div class="title">Canal Événements public</div>
         <div class="desc">Accessible sans être membre — partage ce lien !</div>
       </div>
+      <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
     </a>
 
     <h2 class="section-title">Site &amp; réseaux</h2>
@@ -205,7 +223,8 @@
             <img class="avatar" alt="Nitra" src="" loading="eager" width="42" height="42" />
             <span class="initials">N</span>
           </div>
-          <div class="item-body"><div class="title">Nitra</div></div>
+          <div class="item-body"><div class="title">Nitra</div><div class="desc">Tête de meute</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
 
         <a class="link-item" data-username="Kinvald" href="https://t.me/Kinvald" target="_blank" rel="noopener noreferrer" role="listitem">
@@ -213,7 +232,8 @@
             <img class="avatar" alt="Kinvald" src="" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
           </div>
-          <div class="item-body"><div class="title">Kinvald</div></div>
+          <div class="item-body"><div class="title">Kinvald</div><div class="desc">Patte droite</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
       </div>
 
@@ -225,6 +245,7 @@
             <span class="initials">S</span>
           </div>
           <div class="item-body"><div class="title">Spyro The Bat</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
       </div>
 
@@ -235,7 +256,8 @@
             <img class="avatar" alt="Kitjune" src="" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
           </div>
-          <div class="item-body"><div class="title">Kitjune</div></div>
+          <div class="item-body"><div class="title">Kitjune</div><div class="desc">Modérateur Telegram</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
 
         <!-- HalleyAway n'a pas de @ Telegram (le lien pointe vers la conversation Telegram Web/k
@@ -247,15 +269,19 @@
             <img class="avatar loaded" alt="HalleyAway" src="avatars/halleyaway.png" loading="eager" width="42" height="42" />
             <span class="initials">H</span>
           </div>
-          <div class="item-body"><div class="title">HalleyAway</div></div>
+          <div class="item-body"><div class="title">HalleyAway</div><div class="desc">Modératrice Telegram</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
 
+        <!-- Dernier élément impair du groupe : étalé sur toute la largeur plutôt que de laisser
+             une case vide à côté (voir règle .mods-grid .link-item:last-child:nth-child(odd)). -->
         <a class="link-item" data-username="TheFoxFurieFR" data-avatar-provider="twitter" data-avatar-handle="froxy7793" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
             <img class="avatar" alt="Froxy" src="" loading="eager" width="42" height="42" />
             <span class="initials">F</span>
           </div>
-          <div class="item-body"><div class="title">Froxy</div></div>
+          <div class="item-body"><div class="title">Froxy</div><div class="desc">Modérateur Discord</div></div>
+          <div class="chev" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M9 6l6 6-6 6"/></svg></div>
         </a>
       </div>
     </div>
