@@ -79,6 +79,11 @@
 
     .card .btn { margin-top: 1rem; }
 
+    /* La dernière carte ("Présente-toi dans le groupe") suit directement la liste de l'équipe,
+       sans titre de section entre les deux : .card n'a qu'un margin-bottom, donc sans cette règle
+       elle colle visuellement à la dernière ligne (Froxy). */
+    .link-list + .card { margin-top: 1.3rem; }
+
     /* ---------- Carte-lien pleine largeur (ex. "Canal Événements public") ----------
        .card aligne ses enfants en haut (plusieurs lignes de texte possibles) ; ce lien-ci tient sur
        une ligne comme un .link-item, donc on centre verticalement et on lui donne le même retour
@@ -220,7 +225,7 @@
       <div class="responsables-grid" role="list" aria-labelledby="respTitle">
         <a class="link-item" data-username="nitrafox" data-avatar-provider="twitter" href="https://t.me/nitrafox" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="Nitra" src="" loading="eager" width="42" height="42" />
+            <img class="avatar" alt="Nitra" loading="eager" width="42" height="42" />
             <span class="initials">N</span>
           </div>
           <div class="item-body"><div class="title">Nitra</div><div class="desc">Tête de meute</div></div>
@@ -229,7 +234,7 @@
 
         <a class="link-item" data-username="Kinvald" href="https://t.me/Kinvald" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="Kinvald" src="" loading="eager" width="42" height="42" />
+            <img class="avatar" alt="Kinvald" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
           </div>
           <div class="item-body"><div class="title">Kinvald</div><div class="desc">Patte droite</div></div>
@@ -241,7 +246,7 @@
       <div role="list" aria-labelledby="commTitle">
         <a class="link-item" data-username="spyro_the_bat" href="https://t.me/spyro_the_bat" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="Spyro" src="" loading="eager" width="42" height="42" />
+            <img class="avatar" alt="Spyro" loading="eager" width="42" height="42" />
             <span class="initials">S</span>
           </div>
           <div class="item-body"><div class="title">Spyro The Bat</div></div>
@@ -253,7 +258,7 @@
       <div class="mods-grid" role="list" aria-labelledby="modsTitle">
         <a class="link-item" data-username="KITJUNE" href="https://t.me/KITJUNE" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="Kitjune" src="" loading="eager" width="42" height="42" />
+            <img class="avatar" alt="Kitjune" loading="eager" width="42" height="42" />
             <span class="initials">K</span>
           </div>
           <div class="item-body"><div class="title">Kitjune</div><div class="desc">Modérateur Telegram</div></div>
@@ -277,7 +282,7 @@
              une case vide à côté (voir règle .mods-grid .link-item:last-child:nth-child(odd)). -->
         <a class="link-item" data-username="TheFoxFurieFR" data-avatar-provider="twitter" data-avatar-handle="froxy7793" href="https://t.me/TheFoxFurieFR" target="_blank" rel="noopener noreferrer" role="listitem">
           <div class="icon-circle" aria-hidden="true">
-            <img class="avatar" alt="Froxy" src="" loading="eager" width="42" height="42" />
+            <img class="avatar" alt="Froxy" loading="eager" width="42" height="42" />
             <span class="initials">F</span>
           </div>
           <div class="item-body"><div class="title">Froxy</div><div class="desc">Modérateur Discord</div></div>
